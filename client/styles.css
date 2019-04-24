@@ -3,6 +3,13 @@ body {
 }
 
 #board {
-    width: 390px;
-    height: 390px;
+    width: 900px;
+    height: 1190px;
+    background: gray;
+}
+
+#map {
+    width: 600px;
+    height: 800px;
+    background-color: red;
 }
