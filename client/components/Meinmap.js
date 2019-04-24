@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { map, GoogleApiWrapper } from 'google-maps-react'
+import { MapContainer } from './MapContainer';
 
 
  const Meinmap = (props) => {
@@ -8,7 +10,9 @@ import PropTypes from 'prop-types';
 
 
   return (
-    <div id='map'></div>
+    <div className='map'>
+      <MapContainer />
+    </div>
   );
 };
 

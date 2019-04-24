@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import Row from './Row';
-import GameList from './GameList';
-import Leaders from './Leaders';
-import Meinmap from './Meinmap';
 
-let gameStore = [];
-
+import { MapContainer } from './MapContainer';
 
 //functions go here
 
@@ -55,9 +50,8 @@ class App extends Component {
       <div>
         
         <div id="board">
-          <Meinmap />
+          <MapContainer />
         </div>
-        <Leaders />
       </div>
     );
   }
