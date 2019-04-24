@@ -17,6 +17,8 @@
   "author": "CodesmithLLC https://github.com/CodesmithLLC <hello@codesmith.io>",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
+    "decode-google-map-polyline": "^1.0.1",
     "express": "^4.12.3",
     "google-maps-react": "^2.0.2",
     "prop-types": "^15.6.1",
