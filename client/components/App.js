@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
-
+import { GoogleApiWrapper,Map } from 'google-maps-react'
+// import Map from "./Map"
 import { MapContainer } from './MapContainer';
 
 //functions go here
 
 
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    // this.handleClick = this.handleClick.bind(this);
-    this.state = {
-      userToken : null,
-      googleAPI: 'AIzaSyBrNOaBlCJF1AI8Tb52mc26Bl3Cbda560o',
-      blackgroundActive : false,
-    }
-  }
-  
+ class App extends Component {
+  // constructor(props) {
+  //   super(props);
+  //   // this.handleClick = this.handleClick.bind(this);
+  //   this.state = {
+  //     userToken : null,
+  //     googleAPI: 'AIzaSyBrNOaBlCJF1AI8Tb52mc26Bl3Cbda560o',
+  //     blackgroundActive : false,
+  //     google: null
+  //   }
+  // }
+
   // All functions will execute here
   // handleClick(row, square) {
   //   let { turn, winner } = this.state;
@@ -45,16 +47,31 @@ class App extends Component {
     //   <Row key={i} row={i} letters={letters} handleClick={handleClick} />
     // ));
 
-  
-    return (
-      <div>
-        
+    const mapStyles = {
+      width: '800px',
+      height: '600px',
+      position: 'static'
+    }
+
+    if (!this.props.loaded) {
+      return (
+        <div id='board'>Map Loading...maybe</div>
+      );
+    } else {
+      return (
+        <div id="container">
+        <h1>This is mein map</h1>
         <div id="board">
-          <MapContainer />
+          <Map 
+          style={mapStyles}
+          google={this.props.google}
+             />
         </div>
-      </div>
-    );
+        </div>
+      );
+    }
   }
 }
-
-export default App;
+export default GoogleApiWrapper({
+  apiKey: 'AIzaSyBrNOaBlCJF1AI8Tb52mc26Bl3Cbda560o'
+})(App);

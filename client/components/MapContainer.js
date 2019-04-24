@@ -2,14 +2,20 @@ import React, { Component } from 'react';
 import { Map, GoogleApiWrapper } from 'google-maps-react';
 
 const mapStyles = {
-  width: '100%',
-  height: '100%'
+  width: '500px',
+  height: '500px'
 };
 
 export class MapContainer extends Component {
   render() {
-    return (
-      <Map
+    if(!this.props.loaded){
+      return (
+        <div>Map Loading...maybe...shit</div>
+      );
+
+    }else{
+      return (
+        <Map
         google={this.props.google}
         zoom={14}
         style={mapStyles}
@@ -18,13 +24,12 @@ export class MapContainer extends Component {
          lng: 36.8233
         }}
       />
-    );
+      );
+
+    }
+    
   }
 }
-
-const LoadingCointainer = (props) => (
-    <div>Fancy Loading Stuff</div>
-)
 
 export default GoogleApiWrapper({
 //   apiKey: 'AIzaSyBrNOaBlCJF1AI8Tb52mc26Bl3Cbda560o'
