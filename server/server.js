@@ -53,7 +53,7 @@ app.get('/api/strava/callback', stravaController.setStravaOauth, (req, res) => {
   res.send("localhost:8080")
 })
 
-app.get('/api/getActivities', stravaController.getActivities, stravaController.getPointsFromActivites, (req, res) => {
+app.get('/api/getActivities', stravaController.getActivities, stravaController.getPointsFromActivities, (req, res) => {
   console.log(`Sending Back ${res.locals.activities.length} activities`);
   res.send(JSON.stringify(res.locals.activities));
 })
@@ -76,8 +76,8 @@ app.use('*', (req, res) => {
 
 app.use((err, req, res, next) => {
   console.log(`Catch All Error:======================================`);
-  console.log(err);
-  res.status(434).send("Something Broke, we're sorry");
+  if(err.code != 11000) console.log(err);
+  res.status(200).send("Something Broke, we're sorry");
 })
 
 

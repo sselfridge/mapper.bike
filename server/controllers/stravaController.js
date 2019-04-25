@@ -5,7 +5,15 @@ var request = require('request');
 const decodePolyline = require('decode-google-map-polyline');
 const fs = require('fs');
 const mongoose = require('mongoose');
+const dayInSeconds = 86400;
+const dbSet = new Set();
 
+let needToPingStrava = false; //flag if we need to make a strava querey or if we have all activities locally
+let useDummyData = false;
+
+//globals that I shouldn't use but meh
+let before;
+let after;
 
 const secretSuperKey = 'safw42346sDrPepperdfse6wa34234234'; //used for JWT stuffs
 
@@ -13,7 +21,7 @@ const stravaController = {};
 stravaController.setStravaOauth = setStravaOauth;
 stravaController.loadStravaProfile = loadStravaProfile;
 stravaController.getActivities = getActivities;
-stravaController.getPointsFromActivites = getPointsFromActivites;
+stravaController.getPointsFromActivities = getPointsFromActivities;
 
 
 function setStravaOauth(req, res, next) {
@@ -120,28 +128,128 @@ function loadStravaProfile(req, res, next) {
 
 //activity not in db already - create new activity and insert
 function putActivityinDB(activity) {
-
-
-
     const newAct = new Activity(activity);
     let reterr = null;
-    newAct.save(err => {
-        if (err) {
-            console.log("Error Creating Activity:", err);
-            let errMsg;
-            switch (err.code) {
-                case 11000:
-                    errMsg = "None unique Activity taken, please pick something else";
-                    break;
-
-                default:
-                    errMsg = "Error creating Activity, try again later"
-                    break;
+    try { //try catch because my duplication errors are annoying
+        newAct.save(err => {
+            if (err) {
+                console.log("Error Creating Activity:", err);
+                let errMsg;
+                switch (err.code) {
+                    case 11000:
+                        // do nothing, expecting lots of dupications
+                        // errMsg = "None unique Activity taken, please pick something else";
+                        err = null;
+                        break;
+    
+                    default:
+                        errMsg = "Error creating Activity, try again later"
+                        break;
+                }
+                err = errMsg;
             }
-            err = errMsg;
-        }
+        })
+        
+    } catch (error) {
+        console.log(`Caught a DB error: ${error}`);
+    }
+    // return reterr;
+}
+
+function fetchFromDB(after, before) {
+    return new Promise((resolve, reject) => {
+        let earliest = Infinity;
+        let latest = -Infinity;
+        Activity.find({ date: {$lte: before, $gte: after} }, (err, docs) => {            console.log(`Searching DB`);
+            if (err) {
+                console.log(`Error with DB: ${err}`);
+                resolve([]);
+            } else {
+                console.log(`Found docs from DB: ${docs.length}`);
+                let newActivityArray = [];
+                docs.forEach(activity => {
+                    const newActivity = {
+                        id: activity.id,
+                        name: activity.name,
+                        line: activity.line,
+                        date: activity.date,
+                        color: activity.color,
+                        selected: activity.selected,
+                    }
+                    newActivityArray.push(newActivity);
+
+                });
+
+                //do we have all the dates in our DB already?
+                resolve(newActivityArray);
+            }
+
+        }); //dnif
     })
-    return reterr;
+}
+
+function pingStrava(activities) {
+    return new Promise((resolve, reject) => {
+        const stravaQuery = `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&page=1&per_page=200`
+        console.log(stravaQuery);
+        if (needToPingStrava === false) {resolve(activities); return;}
+        console.log(`========================THIS SHOULDN"T HAPPEN!!!======${needToPingStrava}========================`);
+        request.get(
+            {
+                url: stravaQuery,
+                headers: {
+                    'Authorization': 'Bearer adaa94e12ea9e8d3c85ea3cd6932a7ff833b3f30'
+                }
+            },
+            function (err, httpResponse, body) {
+                if (err) {
+                    console.log(`Error with strava ${err}`);
+                    resolve([])
+                }
+                console.log(`strava Data Aquired!!`);
+                // console.log(body);
+                let stravaData = [];
+                stravaData = JSON.parse(body);
+                //format data as we need it and add to local DB
+                console.log(`Cleaning up from ping strava ${stravaData.length}`);
+                let result = cleanUpStravaData(stravaData)
+                console.log(`Resolving DB promise result Length: ${result.length}`);
+                resolve(result);
+            })
+    })
+}
+
+function getDummydata() {
+    // const dummyData = fs.readFileSync(__dirname + "/../../stockData.json")
+    const dummyData = fs.readFileSync(__dirname + "/../../bigDummy.json")
+    let stravaData = JSON.parse(dummyData);
+    console.log(`Cleaning up from dummyData`);
+    return cleanUpStravaData(stravaData);
+
+}
+
+function cleanUpStravaData(stravaData) {
+    console.log(`cleaning up ${stravaData.length} entries`);
+    let activities = [];
+    stravaData.forEach(element => {
+        console.log(`Adding Activity ${element.id}`);
+        const newActivity = {};
+        newActivity.id = element.id;
+        newActivity.name = element.name;
+        newActivity.line = element.map.summary_polyline;
+        newActivity.date = makeEpochSecondsTime(element.start_date_local);
+        newActivity.selected = false;
+
+        if (newActivity.line) { //only grab activities with a polyline
+            if (!dbSet.has(newActivity.id)) {
+                dbSet.add(newActivity.id);
+                let err = putActivityinDB(newActivity);
+                if (err) console.error("Error with DB stuff", err);
+            }
+            activities.push(newActivity);
+        }
+    });
+    return activities;
 }
 
 function makeEpochSecondsTime(string) {
@@ -151,87 +259,42 @@ function makeEpochSecondsTime(string) {
 }
 
 function getActivities(req, res, next) {
-    let number = req.query.numberOf;
-    let before = req.query.before;
-    let after = req.query.after;
+    let number = 200;
+    after = req.query.after;
+    before = req.query.before;
     let page = 1;
+    needToPingStrava = true;
 
     //swap if after is later than before
-    if(after > before){
-        [after,before] = [before,after]
+    if (after > before) {
+        [after, before] = [before, after]
     }
-    
-    //check db for activties in this range
 
 
-    const stravaQuery = `https://www.strava.com/api/v3/athlete/activities?before=${before}&after=${after}&page=${page}&per_page=${number}`
-    // const stravaQuery = 'https://www.strava.com/api/v3/activities/2307995672?include_all_efforts=false'
-    console.log(stravaQuery);
-    console.log(`Getting ${number} actvities`);
-
-    // const dummyData = fs.readFileSync(__dirname + "/../../stockData.json")
-    const dummyData = fs.readFileSync(__dirname + "/../../bigDummy.json")
-
-    let stravaData = JSON.parse(dummyData);
-    // console.log(`Parsing ${stravaData.length} activities`);
     let activities = [];
-    stravaData.forEach(element => {
-        const newActivity = {};
-        newActivity.id = element.id;
-        newActivity.name = element.name;
-        newActivity.line = element.map.summary_polyline;
-        newActivity.date = makeEpochSecondsTime(element.start_date_local);
-        newActivity.color = 'blue'
-        newActivity.selected = false;
-        newActivity.weight = 3;
-        newActivity.zIndex = 2;
 
-        if (newActivity.line) { //only grab activites with a polyline
-            let err = putActivityinDB(newActivity);
-            activities.push(newActivity);
-            if(err) console.error("Error with DB stuff", err);
-        }
-    });
-    res.locals.activities = activities;
-    return next();
+    // check db for activties in this range
+    fetchFromDB(after, before)
+        .then(pingStrava)
+        .then(result => {
+            res.locals.activities = result;
+            console.log(`Got results from DB / Strava: Length: ${result == null}`);
+            return next();
+        })
+        .catch(errorDispatch);
 
-
-    // request.get(
-    //     {
-    //         url: stravaQuery,
-    //         headers: {
-    //             'Authorization': 'Bearer 16bc607c4adbf5a87d0b2e73284d4f8f8d83ed00'
-    //         }
-    //     },
-    //     function (err, httpResponse, body) {
-    //         if (err) {
-    //             console.log(`Error with strava auth ${err}`);
-    //             res.locals.err = "Error with strava - try again or logging with username/password";
-    //             return next();
-    //         }
-    //         console.log(`strava Data Aquired!!`);
-    //         // console.log(body);
-    //         let stravaData = JSON.parse(body);
-    //         // console.log(`Parsing ${stravaData.length} activities`);
-    //         let activities = [];
-    //         stravaData.forEach(element => {
-    //             const newActivity = {};
-    //             newActivity.id = element.id;
-    //             newActivity.name = element.name;
-    //             newActivity.line = element.map.summary_polyline;
-    //             newActivity.color = 'red'
-    //             newActivity.selected = false;
-
-    //             activities.push(newActivity);
-    //         });
-    //         res.locals.activities = activities;
-    //         return next();
-    //     }
-    // );
+    // activities = getDummydata();
+    // res.locals.activities = activities;
+    // return next();
 
 }
 
-function getPointsFromActivites(req, res, next) {
+function errorDispatch(error){
+    console.log(`we have an error, but ssssshhhhhhh`);
+}
+
+
+function getPointsFromActivities(req, res, next) {
     let activities = res.locals.activities;
     // let pointsArray = []
     activities.forEach(activity => {

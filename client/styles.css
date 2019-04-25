@@ -14,7 +14,7 @@ body {
     margin: 40px 350px;
 }
 
-#sidebar{
+#sidebar {
     width: 350px;
     height: 900px;
 }
@@ -24,7 +24,7 @@ body {
     overflow-y: scroll;
 }
 
-.react-date-picker{
+.react-date-picker {
     height: 35;
 }
 
@@ -37,32 +37,45 @@ body {
     border-radius: 15px;
 }
 
-.activityTitle{
+.activityTitle {
     font-size: 10;
 }
 
-.activityTitle:hover{
+.activityTitle:hover {
     font-size: 14;
     font-weight: 800;
 }
 
-.selected{
+.selected {
     font-size: 14;
     font-weight: 800;
 }
 
-button{
+button {
     padding: 10 20;
     border-radius: 10px;
     margin: 4px;
 }
 
-.removeLink{
+a.button {
+    /* -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button; */
+    padding: 10 20;
+    border-radius: 10px;
+    margin: 4px;
+    color: white;
+    background-color: orange;
+    float: right;
+}
+
+.removeLink {
     color: black;
     background-color: red;
     float: right;
 }
-.rideLink{
+
+.rideLink {
     color: white;
     background-color: orange;
     float: right;

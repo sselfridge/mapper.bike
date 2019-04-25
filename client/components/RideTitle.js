@@ -8,7 +8,7 @@ const RideTitle = (props) => {
   
   if (props.selected == true) {
     lineStyle = 'selected'
-    rideLink = <button className="rideLink" href={stravaLink} target="_blank">View On Strava</button>
+    rideLink = <a className="rideLink button" href={stravaLink} target="_blank">View On Strava</a>
     removeLink = <button className='removeLink' onClick={e => props.removeAct(e, id)}>Remove</button>
     lineBreak = <br />
 

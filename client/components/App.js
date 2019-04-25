@@ -29,21 +29,23 @@ class App extends Component {
       currentLine: null,
       activities: [],
       clickedLines: [],
-      afterDate: null,
-      beforeDate: null,
+      afterDate: new Date("Mon Apr 01 2019 00:00:00 GMT-0700"),
+      beforeDate: new Date("Wed Apr 10 2019 00:00:00 GMT-0700"),
+      selectedStrokeWeight: 6,
+      defaultStrokeWeight: 2,
     }
 
     this.selectedActivity = {
       color: '#52eb0c',
       selected: true,
-      weight: 6,
+      weight: this.state.selectedStrokeWeight,
       zIndex: 90
     }
 
     this.notSelectedActivity = {
       color: 'blue',
       selected: false,
-      weight: 3,
+      weight: this.state.defaultStrokeWeight,
       zIndex: 2
     }
 
@@ -52,7 +54,7 @@ class App extends Component {
     this.onLineClick = this.onLineClick.bind(this);
     this.connectStrava = this.connectStrava.bind(this); //broken currently
     this.getActivities = this.getActivities.bind(this);
-    this.getActivities2 = this.getActivities2.bind(this);
+    this.toggleBlackground = this.toggleBlackground.bind(this);
     this.highlightTitle = this.highlightTitle.bind(this);
     this.selectActivity = this.selectActivity.bind(this);
     this.removeAct = this.removeAct.bind(this);
@@ -85,13 +87,6 @@ class App extends Component {
 
   onLineClick(e, line, clickPoint) {
     console.log(`Line Clicked!!!`);
-    // let clickedLines = this.state.clickedLines;
-    // clickedLines.push(line);
-
-    // let currentLine = this.state.currentLine;
-    // if (currentLine) {
-    //   currentLine.setOptions({ strokeColor: 'red', zIndex: 1, strokeWeight: 3 });
-    // }
 
     this.selectActivity(line.tag);
   }
@@ -151,10 +146,15 @@ class App extends Component {
     if(this.state.beforeDate){
       let epochDate = this.dateToEpoch(this.state.beforeDate);
       beforeDate = `before=${epochDate}&`
+    }else{
+      beforeDate = `before=${1554147428}&`;
     }
     if(this.state.afterDate){
       let epochDate = this.dateToEpoch(this.state.afterDate);
       afterDate = `after=${epochDate}&`
+    }else{
+      afterDate = `after=${1556653028}&`
+      
     }
     
     const quereyString = `/api/getActivities?${beforeDate}${afterDate}`
@@ -169,21 +169,11 @@ class App extends Component {
       })
   }
 
-  getActivities2() {
-    this.toggleBlackground();
-    // let activities = this.state.activities;
-    // activities.forEach(act => {
-    //   act.color = "green"
-    // })
-
-    // this.setState({ activities: activities.slice() });
-
-  }
-
   setAfterDate(newDate) {
     this.setState({ afterDate: newDate })
   }
   setBeforeDate(newDate) {
+    console.log(newDate);
     this.setState({ beforeDate: newDate })
   }
 
@@ -294,7 +284,7 @@ class App extends Component {
               userToken={this.state.userToken}
               connectStrava={this.connectStrava}
               getActivities={this.getActivities}
-              getActivities2={this.getActivities2}
+              toggleBlackground={this.toggleBlackground}
               activities={this.state.activities}
               highlightTitle={this.highlightTitle}
               removeAct={this.removeAct}
