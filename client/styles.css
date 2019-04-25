@@ -28,11 +28,11 @@ body {
 }
 
 .activityTitle:hover{
-    font-size: 1.3em;
+    font-size: 14;
     font-weight: 800;
 }
 
 .selected{
-    font-size: 1.3em;
+    font-size: 14;
     font-weight: 800;
 }

@@ -52,23 +52,15 @@ class App extends Component {
     this.getActivities = this.getActivities.bind(this);
     this.getActivities2 = this.getActivities2.bind(this);
     this.highlightTitle = this.highlightTitle.bind(this);
+    this.selectActivity = this.selectActivity.bind(this);
+    this.removeAct = this.removeAct.bind(this);
   }
 
-  onLineClick(e, line, clickPoint) {
-    console.log(`Line Clicked!!!`);
-    // let clickedLines = this.state.clickedLines;
-    // clickedLines.push(line);
 
-    // let currentLine = this.state.currentLine;
-    // if (currentLine) {
-    //   currentLine.setOptions({ strokeColor: 'red', zIndex: 1, strokeWeight: 3 });
-    // }
-
-    console.log(`LineID: ${line.tag}`);
-
+  selectActivity(id){
     let activities = this.state.activities;
     activities.forEach(activity => {
-      if (activity.id === line.tag) {
+      if (activity.id === id) {
         activity.selected = this.selectedActivity.selected;
         activity.color = this.selectedActivity.color;
         activity.zIndex = this.selectedActivity.zIndex;
@@ -82,6 +74,20 @@ class App extends Component {
     })
 
     this.setState({ activities });
+  }
+
+
+  onLineClick(e, line, clickPoint) {
+    console.log(`Line Clicked!!!`);
+    // let clickedLines = this.state.clickedLines;
+    // clickedLines.push(line);
+
+    // let currentLine = this.state.currentLine;
+    // if (currentLine) {
+    //   currentLine.setOptions({ strokeColor: 'red', zIndex: 1, strokeWeight: 3 });
+    // }
+
+    this.selectActivity(line.tag);
   }
 
   onMarkerClick(props, marker, el) {
@@ -104,23 +110,22 @@ class App extends Component {
 
 
   highlightTitle(e, id) {
-    let activities = this.state.activities;
-    activities.forEach(activity => {
-      if (activity.id === id) {
-        activity.selected = this.selectedActivity.selected;
-        activity.color = this.selectedActivity.color;
-        activity.zIndex = this.selectedActivity.zIndex;
-        activity.weight = this.selectedActivity.weight;
-      } else {
-        activity.selected = this.notSelectedActivity.selected
-        activity.color = this.notSelectedActivity.color;
-        activity.zIndex = this.notSelectedActivity.zIndex;
-        activity.weight = this.notSelectedActivity.weight;
-      }
-    })
-    this.setState({ activities });
+    this.selectActivity(id);
   }
 
+  removeAct(e,id){
+    let activities = this.state.activities;
+    let deleteIndex;
+    activities.forEach((activity,index) => {
+      if (activity.id === id) {
+        deleteIndex = index;
+      } 
+    })
+
+    activities.splice(deleteIndex,1);
+
+    this.setState({ activities });
+  }
 
 
   getActivities() {
@@ -261,7 +266,8 @@ class App extends Component {
               getActivities={this.getActivities}
               getActivities2={this.getActivities2}
               activities={this.state.activities}
-              highlightTitle={this.highlightTitle} />
+              highlightTitle={this.highlightTitle}
+              removeAct={this.removeAct} />
           </div>
           <div id="board">
             <Map

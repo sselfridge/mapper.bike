@@ -12,7 +12,8 @@ const Sidebar = (props) => {
         key={'ride' + activity.id}
         name={activity.name}
         selected={activity.selected} 
-        highlightTitle={props.highlightTitle} />)
+        highlightTitle={props.highlightTitle}
+        removeAct={props.removeAct} />)
       titleArray.push(newTitle);
     })
   }
