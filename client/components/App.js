@@ -25,51 +25,63 @@ class App extends Component {
       showingInfoWindow: false,
       activeMarker: {},
       selectedPlace: {},
-      everyColor: 'red',
       polyLineArray: [],
       currentLine: null,
       activities: [],
       clickedLines: [],
     }
-    this.lines = [];
 
+    this.selectedActivity = {
+      color: '#52eb0c',
+      selected: true,
+      weight: 6,
+      zIndex: 90
+    }
+
+    this.notSelectedActivity = {
+      color: 'blue',
+      selected: false,
+      weight: 3,
+      zIndex: 2
+    }
 
     this.onMarkerClick = this.onMarkerClick.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onLineClick = this.onLineClick.bind(this);
-    this.addNewLines = this.addNewLines.bind(this);
     this.connectStrava = this.connectStrava.bind(this); //broken currently
     this.getActivities = this.getActivities.bind(this);
     this.getActivities2 = this.getActivities2.bind(this);
+    this.highlightTitle = this.highlightTitle.bind(this);
   }
 
   onLineClick(e, line, clickPoint) {
     console.log(`Line Clicked!!!`);
-    let clickedLines = this.state.clickedLines;
-    clickedLines.push(line);
+    // let clickedLines = this.state.clickedLines;
+    // clickedLines.push(line);
 
-    let currentLine = this.state.currentLine;
-    if (currentLine) {
-      currentLine.setOptions({ strokeColor: 'red' ,zIndex:1,strokeWeight:3});
-    }
+    // let currentLine = this.state.currentLine;
+    // if (currentLine) {
+    //   currentLine.setOptions({ strokeColor: 'red', zIndex: 1, strokeWeight: 3 });
+    // }
 
     console.log(`LineID: ${line.tag}`);
 
     let activities = this.state.activities;
     activities.forEach(activity => {
-      console.log("Looking at: ", activity.name);
       if (activity.id === line.tag) {
-        activity.selected = true;
+        activity.selected = this.selectedActivity.selected;
+        activity.color = this.selectedActivity.color;
+        activity.zIndex = this.selectedActivity.zIndex;
+        activity.weight = this.selectedActivity.weight;
       } else {
-        activity.selected = false;
+        activity.selected = this.notSelectedActivity.selected
+        activity.color = this.notSelectedActivity.color;
+        activity.zIndex = this.notSelectedActivity.zIndex;
+        activity.weight = this.notSelectedActivity.weight;
       }
     })
 
-    console.log("line",line);
-    console.log("e",e);
-    line.setOptions({ strokeColor: 'blue' ,zIndex:99, strokeWeight:6});
-
-    this.setState({ currentLine: line, activities, clickedLines });
+    this.setState({ activities });
   }
 
   onMarkerClick(props, marker, el) {
@@ -81,7 +93,6 @@ class App extends Component {
       showingInfoWindow: true
     })
   }
-
   onClose(props) {
     if (true) {
       this.setState({
@@ -91,23 +102,26 @@ class App extends Component {
     }
   }
 
-  addNewLines(props) {
-    // const activities = this.state.activities;
-    // const polyLineArray = [];
-    // activities.forEach((activity, index) => {
-    //   let id = activity.id;
-    //   // console.log(`Adding line: ${id}`);
-    //   let newLine = (<Polyline
-    //     onClick={this.onLineClick}
-    //     path={activity.points}
-    //     tag={id}
-    //     key={'poly' + id}
-    //     strokeColor={this.state.everyColor} />)
-    //   polyLineArray.push(newLine);
-    // });
 
-    // this.setState({ polyLineArray })
+  highlightTitle(e, id) {
+    let activities = this.state.activities;
+    activities.forEach(activity => {
+      if (activity.id === id) {
+        activity.selected = this.selectedActivity.selected;
+        activity.color = this.selectedActivity.color;
+        activity.zIndex = this.selectedActivity.zIndex;
+        activity.weight = this.selectedActivity.weight;
+      } else {
+        activity.selected = this.notSelectedActivity.selected
+        activity.color = this.notSelectedActivity.color;
+        activity.zIndex = this.notSelectedActivity.zIndex;
+        activity.weight = this.notSelectedActivity.weight;
+      }
+    })
+    this.setState({ activities });
   }
+
+
 
   getActivities() {
     console.log('getting activities!!!');
@@ -129,24 +143,22 @@ class App extends Component {
     //     this.setState({ activities: res.data })
     //     this.addNewLines();
     //   })
-    let activities = this.state.activities.map(act => {
-      // const lastPoint = act.points[act.points.length -1];
-      const veryLastPoint = {
-        lat: 34.1234,
-        lng: -118.1234123 
-      };
-      const newPath = act.points.slice();
-      newPath.push(veryLastPoint);
-      return {...act, color: 'green', points: newPath};
-    })
-    // let activities = this.state.activities.forEach(act => {
-    //   let lastDot = act.path[act.path.length -1]
-    //   act.path.push(lastDot);
-    //   act.path = act.path.slice();
-    //   act.color = "green"
+    // let activities = this.state.activities.map(act => {
+    //   // const lastPoint = act.points[act.points.length -1];
+    //   const veryLastPoint = {
+    //     lat: 34.1234,
+    //     lng: -118.1234123 
+    //   };
+    //   const newPath = act.points.slice();
+    //   newPath.push(veryLastPoint);
+    //   return {...act, color: 'green', points: newPath};
     // })
+    let activities = this.state.activities;
+    activities.forEach(act => {
+      act.color = "green"
+    })
 
-    this.setState({activities: activities.slice()});
+    this.setState({ activities: activities.slice() });
 
 
   }
@@ -220,13 +232,14 @@ class App extends Component {
       let id = activity.id;
       // console.log(`Adding line: ${id}`);
       let newLine = (<Polyline
-        ref={line => this.lines.push(line)}
         onClick={this.onLineClick}
         path={activity.points}
         tag={id}
         key={'poly' + id}
         strokeColor={this.state.activities[index].color}
-        strokeWeight={2} />)
+        strokeWeight={this.state.activities[index].weight}
+        zIndex={this.state.activities[index].zIndex}
+      />)
       polyLineArray.push(newLine);
     });
 
@@ -247,7 +260,8 @@ class App extends Component {
               connectStrava={this.connectStrava}
               getActivities={this.getActivities}
               getActivities2={this.getActivities2}
-              activities={this.state.activities} />
+              activities={this.state.activities}
+              highlightTitle={this.highlightTitle} />
           </div>
           <div id="board">
             <Map

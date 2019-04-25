@@ -138,8 +138,10 @@ function getActivities(req, res, next) {
         newActivity.id = element.id;
         newActivity.name = element.name;
         newActivity.line = element.map.summary_polyline;
-        newActivity.color = 'red'
+        newActivity.color = 'blue'
         newActivity.selected = false;
+        newActivity.weight = 3;
+        newActivity.zIndex = 2;
 
         activities.push(newActivity);
     });

@@ -11,7 +11,8 @@ const Sidebar = (props) => {
       let newTitle = (<RideTitle id={activity.id}
         key={'ride' + activity.id}
         name={activity.name}
-        selected={activity.selected} />)
+        selected={activity.selected} 
+        highlightTitle={props.highlightTitle} />)
       titleArray.push(newTitle);
     })
   }

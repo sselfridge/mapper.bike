@@ -4,13 +4,16 @@ import PropTypes from 'prop-types';
 const RideTitle = (props) => {
   const { name, id, selected } = props;
   let lineStyle;
-  if(props.selected == true){
+  if (props.selected == true) {
     lineStyle = 'selected'
   }
 
   return (
     <div className="activityTitle">
-    <span className={lineStyle}>{props.name}</span>
+      <span className={lineStyle}
+        onMouseOver={e => props.highlightTitle(e,id)}  >
+        {props.name}
+      </span>
     </div>
   );
 };
