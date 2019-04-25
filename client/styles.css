@@ -2,9 +2,23 @@ body {
     background: #ACCEEC;
 }
 
+#mapControls {
+    height: 100vh;
+    float: left;
+}
+
 #board {
     width: 900px;
     height: 1190px;
     background: gray;
-    margin: 50 75;
+    margin: 50 300;
+}
+
+.stravabtn {
+    color: white;
+    background-image: linear-gradient(-180deg, orange, orange 90%);
+    font-size: 1.4em;
+    width: 250px;
+    height: 50px;
+    border-radius: 15px;
 }

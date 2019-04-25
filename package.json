@@ -18,9 +18,11 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
     "decode-google-map-polyline": "^1.0.1",
     "express": "^4.12.3",
     "google-maps-react": "^2.0.2",
+    "jsonwebtoken": "^8.5.1",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
     "react-dom": "^16.3.1",
