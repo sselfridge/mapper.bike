@@ -28,7 +28,8 @@ class App extends Component {
       everyColor: 'red',
       polyLineArray: [],
       currentLine: null,
-      activities: null,
+      activities: [],
+      clickedLines: [],
     }
 
 
@@ -44,14 +45,27 @@ class App extends Component {
 
   onLineClick(props, line, clickPoint) {
     console.log(`Line Clicked!!!`);
-
+    let clickedLines = this.state.clickedLines;
+    clickedLines.push(line);
     let currentLine = this.state.currentLine;
-    if (currentLine) currentLine.setOptions({ strokeColor: 'orange' });
+    if (currentLine) currentLine.setOptions({ strokeColor: 'red' });
+
+    console.log(`LineID: ${line.tag}`);
+
+    let activities = this.state.activities;
+    activities.forEach(activity => {
+      console.log("Looking at: ", activity.name);
+      if(activity.id === line.tag){
+        activity.selected = true;
+      } else {
+        activity.selected = false;
+      }
+    })
 
     console.log(line);
     line.setOptions({ strokeColor: 'blue' });
 
-    this.setState({ currentLine: line });
+    this.setState({ currentLine: line , activities , clickedLines});
   }
 
   onMarkerClick(props, marker, el) {
@@ -74,22 +88,21 @@ class App extends Component {
   }
 
   addNewLines(props) {
+    // const activities = this.state.activities;
+    // const polyLineArray = [];
+    // activities.forEach((activity, index) => {
+    //   let id = activity.id;
+    //   // console.log(`Adding line: ${id}`);
+    //   let newLine = (<Polyline
+    //     onClick={this.onLineClick}
+    //     path={activity.points}
+    //     tag={id}
+    //     key={'poly' + id}
+    //     strokeColor={this.state.everyColor} />)
+    //   polyLineArray.push(newLine);
+    // });
 
-    const activities = this.state.activities;
-    const polyLineArray = [];
-    activities.forEach((activity, index) => {
-      let id = activity.id;
-      // console.log(`Adding line: ${id}`);
-      let newLine = (<Polyline
-        onClick={this.onLineClick}
-        path={activity.points}
-        tag={id}
-        key={'poly' + id}
-        strokeColor={this.state.everyColor} />)
-      polyLineArray.push(newLine);
-    });
-
-    this.setState({ polyLineArray })
+    // this.setState({ polyLineArray })
   }
 
   getActivities() {
@@ -100,7 +113,7 @@ class App extends Component {
         // let linePoints = res.data.pop();
         this.setState({ activities: res.data })
         console.log(this.state.activities);
-        this.addNewLines();
+        // this.addNewLines();
       })
   }
 
@@ -112,8 +125,8 @@ class App extends Component {
     //     this.setState({ activities: res.data })
     //     this.addNewLines();
     //   })
-    this.state.polyLineArray.forEach(pline => {
-      console.log(pline); 
+    this.state.activities.forEach(act => {
+      act.color = 'blue';
     });
 
 
@@ -181,15 +194,25 @@ class App extends Component {
 
 
   render() {
-    
+    const activities = this.state.activities;
+    const polyLineArray = [];
+
+    activities.forEach((activity, index) => {
+      let id = activity.id;
+      // console.log(`Adding line: ${id}`);
+      let newLine = (<Polyline
+        onClick={this.onLineClick}
+        path={activity.points}
+        tag={id}
+        key={'poly' + id}
+        strokeColor={this.state.activities[index].color} />)
+      polyLineArray.push(newLine);
+    });
 
 
     if (!this.props.loaded) {
       return (
         <div id="container">
-          <div id='mapControls'>
-            <h1>Rides on Map: {this.state.polyLineArray.length}</h1>
-          </div>
           <div id='board'>Get Activities to fill map</div>
         </div>
       );
@@ -197,12 +220,12 @@ class App extends Component {
       return (
         <div id="container">
           <div id='mapControls'>
-            <h1>This is mein map: {this.state.polyLineArray.length}</h1>
+            <h1>This is mein map: {this.state.activities.length}</h1>
             <Sidebar
               userToken={this.state.userToken}
               connectStrava={this.connectStrava}
               getActivities={this.getActivities}
-              getActivities2={this.getActivities2} 
+              getActivities2={this.getActivities2}
               activities={this.state.activities} />
           </div>
           <div id="board">
@@ -215,7 +238,7 @@ class App extends Component {
               }}
               mapTypeId="hybrid"
             >
-              {this.state.polyLineArray}
+              {polyLineArray}
             </Map>
 
 

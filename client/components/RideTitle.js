@@ -2,11 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const RideTitle = (props) => {
-  const { name, id } = props;
-  
+  const { name, id, selected } = props;
+  let lineStyle;
+  if(props.selected == true){
+    lineStyle = 'selected'
+  }
+
   return (
     <div className="activityTitle">
-    <span>{props.name}</span>
+    <span className={lineStyle}>{props.name}</span>
     </div>
   );
 };

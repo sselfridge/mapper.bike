@@ -22,3 +22,7 @@ body {
     height: 50px;
     border-radius: 15px;
 }
+
+.selected{
+    font-weight: 800;
+}

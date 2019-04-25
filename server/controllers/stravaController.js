@@ -150,6 +150,8 @@ function getActivities(req, res, next) {
                 newActivity.id = element.id;
                 newActivity.name = element.name;
                 newActivity.line = element.map.summary_polyline;
+                newActivity.color = 'red'
+                newActivity.selected = false;
 
                 activities.push(newActivity);
             });
