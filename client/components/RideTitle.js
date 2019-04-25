@@ -2,20 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const RideTitle = (props) => {
-  const { name, id, selected,removeAct } = props;
-  let lineStyle,removeLink;
+  const { name, id, selected, removeAct,num } = props;
+  let lineStyle, removeLink, rideLink, lineBreak;
   let stravaLink = `https://www.strava.com/activities/${id}`
+  
   if (props.selected == true) {
     lineStyle = 'selected'
-    removeLink = <a className='removeLink' onClick={e => props.removeAct(e,id)}>Remove</a>
+    rideLink = <button className="rideLink" href={stravaLink} target="_blank">View On Strava</button>
+    removeLink = <button className='removeLink' onClick={e => props.removeAct(e, id)}>Remove</button>
+    lineBreak = <br />
+
   }
 
   return (
     <div className="activityTitle">
-      <a href={stravaLink} target="_blank" className={lineStyle}
-        onMouseOver={e => props.highlightTitle(e,id)}  >
-        {props.name}
-      </a> {removeLink}
+      <span target="_blank" className={lineStyle}
+        onClick={e => props.highlightTitle(e, id)}  >
+        {props.num}: {props.name}
+      </span> 
+      {lineBreak}
+      {removeLink}
+      {rideLink}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { GoogleApiWrapper, Map, Marker, Polyline, InfoWindow } from 'google-maps-react'
+import { GoogleApiWrapper, Map, Marker, Polyline, Polygon } from 'google-maps-react'
 // import Map from "./Map"
 import { MapContainer } from './MapContainer';
 import Sidebar from './Sidebar';
@@ -54,9 +54,10 @@ class App extends Component {
     this.highlightTitle = this.highlightTitle.bind(this);
     this.selectActivity = this.selectActivity.bind(this);
     this.removeAct = this.removeAct.bind(this);
+    this.toggleBlackground = this.toggleBlackground.bind(this);
   }
 
-
+  //used by clicking a line in the map or hovering over it on the side
   selectActivity(id){
     let activities = this.state.activities;
     activities.forEach(activity => {
@@ -108,6 +109,11 @@ class App extends Component {
     }
   }
 
+  toggleBlackground(){
+    let blackground = this.state.blackgroundActive;
+    blackground = !blackground;
+    this.setState({blackgroundActive: blackground});
+  }
 
   highlightTitle(e, id) {
     this.selectActivity(id);
@@ -141,30 +147,13 @@ class App extends Component {
   }
 
   getActivities2() {
-    // console.log('getting activities!!!');
-    // axios.get("/api/getActivities?numberOf=30&before=1554082907&after=1551404507")
-    //   .then(res => {
-    //     // console.log(res.data);
-    //     this.setState({ activities: res.data })
-    //     this.addNewLines();
-    //   })
-    // let activities = this.state.activities.map(act => {
-    //   // const lastPoint = act.points[act.points.length -1];
-    //   const veryLastPoint = {
-    //     lat: 34.1234,
-    //     lng: -118.1234123 
-    //   };
-    //   const newPath = act.points.slice();
-    //   newPath.push(veryLastPoint);
-    //   return {...act, color: 'green', points: newPath};
+    this.toggleBlackground();
+    // let activities = this.state.activities;
+    // activities.forEach(act => {
+    //   act.color = "green"
     // })
-    let activities = this.state.activities;
-    activities.forEach(act => {
-      act.color = "green"
-    })
 
-    this.setState({ activities: activities.slice() });
-
+    // this.setState({ activities: activities.slice() });
 
   }
 
@@ -233,6 +222,7 @@ class App extends Component {
     const activities = this.state.activities;
     const polyLineArray = [];
 
+    //create poly line components to add
     activities.forEach((activity, index) => {
       let id = activity.id;
       // console.log(`Adding line: ${id}`);
@@ -247,6 +237,18 @@ class App extends Component {
       />)
       polyLineArray.push(newLine);
     });
+
+    //create blackground polygon:
+    const blackground = (<Polygon 
+      paths= {[{ lat: 54.741332, lng: -146.327752 }, { lat: 56.943, lng: -40.155 }, { lat: -2.63, lng: -45.42 }, { lat: -1.233, lng: -144.217 }, { lat: 54.741332, lng: -146.327752 },]}
+      fillColor='black'
+      fillOpacity={1}
+      clickable={false}
+      zIndex={-99}
+      visible={this.state.blackgroundActive} 
+    
+    />)
+
 
 
     if (!this.props.loaded) {
@@ -279,6 +281,7 @@ class App extends Component {
               }}
               mapTypeId="hybrid"
             >
+              {blackground}
               {polyLineArray}
             </Map>
 

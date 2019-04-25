@@ -7,13 +7,16 @@ const Sidebar = (props) => {
 
   const titleArray = [];
   if (props.activities) {
-    props.activities.forEach(activity => {
+    props.activities.forEach((activity,index) => {
       let newTitle = (<RideTitle id={activity.id}
         key={'ride' + activity.id}
         name={activity.name}
         selected={activity.selected} 
         highlightTitle={props.highlightTitle}
-        removeAct={props.removeAct} />)
+        removeAct={props.removeAct} 
+        num={index + 1}
+        
+        />)
       titleArray.push(newTitle);
     })
   }
@@ -29,13 +32,17 @@ const Sidebar = (props) => {
     )
   } else {
     return (
-      <div id="Sidebar">
+      <div id="sidebar">
         <h3>Map Controls</h3>
         <button onClick={props.getActivities}>Get Activities</button>
         <button onClick={props.getActivities2}>Make them blue!</button>
         <div>
           <h2>Rides on map</h2>
-          {titleArray}
+        <div id="titleList">
+          
+            {titleArray}
+
+        </div> 
         </div>
       </div>
     );

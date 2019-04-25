@@ -9,9 +9,19 @@ body {
 
 #board {
     width: 1200px;
-    height: 1190px;
+    height: 900px;
     background: gray;
-    margin: 50 400;
+    margin: 40px 350px;
+}
+
+#sidebar{
+    width: 350px;
+    height: 900px;
+}
+
+#titleList {
+    height: 800px;
+    overflow-y: scroll;
 }
 
 .stravabtn {
@@ -35,4 +45,11 @@ body {
 .selected{
     font-size: 14;
     font-weight: 800;
+}
+
+.removeLink{
+    float: right;
+}
+.rideLink{
+    float: right;
 }

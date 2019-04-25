@@ -1,10 +1,11 @@
 
-// const sessionController = require('./../session/sessionController');
-// const User = require('../user/userModel');
+const Activity = require('./../models/activityModel');
 const jwtoken = require('jsonwebtoken')
 var request = require('request');
 const decodePolyline = require('decode-google-map-polyline');
 const fs = require('fs');
+const mongoose = require('mongoose');
+
 
 const secretSuperKey = 'safw42346sDrPepperdfse6wa34234234'; //used for JWT stuffs
 
@@ -117,18 +118,55 @@ function loadStravaProfile(req, res, next) {
 
 }
 
+//activity not in db already - create new activity and insert
+function putActivityinDB(activity) {
+
+
+
+    const newAct = new Activity(activity);
+    let reterr = null;
+    newAct.save(err => {
+        if (err) {
+            console.log("Error Creating Activity:", err);
+            let errMsg;
+            switch (err.code) {
+                case 11000:
+                    errMsg = "None unique Activity taken, please pick something else";
+                    break;
+
+                default:
+                    errMsg = "Error creating Activity, try again later"
+                    break;
+            }
+            err = errMsg;
+        }
+    })
+    return reterr;
+}
+
+function makeEpochSecondsTime(string) {
+    const date = new Date(string);
+    const number = Math.floor(date.getTime() / 1000);
+    return number;
+}
+
 function getActivities(req, res, next) {
     let number = req.query.numberOf;
     let before = req.query.before;
     let after = req.query.after;
     let page = 1;
+
+    //check db for activties in this range
+
+
+
     const stravaQuery = `https://www.strava.com/api/v3/athlete/activities?before=${before}&after=${after}&page=${page}&per_page=${number}`
     // const stravaQuery = 'https://www.strava.com/api/v3/activities/2307995672?include_all_efforts=false'
     console.log(stravaQuery);
     console.log(`Getting ${number} actvities`);
 
-    const dummyData = fs.readFileSync(__dirname + "/../../stockData.json")
-    // const dummyData = fs.readFileSync(__dirname + "/../../bigDummy.json")
+    // const dummyData = fs.readFileSync(__dirname + "/../../stockData.json")
+    const dummyData = fs.readFileSync(__dirname + "/../../bigDummy.json")
 
     let stravaData = JSON.parse(dummyData);
     // console.log(`Parsing ${stravaData.length} activities`);
@@ -138,12 +176,17 @@ function getActivities(req, res, next) {
         newActivity.id = element.id;
         newActivity.name = element.name;
         newActivity.line = element.map.summary_polyline;
+        newActivity.date = makeEpochSecondsTime(element.start_date_local);
         newActivity.color = 'blue'
         newActivity.selected = false;
         newActivity.weight = 3;
         newActivity.zIndex = 2;
 
-        activities.push(newActivity);
+        if (newActivity.line) { //only grab activites with a polyline
+            let err = putActivityinDB(newActivity);
+            activities.push(newActivity);
+            if(err) console.error("Error with DB stuff", err);
+        }
     });
     res.locals.activities = activities;
     return next();
