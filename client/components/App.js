@@ -25,10 +25,10 @@ class App extends Component {
       showingInfoWindow: false,
       activeMarker: {},
       selectedPlace: {},
-      linePoints: [],
-      everyColor: 'green',
+      everyColor: 'red',
       polyLineArray: [],
-      currentLine: null
+      currentLine: null,
+      activities: null,
     }
 
 
@@ -49,7 +49,6 @@ class App extends Component {
     if (currentLine) currentLine.setOptions({ strokeColor: 'orange' });
 
     console.log(line);
-    console.log(props);
     line.setOptions({ strokeColor: 'blue' });
 
     this.setState({ currentLine: line });
@@ -76,16 +75,16 @@ class App extends Component {
 
   addNewLines(props) {
 
-    let polyLineArray = this.state.polyLineArray;
-    this.state.linePoints.forEach((path, index) => {
-      let tag = 'poly' + index;
-
-      console.log(`Adding line: ${tag}`);
+    const activities = this.state.activities;
+    const polyLineArray = [];
+    activities.forEach((activity, index) => {
+      let id = activity.id;
+      // console.log(`Adding line: ${id}`);
       let newLine = (<Polyline
         onClick={this.onLineClick}
-        path={path}
-        tag={tag}
-        key={tag}
+        path={activity.points}
+        tag={id}
+        key={'poly' + id}
         strokeColor={this.state.everyColor} />)
       polyLineArray.push(newLine);
     });
@@ -94,23 +93,30 @@ class App extends Component {
   }
 
   getActivities() {
-    console.log('getting activites!!!');
-    axios.get("/api/getActivities?numberOf=30&&after=1551404507&before=1556156659").then(res => {
-      // console.log(res.data);
-      // let linePoints = res.data.pop();
-      this.setState({ linePoints: linePoints })
-      this.addNewLines(this.state);
-    })
+    console.log('getting activities!!!');
+    axios.get("/api/getActivities?numberOf=30&&after=1551404507&before=1556156659")
+      .then(res => {
+        // console.log(res.data);
+        // let linePoints = res.data.pop();
+        this.setState({ activities: res.data })
+        console.log(this.state.activities);
+        this.addNewLines();
+      })
   }
 
   getActivities2() {
-    console.log('getting activites!!!');
-    axios.get("/api/getActivities?numberOf=30&before=1554082907&after=1551404507").then(res => {
-      // console.log(res.data);
-      let linePoints = res.data.pop();
-      this.setState({ linePoints: linePoints })
-      this.addNewLines(this.state);
-    })
+    // console.log('getting activities!!!');
+    // axios.get("/api/getActivities?numberOf=30&before=1554082907&after=1551404507")
+    //   .then(res => {
+    //     // console.log(res.data);
+    //     this.setState({ activities: res.data })
+    //     this.addNewLines();
+    //   })
+    this.state.polyLineArray.forEach(pline => {
+      console.log(pline); 
+    });
+
+
   }
 
   componentWillMount() {
@@ -175,15 +181,14 @@ class App extends Component {
 
 
   render() {
-
-
+    
 
 
     if (!this.props.loaded) {
       return (
         <div id="container">
           <div id='mapControls'>
-            <h1>Rides on Map: {this.state.polyLineArray.length}</h1>          
+            <h1>Rides on Map: {this.state.polyLineArray.length}</h1>
           </div>
           <div id='board'>Get Activities to fill map</div>
         </div>
@@ -196,8 +201,9 @@ class App extends Component {
             <Sidebar
               userToken={this.state.userToken}
               connectStrava={this.connectStrava}
-              getActivities={this.getActivities} 
-              getActivities2={this.getActivities2} />
+              getActivities={this.getActivities}
+              getActivities2={this.getActivities2} 
+              activities={this.state.activities} />
           </div>
           <div id="board">
             <Map

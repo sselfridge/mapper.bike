@@ -162,11 +162,11 @@ function getActivities(req, res, next) {
 
 function getPointsFromActivites(req, res, next) {
     let activities = res.locals.activities;
-    let pointsArray = []
+    // let pointsArray = []
     activities.forEach(activity => {
         try {
             const decodedPath = decodePolyline(activity.line);
-            pointsArray.push(decodedPath);
+            // pointsArray.push(decodedPath);
             activity.points = decodedPath;
         } catch (error) {
             console.log(`Error decoding activity: ${activity.name}`);

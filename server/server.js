@@ -49,9 +49,9 @@ app.get('/api/strava/callback', stravaController.setStravaOauth, (req, res) => {
   res.send("localhost:8080")
 })
 
-app.get('/api/getActivities', stravaController.getActivities, stravaController.getPointsFromActivites, (req,res)=> {
-  
-res.send(JSON.stringify(res.locals.activities));
+app.get('/api/getActivities', stravaController.getActivities, stravaController.getPointsFromActivites, (req, res) => {
+  console.log(`Sending Back ${res.locals.activities.length} activities`);
+  res.send(JSON.stringify(res.locals.activities));
 })
 
 
