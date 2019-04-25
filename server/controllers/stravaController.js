@@ -4,6 +4,7 @@
 const jwtoken = require('jsonwebtoken')
 var request = require('request');
 const decodePolyline = require('decode-google-map-polyline');
+const fs = require('fs');
 
 const secretSuperKey = 'safw42346sDrPepperdfse6wa34234234'; //used for JWT stuffs
 
@@ -126,39 +127,58 @@ function getActivities(req, res, next) {
     console.log(stravaQuery);
     console.log(`Getting ${number} actvities`);
 
+    const dummyData = fs.readFileSync(__dirname + "/../../stockData.json")
+    // const dummyData = fs.readFileSync(__dirname + "/../../bigDummy.json")
 
-    request.get(
-        {
-            url: stravaQuery,
-            headers: {
-                'Authorization': 'Bearer 16bc607c4adbf5a87d0b2e73284d4f8f8d83ed00'
-            }
-        },
-        function (err, httpResponse, body) {
-            if (err) {
-                console.log(`Error with strava auth ${err}`);
-                res.locals.err = "Error with strava - try again or logging with username/password";
-                return next();
-            }
-            console.log(`strava Data Aquired!!`);
-            // console.log(body);
-            let stravaData = JSON.parse(body);
-            // console.log(`Parsing ${stravaData.length} activities`);
-            let activities = [];
-            stravaData.forEach(element => {
-                const newActivity = {};
-                newActivity.id = element.id;
-                newActivity.name = element.name;
-                newActivity.line = element.map.summary_polyline;
-                newActivity.color = 'red'
-                newActivity.selected = false;
+    let stravaData = JSON.parse(dummyData);
+    // console.log(`Parsing ${stravaData.length} activities`);
+    let activities = [];
+    stravaData.forEach(element => {
+        const newActivity = {};
+        newActivity.id = element.id;
+        newActivity.name = element.name;
+        newActivity.line = element.map.summary_polyline;
+        newActivity.color = 'red'
+        newActivity.selected = false;
 
-                activities.push(newActivity);
-            });
-            res.locals.activities = activities;
-            return next();
-        }
-    );
+        activities.push(newActivity);
+    });
+    res.locals.activities = activities;
+    return next();
+
+
+    // request.get(
+    //     {
+    //         url: stravaQuery,
+    //         headers: {
+    //             'Authorization': 'Bearer 16bc607c4adbf5a87d0b2e73284d4f8f8d83ed00'
+    //         }
+    //     },
+    //     function (err, httpResponse, body) {
+    //         if (err) {
+    //             console.log(`Error with strava auth ${err}`);
+    //             res.locals.err = "Error with strava - try again or logging with username/password";
+    //             return next();
+    //         }
+    //         console.log(`strava Data Aquired!!`);
+    //         // console.log(body);
+    //         let stravaData = JSON.parse(body);
+    //         // console.log(`Parsing ${stravaData.length} activities`);
+    //         let activities = [];
+    //         stravaData.forEach(element => {
+    //             const newActivity = {};
+    //             newActivity.id = element.id;
+    //             newActivity.name = element.name;
+    //             newActivity.line = element.map.summary_polyline;
+    //             newActivity.color = 'red'
+    //             newActivity.selected = false;
+
+    //             activities.push(newActivity);
+    //         });
+    //         res.locals.activities = activities;
+    //         return next();
+    //     }
+    // );
 
 }
 

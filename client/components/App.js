@@ -18,7 +18,7 @@ class App extends Component {
       blackgroundActive: false,
       google: null,
       mapStyles: {
-        width: '1000px',
+        width: '1200px',
         height: '900px',
         position: 'static'
       },
@@ -31,7 +31,7 @@ class App extends Component {
       activities: [],
       clickedLines: [],
     }
-
+    this.lines = [];
 
 
     this.onMarkerClick = this.onMarkerClick.bind(this);
@@ -43,29 +43,33 @@ class App extends Component {
     this.getActivities2 = this.getActivities2.bind(this);
   }
 
-  onLineClick(props, line, clickPoint) {
+  onLineClick(e, line, clickPoint) {
     console.log(`Line Clicked!!!`);
     let clickedLines = this.state.clickedLines;
     clickedLines.push(line);
+
     let currentLine = this.state.currentLine;
-    if (currentLine) currentLine.setOptions({ strokeColor: 'red' });
+    if (currentLine) {
+      currentLine.setOptions({ strokeColor: 'red' ,zIndex:1,strokeWeight:3});
+    }
 
     console.log(`LineID: ${line.tag}`);
 
     let activities = this.state.activities;
     activities.forEach(activity => {
       console.log("Looking at: ", activity.name);
-      if(activity.id === line.tag){
+      if (activity.id === line.tag) {
         activity.selected = true;
       } else {
         activity.selected = false;
       }
     })
 
-    console.log(line);
-    line.setOptions({ strokeColor: 'blue' });
+    console.log("line",line);
+    console.log("e",e);
+    line.setOptions({ strokeColor: 'blue' ,zIndex:99, strokeWeight:6});
 
-    this.setState({ currentLine: line , activities , clickedLines});
+    this.setState({ currentLine: line, activities, clickedLines });
   }
 
   onMarkerClick(props, marker, el) {
@@ -125,9 +129,24 @@ class App extends Component {
     //     this.setState({ activities: res.data })
     //     this.addNewLines();
     //   })
-    this.state.activities.forEach(act => {
-      act.color = 'blue';
-    });
+    let activities = this.state.activities.map(act => {
+      // const lastPoint = act.points[act.points.length -1];
+      const veryLastPoint = {
+        lat: 34.1234,
+        lng: -118.1234123 
+      };
+      const newPath = act.points.slice();
+      newPath.push(veryLastPoint);
+      return {...act, color: 'green', points: newPath};
+    })
+    // let activities = this.state.activities.forEach(act => {
+    //   let lastDot = act.path[act.path.length -1]
+    //   act.path.push(lastDot);
+    //   act.path = act.path.slice();
+    //   act.color = "green"
+    // })
+
+    this.setState({activities: activities.slice()});
 
 
   }
@@ -201,11 +220,13 @@ class App extends Component {
       let id = activity.id;
       // console.log(`Adding line: ${id}`);
       let newLine = (<Polyline
+        ref={line => this.lines.push(line)}
         onClick={this.onLineClick}
         path={activity.points}
         tag={id}
         key={'poly' + id}
-        strokeColor={this.state.activities[index].color} />)
+        strokeColor={this.state.activities[index].color}
+        strokeWeight={2} />)
       polyLineArray.push(newLine);
     });
 

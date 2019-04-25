@@ -8,10 +8,10 @@ body {
 }
 
 #board {
-    width: 900px;
+    width: 1200px;
     height: 1190px;
     background: gray;
-    margin: 50 300;
+    margin: 50 400;
 }
 
 .stravabtn {
@@ -23,6 +23,11 @@ body {
     border-radius: 15px;
 }
 
+.activityTitle{
+    font-size: 10;
+}
+
 .selected{
+    font-size: 1.3em;
     font-weight: 800;
 }
