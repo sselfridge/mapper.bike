@@ -174,7 +174,7 @@ function getPointsFromActivites(req, res, next) {
 
     })
 
-    activities.push(pointsArray); //include points array as final item in array, must pop before processing names
+    // activities.push(pointsArray); //include points array as final item in array, must pop before processing names
     res.locals.activities = activities;
     return next();
 }

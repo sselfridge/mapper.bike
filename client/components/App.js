@@ -97,7 +97,7 @@ class App extends Component {
     console.log('getting activites!!!');
     axios.get("/api/getActivities?numberOf=30&&after=1551404507&before=1556156659").then(res => {
       // console.log(res.data);
-      let linePoints = res.data.pop();
+      // let linePoints = res.data.pop();
       this.setState({ linePoints: linePoints })
       this.addNewLines(this.state);
     })
@@ -179,16 +179,11 @@ class App extends Component {
 
 
 
-    if (!this.props.loaded || this.state.polyLineArray.length == 0) {
+    if (!this.props.loaded) {
       return (
         <div id="container">
           <div id='mapControls'>
-            <h1>This is mein map: {this.state.polyLineArray.length}</h1>
-            <Sidebar
-              userToken={this.state.userToken}
-              connectStrava={this.connectStrava}
-              getActivities={this.getActivities} 
-              getActivities2={this.getActivities2} />
+            <h1>Rides on Map: {this.state.polyLineArray.length}</h1>          
           </div>
           <div id='board'>Get Activities to fill map</div>
         </div>
