@@ -24,6 +24,10 @@ body {
     overflow-y: scroll;
 }
 
+.react-date-picker{
+    height: 35;
+}
+
 .stravabtn {
     color: #52eb0c;
     background-image: linear-gradient(-180deg, orange, orange 90%);
@@ -47,9 +51,19 @@ body {
     font-weight: 800;
 }
 
+button{
+    padding: 10 20;
+    border-radius: 10px;
+    margin: 4px;
+}
+
 .removeLink{
+    color: black;
+    background-color: red;
     float: right;
 }
 .rideLink{
+    color: white;
+    background-color: orange;
     float: right;
 }

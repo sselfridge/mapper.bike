@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import RideTitle from './RideTitle'
+import DatePicker from 'react-date-picker';
+
 
 const Sidebar = (props) => {
   // let link = 'https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read'
@@ -34,6 +36,20 @@ const Sidebar = (props) => {
     return (
       <div id="sidebar">
         <h3>Map Controls</h3>
+        <div id='afterDatePicker'>
+        <h5>After Date</h5>
+          <DatePicker 
+            onChange={props.setAfterDate}
+            value={props.afterDate}
+          />
+        </div>
+        <div id='beforeDatePicker'>
+        <h5>Before Date</h5>
+          <DatePicker 
+            onChange={props.setBeforeDate}
+            value={props.beforeDate}
+          />
+        </div>
         <button onClick={props.getActivities}>Get Activities</button>
         <button onClick={props.getActivities2}>Make them blue!</button>
         <div>

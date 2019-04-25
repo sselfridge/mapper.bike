@@ -29,6 +29,8 @@ class App extends Component {
       currentLine: null,
       activities: [],
       clickedLines: [],
+      afterDate: null,
+      beforeDate: null,
     }
 
     this.selectedActivity = {
@@ -55,10 +57,13 @@ class App extends Component {
     this.selectActivity = this.selectActivity.bind(this);
     this.removeAct = this.removeAct.bind(this);
     this.toggleBlackground = this.toggleBlackground.bind(this);
+    this.setAfterDate = this.setAfterDate.bind(this);
+    this.setBeforeDate = this.setBeforeDate.bind(this);
+
   }
 
   //used by clicking a line in the map or hovering over it on the side
-  selectActivity(id){
+  selectActivity(id) {
     let activities = this.state.activities;
     activities.forEach(activity => {
       if (activity.id === id) {
@@ -109,34 +114,52 @@ class App extends Component {
     }
   }
 
-  toggleBlackground(){
+  toggleBlackground() {
     let blackground = this.state.blackgroundActive;
     blackground = !blackground;
-    this.setState({blackgroundActive: blackground});
+    this.setState({ blackgroundActive: blackground });
   }
 
   highlightTitle(e, id) {
     this.selectActivity(id);
   }
 
-  removeAct(e,id){
+  removeAct(e, id) {
     let activities = this.state.activities;
     let deleteIndex;
-    activities.forEach((activity,index) => {
+    activities.forEach((activity, index) => {
       if (activity.id === id) {
         deleteIndex = index;
-      } 
+      }
     })
 
-    activities.splice(deleteIndex,1);
+    activities.splice(deleteIndex, 1);
 
     this.setState({ activities });
   }
 
+  dateToEpoch(date){
+    let newDate = new Date(date);
+    const number = Math.floor(date.getTime() / 1000);
+    return number;
+  }
 
   getActivities() {
     console.log('getting activities!!!');
-    axios.get("/api/getActivities?numberOf=30&&after=1551404507&before=1556156659")
+    let beforeDate = '';
+    let afterDate = '';
+    if(this.state.beforeDate){
+      let epochDate = this.dateToEpoch(this.state.beforeDate);
+      beforeDate = `before=${epochDate}&`
+    }
+    if(this.state.afterDate){
+      let epochDate = this.dateToEpoch(this.state.afterDate);
+      afterDate = `after=${epochDate}&`
+    }
+    
+    const quereyString = `/api/getActivities?${beforeDate}${afterDate}`
+
+    axios.get(quereyString)
       .then(res => {
         // console.log(res.data);
         // let linePoints = res.data.pop();
@@ -155,6 +178,13 @@ class App extends Component {
 
     // this.setState({ activities: activities.slice() });
 
+  }
+
+  setAfterDate(newDate) {
+    this.setState({ afterDate: newDate })
+  }
+  setBeforeDate(newDate) {
+    this.setState({ beforeDate: newDate })
   }
 
   componentWillMount() {
@@ -239,17 +269,15 @@ class App extends Component {
     });
 
     //create blackground polygon:
-    const blackground = (<Polygon 
-      paths= {[{ lat: 54.741332, lng: -146.327752 }, { lat: 56.943, lng: -40.155 }, { lat: -2.63, lng: -45.42 }, { lat: -1.233, lng: -144.217 }, { lat: 54.741332, lng: -146.327752 },]}
+    const blackground = (<Polygon
+      paths={[{ lat: 54.741332, lng: -146.327752 }, { lat: 56.943, lng: -40.155 }, { lat: -2.63, lng: -45.42 }, { lat: -1.233, lng: -144.217 }, { lat: 54.741332, lng: -146.327752 },]}
       fillColor='black'
       fillOpacity={1}
       clickable={false}
       zIndex={-99}
-      visible={this.state.blackgroundActive} 
-    
+      visible={this.state.blackgroundActive}
+
     />)
-
-
 
     if (!this.props.loaded) {
       return (
@@ -269,7 +297,12 @@ class App extends Component {
               getActivities2={this.getActivities2}
               activities={this.state.activities}
               highlightTitle={this.highlightTitle}
-              removeAct={this.removeAct} />
+              removeAct={this.removeAct}
+              afterDate={this.state.afterDate}
+              setAfterDate={this.setAfterDate}
+              beforeDate={this.state.beforeDate}
+              setBeforeDate={this.setBeforeDate}
+            />
           </div>
           <div id="board">
             <Map

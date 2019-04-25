@@ -156,8 +156,12 @@ function getActivities(req, res, next) {
     let after = req.query.after;
     let page = 1;
 
+    //swap if after is later than before
+    if(after > before){
+        [after,before] = [before,after]
+    }
+    
     //check db for activties in this range
-
 
 
     const stravaQuery = `https://www.strava.com/api/v3/athlete/activities?before=${before}&after=${after}&page=${page}&per_page=${number}`
