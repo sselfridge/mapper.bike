@@ -279,7 +279,7 @@ class App extends Component {
       return (
         <div id="container">
           <div id='mapControls'>
-            <h1>This is mein map: {this.state.activities.length}</h1>
+            <h1>My Map: {this.state.activities.length} Rides</h1>
             <Sidebar
               userToken={this.state.userToken}
               connectStrava={this.connectStrava}
@@ -299,7 +299,7 @@ class App extends Component {
               style={this.state.mapStyles}
               google={this.props.google}
               zoom={11}
-              mapTypeId="HYBRID"
+              mapTypeId="satellite"
               initialCenter={{
                 lat: 33.945602,
                 lng: -118.483297
