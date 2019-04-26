@@ -35,16 +35,13 @@ const Sidebar = (props) => {
   } else {
     return (
       <div id="sidebar">
-        <h3>Map Controls</h3>
         <div id='afterDatePicker'>
-        <h5>After Date</h5>
           <DatePicker 
             onChange={props.setAfterDate}
             value={props.afterDate}
           />
         </div>
         <div id='beforeDatePicker'>
-        <h5>Before Date</h5>
           <DatePicker 
             onChange={props.setBeforeDate}
             value={props.beforeDate}
