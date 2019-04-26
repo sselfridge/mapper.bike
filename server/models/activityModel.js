@@ -8,6 +8,7 @@ const actSchema = new Schema({
   line: { type: String, required: true },
   date: { type: Number, required: true}, //date in epoch time in seconds
   selected: { type: Boolean, required: false },
+  color: {type: String, required: false}
 });
 
 module.exports = mongoose.model('Activity', actSchema);

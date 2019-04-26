@@ -141,7 +141,7 @@ function putActivityinDB(activity) {
                         // errMsg = "None unique Activity taken, please pick something else";
                         err = null;
                         break;
-    
+
                     default:
                         errMsg = "Error creating Activity, try again later"
                         break;
@@ -149,7 +149,7 @@ function putActivityinDB(activity) {
                 err = errMsg;
             }
         })
-        
+
     } catch (error) {
         console.log(`Caught a DB error: ${error}`);
     }
@@ -158,9 +158,8 @@ function putActivityinDB(activity) {
 
 function fetchFromDB(after, before) {
     return new Promise((resolve, reject) => {
-        let earliest = Infinity;
-        let latest = -Infinity;
-        Activity.find({ date: {$lte: before, $gte: after} }, (err, docs) => {            console.log(`Searching DB`);
+        Activity.find({ date: { $lte: before, $gte: after } }, (err, docs) => {
+            console.log(`Searching DB`);
             if (err) {
                 console.log(`Error with DB: ${err}`);
                 resolve([]);
@@ -192,8 +191,8 @@ function pingStrava(activities) {
     return new Promise((resolve, reject) => {
         const stravaQuery = `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&page=1&per_page=200`
         console.log(stravaQuery);
-        if (needToPingStrava === false) {resolve(activities); return;}
-        console.log(`========================THIS SHOULDN"T HAPPEN!!!======${needToPingStrava}========================`);
+        if (needToPingStrava === false) { resolve(activities); return; }
+        console.log(`========================CALLING STRAVA API==============================`);
         request.get(
             {
                 url: stravaQuery,
@@ -213,15 +212,16 @@ function pingStrava(activities) {
                 //format data as we need it and add to local DB
                 console.log(`Cleaning up from ping strava ${stravaData.length}`);
                 let result = cleanUpStravaData(stravaData)
+                result = result.concat(activities);
                 console.log(`Resolving DB promise result Length: ${result.length}`);
                 resolve(result);
             })
     })
 }
 
-function getDummydata() {
-    // const dummyData = fs.readFileSync(__dirname + "/../../stockData.json")
-    const dummyData = fs.readFileSync(__dirname + "/../../bigDummy.json")
+function getDummydata(file = "stockData") {
+    const dummyData = fs.readFileSync(__dirname + `/../../${file}.json`)
+    // const dummyData = fs.readFileSync(__dirname + "/../../bigDummy.json")
     let stravaData = JSON.parse(dummyData);
     console.log(`Cleaning up from dummyData`);
     return cleanUpStravaData(stravaData);
@@ -232,13 +232,14 @@ function cleanUpStravaData(stravaData) {
     console.log(`cleaning up ${stravaData.length} entries`);
     let activities = [];
     stravaData.forEach(element => {
-        console.log(`Adding Activity ${element.id}`);
         const newActivity = {};
         newActivity.id = element.id;
         newActivity.name = element.name;
         newActivity.line = element.map.summary_polyline;
         newActivity.date = makeEpochSecondsTime(element.start_date_local);
         newActivity.selected = false;
+        newActivity.weight = 2;
+        newActivity.color = 'blue'
 
         if (newActivity.line) { //only grab activities with a polyline
             if (!dbSet.has(newActivity.id)) {
@@ -259,16 +260,20 @@ function makeEpochSecondsTime(string) {
 }
 
 function getActivities(req, res, next) {
-    let number = 200;
     after = req.query.after;
     before = req.query.before;
-    let page = 1;
-    needToPingStrava = true;
+    needToPingStrava = false;
+    console.log(`Before:${before}`);
+    if (before == 1556607600) {
+        console.log("pinging Strava");
+        needToPingStrava = true;
+    }
 
     //swap if after is later than before
     if (after > before) {
         [after, before] = [before, after]
     }
+
 
 
     let activities = [];
@@ -283,13 +288,14 @@ function getActivities(req, res, next) {
         })
         .catch(errorDispatch);
 
-    // activities = getDummydata();
+
+    // activities = getDummydata("BigDummy");
     // res.locals.activities = activities;
     // return next();
 
 }
 
-function errorDispatch(error){
+function errorDispatch(error) {
     console.log(`we have an error, but ssssshhhhhhh`);
 }
 

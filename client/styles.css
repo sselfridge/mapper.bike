@@ -38,16 +38,16 @@ body {
 }
 
 .activityTitle {
-    font-size: 10;
+    font-size: 16;
 }
 
 .activityTitle:hover {
-    font-size: 14;
+    font-size: 20;
     font-weight: 800;
 }
 
 .selected {
-    font-size: 14;
+    font-size: 20;
     font-weight: 800;
 }
 

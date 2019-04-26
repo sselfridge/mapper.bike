@@ -133,7 +133,7 @@ class App extends Component {
     this.setState({ activities });
   }
 
-  dateToEpoch(date){
+  dateToEpoch(date) {
     let newDate = new Date(date);
     const number = Math.floor(date.getTime() / 1000);
     return number;
@@ -143,20 +143,20 @@ class App extends Component {
     console.log('getting activities!!!');
     let beforeDate = '';
     let afterDate = '';
-    if(this.state.beforeDate){
+    if (this.state.beforeDate) {
       let epochDate = this.dateToEpoch(this.state.beforeDate);
       beforeDate = `before=${epochDate}&`
-    }else{
+    } else {
       beforeDate = `before=${1554147428}&`;
     }
-    if(this.state.afterDate){
+    if (this.state.afterDate) {
       let epochDate = this.dateToEpoch(this.state.afterDate);
       afterDate = `after=${epochDate}&`
-    }else{
+    } else {
       afterDate = `after=${1556653028}&`
-      
+
     }
-    
+
     const quereyString = `/api/getActivities?${beforeDate}${afterDate}`
 
     axios.get(quereyString)
@@ -298,11 +298,12 @@ class App extends Component {
             <Map
               style={this.state.mapStyles}
               google={this.props.google}
+              zoom={11}
+              mapTypeId="HYBRID"
               initialCenter={{
-                lat: 34.018958,
-                lng: -118.420417
+                lat: 33.945602,
+                lng: -118.483297
               }}
-              mapTypeId="hybrid"
             >
               {blackground}
               {polyLineArray}
