@@ -48,7 +48,7 @@ const Sidebar = (props) => {
           />
         </div>
         <button onClick={props.getActivities}>Get Activities</button>
-        <button onClick={props.toggleBlackground}>Hide Map Background</button>
+        <button onClick={props.toggleBlackground}>Secret Feature</button>
         <div>
           <h2>Rides on map</h2>
         <div id="titleList">
