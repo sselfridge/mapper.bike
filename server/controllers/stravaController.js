@@ -279,19 +279,19 @@ function getActivities(req, res, next) {
     let activities = [];
 
     // check db for activties in this range
-    fetchFromDB(after, before)
-        .then(pingStrava)
-        .then(result => {
-            res.locals.activities = result;
-            console.log(`Got results from DB / Strava: Length: ${result == null}`);
-            return next();
-        })
-        .catch(errorDispatch);
+    // fetchFromDB(after, before)
+    //     .then(pingStrava)
+    //     .then(result => {
+    //         res.locals.activities = result;
+    //         console.log(`Got results from DB / Strava: Length: ${result == null}`);
+    //         return next();
+    //     })
+    //     .catch(errorDispatch);
 
 
-    // activities = getDummydata("BigDummy");
-    // res.locals.activities = activities;
-    // return next();
+    activities = getDummydata("BigDummy");
+    res.locals.activities = activities;
+    return next();
 
 }
 
