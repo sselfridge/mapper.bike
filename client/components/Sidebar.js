@@ -28,7 +28,7 @@ const Sidebar = (props) => {
       <div>
 
         <button className="stravabtn" onClick={props.connectStrava}>Connect with Strava</button>
-        <a href={link}> Click this to strava</a>
+        {/* <a href={link}> Click this to strava</a> */}
 
       </div>
     )

@@ -4,8 +4,8 @@ const path = require('path');
 const decodePolyline = require('decode-google-map-polyline');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
-
+const passport = require('passport')
+const StravaStrategy = require('passport-strava-oauth2').Strategy;
 const mongoURI = 'mongodb://localhost/meinmap'
 mongoose.connect(mongoURI, {useNewUrlParser: true});
 
@@ -17,11 +17,39 @@ let polyHollyWoodNichols = "encoEpzeqUCvBDnA?|AFpDBbFAFBVDx@?|ACz@HzD@jCHpE?fBDd
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   return next();
-// });
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+passport.use(new StravaStrategy({
+  clientID: 16175,
+  clientSecret: '3d2f97aa68d9930ee1f9a16c09b6f749b9dd53f7',
+  callbackURL: "localhost:3000/auth/strava/callback"
+},
+function(accessToken, refreshToken, profile, done) {
+  // asynchronous verification, for effect...
+  process.nextTick(function () {
+
+    // To keep the example simple, the user's Strava profile is returned to
+    // represent the logged-in user.  In a typical application, you would want
+    // to associate the Strava account with a user record in your database,
+    // and return that user instead.
+    return done(null, profile);
+  });
+}
+));
+
+app.get('/api/auth/strava',
+  passport.authenticate('strava'));
+
+app.get('/api/auth/strava/callback', 
+  passport.authenticate('strava', { failureRedirect: '/login' }),
+  function(req, res) {
+    console.log('Successful authentication, redirect home')
+    res.redirect('/');
+  });
 
 app.get('/api/getPath', (req, res) => {
   console.log(`Hitting getPath`);

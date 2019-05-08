@@ -14,7 +14,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userToken: '16bc607c4adbf5a87d0b2e73284d4f8f8d83ed00',
+      // userToken: '16bc607c4adbf5a87d0b2e73284d4f8f8d83ed00',
+      userToken: null,
       blackgroundActive: false,
       google: null,
       mapStyles: {
@@ -189,6 +190,18 @@ class App extends Component {
 
   connectStrava(props) {
     console.log('Connect with Strava!');
+
+
+    axios.get('/api/auth/strava').then((err,result) =>{
+      console.log(`Strava Auth worked!!!`);
+      console.log(`err: ${err} result:${result}`);
+    })
+    .catch(err => {
+      console.log(`Strava Auth Error: err`);
+    })
+      
+
+
     //this also failed: var cors = require('cors')
 
 
