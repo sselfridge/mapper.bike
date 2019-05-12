@@ -14,8 +14,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // userToken: '16bc607c4adbf5a87d0b2e73284d4f8f8d83ed00',
-      userToken: null,
+      userToken: '16bc607c4adbf5a87d0b2e73284d4f8f8d83ed00',
+      // userToken: null,
       blackgroundActive: false,
       google: null,
       mapStyles: {
