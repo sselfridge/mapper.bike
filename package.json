@@ -14,7 +14,7 @@
       "client"
     ]
   },
-  "author": "CodesmithLLC https://github.com/CodesmithLLC <hello@codesmith.io>",
+  "author": "Sam Selfridge Sam.Selfridge@gmail.com",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",

@@ -329,6 +329,9 @@ class App extends Component {
     }
   }
 }
+
+// API is limited to my home IP for development
+// TODO add this to config file once pushed live
 export default GoogleApiWrapper({
   apiKey: 'AIzaSyBrNOaBlCJF1AI8Tb52mc26Bl3Cbda560o',
   libraries: ['geometry', 'visualization'],
