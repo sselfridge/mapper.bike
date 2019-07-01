@@ -17,8 +17,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userToken: "16bc607c4adbf5a87d0b2e73284d4f8f8d83ed00",
-      // userToken: null,
       blackgroundActive: false,
       google: null,
       mapStyles: {
@@ -36,7 +34,12 @@ class App extends Component {
       afterDate: new Date("Mon Apr 01 2019 00:00:00 GMT-0700"),
       beforeDate: new Date("Wed Apr 10 2019 00:00:00 GMT-0700"),
       selectedStrokeWeight: 6,
-      defaultStrokeWeight: 2
+      defaultStrokeWeight: 2,
+      currentUser: {
+        avatar: null,
+        firstname: null,
+        lastname: null
+      }
     };
 
     this.selectedActivity = {
@@ -53,8 +56,8 @@ class App extends Component {
       zIndex: 2
     };
 
-    this.onMarkerClick = this.onMarkerClick.bind(this);
-    this.onClose = this.onClose.bind(this);
+    // this.onMarkerClick = this.onMarkerClick.bind(this);
+    // this.onClose = this.onClose.bind(this);
     this.onLineClick = this.onLineClick.bind(this);
     this.getActivities = this.getActivities.bind(this);
     this.toggleBlackground = this.toggleBlackground.bind(this);
@@ -88,27 +91,26 @@ class App extends Component {
 
   onLineClick(e, line, clickPoint) {
     console.log(`Line Clicked!!!`);
-
     this.selectActivity(line.tag);
   }
 
-  onMarkerClick(props, marker, el) {
-    console.log(`Marker Click:`);
-    console.log(props);
-    this.setState({
-      selectedPlace: props,
-      activeMarker: marker,
-      showingInfoWindow: true
-    });
-  }
-  onClose(props) {
-    if (true) {
-      this.setState({
-        showingInfoWindow: false,
-        activeMarker: null
-      });
-    }
-  }
+  // onMarkerClick(props, marker, el) {
+  //   console.log(`Marker Click:`);
+  //   console.log(props);
+  //   this.setState({
+  //     selectedPlace: props,
+  //     activeMarker: marker,
+  //     showingInfoWindow: true
+  //   });
+  // }
+  // onClose(props) {
+  //   if (true) {
+  //     this.setState({
+  //       showingInfoWindow: false,
+  //       activeMarker: null
+  //     });
+  //   }
+  // }
 
   toggleBlackground() {
     let blackground = this.state.blackgroundActive;
@@ -146,18 +148,18 @@ class App extends Component {
     let afterDate = "";
     if (this.state.beforeDate) {
       let epochDate = this.dateToEpoch(this.state.beforeDate);
-      beforeDate = `before=${epochDate}&`;
+      beforeDate = `before=${epochDate}`;
     } else {
-      beforeDate = `before=${1554147428}&`; //monday april 1st 2019
+      beforeDate = `before=${1554147428}`; //monday april 1st 2019
     }
     if (this.state.afterDate) {
       let epochDate = this.dateToEpoch(this.state.afterDate);
-      afterDate = `after=${epochDate}&`;
+      afterDate = `after=${epochDate}`;
     } else {
-      afterDate = `after=${1556653028}&`; //Tuesday April 30th 2019
+      afterDate = `after=${1556653028}`; //Tuesday April 30th 2019
     }
 
-    const quereyString = `/api/getActivities?${beforeDate}${afterDate}`;
+    const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&`;
 
     axios.get(quereyString).then(res => {
       // console.log(res.data);
@@ -176,7 +178,19 @@ class App extends Component {
     this.setState({ beforeDate: newDate });
   }
 
-  componentWillMount() {}
+  componentWillMount() {
+    axios.get(`/api/getStravaUser`).then(res => {
+      console.log(`User Response`);
+      if (res.status === 200) {
+        console.log(res.data);
+        this.setState({ currentUser: res.data });
+      }
+    });
+  }
+
+  componentWillUpdate() {
+    console.log(`Will Update`);
+  }
 
   render() {
     const activities = this.state.activities;
@@ -230,26 +244,29 @@ class App extends Component {
       return (
         <div id="container">
           <div id="mapControls">
-            <h1>My Map: {this.state.activities.length} Rides</h1>
-            <a
-              className="stravabtn"
-              href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read"
-            >
+            {this.state.currentUser.firstname === null ? (
+              // prettier-ignore
+              <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
               Connect With Strava
             </a>
-            <Sidebar
-              userToken={this.state.userToken}
-              getActivities={this.getActivities}
-              toggleBlackground={this.toggleBlackground}
-              activities={this.state.activities}
-              highlightTitle={this.highlightTitle}
-              removeAct={this.removeAct}
-              afterDate={this.state.afterDate}
-              setAfterDate={this.setAfterDate}
-              beforeDate={this.state.beforeDate}
-              setBeforeDate={this.setBeforeDate}
-            />
+            ) : (
+              <div>
+                Welcome {this.state.currentUser.firstname}
+                <Sidebar
+                getActivities={this.getActivities}
+                toggleBlackground={this.toggleBlackground}
+                activities={this.state.activities}
+                highlightTitle={this.highlightTitle}
+                removeAct={this.removeAct}
+                afterDate={this.state.afterDate}
+                setAfterDate={this.setAfterDate}
+                beforeDate={this.state.beforeDate}
+                setBeforeDate={this.setBeforeDate}
+              />
+              </div>
+            )}
           </div>
+
           <div id="board">
             <Map
               style={this.state.mapStyles}

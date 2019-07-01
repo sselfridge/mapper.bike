@@ -110,6 +110,11 @@ function loadStravaProfile(req, res, next) {
           }
           console.log(`strava Profile Aquired !!`);
           let stravaData = JSON.parse(body);
+          res.locals.user = {
+            avatar: stravaData.profile,
+            firstname: stravaData.firstname,
+            lastname: stravaData.lastname
+          }
           console.log(stravaData);
           console.log("http Response");
           //   console.log(httpResponse);

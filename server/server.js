@@ -39,7 +39,19 @@ app.get("/api/getPath", (req, res) => {
   res.send(JSON.stringify(polyArray));
 });
 
-app.get("/api/stravaLoggedIn",(req,res)=>{
+app.get("/api/getStravaUser",stravaController.loadStravaProfile,(req,res)=>{
+  if(res.locals.err){
+    res.status(444).send("Error during profile fetch")
+    return;
+  }
+  if(res.locals.user){ //user profile exists send infoback
+    console.log(`User logged in to strava`);
+    res.send(JSON.stringify(res.locals.user))
+    return;
+  }
+  //no user logged in
+  console.log(`User not logged in to strava`);
+  res.status(201).send("User Not logged in")
 
 })
 
