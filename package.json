@@ -22,7 +22,7 @@
     "cookie-parser": "^1.4.4",
     "decode-google-map-polyline": "^1.0.1",
     "express": "^4.12.3",
-    "google-maps-react": "^2.0.2",
+    "google-maps-react": "github:sselfridge/google-maps-react",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.3",
     "passport": "^0.4.0",
