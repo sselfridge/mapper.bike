@@ -15,6 +15,7 @@ body {
 }
 
 #sidebar {
+    margin-top: 20px;
     width: 350px;
     height: 600px;
 }
@@ -29,13 +30,14 @@ body {
 }
 
 .stravabtn {
-    color: #52eb0c;
+    color: white;
     background-image: linear-gradient(-180deg, orange, orange 90%);
     font-size: 1.4em;
-    width: 250px;
-    height: 50px;
     border-radius: 15px;
-    padding: 15px;
+    padding: 10px;
+    text-decoration: none;
+    font-weight: 800;
+    margin-left: 30px;
 }
 
 .activityTitle {

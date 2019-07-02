@@ -94,24 +94,6 @@ class App extends Component {
     this.selectActivity(line.tag);
   }
 
-  // onMarkerClick(props, marker, el) {
-  //   console.log(`Marker Click:`);
-  //   console.log(props);
-  //   this.setState({
-  //     selectedPlace: props,
-  //     activeMarker: marker,
-  //     showingInfoWindow: true
-  //   });
-  // }
-  // onClose(props) {
-  //   if (true) {
-  //     this.setState({
-  //       showingInfoWindow: false,
-  //       activeMarker: null
-  //     });
-  //   }
-  // }
-
   toggleBlackground() {
     let blackground = this.state.blackgroundActive;
     blackground = !blackground;
@@ -150,13 +132,13 @@ class App extends Component {
       let epochDate = this.dateToEpoch(this.state.beforeDate);
       beforeDate = `before=${epochDate}`;
     } else {
-      beforeDate = `before=${1554147428}`; //monday april 1st 2019
+      beforeDate = `before=${9999999999}`; 
     }
     if (this.state.afterDate) {
       let epochDate = this.dateToEpoch(this.state.afterDate);
       afterDate = `after=${epochDate}`;
     } else {
-      afterDate = `after=${1556653028}`; //Tuesday April 30th 2019
+      afterDate = `after=${0}`; 
     }
 
     const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&`;
@@ -246,9 +228,11 @@ class App extends Component {
           <div id="mapControls">
             {this.state.currentUser.firstname === null ? (
               // prettier-ignore
-              <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
+             
+             <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
               Connect With Strava
             </a>
+           
             ) : (
               <div>
                 Welcome {this.state.currentUser.firstname}

@@ -114,7 +114,7 @@ function loadStravaProfile(req, res, next) {
             avatar: stravaData.profile,
             firstname: stravaData.firstname,
             lastname: stravaData.lastname
-          }
+          };
           console.log(stravaData);
           console.log("http Response");
           //   console.log(httpResponse);
@@ -193,40 +193,55 @@ function pingStrava(activities) {
   const accessToken = activities.pop();
   console.log("Ping Strava with accessToken:", accessToken);
   return new Promise((resolve, reject) => {
-    const stravaQuery = `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&page=1&per_page=200`;
-    console.log(stravaQuery);
-    if (needToPingStrava === false) {
-      resolve(activities);
-      return;
-    }
-    console.log(
-      `========================CALLING STRAVA API==============================`
-    );
-    request.get(
-      {
-        url: stravaQuery,
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      },
-      function(err, httpResponse, body) {
-        if (err) {
-          console.log(`Error with strava ${err}`);
-          resolve([]);
-        }
-        console.log(`strava Data Aquired!!`);
-        // console.log(body);
-        let stravaData = [];
-        stravaData = JSON.parse(body);
-        //format data as we need it and add to local DB
-        console.log(`Cleaning up from ping strava ${stravaData.length}`);
-        let result = cleanUpStravaData(stravaData);
-        result = result.concat(activities);
-        console.log(`Resolving DB promise result Length: ${result.length}`);
-        resolve(result);
+    let stravaData = [];
+    buildStravaData(before, after, 1, stravaData, accessToken, function(
+      err,
+      stravaData
+    ) {
+      if (err) {
+        console.log(`Error with strava ${err}`);
+        resolve([]);
+      } else {
+        resolve(stravaData);
       }
-    );
+    });
   });
+}
+
+// prettier-ignore
+function buildStravaData(  before,  after,  page,  stravaData,  accessToken,  callback) {
+  let stravaQuery = `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&page=${page}&per_page=200`;
+  console.log(stravaQuery);
+  console.log(
+    `========================CALLING STRAVA API==============================`
+  );
+  request.get(
+    {
+      url: stravaQuery,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    },
+    function(err, httpResponse, body) {
+      if (err) {
+        callback(err);
+      }
+      console.log(`Strava Data Aquired!!`);
+      // console.log(body);
+      let newData = JSON.parse(body);
+      let newLength = newData.length;
+      console.log(`Got ${newLength} new results`);
+      stravaData = stravaData.concat(newData);
+
+      if (newLength !== 200) {
+        console.log(`less than 200 results`);
+        callback(null,stravaData) ;
+      } else {
+        console.log('More than 200, getting more');
+        // prettier-ignore
+        buildStravaData(before,after,page + 1,stravaData,accessToken,callback);      }
+    }
+  );
 }
 
 function getDummydata(file = "stockData") {
@@ -279,9 +294,9 @@ function getActivities(req, res, next) {
   needToPingStrava = true;
 
   //swap if after is later than before
-  if (after > before) {
-    [after, before] = [before, after];
-  }
+  // if (after > before) {
+  //   [after, before] = [before, after];
+  // }
 
   let activities = [];
 
@@ -289,6 +304,11 @@ function getActivities(req, res, next) {
   fetchFromDB(after, before, res.locals.accessToken)
     .then(pingStrava)
     .then(result => {
+      console.log(`Cleaning up from ping strava ${result.length}`);
+      result = cleanUpStravaData(result);
+      result = result.concat(activities);
+      console.log(`Resolving DB promise result Length: ${result.length}`);
+
       res.locals.activities = result;
       console.log(`Got results from DB / Strava: Length: ${result == null}`);
       return next();
@@ -309,6 +329,7 @@ function errorDispatch(error) {
 // ya I know its weird but here we are
 function getPointsFromActivities(req, res, next) {
   let activities = res.locals.activities;
+
   // let pointsArray = []
   activities.forEach(activity => {
     try {
