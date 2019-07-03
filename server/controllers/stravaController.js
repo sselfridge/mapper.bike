@@ -108,18 +108,42 @@ function loadStravaProfile(req, res, next) {
               "Error with strava - try again or logging with username/password";
             return next();
           }
-          console.log(`strava Profile Aquired !!`);
-          let stravaData = JSON.parse(body);
-          res.locals.user = {
-            avatar: stravaData.profile,
-            firstname: stravaData.firstname,
-            lastname: stravaData.lastname
-          };
-          console.log(stravaData);
-          console.log("http Response");
-          //   console.log(httpResponse);
+          console.log(`Status:${httpResponse.statusCode}`);
+          if (httpResponse.statusCode === 401) { // access token expired - refresh it
+            res.clearCookie("stravajwt");
+            loadStravaProfile(req,res,next);
+            return;
+            request.post({
+              url:"https://www.strava.com/oauth/token",
+              body: {
+                client_id: config.client_id,
+                client_secret: config.client_secret,
+                grant_type: "refresh_token",
+                refresh_token: res.locals.refreshToken
+              }
+            },function(err,httpResponse,body){
+              if (err) {
+                console.log(`Error with strava auth ${err}`);
+                res.locals.err =
+                  "Error with strava - try again or logging with username/password";
+                return next();
+              }
+              console.log();
+            })
+          } else {
+            console.log(`strava Profile Aquired !!`);
+            let stravaData = JSON.parse(body);
+            res.locals.user = {
+              avatar: stravaData.profile,
+              firstname: stravaData.firstname,
+              lastname: stravaData.lastname
+            };
+            console.log(stravaData);
+            console.log("http Response");
+            //   console.log(httpResponse);
 
-          return next();
+            return next();
+          }
         }
       );
     }
