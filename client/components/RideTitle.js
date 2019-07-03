@@ -15,7 +15,7 @@ const RideTitle = (props) => {
   }
 
   return (
-    <div className="activityTitle">
+    <div className="activityTitle" id={`ride${id}`} >
       <span target="_blank" className={lineStyle}
         onClick={e => props.highlightTitle(e, id)}  >
         {props.num}: {props.name}

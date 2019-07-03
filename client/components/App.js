@@ -74,6 +74,9 @@ class App extends Component {
     let activities = this.state.activities;
     activities.forEach(activity => {
       if (activity.id === id) {
+        console.log(`scroll to ${id}`);
+        let element = document.getElementById(`ride${id}`);
+        element.scrollIntoView();
         activity.selected = this.selectedActivity.selected;
         activity.color = this.selectedActivity.color;
         activity.zIndex = this.selectedActivity.zIndex;
@@ -132,13 +135,13 @@ class App extends Component {
       let epochDate = this.dateToEpoch(this.state.beforeDate);
       beforeDate = `before=${epochDate}`;
     } else {
-      beforeDate = `before=${9999999999}`; 
+      beforeDate = `before=${9999999999}`;
     }
     if (this.state.afterDate) {
       let epochDate = this.dateToEpoch(this.state.afterDate);
       afterDate = `after=${epochDate}`;
     } else {
-      afterDate = `after=${0}`; 
+      afterDate = `after=${0}`;
     }
 
     const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&`;
@@ -228,25 +231,24 @@ class App extends Component {
           <div id="mapControls">
             {this.state.currentUser.firstname === null ? (
               // prettier-ignore
-             
-             <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
+
+              <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
               Connect With Strava
             </a>
-           
             ) : (
               <div>
                 Welcome {this.state.currentUser.firstname}
                 <Sidebar
-                getActivities={this.getActivities}
-                toggleBlackground={this.toggleBlackground}
-                activities={this.state.activities}
-                highlightTitle={this.highlightTitle}
-                removeAct={this.removeAct}
-                afterDate={this.state.afterDate}
-                setAfterDate={this.setAfterDate}
-                beforeDate={this.state.beforeDate}
-                setBeforeDate={this.setBeforeDate}
-              />
+                  getActivities={this.getActivities}
+                  toggleBlackground={this.toggleBlackground}
+                  activities={this.state.activities}
+                  highlightTitle={this.highlightTitle}
+                  removeAct={this.removeAct}
+                  afterDate={this.state.afterDate}
+                  setAfterDate={this.setAfterDate}
+                  beforeDate={this.state.beforeDate}
+                  setBeforeDate={this.setBeforeDate}
+                />
               </div>
             )}
           </div>
