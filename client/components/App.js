@@ -74,7 +74,6 @@ class App extends Component {
     let activities = this.state.activities;
     activities.forEach(activity => {
       if (activity.id === id) {
-        console.log(`scroll to ${id}`);
         let element = document.getElementById(`ride${id}`);
         element.scrollIntoView();
         activity.selected = this.selectedActivity.selected;
