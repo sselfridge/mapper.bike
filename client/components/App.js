@@ -33,7 +33,7 @@ class App extends Component {
       clickedLines: [],
       afterDate: new Date("Mon Apr 01 2019 00:00:00 GMT-0700"),
       beforeDate: new Date("Wed Apr 10 2019 00:00:00 GMT-0700"),
-      activityType: "",
+      activityType: "Ride",
       selectedStrokeWeight: 6,
       defaultStrokeWeight: 2,
       currentUser: {
