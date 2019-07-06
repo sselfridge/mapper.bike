@@ -106,9 +106,9 @@ class App extends Component {
     this.setState({ blackgroundActive: blackground });
   }
 
-  highlightTitle(e, id) {
+  highlightTitle(e, id,startLatLng) {
     this.selectActivity(id);
-    const center = { lat: 56.943, lng: -40.155 };
+    const center = { lat: startLatLng[0], lng: startLatLng[1] };
     this.setState({ center });
   }
 

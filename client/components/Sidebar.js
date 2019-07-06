@@ -31,6 +31,7 @@ const Sidebar = props => {
           selected={activity.selected}
           highlightTitle={props.highlightTitle}
           removeAct={props.removeAct}
+          startLatLng = {activity.startLatLng}
           num={index + 1}
         />
       );
