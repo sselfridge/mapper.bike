@@ -24,7 +24,7 @@ class App extends Component {
         height: "900px",
         position: "static"
       },
-      showingInfoWindow: false,
+      loadingActivites: false,
       activeMarker: {},
       selectedPlace: {},
       polyLineArray: [],
@@ -39,6 +39,10 @@ class App extends Component {
         avatar: null,
         firstname: null,
         lastname: null
+      },
+      center: {
+        lat: null,
+        lang: null
       }
     };
 
@@ -104,6 +108,8 @@ class App extends Component {
 
   highlightTitle(e, id) {
     this.selectActivity(id);
+    const center = { lat: 56.943, lng: -40.155 };
+    this.setState({ center });
   }
 
   removeAct(e, id) {
@@ -128,6 +134,7 @@ class App extends Component {
 
   getActivities() {
     console.log("getting activities!!!");
+    this.setState({ loadingActivites: true });
     let beforeDate = "";
     let afterDate = "";
     if (this.state.beforeDate) {
@@ -148,7 +155,7 @@ class App extends Component {
     axios.get(quereyString).then(res => {
       // console.log(res.data);
       // let linePoints = res.data.pop();
-      this.setState({ activities: res.data });
+      this.setState({ activities: res.data, loadingActivites: false });
       console.log(this.state.activities);
       // this.addNewLines();
     });
@@ -179,6 +186,8 @@ class App extends Component {
   render() {
     const activities = this.state.activities;
     const polyLineArray = [];
+
+
 
     //create poly line components to add
     console.log("Activities:");
@@ -247,6 +256,7 @@ class App extends Component {
                   setAfterDate={this.setAfterDate}
                   beforeDate={this.state.beforeDate}
                   setBeforeDate={this.setBeforeDate}
+                  loadingActivites={this.state.loadingActivites}
                 />
               </div>
             )}
@@ -258,6 +268,7 @@ class App extends Component {
               google={this.props.google}
               zoom={11}
               mapTypeId="satellite"
+              center={this.state.center}
               initialCenter={{
                 lat: 33.945602,
                 lng: -118.483297

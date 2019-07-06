@@ -71,7 +71,7 @@ function setStravaOauth(req, res, next) {
         althleteID: bodyArray[3]
       };
 
-      let jwt = jwtoken.sign(payload, secretSuperKey, { expiresIn: "2d" });
+      let jwt = jwtoken.sign(payload, secretSuperKey, { expiresIn: "6h" });
       res.cookie("stravajwt", jwt, { httpOnly: true });
       return next();
     }
@@ -109,11 +109,11 @@ function loadStravaProfile(req, res, next) {
             return next();
           }
           console.log(`Status:${httpResponse.statusCode}`);
-          if (httpResponse.statusCode === 401) { // access token expired - refresh it
+          if (httpResponse.statusCode === 401 ) { // access token expired - refresh it
             res.clearCookie("stravajwt");
-            loadStravaProfile(req,res,next);
+            next();
             return;
-            request.post({
+            request.post({  // TODO - refresh access token behind the scenes
               url:"https://www.strava.com/oauth/token",
               body: {
                 client_id: config.client_id,

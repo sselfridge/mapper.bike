@@ -82,3 +82,7 @@ a.button {
     background-color: orange;
     float: right;
 }
+
+.loadingActivites{
+    z-index: 50;
+}
