@@ -77,7 +77,8 @@ app.get("/api/strava/callback", stravaController.setStravaOauth, (req, res) => {
     console.log(res.locals.err);
     res.status(523).send("Error with Oauth");
   }
-  res.redirect("http://localhost:8080"); //TODO: ENV needed
+  res.redirect("https://justtryingtotestmydamnmap.localtunnel.me"); //TODO: ENV needed
+  // res.redirect("https://localhost:8080"); //TODO: ENV needed
 });
 
 app.get(
