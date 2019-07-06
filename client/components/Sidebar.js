@@ -42,14 +42,20 @@ const Sidebar = props => {
   return (
     <div id="sidebar">
       <div>
+        <span>Date Range:</span>
         <div id="afterDatePicker">
           <DatePicker onChange={props.setAfterDate} value={props.afterDate} />
         </div>
         <div id="beforeDatePicker">
           <DatePicker onChange={props.setBeforeDate} value={props.beforeDate} />
         </div>
+        <select onChange={props.setActivityType}>
+          <option value="Ride">Ride Only</option>
+          <option value="all">All Activities</option>
+        </select>
+        <br></br>
         <button onClick={props.getActivities}>Get Activities</button>
-        <button onClick={props.toggleBlackground}>Secret Feature</button>
+        <button onClick={props.toggleBlackground}>Hide Map Background</button>
         <input className="zipinput" type="text" placeholder="Center on Zip Code" onKeyDown={props.centerOnZip}></input>
         
       </div>

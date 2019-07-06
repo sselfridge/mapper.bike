@@ -109,27 +109,32 @@ function loadStravaProfile(req, res, next) {
             return next();
           }
           console.log(`Status:${httpResponse.statusCode}`);
-          if (httpResponse.statusCode === 401 ) { // access token expired - refresh it
+          if (httpResponse.statusCode === 401) {
+            // access token expired - refresh it
             res.clearCookie("stravajwt");
             next();
             return;
-            request.post({  // TODO - refresh access token behind the scenes
-              url:"https://www.strava.com/oauth/token",
-              body: {
-                client_id: config.client_id,
-                client_secret: config.client_secret,
-                grant_type: "refresh_token",
-                refresh_token: res.locals.refreshToken
+            request.post(
+              {
+                // TODO - refresh access token behind the scenes
+                url: "https://www.strava.com/oauth/token",
+                body: {
+                  client_id: config.client_id,
+                  client_secret: config.client_secret,
+                  grant_type: "refresh_token",
+                  refresh_token: res.locals.refreshToken
+                }
+              },
+              function(err, httpResponse, body) {
+                if (err) {
+                  console.log(`Error with strava auth ${err}`);
+                  res.locals.err =
+                    "Error with strava - try again or logging with username/password";
+                  return next();
+                }
+                console.log();
               }
-            },function(err,httpResponse,body){
-              if (err) {
-                console.log(`Error with strava auth ${err}`);
-                res.locals.err =
-                  "Error with strava - try again or logging with username/password";
-                return next();
-              }
-              console.log();
-            })
+            );
           } else {
             console.log(`strava Profile Aquired !!`);
             let stravaData = JSON.parse(body);
@@ -276,7 +281,7 @@ function getDummydata(file = "stockData") {
   return cleanUpStravaData(stravaData);
 }
 
-function cleanUpStravaData(stravaData) {
+function cleanUpStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
   stravaData.forEach(element => {
@@ -298,7 +303,12 @@ function cleanUpStravaData(stravaData) {
         let err = putActivityinDB(newActivity);
         if (err) console.error("Error with DB stuff", err);
       }
-      activities.push(newActivity);
+      if (activityType === "Ride") {
+        element
+        if (element.type === "Ride") activities.push(newActivity);
+      } else {
+        activities.push(newActivity);
+      }
     }
   });
   return activities;
@@ -317,6 +327,8 @@ function makeEpochSecondsTime(string) {
 function getActivities(req, res, next) {
   after = req.query.after;
   before = req.query.before;
+  activityType = req.query.type;
+  console.log(`Type:${activityType}`);
   needToPingStrava = true;
 
   //swap if after is later than before
@@ -331,7 +343,7 @@ function getActivities(req, res, next) {
     .then(pingStrava)
     .then(result => {
       console.log(`Cleaning up from ping strava ${result.length}`);
-      result = cleanUpStravaData(result);
+      result = cleanUpStravaData(result, activityType);
       result = result.concat(activities);
       console.log(`Resolving DB promise result Length: ${result.length}`);
 

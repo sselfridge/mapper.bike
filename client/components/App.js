@@ -33,6 +33,7 @@ class App extends Component {
       clickedLines: [],
       afterDate: new Date("Mon Apr 01 2019 00:00:00 GMT-0700"),
       beforeDate: new Date("Wed Apr 10 2019 00:00:00 GMT-0700"),
+      activityType: "",
       selectedStrokeWeight: 6,
       defaultStrokeWeight: 2,
       currentUser: {
@@ -71,6 +72,7 @@ class App extends Component {
     this.toggleBlackground = this.toggleBlackground.bind(this);
     this.setAfterDate = this.setAfterDate.bind(this);
     this.setBeforeDate = this.setBeforeDate.bind(this);
+    this.setActivityType = this.setActivityType.bind(this);
     this.centerOnZip = this.centerOnZip.bind(this);
   }
 
@@ -138,6 +140,7 @@ class App extends Component {
     this.setState({ loadingActivites: true });
     let beforeDate = "";
     let afterDate = "";
+    let activityType = "type=''";
     if (this.state.beforeDate) {
       let epochDate = this.dateToEpoch(this.state.beforeDate);
       beforeDate = `before=${epochDate}`;
@@ -150,8 +153,10 @@ class App extends Component {
     } else {
       afterDate = `after=${0}`;
     }
-
-    const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&`;
+    if (this.state.activityType !== "") {
+      activityType = `type=${this.state.activityType}`;
+    }
+    const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&${activityType}`;
 
     axios.get(quereyString).then(res => {
       // console.log(res.data);
@@ -169,7 +174,10 @@ class App extends Component {
     console.log(`New Before Date ${newDate}`);
     this.setState({ beforeDate: newDate });
   }
-
+  setActivityType(e) {
+    console.log(e.target.value);
+    this.setState({ activityType: e.target.value });
+  }
   centerOnZip(e) {
     if (e.key == "Enter") {
       if (!/^\d{5}/.test(e.target.value)) return; //only query if zip is 5 numbers
@@ -251,6 +259,7 @@ class App extends Component {
                 setAfterDate={this.setAfterDate}
                 beforeDate={this.state.beforeDate}
                 setBeforeDate={this.setBeforeDate}
+                setActivityType={this.setActivityType}
                 loadingActivites={this.state.loadingActivites}
                 centerOnZip={this.centerOnZip}
               />
