@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 
 const RideTitle = props => {
   const { name, id, selected, removeAct, num, startLatLng } = props;
-  let selectedStyle, removeLink, rideLink, lineBreak;
+  let removeLink, rideLink, lineBreak;
+  let selectedStyle = "";
   let stravaLink = `https://www.strava.com/activities/${id}`;
 
   if (props.selected == true) {
@@ -14,9 +15,9 @@ const RideTitle = props => {
       </a>
     );
     removeLink = (
-      <button className="removeLink" onClick={e => props.removeAct(e, id)}>
-        Remove
-      </button>
+      <a className="removeLink button" onClick={e => props.removeAct(e, id)}>
+        Remove from map
+      </a>
     );
     lineBreak = <br />;
   }

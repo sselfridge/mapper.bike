@@ -61,8 +61,9 @@ app.get(
 );
 
 app.get("/api/getLatLngZip/:zip", (req, res) => {
-  if (!/^\d{5}/.test(req.params.zip)){ res.status(444).send("Only 5 numberic zips allowed");return} //only query if zip is 5 numbers
+  if (!/^\d{5}/.test(req.params.zip)){ res.status(400).send("Only 5 numberic zips allowed");return} //only query if zip is 5 numbers
   const latlng = zip(req.params.zip);
+  if(latlng === null){ res.status(400).send(`Invalid zipcode: ${req.params.zip}`);return}
   const center = {
     lat: latlng[0],
     lng: latlng[1]

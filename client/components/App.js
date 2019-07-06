@@ -194,7 +194,6 @@ class App extends Component {
     const polyLineArray = [];
 
     //create poly line components to add
-    console.log("Activities:");
     activities.forEach((activity, index) => {
       let id = activity.id;
       // console.log(`Adding line: ${id}`);
