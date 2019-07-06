@@ -71,6 +71,7 @@ class App extends Component {
     this.toggleBlackground = this.toggleBlackground.bind(this);
     this.setAfterDate = this.setAfterDate.bind(this);
     this.setBeforeDate = this.setBeforeDate.bind(this);
+    this.centerOnZip = this.centerOnZip.bind(this);
   }
 
   //used by clicking a line in the map or hovering over it on the side
@@ -106,7 +107,7 @@ class App extends Component {
     this.setState({ blackgroundActive: blackground });
   }
 
-  highlightTitle(e, id,startLatLng) {
+  highlightTitle(e, id, startLatLng) {
     this.selectActivity(id);
     const center = { lat: startLatLng[0], lng: startLatLng[1] };
     this.setState({ center });
@@ -156,7 +157,7 @@ class App extends Component {
       // console.log(res.data);
       // let linePoints = res.data.pop();
       this.setState({ activities: res.data, loadingActivites: false });
-      console.log(this.state.activities);
+      // console.log(this.state.activities);
       // this.addNewLines();
     });
   }
@@ -165,33 +166,35 @@ class App extends Component {
     this.setState({ afterDate: newDate });
   }
   setBeforeDate(newDate) {
-    console.log(newDate);
+    console.log(`New Before Date ${newDate}`);
     this.setState({ beforeDate: newDate });
+  }
+
+  centerOnZip(e) {
+    if (e.key == "Enter") {
+      if (!/^\d{5}/.test(e.target.value)) return; //only query if zip is 5 numbers
+      axios.get(`/api/getLatLngZip/${e.target.value}`).then(res => {
+        if (res.data) {
+          this.setState({ center: res.data });
+        }
+      });
+    }
   }
 
   componentWillMount() {
     axios.get(`/api/getStravaUser`).then(res => {
-      console.log(`User Response`);
       if (res.status === 200) {
-        console.log(res.data);
         this.setState({ currentUser: res.data });
       }
     });
-  }
-
-  componentWillUpdate() {
-    console.log(`Will Update`);
   }
 
   render() {
     const activities = this.state.activities;
     const polyLineArray = [];
 
-
-
     //create poly line components to add
     console.log("Activities:");
-    console.log(activities);
     activities.forEach((activity, index) => {
       let id = activity.id;
       // console.log(`Adding line: ${id}`);
@@ -227,60 +230,53 @@ class App extends Component {
       />
     );
 
-    if (!this.props.loaded) {
-      return (
-        <div id="container">
-          <div id="board">Get Activities to fill map</div>
-        </div>
-      );
-    } else {
-      return (
-        <div id="container">
-          <div id="mapControls">
-            {this.state.currentUser.firstname === null ? (
-              // prettier-ignore
+    return (
+      <div id="container">
+        <div id="mapControls">
+          {this.state.currentUser.firstname === null ? (
+            // prettier-ignore
 
-              <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
+            <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
               Connect With Strava
             </a>
-            ) : (
-              <div>
-                Welcome {this.state.currentUser.firstname}
-                <Sidebar
-                  getActivities={this.getActivities}
-                  toggleBlackground={this.toggleBlackground}
-                  activities={this.state.activities}
-                  highlightTitle={this.highlightTitle}
-                  removeAct={this.removeAct}
-                  afterDate={this.state.afterDate}
-                  setAfterDate={this.setAfterDate}
-                  beforeDate={this.state.beforeDate}
-                  setBeforeDate={this.setBeforeDate}
-                  loadingActivites={this.state.loadingActivites}
-                />
-              </div>
-            )}
-          </div>
-
-          <div id="board">
-            <Map
-              style={this.state.mapStyles}
-              google={this.props.google}
-              zoom={11}
-              mapTypeId="satellite"
-              center={this.state.center}
-              initialCenter={{
-                lat: 33.945602,
-                lng: -118.483297
-              }}
-            >
-              {blackground}
-              {polyLineArray}
-            </Map>
-          </div>
+          ) : (
+            <div>
+              Welcome {this.state.currentUser.firstname}
+              <Sidebar
+                getActivities={this.getActivities}
+                toggleBlackground={this.toggleBlackground}
+                activities={this.state.activities}
+                highlightTitle={this.highlightTitle}
+                removeAct={this.removeAct}
+                afterDate={this.state.afterDate}
+                setAfterDate={this.setAfterDate}
+                beforeDate={this.state.beforeDate}
+                setBeforeDate={this.setBeforeDate}
+                loadingActivites={this.state.loadingActivites}
+                centerOnZip={this.centerOnZip}
+              />
+            </div>
+          )}
         </div>
-      );
-    }
+
+        <div id="board">
+          <Map
+            style={this.state.mapStyles}
+            google={this.props.google}
+            zoom={11} //higher number = closer zoom
+            mapTypeId="satellite"
+            center={this.state.center}
+            initialCenter={{
+              lat: 33.945602,
+              lng: -118.483297
+            }}
+          >
+            {blackground}
+            {polyLineArray}
+          </Map>
+        </div>
+      </div>
+    );
   }
 }
 

@@ -4,13 +4,14 @@ const path = require("path");
 const decodePolyline = require("decode-google-map-polyline");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const cookieParser = require('cookie-parser')
+const cookieParser = require("cookie-parser");
 // const passport = require("passport");
 // const StravaStrategy = require("passport-strava-oauth2").Strategy;
 const mongoURI = "mongodb://localhost/meinmap";
 mongoose.connect(mongoURI, { useNewUrlParser: true });
 
 const stravaController = require("./controllers/stravaController");
+const zip = require('../config/zip_lat_lang');
 
 //static poly lines for testing purps
 let polyDroppedTwice =
@@ -19,7 +20,7 @@ let polyHollyWoodNichols =
   "encoEpzeqUCvBDnA?|AFpDBbFAFBVDx@?|ACz@HzD@jCHpE?fBDdCCt@DfEETBFCBE?ELDXBjAJlBI\\DzBAH@x@KjA@JEX@z@NLBJCP?x@Dp@E^?VGFC?M|@@@?VLhBBbA?n@G`@NjBLjDE^BL?VATIX@h@GbEBdAAp@GfBMbCM~FKhDAjBBbGCdDG~B@pUErBCJGHIBi@DkCh@uCt@yAFq@JcFDkANyAHa@F[Je@Vo@fAKXOt@Wn@[`@c@`@Wf@s@x@c@^QFM?eAQ_@K_AM_@MaBa@y@Aw@?wAa@c@Go@FaAXeBNMD}@IoAa@kB?y@Ye@Gs@@eAb@c@FWH_@Dk@Lq@h@MDe@Dq@PUBSCc@a@KOGOLc@f@Sp@EL?JIJCN@`@IXQF]Ay@BMJGPIPB`@b@RJLDTARCLEJQNg@Vo@^S|@ANU@SMo@CGQG_@D_@ZUb@U~@O\\W`@MD_@IKEWU@ABL?Af@J\\CPSp@iBX]`@SRCR?RFDTAVETk@Pa@BOBOHMJKPY`AIRMLO@SAQGQGKSMKMCQDOJIPAXBX?TOPQH}@XUD{@@OHMJMd@AZJRJF~@Bb@G~@UnAs@PGf@QvA[f@QRETAj@H|@^j@FVIVAV@TD`A\\n@@XAp@IfAYfAIX?p@HjAVZDt@@ZBzGlAn@Aj@_@b@w@lBeCLW\\{AL[b@o@TSl@KbBKv@KnBOfBC`EQ~Bc@x@URAdCg@LBZ?\\Dl@AhAJBGCO[EK?KB[?m@CEECB[EM@oGxAc@LYLUFaCLsBHkCBe@JwBTeAPi@POLy@nAWv@Uf@s@|@MHY\\}@jASPUF_@BoASe@McAQ{Aa@}ACq@Qu@Mk@Ag@F_AVaBNm@Gm@Se@IwA?WC_A]k@Ic@BwBf@_AVc@N_@\\SHi@Fu@NWB_@IYWCGAG@SLe@JINBRAD@j@Gx@UNIDEHQD{@BIPMHEH?JDXZTJ`@BVIJGh@wANYTMz@KHEFKH_@CSGMMGYCa@LQLOR{@xBGHWFWCSQQ_@g@uAOWWMM?KBa@TSXG^IpAKZUNWDo@OUOWc@IGKEWGg@DWCSQKWC[@KRcANmBTw@He@@a@Im@Oa@U_@YU[i@Ko@?c@CWCKMSSK]Kc@AWLQRCJEX@f@CZQXOd@AZDp@AXUf@GDODMCKSCKA{@AMSi@]e@OYU}@IMKIME_@CO@MDYX@NGb@GLGHKD]BW^Oh@@RZt@f@b@N\\PzA@^En@K^ILQBOAQGIQC}@EQIMKIKAKFMLOb@u@pCOJUDy@BQFc@Zm@x@eA~AKR_@`AOLQHoBLSCKGKMk@gAu@gAu@sBm@kAUg@YKG@MH[`@GFUD_ABQHYVIXQ|@o@~BEZGJUP]BMCmAm@iBi@QCQBMF]ZU\\s@tASj@Kr@Et@VlB@ZA\\MpCSrAc@`BMl@}@vFGhA?rBGp@Q^k@t@IPKd@?f@PbBBfBLfB?RGf@IPOJ_@B]?MBYT@XCjAKzAGNUZMFc@`@aApAc@v@ELUVKb@PlBDr@F^NR\\BLAVOHMXo@V_@ZOfAWz@KPK\\a@`AeBNQPKTCx@ZPBd@ExBm@z@Q`AGTDNJJRAjADt@?XGXMRc@`@IRITGt@Dt@FXLTNPRJVB`CPf@Hb@NtAbARJTFl@B~ACj@J\\XT^Lj@Pl@LTTRd@PZD\\AZKt@]\\IN@NDVPDPANWlAK~@Mf@i@jAEVATXfABPAb@Sr@]p@Md@MlAGlBG`@GN]f@K`@_@nACb@BRDNJLzAj@ZVFNDf@CPERc@hAGT?VDVJRtAzAVl@Nt@Bt@@rAHv@ZpAn@bBHVHp@Ct@In@IT[b@OJSFuAVkBXcBd@YPGN?h@^xANnA@ZAnADn@bA`DZZjATNHHJHP@TGdBFt@FLz@d@b@`@Xf@\\z@HJXt@NVXLv@Fx@N\\JTTFN@PCPK`@Cp@Jl@~@fBRfAJ`@Zn@~@zAP\\L`@Fr@@vCK`@GLSXoAbA]P_@Ju@LqAGU@}@D}@?g@JSJ{@jAQNi@Tm@LUHQNMZa@n@_@v@OVUVkAt@}@nAk@l@O\\W~Aa@|AQVq@b@QTSZ_@|@QZq@b@w@NwA@YBWLy@v@cAh@YF]?w@I[DUP[r@@ZHXb@~@r@bDF^@^Cb@M^QZg@p@WRYHe@Ds@@OAa@BKRMLs@n@Yf@IZWrAUrBMn@E\\FnGA|G@~@FPHh@`@p@r@j@^h@L\\@JGr@]~@GV?JVZRJRDj@CdB]R?HB\\Nl@r@ZN\\Ft@BPDf@Nb@VNNHPDZ?TCVYrAGb@W`AOZy@lAM`@Ez@JrCKj@Sz@c@~BK\\QV}@z@OV}@rB[`@_@Z[NsBf@SH]VQZOt@Br@NrBKv@GR}@h@KLCRARJbAHjA@rAEZGZKXm@lAo@nB]r@Yr@k@dAGXJdBAn@KfAMj@ATQb@Ed@Bd@Tv@Df@GRWZeA`@SXERGd@Bd@Jb@p@|ADPBRGPi@t@KJGNAd@Bd@PpAbA~DJR^\\r@f@`@b@f@dANr@Hx@B\\?|@A^I\\c@tAOXg@lAy@zA_@fAa@xAMl@Gl@CdAFfALdARdApA`FnAtFdA|DBh@EdCMfDGjCMbCEd@]pBuBlISZWXqAz@U\\ERAR@RZ|AFf@NfCAbAe@nEKxAG`BMr@Uj@a@d@e@b@{@l@MVIXC|@@\\P|BJZJVRTp@j@PVj@~AP\\b@t@fB~BVVhA|@TXP\\L^F`@J`AFdCVhB?h@Qr@e@x@KZOr@Ep@GVa@`ASt@E`A@HLPTRx@^VRl@|@h@|@Ln@GRYrCA\\Db@Rd@h@r@Tf@L`@Jx@Ld@RX^\\Nd@Gj@c@zAOr@W~A_A|BM`@Id@Eh@C~@L|ANn@Tl@LRr@v@pEpC`HrEl@p@z@pALZFVJLPJf@NJFjAvAz@|@|DjD`FxDfC~BHPFl@I|@e@xAYr@IHOd@AXGFCNAICH?FBIDABBFEEMKCIF?FCB@@LC^UH@tCbB`DdBzAdA~AnAtBnBrCfCt@d@z@Z|@J^?\\C\\IvA_@\\E|@CvCHrBLfDJvGF`FPjAA`DIp@Ir@OdAi@xAiA~EsEPWrAgAhJsERO|AcBRQj@]dE{B~@_@x@Sx@MrACvADl@F|AXlFlAvBn@vCbAr@Rx@Lv@Hz@?x@It@Sn@[TORQ\\e@Ta@Tu@BC`@yBRo@DU?WLeALsALu@J[Zq@d@e@`Ai@n@En@DlCv@fB\\dDTl@@vCUlN_BzIo@rN{@fD[nEq@pDu@x@Uv@]lDwB~DuCtBgBvAsAzC_D`BsB?EPOf@y@FUp@m@z@a@bAS~@YhAOVKbAg@hFuDhC_BbCuB~AeArB{AvAqArBwAhDwBdCkB|C{BpAmAhBgBlF{FvAiAnAoA`Au@~EcExAiA~@eAb@o@|@_ArF{EvGqFpA_AbBqAbCqBz@y@pB}AnHeGNI?@BATQxBqBj@c@tBwBlDiCbAaAvLuJfCeC@IDEPCLGxAkAl@a@jG_FXSbAg@FGHW@BVKRQlAmAxAaAdDgCZc@zBgB~BqBb@c@fCoB^[\\c@vF_FbHyFvBcBpAkAfCuBtJ{HrA}@tAiAf@Wf@OfAOPEF?DDJ?RMjCqBpA}@~LcJbG}DnB}ArA}@bA]`Cg@~@]\\StAiAXOJ?JDHJFN`AfETt@H`@`@fARz@Vx@`FlMvAfD~G`Q~AfDJ^^PTNRB\\Q|AcA|F_FvDiClCqBt@o@n@q@d@s@f@cAb@_BT{AZsEJu@Ls@^gAd@aANSjAoAj@g@pA{@tB{AzM_Kf@YjAe@PItAkA`LeI`BuAjBwANKPCLIf@e@BIJS";
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.get("/api/getPath", (req, res) => {
   console.log(`Hitting getPath`);
@@ -39,22 +40,35 @@ app.get("/api/getPath", (req, res) => {
   res.send(JSON.stringify(polyArray));
 });
 
-app.get("/api/getStravaUser",stravaController.loadStravaProfile,(req,res)=>{
-  if(res.locals.err){
-    res.status(444).send("Error during profile fetch")
-    return;
+app.get(
+  "/api/getStravaUser",
+  stravaController.loadStravaProfile,
+  (req, res) => {
+    if (res.locals.err) {
+      res.status(444).send("Error during profile fetch");
+      return;
+    }
+    if (res.locals.user) {
+      //user profile exists send infoback
+      console.log(`User logged in to strava`);
+      res.send(JSON.stringify(res.locals.user));
+      return;
+    }
+    //no user logged in
+    console.log(`User not logged in to strava`);
+    res.status(201).send("User Not logged in");
   }
-  if(res.locals.user){ //user profile exists send infoback
-    console.log(`User logged in to strava`);
-    res.send(JSON.stringify(res.locals.user))
-    return;
+);
+
+app.get("/api/getLatLngZip/:zip", (req, res) => {
+  if (!/^\d{5}/.test(req.params.zip)){ res.status(444).send("Only 5 numberic zips allowed");return} //only query if zip is 5 numbers
+  const latlng = zip(req.params.zip);
+  const center = {
+    lat: latlng[0],
+    lng: latlng[1]
   }
-  //no user logged in
-  console.log(`User not logged in to strava`);
-  res.status(201).send("User Not logged in")
-
-})
-
+  res.json(center)
+});
 
 app.get("/api/strava/callback", stravaController.setStravaOauth, (req, res) => {
   console.log(`Strava CallBack Happening`);
@@ -62,7 +76,7 @@ app.get("/api/strava/callback", stravaController.setStravaOauth, (req, res) => {
     console.log(res.locals.err);
     res.status(523).send("Error with Oauth");
   }
-  res.redirect("http://localhost:8080");  //TODO: ENV needed
+  res.redirect("http://localhost:8080"); //TODO: ENV needed
 });
 
 app.get(

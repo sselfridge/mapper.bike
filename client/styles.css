@@ -68,7 +68,7 @@ a.button {
     margin: 4px;
     color: white;
     background-color: orange;
-    float: right;
+    /* float: right; */
 }
 
 .removeLink {
@@ -83,6 +83,7 @@ a.button {
     float: right;
 }
 
-.loadingActivites{
-    z-index: 50;
+.zipinput{
+    font-size: 18px;
+    margin-left: 10px;
 }

@@ -50,6 +50,8 @@ const Sidebar = props => {
         </div>
         <button onClick={props.getActivities}>Get Activities</button>
         <button onClick={props.toggleBlackground}>Secret Feature</button>
+        <input className="zipinput" type="text" placeholder="Center on Zip Code" onKeyDown={props.centerOnZip}></input>
+        
       </div>
       {loadingActivites}
       <div>
