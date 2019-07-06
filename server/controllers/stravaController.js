@@ -298,11 +298,11 @@ function cleanUpStravaData(stravaData, activityType) {
 
     if (newActivity.line) {
       //only grab activities with a polyline
-      if (!dbSet.has(newActivity.id)) {
-        dbSet.add(newActivity.id);
-        let err = putActivityinDB(newActivity);
-        if (err) console.error("Error with DB stuff", err);
-      }
+      // if (!dbSet.has(newActivity.id)) { //TODO re-introduce DB stuffs
+      //   dbSet.add(newActivity.id);
+      //   let err = putActivityinDB(newActivity);
+      //   if (err) console.error("Error with DB stuff", err);
+      // }
       if (activityType === "Ride") {
         element
         if (element.type === "Ride") activities.push(newActivity);

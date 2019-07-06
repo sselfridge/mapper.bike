@@ -7,8 +7,8 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 // const passport = require("passport");
 // const StravaStrategy = require("passport-strava-oauth2").Strategy;
-const mongoURI = "mongodb://localhost/meinmap";
-mongoose.connect(mongoURI, { useNewUrlParser: true });
+// const mongoURI = "mongodb://localhost/meinmap";
+// mongoose.connect(mongoURI, { useNewUrlParser: true });
 
 const stravaController = require("./controllers/stravaController");
 const zip = require('../config/zip_lat_lang');
