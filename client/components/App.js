@@ -31,8 +31,8 @@ class App extends Component {
       currentLine: null,
       activities: [],
       clickedLines: [],
-      afterDate: new Date("Mon Apr 01 2019 00:00:00 GMT-0700"),
-      beforeDate: new Date("Wed Apr 10 2019 00:00:00 GMT-0700"),
+      beforeDate: new Date(),
+      afterDate: new Date(),
       activityType: "Ride",
       selectedStrokeWeight: 6,
       defaultStrokeWeight: 2,
@@ -195,6 +195,9 @@ class App extends Component {
         this.setState({ currentUser: res.data });
       }
     });
+    const afterDate = new Date();
+    afterDate.setMonth(afterDate.getMonth() - 1);
+    this.setState({ afterDate });
   }
 
   render() {
