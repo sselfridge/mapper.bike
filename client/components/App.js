@@ -243,7 +243,7 @@ class App extends Component {
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
 
-            <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=http://192.168.86.23:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
+            <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=https://justtryingtotestmydamnmap.localtunnel.me/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
               Connect With Strava
             </a>
           ) : (
