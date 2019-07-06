@@ -280,6 +280,7 @@ function cleanUpStravaData(stravaData) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
   stravaData.forEach(element => {
+    //see config/dataNotes.js for element data types
     const newActivity = {};
     newActivity.id = element.id;
     newActivity.name = element.name;
@@ -288,6 +289,7 @@ function cleanUpStravaData(stravaData) {
     newActivity.selected = false;
     newActivity.weight = 2;
     newActivity.color = "blue";
+    newActivity.startLatLng = element.start_latlng;
 
     if (newActivity.line) {
       //only grab activities with a polyline
