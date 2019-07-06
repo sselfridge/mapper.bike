@@ -73,6 +73,7 @@ a.button {
     padding: 10 20;
     display: inline-block;
     cursor: pointer;
+    font-size: 12px;
 
 }
 
