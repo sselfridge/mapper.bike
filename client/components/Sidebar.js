@@ -5,8 +5,6 @@ import DatePicker from "react-date-picker";
 import ReactLoading from "react-loading";
 
 const Sidebar = props => {
-  // let link = 'https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=http://localhost:3000/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read'
-
   const loadingActivites = props.loadingActivites ? (
     <div className="loadingActivites">
       <ReactLoading
