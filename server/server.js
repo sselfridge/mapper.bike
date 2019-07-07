@@ -122,7 +122,7 @@ app.use((err, req, res, next) => {
 });
 
 function heartbeat() {
-  console.log("Heartbeat");
+  // console.log("Heartbeat");
   if (Date.now() - heartbeatLast > heartbeatFreq) {
     heartbeatLast = Date.now();
     console.log(`Server Running: ${Date.now()}`);
