@@ -51,11 +51,11 @@ function setStravaOauth(req, res, next) {
       }
       tokenRegex = /refresh_token":"([^"]+).*access_token":"([^"]+).*"athlete":{"id":(\d+)/;
       bodyArray = tokenRegex.exec(body);
-      console.log(`body`);
-      console.log(body);
-      console.log(`Refresh Token: ${bodyArray[1]}`);
-      console.log(`accessToken: ${bodyArray[2]}`);
-      console.log(`Athlete Number: ${bodyArray[3]}`);
+      // console.log(`body`);
+      // console.log(body);
+      // console.log(`Refresh Token: ${bodyArray[1]}`);
+      // console.log(`accessToken: ${bodyArray[2]}`);
+      // console.log(`Athlete Number: ${bodyArray[3]}`);
       // "{"token_type":"Bearer","access_token":"adaa94e12ea9e8d3c85ea3cd6932a7ff833b3f30",
       // "athlete":{"id":1075670,"username":"sirclesam","resource_state":2,"firstname":"Sam "
       // ,"lastname":"Wise | LG","city":"Los Angeles","state":"California",
@@ -79,7 +79,7 @@ function setStravaOauth(req, res, next) {
 }
 
 function loadStravaProfile(req, res, next) {
-  console.log("Starting Strava Profile");
+  // console.log("Starting Strava Profile");
   let hubCookie = req.cookies.stravajwt;
 
   jwtoken.verify(hubCookie, secretSuperKey, (err, payload) => {
@@ -88,9 +88,9 @@ function loadStravaProfile(req, res, next) {
       res.locals.err = "Strava token invalid";
     } else {
       console.log(
-        `Session Valid - allow to proceed. User: ${payload.accessToken}`
+        `Session Valid - allow to proceed. User: ${payload.althleteID}`
       );
-      console.log(payload);
+      // console.log(payload);
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
       res.locals.althleteID = payload.althleteID;
@@ -143,9 +143,7 @@ function loadStravaProfile(req, res, next) {
               firstname: stravaData.firstname,
               lastname: stravaData.lastname
             };
-            console.log(stravaData);
-            console.log("http Response");
-            //   console.log(httpResponse);
+            console.log(`----@@@@---------------${stravaData.firstname} ${stravaData.lastname}-----------------------------`);
 
             return next();
           }
