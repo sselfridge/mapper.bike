@@ -125,7 +125,8 @@ function heartbeat() {
   // console.log("Heartbeat");
   if (Date.now() - heartbeatLast > heartbeatFreq) {
     heartbeatLast = Date.now();
-    console.log(`Server Running: ${Date.now()}`);
+    const date = new Date();
+    console.log(`Server Running: ${date.getMonth} - ${date.getHours}:${date.getMinutes}`);
   }
 
   setTimeout(heartbeat, 10000);
