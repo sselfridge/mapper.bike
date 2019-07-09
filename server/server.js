@@ -3,10 +3,9 @@ const app = express();
 const path = require("path");
 const decodePolyline = require("decode-google-map-polyline");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-// const passport = require("passport");
-// const StravaStrategy = require("passport-strava-oauth2").Strategy;
+const mongoose = require("mongoose");
+
 // const mongoURI = "mongodb://localhost/meinmap";
 // mongoose.connect(mongoURI, { useNewUrlParser: true });
 
@@ -14,6 +13,8 @@ const stravaController = require("./controllers/stravaController");
 const zip = require("../config/zip_lat_lang");
 const heartbeatFreq = 1000 * 60 * 5; //milliseconds to minutes.
 let heartbeatLast = Date.now();
+
+const config = require('../config/keys')
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -85,8 +86,8 @@ app.get("/api/strava/callback", stravaController.setStravaOauth, (req, res) => {
     console.log(res.locals.err);
     res.status(523).send("Error with Oauth");
   }
-  res.redirect("https://justtryingtotestmydamnmap.localtunnel.me"); //TODO: ENV needed
-  // res.redirect("https://localhost:8080"); //TODO: ENV needed
+  // res.redirect("https://justtryingtotestmydamnmap.localtunnel.me"); //TODO: ENV needed
+  res.redirect(config.redirect_url); //TODO: ENV needed
 });
 
 app.get(
