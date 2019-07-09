@@ -1,15 +1,29 @@
-keys ={
-    client_id: '' ,
-    client_secret: '',
-    access_token: '',
-    refresh_token: '',
+const env = process.env.NODE_ENV;
 
+console.log(`ENV:${env}`);
 
-    //jwt token
-    secretSuperKey: '',
+prodKeys = {
+  client_id: "",
+  client_secret: "",
+  callback_uri: "",
+  redirect_url: "",
+  //jwt token
+  secretSuperKey: "",
 
+  mapsApi: ""
+};
 
-    mapsApi: ''
-}
+devKeys = {
+  client_id: "",
+  client_secret: " ",
+  callback_uri: "",
+  redirect_url: "",
+  //jwt token
+  secretSuperKey: "",
+
+  mapsApi: ""
+};
+
+const keys = env === "production" ? prodKeys : devKeys;
 
 module.exports = keys;
