@@ -113,7 +113,7 @@ if (process.env.NODE_ENV === "production") {
 
 app.use("*", (req, res) => {
   console.log("HIT THE CATCH ALLL");
-  res.send("BROKEN");
+  res.send("404 - that did not go well");
 });
 
 app.use((err, req, res, next) => {
@@ -129,11 +129,9 @@ function heartbeat() {
     const date = new Date();
     console.log(`Heartbeat: ${date.getMonth()} - ${date.getHours()}:${date.getMinutes()}`);
   }
-
-  setTimeout(heartbeat, 10000);
 }
 
-heartbeat();
+setInterval(heartbeat,10000);
 
 app.listen(3000); //listens on port 3000 -> http://localhost:3000/
 console.log(`Listening on Port 3000`);
