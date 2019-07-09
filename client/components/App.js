@@ -11,6 +11,8 @@ import Sidebar from "./Sidebar";
 import config from "../../config/keys";
 import axios from "axios";
 
+
+
 //functions go here
 
 class App extends Component {
@@ -246,7 +248,7 @@ class App extends Component {
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
 
-            <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=https://justtryingtotestmydamnmap.localtunnel.me/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
+            <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
               Connect With Strava
             </a>
           ) : (
