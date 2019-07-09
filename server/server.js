@@ -12,7 +12,7 @@ const cookieParser = require("cookie-parser");
 
 const stravaController = require("./controllers/stravaController");
 const zip = require("../config/zip_lat_lang");
-const heartbeatFreq = 1000 * 60 * 15;
+const heartbeatFreq = 1000 * 60 * 5; //milliseconds to minutes.
 let heartbeatLast = Date.now();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -126,7 +126,7 @@ function heartbeat() {
   if (Date.now() - heartbeatLast > heartbeatFreq) {
     heartbeatLast = Date.now();
     const date = new Date();
-    console.log(`Server Running: ${date.getMonth} - ${date.getHours}:${date.getMinutes}`);
+    console.log(`Heartbeat: ${date.getMonth()} - ${date.getHours()}:${date.getMinutes()}`);
   }
 
   setTimeout(heartbeat, 10000);
