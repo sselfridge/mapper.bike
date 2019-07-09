@@ -127,7 +127,7 @@ function heartbeat() {
   if (Date.now() - heartbeatLast > heartbeatFreq) {
     heartbeatLast = Date.now();
     const date = new Date();
-    console.log(`Heartbeat: ${date.getMonth()} - ${date.getHours()}:${date.getMinutes()}`);
+    console.log(`Heartbeat: ${date.getMonth() + 1}/${date.getDate} - ${date.getHours()}:${date.getMinutes()}`);
   }
 }
 
