@@ -20,7 +20,7 @@ class App extends Component {
       blackgroundActive: false,
       google: null,
       mapStyles: {
-        width: "1200px",
+        width: "1250px",
         height: "900px",
         position: "static"
       },
@@ -44,7 +44,8 @@ class App extends Component {
       center: {
         lat: null,
         lang: null
-      }
+      },
+      flashMessage: ""
     };
 
     this.selectedActivity = {
@@ -74,6 +75,7 @@ class App extends Component {
     this.setBeforeDate = this.setBeforeDate.bind(this);
     this.setActivityType = this.setActivityType.bind(this);
     this.centerOnZip = this.centerOnZip.bind(this);
+    this.flashMessage = this.flashMessage.bind(this);
   }
 
   //used by clicking a line in the map or hovering over it on the side
@@ -180,13 +182,30 @@ class App extends Component {
   }
   centerOnZip(e) {
     if (e.key == "Enter") {
-      if (!/^\d{5}/.test(e.target.value)) return; //only query if zip is 5 numbers
-      axios.get(`/api/getLatLngZip/${e.target.value}`).then(res => {
-        if (res.data) {
-          this.setState({ center: res.data });
-        }
-      });
+      if (!/^\d{5}/.test(e.target.value)) {
+        this.flashMessage("5 Digit US zipcodes only");
+        return;
+      } //only query if zip is 5 numbers
+      axios
+        .get(`/api/getLatLngZip/${e.target.value}`)
+        .then(res => {
+          if (res.data) {
+            this.setState({ center: res.data });
+          }
+        })
+        .catch(err => {
+          this.flashMessage("5 Digit US zipcodes only");
+        });
     }
+  }
+
+  flashMessage(message, type) {
+    const flashMessage = message;
+    this.setState({ flashMessage });
+
+    setTimeout(() => {
+      this.setState({ flashMessage: "" });
+    }, 5000);
   }
 
   componentWillMount() {
@@ -266,6 +285,7 @@ class App extends Component {
                 setActivityType={this.setActivityType}
                 loadingActivites={this.state.loadingActivites}
                 centerOnZip={this.centerOnZip}
+                flashMessage={this.state.flashMessage}
               />
             </div>
           )}

@@ -18,6 +18,12 @@ const Sidebar = props => {
     <></>
   );
 
+  const flashMessage = props.flashMessage ? (
+    <div id="flashMessage">{props.flashMessage}</div>
+  ) : (
+    <></>
+  );
+
   const titleArray = [];
   if (props.activities) {
     props.activities.forEach((activity, index) => {
@@ -29,7 +35,7 @@ const Sidebar = props => {
           selected={activity.selected}
           highlightTitle={props.highlightTitle}
           removeAct={props.removeAct}
-          startLatLng = {activity.startLatLng}
+          startLatLng={activity.startLatLng}
           num={index + 1}
         />
       );
@@ -51,11 +57,16 @@ const Sidebar = props => {
           <option value="Ride">Ride Only</option>
           <option value="all">All Activities</option>
         </select>
-        <br></br>
+        <br />
         <button onClick={props.getActivities}>Get Activities</button>
         <button onClick={props.toggleBlackground}>Hide Map Background</button>
-        <input className="zipinput" type="text" placeholder="Center on Zip Code" onKeyDown={props.centerOnZip}></input>
-        
+        <input
+          className="zipinput"
+          type="text"
+          placeholder="Center on Zip Code"
+          onKeyDown={props.centerOnZip}
+        />
+        {flashMessage}
       </div>
       {loadingActivites}
       <div>
