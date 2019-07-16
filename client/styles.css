@@ -2,16 +2,38 @@ body {
     background: #ACCEEC;
 }
 
+button {
+    padding: 10 20;
+    border-radius: 10px;
+    margin: 4px;
+}
+
+a.button {
+    padding: 10 20;
+    border-radius: 10px;
+    margin: 4px;
+    color: white;
+}
+
+/* IDs */
+
+#board {
+    width: 1200px;
+    height: 900px;
+    padding: 40px 350px;
+}
+
+#flashMessage {
+    padding: 10px;
+    margin-left: 50px;
+    font-size: 18px;
+    color: red;
+    font-weight: 800;
+}
+
 #mapControls {
     height: 100vh;
     float: left;
-}
-
-#board {
-    /* width: 1200px;
-    height: 900px; */
-    background: gray;
-    margin: 40px 350px;
 }
 
 #sidebar {
@@ -23,6 +45,16 @@ body {
 #titleList {
     height: 650px;
     overflow-y: scroll;
+}
+
+/* Classes */
+
+.activityTitle {
+    font-size: 16;
+}
+
+.activityTitle:hover {
+    font-weight: 800;
 }
 
 .react-date-picker {
@@ -40,32 +72,11 @@ body {
     margin-left: 30px;
 }
 
-.activityTitle {
-    font-size: 16;
-}
-
-.activityTitle:hover {
-    font-weight: 800;
-}
-
 .selected {
     font-size: 20;
     font-weight: 800;
     height: 100px;
     margin-bottom: 25px;
-}
-
-button {
-    padding: 10 20;
-    border-radius: 10px;
-    margin: 4px;
-}
-
-a.button {
-    padding: 10 20;
-    border-radius: 10px;
-    margin: 4px;
-    color: white;
 }
 
 .removeLink {
