@@ -27,12 +27,14 @@ stravaController.getPointsFromActivities = getPointsFromActivities;
 function setStravaOauth(req, res, next) {
   let stravaCode = req.query.code;
   console.log(`Strava Code: ${stravaCode}`);
+
   request.post(
     {
       url: "https://www.strava.com/oauth/token",
       form: {
         client_id: config.client_id,
         client_secret: config.client_secret,
+        grant_type: "authorization_code",
         code: stravaCode
       }
     },
@@ -143,7 +145,11 @@ function loadStravaProfile(req, res, next) {
               firstname: stravaData.firstname,
               lastname: stravaData.lastname
             };
-            console.log(`----@@@@---------------${stravaData.firstname} ${stravaData.lastname}-----------------------------`);
+            console.log(
+              `----@@@@---------------${stravaData.firstname} ${
+                stravaData.lastname
+              }-----------------------------`
+            );
 
             return next();
           }
@@ -302,7 +308,6 @@ function cleanUpStravaData(stravaData, activityType) {
       //   if (err) console.error("Error with DB stuff", err);
       // }
       if (activityType === "Ride") {
-        element
         if (element.type === "Ride") activities.push(newActivity);
       } else {
         activities.push(newActivity);
