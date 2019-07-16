@@ -14,7 +14,7 @@ const zip = require("../config/zip_lat_lang");
 const heartbeatFreq = 1000 * 60 * 5; //milliseconds to minutes.
 let heartbeatLast = Date.now();
 
-const config = require('../config/keys')
+const config = require("../config/keys");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -127,11 +127,14 @@ function heartbeat() {
   if (Date.now() - heartbeatLast > heartbeatFreq) {
     heartbeatLast = Date.now();
     const date = new Date();
-    console.log(`Heartbeat: ${date.getMonth() + 1}/${date.getDate} - ${date.getHours()}:${date.getMinutes()}`);
+    console.log(
+      `Heartbeat: ${date.getMonth() +
+        1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}`
+    );
   }
 }
 
-setInterval(heartbeat,10000);
+setInterval(heartbeat, 10000);
 
 app.listen(3000); //listens on port 3000 -> http://localhost:3000/
 console.log(`Listening on Port 3000`);

@@ -272,7 +272,7 @@ class App extends Component {
           )}
         </div>
 
-        <div id="board">
+        <div id="board"> 
           <Map
             style={this.state.mapStyles}
             google={this.props.google}
