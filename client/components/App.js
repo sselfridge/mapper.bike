@@ -11,8 +11,6 @@ import Sidebar from "./Sidebar";
 import config from "../../config/keys";
 import axios from "axios";
 
-
-
 //functions go here
 
 class App extends Component {
@@ -33,8 +31,8 @@ class App extends Component {
       currentLine: null,
       activities: [],
       clickedLines: [],
-      beforeDate: new Date(),
       afterDate: new Date(),
+      beforeDate: new Date(),
       activityType: "Ride",
       selectedStrokeWeight: 6,
       defaultStrokeWeight: 2,
@@ -83,8 +81,6 @@ class App extends Component {
     let activities = this.state.activities;
     activities.forEach(activity => {
       if (activity.id === id) {
-        let element = document.getElementById(`ride${id}`);
-        element.scrollIntoView();
         activity.selected = this.selectedActivity.selected;
         activity.color = this.selectedActivity.color;
         activity.zIndex = this.selectedActivity.zIndex;
@@ -102,7 +98,13 @@ class App extends Component {
 
   onLineClick(e, line, clickPoint) {
     console.log(`Line Clicked!!!`);
-    this.selectActivity(line.tag);
+    const id = line.tag;
+
+    document.getElementById(`ride${id}`).scrollIntoView();
+    const el = document.getElementById(`titleList`);
+    el.scrollTop = el.scrollTop - 250;
+
+    this.selectActivity(id);
   }
 
   toggleBlackground() {
@@ -161,11 +163,7 @@ class App extends Component {
     const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&${activityType}`;
 
     axios.get(quereyString).then(res => {
-      // console.log(res.data);
-      // let linePoints = res.data.pop();
       this.setState({ activities: res.data, loadingActivites: false });
-      // console.log(this.state.activities);
-      // this.addNewLines();
     });
   }
 
@@ -198,7 +196,7 @@ class App extends Component {
       }
     });
     const afterDate = new Date();
-    afterDate.setMonth(afterDate.getMonth() - 1);
+    afterDate.setMonth(afterDate.getMonth() - 2);
     this.setState({ afterDate });
   }
 
@@ -249,6 +247,7 @@ class App extends Component {
             // prettier-ignore
 
             <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
+              {/* {console.log(`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`)} */}
               Connect With Strava
             </a>
           ) : (
@@ -272,7 +271,7 @@ class App extends Component {
           )}
         </div>
 
-        <div id="board"> 
+        <div id="board">
           <Map
             style={this.state.mapStyles}
             google={this.props.google}
