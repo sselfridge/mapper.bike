@@ -261,6 +261,7 @@ class App extends Component {
 
     return (
       <div id="container">
+        Strava Cartographer
         <div id="mapControls">
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
