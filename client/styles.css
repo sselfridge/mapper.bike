@@ -42,6 +42,11 @@ a.button {
     height: 600px;
 }
 
+#title{
+    font-size: 30px;
+    text-align: center;
+}
+
 #titleList {
     height: 650px;
     overflow-y: scroll;
