@@ -20,9 +20,9 @@ class App extends Component {
       blackgroundActive: false,
       google: null,
       mapStyles: {
-        width: "1250px",
-        height: "900px",
-        position: "static"
+        width: "77%",
+      //   height: "900px",
+      //   position: "static"
       },
       loadingActivites: false,
       activeMarker: {},
@@ -261,7 +261,6 @@ class App extends Component {
 
     return (
       <div id="container">
-        <div id="title">Strava Cartographer</div>
         <div id="mapControls">
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
@@ -293,8 +292,10 @@ class App extends Component {
         </div>
 
         <div id="board">
-          <Map
-            style={this.state.mapStyles}
+        <div id="title">Strava Cartographer</div>
+
+          <Map id="mapcomp"
+            containerStyle={this.state.mapStyles}
             google={this.props.google}
             zoom={11} //higher number = closer zoom
             mapTypeId="satellite"

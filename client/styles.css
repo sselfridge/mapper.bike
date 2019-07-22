@@ -1,5 +1,6 @@
 body {
     background: #ACCEEC;
+    font-family:   Arial, Helvetica, sans-serif; 
 }
 
 button {
@@ -18,9 +19,12 @@ a.button {
 /* IDs */
 
 #board {
-    width: 1200px;
     height: 900px;
-    padding: 40px 350px;
+    flex-grow: 1;
+}
+
+#container {
+    display: flex;
 }
 
 #flashMessage {
@@ -33,16 +37,20 @@ a.button {
 
 #mapControls {
     height: 100vh;
-    float: left;
+    flex-grow: 0;
+    /* do not grow   - initial value: 0 */
+    flex-shrink: 0;
+    /* do not shrink - initial value: 1 */
+    flex-basis: 350px;
+    padding-top: 35px;
 }
 
 #sidebar {
     margin-top: 20px;
-    width: 350px;
     height: 600px;
 }
 
-#title{
+#title {
     font-size: 30px;
     text-align: center;
 }
