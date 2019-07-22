@@ -94,25 +94,18 @@ class App extends Component {
         activity.weight = this.notSelectedActivity.weight;
       }
     });
-    const rideEl = document.getElementById(`ride${id}`);
-    rideEl.scrollIntoView();
-    console.log('selected act');
+
     this.setState({ activities });
   }
 
   onLineClick(e, line, clickPoint) {
     console.log(`Line Clicked!!!`);
     const id = line.tag;
-    // const rideEl = document.getElementById(`ride${id}`);
-    // rideEl.scrollIntoView();
+    const rideEl = document.getElementById(`ride${id}`);
+    rideEl.scrollIntoView();
 
-    // const el = document.getElementById(`titleList`);
-    // el.scrollTop = el.scrollTop - 100;
-    // const scrollTop = el.scrollTop;
-    // const scrollHeight = el.scrollHeight;
-
-    // console.log(`Height:${scrollHeight}  Top:${scrollTop}   Difference:${scrollHeight - scrollTop}`);
-
+    const el = document.getElementById(`titleList`);
+    el.scrollTop = el.scrollTop - 150;
 
     this.selectActivity(id);
   }
