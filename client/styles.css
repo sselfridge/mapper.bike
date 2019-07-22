@@ -36,7 +36,7 @@ a.button {
 }
 
 #mapControls {
-    height: 100vh;
+    height: 95vh;
     flex-grow: 0;
     /* do not grow   - initial value: 0 */
     flex-shrink: 0;
@@ -56,7 +56,7 @@ a.button {
 }
 
 #titleList {
-    height: 650px;
+    height: 550px;
     overflow-y: scroll;
 }
 
@@ -76,7 +76,7 @@ a.button {
 
 .stravabtn {
     color: white;
-    background-image: linear-gradient(-180deg, orange, orange 90%);
+    background-image: linear-gradient(-180deg, #FC4C02, #FC4C02 90%);
     font-size: 1.4em;
     border-radius: 15px;
     padding: 10px;
@@ -103,7 +103,7 @@ a.button {
 
 .rideLink {
     color: white;
-    background-color: orange;
+    background-color: #FC4C02;
     display: inline-block;
     text-decoration: none;
 }

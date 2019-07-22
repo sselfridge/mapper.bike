@@ -20,9 +20,9 @@ class App extends Component {
       blackgroundActive: false,
       google: null,
       mapStyles: {
-        width: "77%",
-      //   height: "900px",
-      //   position: "static"
+        width: "75%",
+        height: "95%"
+        //   position: "static"
       },
       loadingActivites: false,
       activeMarker: {},
@@ -94,17 +94,25 @@ class App extends Component {
         activity.weight = this.notSelectedActivity.weight;
       }
     });
-
+    const rideEl = document.getElementById(`ride${id}`);
+    rideEl.scrollIntoView();
+    console.log('selected act');
     this.setState({ activities });
   }
 
   onLineClick(e, line, clickPoint) {
     console.log(`Line Clicked!!!`);
     const id = line.tag;
+    // const rideEl = document.getElementById(`ride${id}`);
+    // rideEl.scrollIntoView();
 
-    document.getElementById(`ride${id}`).scrollIntoView();
-    const el = document.getElementById(`titleList`);
-    el.scrollTop = el.scrollTop - 250;
+    // const el = document.getElementById(`titleList`);
+    // el.scrollTop = el.scrollTop - 100;
+    // const scrollTop = el.scrollTop;
+    // const scrollHeight = el.scrollHeight;
+
+    // console.log(`Height:${scrollHeight}  Top:${scrollTop}   Difference:${scrollHeight - scrollTop}`);
+
 
     this.selectActivity(id);
   }
@@ -265,10 +273,19 @@ class App extends Component {
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
 
-            <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
-              {/* {console.log(`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`)} */}
-              Connect With Strava
-            </a>
+            // <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
+            //   {/* {console.log(`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`)} */}
+            //   Connect With Strava
+            // </a>
+            <a
+            href={`https://www.strava.com/oauth/authorize?client_id=${
+              config.client_id
+            }&redirect_uri=${
+              config.callback_uri
+            }/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}
+          >
+            <img src="../../public/connectStrava.png" />
+          </a>
           ) : (
             <div>
               Welcome {this.state.currentUser.firstname}
@@ -292,9 +309,10 @@ class App extends Component {
         </div>
 
         <div id="board">
-        <div id="title">Strava Cartographer</div>
+          <div id="title">Strava Cartographer</div>
 
-          <Map id="mapcomp"
+          <Map
+            id="mapcomp"
             containerStyle={this.state.mapStyles}
             google={this.props.google}
             zoom={11} //higher number = closer zoom
@@ -314,8 +332,6 @@ class App extends Component {
   }
 }
 
-// API is limited to my home IP for development
-// TODO add this to config file once pushed live
 export default GoogleApiWrapper({
   apiKey: config.mapsApi,
   libraries: ["geometry", "visualization"]

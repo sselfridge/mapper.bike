@@ -9,7 +9,7 @@ const Sidebar = props => {
     <div className="loadingActivites">
       <ReactLoading
         type="spinningBubbles"
-        color="orange"
+        color="#FC4C02"
         width="100%"
         height={"320px"}
       />
@@ -17,6 +17,7 @@ const Sidebar = props => {
   ) : (
     <></>
   );
+
 
   const flashMessage = props.flashMessage ? (
     <div id="flashMessage">{props.flashMessage}</div>
