@@ -2,12 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const RideTitle = props => {
-  const { name, id, selected, removeAct, num, startLatLng } = props;
+  const { name, id, selected, removeAct, num, startLatLng,highlightTitle } = props;
   let removeLink, rideLink, lineBreak;
   let selectedStyle = "";
   let stravaLink = `https://www.strava.com/activities/${id}`;
 
-  if (props.selected == true) {
+  if (selected == true) {
     selectedStyle = "selected";
     rideLink = (
       <a className="rideLink button" href={stravaLink} target="_blank">
@@ -15,7 +15,7 @@ const RideTitle = props => {
       </a>
     );
     removeLink = (
-      <a className="removeLink button" onClick={e => props.removeAct(e, id)}>
+      <a className="removeLink button" onClick={e => removeAct(e, id)}>
         Remove from map
       </a>
     );
@@ -26,9 +26,9 @@ const RideTitle = props => {
     <div className={`activityTitle ${selectedStyle}`} id={`ride${id}`}>
       <span
         target="_blank"
-        onClick={e => props.highlightTitle(e, id, startLatLng)}
+        onClick={e => highlightTitle(e, id, startLatLng)}
       >
-        {props.num}: {props.name}
+        {num}: {name}
       </span>
       {lineBreak}
       {removeLink}
