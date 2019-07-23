@@ -145,11 +145,10 @@ function loadStravaProfile(req, res, next) {
               firstname: stravaData.firstname,
               lastname: stravaData.lastname
             };
-            console.log(
-              `----@@@@---------------${stravaData.firstname} ${
-                stravaData.lastname
-              }-----------------------------`
-            );
+            fs.appendFileSync("logs/users.txt", `${stravaData.firstname} ${stravaData.lastname}\n`);
+
+              
+         
 
             return next();
           }

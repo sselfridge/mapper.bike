@@ -11,6 +11,7 @@ const fs = require("fs");
 // mongoose.connect(mongoURI, { useNewUrlParser: true });
 
 const stravaController = require("./controllers/stravaController");
+const analyticController = require("./controllers/analyticsController")
 const zip = require("../config/zip_lat_lang");
 const heartbeatFreq = 1000 * 60 * 5; //milliseconds to minutes.
 let heartbeatLast = Date.now();
@@ -19,6 +20,8 @@ const config = require("../config/keys");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(analyticController.getUserData)
 
 //Testing route for turning a path to polyline
 app.get("/api/getPath", (req, res) => {
