@@ -318,6 +318,7 @@ class App extends Component {
             </div>
           </div>
 
+          {/* TODO Add ability to center map on current location */}
           <Map
             id="mapcomp"
             containerStyle={this.state.mapStyles}

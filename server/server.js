@@ -20,6 +20,7 @@ const config = require("../config/keys");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+//Testing route for turning a path to polyline
 app.get("/api/getPath", (req, res) => {
   console.log(`Hitting getPath`);
   //static poly lines for testing purps
@@ -103,6 +104,7 @@ app.get(
 
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === "production") {
+  console.log(`Server in Production mode!`);
   app.use("/build", express.static(path.join(__dirname, "../build")));
   // serve index.html on the route '/'
   app.get("/", (req, res) => {
@@ -110,6 +112,7 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "../index.html"));
   });
 
+  // TODO: redo this to bundle image in webpack
   app.get("/client/img/:image", (req, res) => {
     const imagePath = `client/img/${req.params.image}`;
     fs.exists(imagePath, function(exists) {
@@ -129,7 +132,7 @@ app.use("*", (req, res) => {
 
 app.use((err, req, res, next) => {
   console.log(`Catch All Error:======================================`);
-  if (err.code != 11000) console.log(err);
+  if (err.code != 11000) console.log(err); //11000 is a mongoDB error
   res.status(200).send("Something Broke, we're sorry");
 });
 
