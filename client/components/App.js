@@ -283,7 +283,7 @@ class App extends Component {
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
             <a href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}>
-              <img src="client/connectStrava.png" />
+              <img src="client/img/connectStrava.png" />
             </a>
           ) : (
             <div>

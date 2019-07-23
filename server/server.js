@@ -5,6 +5,7 @@ const decodePolyline = require("decode-google-map-polyline");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 // const mongoURI = "mongodb://localhost/meinmap";
 // mongoose.connect(mongoURI, { useNewUrlParser: true });
@@ -107,6 +108,17 @@ if (process.env.NODE_ENV === "production") {
   app.get("/", (req, res) => {
     console.log("Sending out the index");
     res.sendFile(path.join(__dirname, "../index.html"));
+  });
+
+  app.get("/client/img/:image", (req, res) => {
+    const imagePath = `client/img/${req.params.image}`;
+    fs.exists(imagePath, function(exists) {
+      if (exists) {
+        res.sendfile(imagePath);
+      } else {
+        res.status(404).send("404");
+      }
+    });
   });
 }
 
