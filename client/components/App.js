@@ -253,6 +253,7 @@ class App extends Component {
           { lat: -60, lng: -179 },
           { lat: 89, lng: -179 }
         ]}
+        key="blackground0"
         fillColor="black"
         fillOpacity={1}
         clickable={false}
@@ -267,6 +268,7 @@ class App extends Component {
           { lat: -60, lng: -180 },
           { lat: 89, lng: -180 }
         ]}
+        key="blackground1"
         fillColor="black"
         fillOpacity={1}
         clickable={false}
@@ -280,20 +282,9 @@ class App extends Component {
         <div id="mapControls">
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
-
-            // <a className="stravabtn" href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}  >
-            //   {/* {console.log(`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`)} */}
-            //   Connect With Strava
-            // </a>
-            <a
-            href={`https://www.strava.com/oauth/authorize?client_id=${
-              config.client_id
-            }&redirect_uri=${
-              config.callback_uri
-            }/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}
-          >
-            <img src="../../public/connectStrava.png" />
-          </a>
+            <a href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}>
+              <img src="client/connectStrava.png" />
+            </a>
           ) : (
             <div>
               Welcome {this.state.currentUser.firstname}
