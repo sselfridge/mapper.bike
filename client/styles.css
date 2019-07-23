@@ -35,6 +35,11 @@ a.button {
     font-weight: 800;
 }
 
+#header{
+    display:flex;
+    justify-content: space-between;
+}
+
 #mapControls {
     height: 95vh;
     flex-grow: 0;
@@ -51,8 +56,10 @@ a.button {
 }
 
 #title {
-    font-size: 30px;
+    font-size: 40px;
     text-align: center;
+    margin-left:25%;
+    font-weight: 800;
 }
 
 #titleList {

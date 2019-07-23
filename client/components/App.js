@@ -251,7 +251,7 @@ class App extends Component {
           { lat: 89, lng: 1 },
           { lat: -60, lng: 1 },
           { lat: -60, lng: -179 },
-          { lat: 89, lng: -179}
+          { lat: 89, lng: -179 }
         ]}
         fillColor="black"
         fillOpacity={1}
@@ -265,7 +265,7 @@ class App extends Component {
           { lat: 89, lng: 1 },
           { lat: -60, lng: 1 },
           { lat: -60, lng: -180 },
-          { lat: 89, lng: -180}
+          { lat: 89, lng: -180 }
         ]}
         fillColor="black"
         fillOpacity={1}
@@ -317,7 +317,15 @@ class App extends Component {
         </div>
 
         <div id="board">
-          <div id="title">Strava Cartographer</div>
+          <div id="header">
+            <div id="title">Mapper.Bike</div>{" "}
+            <div>
+              Comments? Contact me at:
+              <a href="mailto:sam.selfridge@gmail.com?subject=Mapper.Bike">
+                Sam.Selfridge@gmail.com
+              </a>
+            </div>
+          </div>
 
           <Map
             id="mapcomp"
