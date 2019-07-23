@@ -244,14 +244,28 @@ class App extends Component {
     });
 
     //create blackground polygon:
-    const blackground = (
+    const blackground = [
       <Polygon
         paths={[
-          { lat: 54.741332, lng: -146.327752 },
-          { lat: 56.943, lng: -40.155 },
-          { lat: -2.63, lng: -45.42 },
-          { lat: -1.233, lng: -144.217 },
-          { lat: 54.741332, lng: -146.327752 }
+          { lat: 89, lng: -179 },
+          { lat: 89, lng: 1 },
+          { lat: -60, lng: 1 },
+          { lat: -60, lng: -179 },
+          { lat: 89, lng: -179}
+        ]}
+        fillColor="black"
+        fillOpacity={1}
+        clickable={false}
+        zIndex={-99}
+        visible={this.state.blackgroundActive}
+      />,
+      <Polygon
+        paths={[
+          { lat: 89, lng: -180 },
+          { lat: 89, lng: 1 },
+          { lat: -60, lng: 1 },
+          { lat: -60, lng: -180 },
+          { lat: 89, lng: -180}
         ]}
         fillColor="black"
         fillOpacity={1}
@@ -259,7 +273,7 @@ class App extends Component {
         zIndex={-99}
         visible={this.state.blackgroundActive}
       />
-    );
+    ];
 
     return (
       <div id="container">
@@ -300,7 +314,6 @@ class App extends Component {
               />
             </div>
           )}
-          
         </div>
 
         <div id="board">
