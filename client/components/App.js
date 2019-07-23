@@ -300,6 +300,7 @@ class App extends Component {
               />
             </div>
           )}
+          
         </div>
 
         <div id="board">

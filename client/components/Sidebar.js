@@ -74,6 +74,7 @@ const Sidebar = props => {
         <h2>{titleArray.length} Rides on map</h2>
         <div id="titleList">{titleArray}</div>
       </div>
+      <img src="../../public/pwrdBy.svg" />
     </div>
   );
 };
