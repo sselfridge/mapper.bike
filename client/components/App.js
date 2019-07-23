@@ -102,10 +102,11 @@ class App extends Component {
     console.log(`Line Clicked!!!`);
     const id = line.tag;
     const rideEl = document.getElementById(`ride${id}`);
-    rideEl.scrollIntoView();
-
-    const el = document.getElementById(`titleList`);
-    el.scrollTop = el.scrollTop - 150;
+    rideEl.scrollIntoView({
+      behavior: "auto",
+      block: "center",
+      inline: "center"
+    });
 
     this.selectActivity(id);
   }
