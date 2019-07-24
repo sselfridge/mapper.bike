@@ -1,12 +1,10 @@
 body {
     background: #ACCEEC;
-    font-family:   Arial, Helvetica, sans-serif; 
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 button {
-    padding: 10 20;
     border-radius: 10px;
-    margin: 4px;
 }
 
 a.button {
@@ -35,12 +33,7 @@ a.button {
     font-weight: 800;
 }
 
-#header{
-    display:flex;
-    justify-content: space-between;
-}
-
-#mapControls {
+#leftSide {
     height: 95vh;
     flex-grow: 0;
     /* do not grow   - initial value: 0 */
@@ -48,6 +41,77 @@ a.button {
     /* do not shrink - initial value: 1 */
     flex-basis: 350px;
     padding-top: 35px;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+}
+
+#mapControls {
+    display: grid;
+    grid-template-columns: 25% 23% 4% 24% 24%;
+    grid-template-rows: 20px 45px 45px 40px 40px;
+    width: 340px;
+}
+
+/* Grid settings */
+
+#dateLabel {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+#typeLabel {
+    grid-row: 1;
+    grid-column-start: 4;
+    grid-column-end: 7;
+}
+
+#activityType {
+    grid-column-start: 3;
+    grid-column-end: 5;
+    grid-row: 2;
+    width: 160px;
+    height: 40px;
+    margin-left: 10px;
+}
+
+#afterDatePicker {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 2;
+}
+
+#beforeDatePicker {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 3;
+}
+
+#getActBtn {
+    grid-column-start: 4;
+    grid-column-end: 6;
+    grid-row-start: 3;
+    grid-row-end: 3;
+    /* width: 160px; */
+}
+
+#hideMapBtn {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row: 5;
+}
+
+.zipinput {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row: 4;
+    font-size:18px;
+    margin: 4px;
 }
 
 #sidebar {
@@ -58,7 +122,7 @@ a.button {
 #title {
     font-size: 40px;
     text-align: center;
-    margin-left:25%;
+    margin-left: 25%;
     font-weight: 800;
 }
 
@@ -113,9 +177,4 @@ a.button {
     background-color: #FC4C02;
     display: inline-block;
     text-decoration: none;
-}
-
-.zipinput {
-    font-size: 18px;
-    margin-left: 10px;
 }

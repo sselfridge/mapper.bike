@@ -279,7 +279,7 @@ class App extends Component {
 
     return (
       <div id="container">
-        <div id="mapControls">
+        <div id="leftSide">
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
             <a href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}>
