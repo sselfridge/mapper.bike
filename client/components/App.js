@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import {
   GoogleApiWrapper,
   Map,
-  Marker,
   Polyline,
   Polygon
 } from "google-maps-react";
-// import Map from "./Map"
 import Sidebar from "./Sidebar";
 import config from "../../config/keys";
 import axios from "axios";
@@ -22,7 +20,6 @@ class App extends Component {
       mapStyles: {
         width: "75%",
         height: "95%"
-        //   position: "static"
       },
       loadingActivites: false,
       activeMarker: {},
