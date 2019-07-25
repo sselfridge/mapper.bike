@@ -7,11 +7,13 @@
     height: 40px;
     margin-left: 10px;
 }
-#getActBtn{
+
+#getActBtn {
     color: white;
-    background-color:rgb(55, 194, 0);
+    background-color: rgb(55, 194, 0);
     border: 0;
 }
+
 #mapControls {
     width: 340px;
 }

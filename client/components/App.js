@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import {
-  GoogleApiWrapper,
-  Map,
-  Polyline,
-  Polygon
-} from "google-maps-react";
+import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
 import Sidebar from "./Sidebar";
 import config from "../../config/keys";
 import axios from "axios";
@@ -306,7 +301,9 @@ class App extends Component {
 
         <div id="board">
           <div id="header">
-            <div id="title">Mapper.Bike <span id="betatext">beta</span></div>{" "}
+            <div id="title">
+              Mapper.Bike <span id="betatext">beta</span>
+            </div>{" "}
             <div>
               Comments? Contact me at:
               <a href="mailto:sam.selfridge@gmail.com?subject=Mapper.Bike">

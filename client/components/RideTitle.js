@@ -2,7 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const RideTitle = props => {
-  const { name, id, selected, removeAct, num, startLatLng,highlightTitle } = props;
+  const {
+    name,
+    id,
+    selected,
+    removeAct,
+    num,
+    startLatLng,
+    highlightTitle
+  } = props;
   let removeLink, rideLink, lineBreak;
   let selectedStyle = "";
   let stravaLink = `https://www.strava.com/activities/${id}`;
@@ -24,10 +32,7 @@ const RideTitle = props => {
 
   return (
     <div className={`activityTitle ${selectedStyle}`} id={`ride${id}`}>
-      <span
-        target="_blank"
-        onClick={e => highlightTitle(e, id, startLatLng)}
-      >
+      <span target="_blank" onClick={e => highlightTitle(e, id, startLatLng)}>
         {num}: {name}
       </span>
       {lineBreak}
