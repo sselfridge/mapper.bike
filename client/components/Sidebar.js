@@ -53,7 +53,7 @@ const Sidebar = props => {
         <div id="beforeDatePicker">
           <DatePicker onChange={props.setBeforeDate} value={props.beforeDate} />
         </div>
-        <label id="typeLabel" for="activityType">
+        <label id="typeLabel" forhtml="activityType">
           Activity Type
         </label>
         <select
