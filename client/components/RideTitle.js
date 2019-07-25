@@ -15,8 +15,8 @@ const RideTitle = props => {
       </a>
     );
     removeLink = (
-      <a className="removeLink button" onClick={e => removeAct(e, id)}>
-        Remove from map
+      <a className="removeLink" onClick={e => removeAct(e, id)}>
+        Remove
       </a>
     );
     lineBreak = <br />;

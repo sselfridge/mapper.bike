@@ -3,11 +3,13 @@ import PropTypes from "prop-types";
 import RideTitle from "./RideTitle";
 import DatePicker from "react-date-picker";
 import ReactLoading from "react-loading";
-import './Sidebar.css'
+import "./Sidebar.css";
+import "./Sidebar-Grid.css";
 
 const Sidebar = props => {
   const loadingActivites = props.loadingActivites ? (
     <div className="loadingActivites">
+      {/* TODO: Loading Animation for MS Edge */}
       <ReactLoading
         type="spinningBubbles"
         color="#FC4C02"
@@ -24,6 +26,18 @@ const Sidebar = props => {
   ) : (
     <></>
   );
+
+  const introMessage =
+    props.activities.length === 0 ? (
+      <div id="introMessage">
+        Click 'Get Activities' to load rides onto map
+        <br/>
+        <br/>
+        Change Activity type or Date range to get more
+      </div>
+    ) : (
+      <></>
+    );
 
   const titleArray = [];
   if (props.activities) {
@@ -70,7 +84,7 @@ const Sidebar = props => {
           Get Activities
         </button>
         <button id="hideMapBtn" onClick={props.toggleBlackground}>
-          Hide Map Background
+          Hide Map
         </button>
         <input
           className="zipinput"
@@ -84,6 +98,7 @@ const Sidebar = props => {
       {loadingActivites}
       <div>
         <h2>{titleArray.length} Rides on map</h2>
+        {introMessage}
         <div id="titleList">{titleArray}</div>
       </div>
       <img src="client/img/pwrdBy.svg" />
@@ -92,7 +107,7 @@ const Sidebar = props => {
 };
 
 Sidebar.propTypes = {
-  // gameList: PropTypes.array.isRequired,
+  // List: PropTypes.array.isRequired,
 };
 
 export default Sidebar;

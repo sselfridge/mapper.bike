@@ -4,8 +4,14 @@ body {
 }
 
 button {
-    border-radius: 10px;
+    border-radius: 15px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border: 0;
+    cursor: pointer;
 }
+
+
 
 a.button {
     padding: 10 20;
