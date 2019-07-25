@@ -306,7 +306,7 @@ class App extends Component {
 
         <div id="board">
           <div id="header">
-            <div id="title">Mapper.Bike</div>{" "}
+            <div id="title">Mapper.Bike <span id="betatext">beta</span></div>{" "}
             <div>
               Comments? Contact me at:
               <a href="mailto:sam.selfridge@gmail.com?subject=Mapper.Bike">

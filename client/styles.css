@@ -19,7 +19,11 @@ a.button {
     margin: 4px;
     color: white;
 }
-
+#betatext{
+    font-size: 12;
+    color: #FC4C02;
+    font-weight: 800;
+}
 #board {
     height: 900px;
     flex-grow: 1;
