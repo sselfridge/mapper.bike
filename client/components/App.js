@@ -277,8 +277,8 @@ class App extends Component {
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
             <a href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}>
-              <img src="client/img/connectStrava.png" />
-            </a>
+                <img src="client/img/connectStrava.png" />
+              </a>
           ) : (
             <div>
               Welcome {this.state.currentUser.firstname}
@@ -304,10 +304,10 @@ class App extends Component {
         <div id="board">
           <div id="header">
             <div id="title">
-              Mapper.Bike <span id="betatext">beta</span>
+              Mapper.Bike <span id="betatext">beta {`v-${VERSION}`}</span>
             </div>{" "}
             <div>
-              Comments? Contact me at:
+              Feedback? Contact me at:
               <a href="mailto:sam.selfridge@gmail.com?subject=Mapper.Bike">
                 Sam.Selfridge@gmail.com
               </a>
