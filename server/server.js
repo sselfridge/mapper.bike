@@ -11,7 +11,7 @@ const fs = require("fs");
 // mongoose.connect(mongoURI, { useNewUrlParser: true });
 
 const stravaController = require("./controllers/stravaController");
-const analyticController = require("./controllers/analyticsController")
+const analyticController = require("./controllers/analyticsController");
 const zip = require("../config/zip_lat_lang");
 const heartbeatFreq = 1000 * 60 * 5; //milliseconds to minutes.
 let heartbeatLast = Date.now();
@@ -21,7 +21,7 @@ const config = require("../config/keys");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(analyticController.getUserData)
+app.use(analyticController.getUserData);
 
 //Testing route for turning a path to polyline
 app.get("/api/getPath", (req, res) => {
@@ -120,7 +120,7 @@ if (process.env.NODE_ENV === "production") {
     const imagePath = `client/img/${req.params.image}`;
     fs.exists(imagePath, function(exists) {
       if (exists) {
-        res.sendfile(imagePath);
+        res.sendFile(imagePath);
       } else {
         res.status(404).send("404");
       }
@@ -129,7 +129,9 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use("*", (req, res) => {
-  console.log("HIT THE CATCH ALLL");
+  console.log("ERROR Catch All -- Req Url:", req.url);
+  // prettier-ignore
+  if(req.url === "/") console.log("NODE_ENV must be 'production' Current:", process.env.NODE_ENV)
   res.send("404 - that did not go well");
 });
 
