@@ -25,7 +25,7 @@ a.button {
 }
 
 #board {
-    height: 900px;
+    /* height: 1500px; */
     flex-grow: 1;
 }
 
@@ -38,7 +38,7 @@ a.button {
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: 350px;
-    padding-top: 35px;
+    padding-top: 5px;
 }
 
 #header {
