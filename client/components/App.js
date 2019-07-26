@@ -217,6 +217,8 @@ class App extends Component {
     const activities = this.state.activities;
     const polyLineArray = [];
 
+    console.log("Version:", VERSION);
+
     //create poly line components to add
     activities.forEach((activity, index) => {
       let id = activity.id;
