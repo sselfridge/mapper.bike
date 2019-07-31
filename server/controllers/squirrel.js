@@ -8,9 +8,7 @@ const client = require("twilio")(accountSid, authToken);
 
 function squirrel(req, res, next) {
   const key = req.query.key;
-  console.log(`Key:${key}`);
   const url = req.query.url;
-  console.log(`url:${url}`);
 
   if (key === config.squirrelKey) {
     client.messages
@@ -19,7 +17,7 @@ function squirrel(req, res, next) {
         from: config.twilioNum,
         to: config.twilioTo
       })
-      .then(message => console.log(message.sid));
+      .then(message => console.log("Squirrel:",url));
   }
 }
 
