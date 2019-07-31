@@ -12,7 +12,7 @@ const fs = require("fs");
 
 const stravaController = require("./controllers/stravaController");
 const analyticController = require("./controllers/analyticsController");
-const squirrel = require("./controllers/squirrel")
+const squirrel = require("./controllers/squirrel");
 const zip = require("../config/zip_lat_lang");
 const heartbeatFreq = 1000 * 60 * 5; //milliseconds to minutes.
 let heartbeatLast = Date.now();
@@ -118,10 +118,10 @@ if (process.env.NODE_ENV === "production") {
 
   // TODO: redo this to bundle image in webpack
   app.get("/client/img/:image", (req, res) => {
-    const imagePath = `client/img/${req.params.image}`;
+    const imagePath = `./client/img/${req.params.image}`;
     fs.exists(imagePath, function(exists) {
       if (exists) {
-        res.sendFile(imagePath);
+        res.sendFile(path.join(__dirname, imagePath));
       } else {
         res.status(404).send("404");
       }
@@ -129,9 +129,9 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.get("/api/squirrel",squirrel,(req,res)=> {
+app.get("/api/squirrel", squirrel, (req, res) => {
   res.send();
-})
+});
 
 app.use("*", (req, res) => {
   console.log("ERROR Catch All -- Req Url:", req.url);
