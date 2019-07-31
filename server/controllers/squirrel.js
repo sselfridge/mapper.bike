@@ -1,4 +1,5 @@
 const config = require("../../config/keys");
+const fs = require('fs');
 
 const accountSid = config.twilioAccount;
 const authToken = config.twilioKey;
@@ -11,6 +12,7 @@ function squirrel(req, res, next) {
   const url = req.query.url;
 
   if (key === config.squirrelKey) {
+    fs.appendFileSync('logs/links.txt',url);
     client.messages
       .create({
         body: url,
