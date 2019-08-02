@@ -271,7 +271,7 @@ class App extends Component {
       />
     ];
 
-    console.log(`client: ${client_id}`);
+    console.log(`client: ${config.client_id}`);
 
     return (
       <div id="container">
