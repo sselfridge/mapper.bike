@@ -271,6 +271,8 @@ class App extends Component {
       />
     ];
 
+    console.log(`client: ${client_id}`);
+
     return (
       <div id="container">
         <div id="leftSide">
