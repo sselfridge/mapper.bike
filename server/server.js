@@ -107,7 +107,7 @@ app.get(
 );
 
 // statically serve everything in the build folder on the route '/build'
-if ( process.env.NODE_ENV && process.env.NODE_ENV !== "development") {
+if (process.env.NODE_ENV === "production") {
   console.log(`Server in Production mode!`);
   app.use("/build", express.static(path.join(__dirname, "../build")));
   // serve index.html on the route '/'
