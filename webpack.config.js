@@ -3,11 +3,8 @@ const webpack = require("webpack");
 const GitRevisionPlugin = require("git-revision-webpack-plugin");
 const gitRevisionPlugin = new GitRevisionPlugin();
 
-const env =
-  process.env.NODE_ENV === "staging" ? "production" : process.env.NODE_ENV;
-
 module.exports = {
-  mode: env,
+  mode: process.env.NODE_ENV,
   entry: "./client/index.js",
 
   output: {
