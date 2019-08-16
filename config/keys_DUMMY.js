@@ -7,44 +7,23 @@ prodKeys = {
   client_secret: "",
   callback_uri: "",
   redirect_url: "",
-  twilioTo: ""
-};
+  //jwt token
+  secretSuperKey: "",
 
-stagingKeys = {
-  client_id: "",
-  client_secret: "",
-  callback_uri: "",
-  redirect_url: "",
-  twilioTo: ""
+  mapsApi: ""
 };
 
 devKeys = {
   client_id: "",
-  client_secret: "",
+  client_secret: " ",
   callback_uri: "",
   redirect_url: "",
-  twilioTo: ""
+  //jwt token
+  secretSuperKey: "",
+
+  mapsApi: ""
 };
 
-let keys;
-
-switch (env) {
-  case "production":
-    keys = prodKeys;
-    break;
-  case "staging":
-    keys = stagingKeys;
-    break;
-  default:
-    keys = devKeys;
-    break;
-}
-
-keys.secretSuperKey = "";
-keys.mapsApi = "";
-keys.twilioKey = "";
-keys.twilioAccount = "";
-keys.twilioNum = "";
-keys.squirrelKey = "";
+const keys = env === "production" ? prodKeys : devKeys;
 
 module.exports = keys;

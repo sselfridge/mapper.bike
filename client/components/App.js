@@ -313,6 +313,11 @@ class App extends Component {
               <a href="mailto:sam.selfridge@gmail.com?subject=Mapper.Bike">
                 Sam.Selfridge@gmail.com
               </a>
+              <br/>
+              Source Code:
+              <a href="http://www.github.com/sselfridge/mapper.bike">
+                View on GitHub
+              </a>
             </div>
           </div>
 
