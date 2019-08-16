@@ -270,7 +270,7 @@ class App extends Component {
         visible={this.state.blackgroundActive}
       />
     ];
-    console.log(`App ENV:${process.env.NODE_ENV}`)
+    console.log(`App ENV:${process.env.NODE_ENV}`);
     console.log(`client: ${config.client_id}`);
 
     return (
@@ -278,9 +278,14 @@ class App extends Component {
         <div id="leftSide">
           {this.state.currentUser.firstname === null ? (
             // prettier-ignore
-            <a href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}>
-                <img src="client/img/connectStrava.png" />
-              </a>
+            <div>
+              <a href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}>
+                  <img src="client/img/connectStrava.png" />
+                </a>
+                None of your data is kept on our server
+                <br/>
+                Strava-less Demo coming soon!
+          </div>
           ) : (
             <div>
               Welcome {this.state.currentUser.firstname}
@@ -313,7 +318,7 @@ class App extends Component {
               <a href="mailto:sam.selfridge@gmail.com?subject=Mapper.Bike">
                 Sam.Selfridge@gmail.com
               </a>
-              <br/>
+              <br />
               Source Code:
               <a href="http://www.github.com/sselfridge/mapper.bike">
                 View on GitHub
