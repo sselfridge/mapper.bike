@@ -270,6 +270,8 @@ class App extends Component {
         visible={this.state.blackgroundActive}
       />
     ];
+    console.log(`App ENV:${process.env.NODE_ENV}`)
+    console.log(`client: ${config.client_id}`);
 
     return (
       <div id="container">
