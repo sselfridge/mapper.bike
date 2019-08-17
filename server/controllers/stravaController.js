@@ -92,7 +92,6 @@ function loadStravaProfile(req, res, next) {
       console.log(
         `Session Valid - allow to proceed. User: ${payload.althleteID}`
       );
-      // console.log(payload);
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
       res.locals.althleteID = payload.althleteID;
@@ -145,10 +144,10 @@ function loadStravaProfile(req, res, next) {
               firstname: stravaData.firstname,
               lastname: stravaData.lastname
             };
-            fs.appendFileSync("logs/users.txt", `${stravaData.firstname} ${stravaData.lastname}\n`);
-
-              
-         
+            fs.appendFileSync(
+              "logs/users.txt",
+              `${stravaData.firstname} ${stravaData.lastname}\n`
+            );
 
             return next();
           }
@@ -278,10 +277,10 @@ function buildStravaData(  before,  after,  page,  stravaData,  accessToken,  ca
 
 function getDummydata(file = "stockData") {
   const dummyData = fs.readFileSync(__dirname + `/../../${file}.json`);
-  // const dummyData = fs.readFileSync(__dirname + "/../../bigDummy.json")
   let stravaData = JSON.parse(dummyData);
   console.log(`Cleaning up from dummyData`);
-  return cleanUpStravaData(stravaData);
+  res.locals.activities = cleanUpStravaData(stravaData);
+  return next();
 }
 
 function cleanUpStravaData(stravaData, activityType) {
@@ -354,10 +353,6 @@ function getActivities(req, res, next) {
       return next();
     })
     .catch(errorDispatch);
-
-  // activities = getDummydata("BigDummy");
-  // res.locals.activities = activities;
-  // return next();
 }
 
 function errorDispatch(error) {
