@@ -320,7 +320,7 @@ class App extends Component {
               </a>
               <br />
               Source Code:
-              <a href="http://www.github.com/sselfridge/mapper.bike">
+              <a href="http://www.github.com/sselfridge/mapper.bike" target="_blank">
                 View on GitHub
               </a>
             </div>
