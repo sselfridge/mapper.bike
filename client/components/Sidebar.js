@@ -27,6 +27,8 @@ const Sidebar = props => {
     <></>
   );
 
+  const demoFog = props.demoMode ? <div id="fogOfDemo" /> : <></>;
+
   const introMessage =
     props.activities.length === 0 ? (
       <div id="introMessage">
@@ -61,6 +63,7 @@ const Sidebar = props => {
   return (
     <div id="sidebar">
       <div id="mapControls">
+        {demoFog}
         <span id="dateLabel">Date Range:</span>
         <div id="afterDatePicker">
           <DatePicker onChange={props.setAfterDate} value={props.afterDate} />
@@ -101,7 +104,9 @@ const Sidebar = props => {
         {introMessage}
         <div id="titleList">{titleArray}</div>
       </div>
-      <img src="client/img/pwrdBy.svg" />
+      <a>
+        <img onClick={props.stravaLogout} src="client/img/pwrdBy.svg" />
+      </a>
     </div>
   );
 };

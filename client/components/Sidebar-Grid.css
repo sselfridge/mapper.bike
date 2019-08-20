@@ -4,6 +4,13 @@
     grid-template-rows: 20px 45px 45px 40px 40px;
 }
 
+#fogOfDemo {
+    grid-row-start: 1;
+    grid-row-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 6;
+}
+
 #dateLabel {
     grid-row: 1;
     grid-column-start: 1;
@@ -54,4 +61,3 @@
     grid-column-end: 6;
     grid-row: 4;
 }
-

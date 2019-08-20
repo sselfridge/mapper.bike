@@ -106,6 +106,20 @@ app.get(
   }
 );
 
+app.get(
+  "/api/getDemoData",
+  stravaController.getDemoData,
+  stravaController.getPointsFromActivities,
+  (req, res) => {
+    console.log(`Sending Back ${res.locals.activities.length} activities`);
+    res.send(JSON.stringify(res.locals.activities));
+  }
+);
+
+app.get("/api/logout", stravaController.clearCookie, (req, res) => {
+  res.send("Ok");
+});
+
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === "production") {
   console.log(`Server in Production mode!`);
