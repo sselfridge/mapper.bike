@@ -38,7 +38,9 @@ class App extends Component {
         lang: null
       },
       flashMessage: "",
-      demoMode: false
+      demoMode: false,
+      dimScreen: false,
+      showMenu: false
     };
 
     this.selectedActivity = {
@@ -55,8 +57,7 @@ class App extends Component {
       zIndex: 2
     };
 
-    // this.onMarkerClick = this.onMarkerClick.bind(this);
-    // this.onClose = this.onClose.bind(this);
+
     this.onLineClick = this.onLineClick.bind(this);
     this.getActivities = this.getActivities.bind(this);
     this.getDemoActivities = this.getDemoActivities.bind(this);
@@ -71,6 +72,8 @@ class App extends Component {
     this.centerOnZip = this.centerOnZip.bind(this);
     this.flashMessage = this.flashMessage.bind(this);
     this.stravaLogout = this.stravaLogout.bind(this);
+    this.toggleDim = this.toggleDim.bind(this);
+    this.toggleShowMenu = this.toggleShowMenu.bind(this);
   }
 
   //used by clicking a line in the map or hovering over it on the side
@@ -229,6 +232,18 @@ class App extends Component {
     });
   }
 
+  toggleShowMenu() {
+    const showMenu = !this.state.showMenu;
+    const dimScreen = showMenu
+    this.setState({ dimScreen, showMenu });
+  }
+
+  toggleDim() {
+    const dimScreen = !this.state.dimScreen;
+    const showMenu = false;
+    this.setState({ dimScreen, showMenu });
+  }
+
   componentWillMount() {
     axios.get(`/api/getStravaUser`).then(res => {
       if (res.status === 200) {
@@ -300,8 +315,31 @@ class App extends Component {
     console.log(`App ENV:${process.env.NODE_ENV}`);
     console.log(`client: ${config.client_id}`);
 
+    const dimScreen = this.state.dimScreen ? (
+      <div id="dimScreen" onClick={this.toggleDim} />
+    ) : (
+      <></>
+    );
+
+    const hamburgerMenu = this.state.showMenu ? (
+      <div id="menuModal">
+        <a target="_blank" href="http://www.github.com/sselfridge/mapper.bike">
+          View source on GitHub
+        </a>
+        <hr />
+        <a href="mailto:Sam.Selfridge@gmail.com">Sam.Selfridge@gmail.com</a>
+        <hr />
+        <a href="" onClick={this.stravaLogout}>
+          Logout
+        </a>
+      </div>
+    ) : (
+      <></>
+    );
+
     return (
       <div id="container">
+        {dimScreen}
         <div id="leftSide">
           {this.state.currentUser.firstname === null &&
           this.state.demoMode === false ? (
@@ -344,15 +382,15 @@ class App extends Component {
               Mapper.Bike <span id="betatext">beta {`v-${VERSION}`}</span>
             </div>{" "}
             <div>
-              Feedback? Contact me at:
+              {/* Feedback? Contact me at:
               <a href="mailto:sam.selfridge@gmail.com?subject=Mapper.Bike">
                 Sam.Selfridge@gmail.com
               </a>
               <br />
               Source Code:
-              <a href="http://www.github.com/sselfridge/mapper.bike">
-                View on GitHub
-              </a>
+            */}
+              <span onClick={this.toggleShowMenu} className="hamburger" />
+              {hamburgerMenu}
             </div>
           </div>
 

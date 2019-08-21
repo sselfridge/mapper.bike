@@ -8,8 +8,10 @@
     margin-left: 10px;
 }
 #fogOfDemo{
-    background-color: orange;
+    background-color: black;
     z-index: 5;
+    opacity: 0.6;
+    border-radius: 10px;
 }
 #getActBtn {
     color: white;
