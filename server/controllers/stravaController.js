@@ -356,7 +356,7 @@ function getActivities(req, res, next) {
 
 function getDemoData(req, res, next) {
   console.log("Getting Demo Data");
-  const demoData = fs.readFileSync(__dirname + `/../../config/out.json`);
+  const demoData = fs.readFileSync(__dirname + `/../../config/demoData.json`);
   let stravaData = JSON.parse(demoData);
   console.log(`Cleaning up from demoData`);
   res.locals.activities = cleanUpStravaData(stravaData);
