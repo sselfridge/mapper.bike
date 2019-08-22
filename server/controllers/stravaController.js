@@ -374,8 +374,11 @@ function getPointsFromActivities(req, res, next) {
   activities.forEach(activity => {
     try {
       const decodedPath = decodePolyline(activity.line);
-      // pointsArray.push(decodedPath);
       activity.points = decodedPath;
+      const midPointIndex = Math.floor(decodedPath.length/2)
+      console.log(midPointIndex);
+      const midPoint = decodedPath[midPointIndex];
+      activity.startLatLng = [midPoint.lat,midPoint.lng];
     } catch (error) {
       console.log(`Error decoding activity: ${activity.name}`);
     }
