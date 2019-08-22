@@ -7,12 +7,24 @@
     height: 40px;
     margin-left: 10px;
 }
-#fogOfDemo{
-    background-color: black;
+
+#fogOfDemo {
+    background-color: rgba(15,15,15, 0.6);
     z-index: 5;
-    opacity: 0.6;
-    border-radius: 10px;
+    border-radius: 5px;
+    font-weight: 800;
+    font-size: 1.4em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
+
+#demoText {
+    margin: auto;
+    color: white;
+
+}
+
 #getActBtn {
     color: white;
     background-color: rgb(55, 194, 0);

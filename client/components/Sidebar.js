@@ -27,7 +27,13 @@ const Sidebar = props => {
     <></>
   );
 
-  const demoFog = props.demoMode ? <div id="fogOfDemo" /> : <></>;
+  const demoFog = props.demoMode ? (
+    <div id="fogOfDemo">
+      <span id="demoText">Not Available in Demo</span>
+    </div>
+  ) : (
+    <></>
+  );
 
   const introMessage =
     props.activities.length === 0 ? (
