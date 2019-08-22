@@ -7,8 +7,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}\\server\\server.js",
+            "name": "Debug Server",
+            "program": "${workspaceFolder}/server/server.js",
             "env": {
                 "NODE_ENV": "development"
             },
