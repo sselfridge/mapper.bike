@@ -109,11 +109,16 @@ class App extends Component {
     this.setState({ blackgroundActive: blackground });
   }
 
-  highlightTitle(e, id, startLatLng) {
+  highlightTitle(e, id, midLatLng) {
     this.selectActivity(id);
-    const center = { lat: startLatLng[0], lng: startLatLng[1] };
+    const center = { lat: midLatLng[0], lng: midLatLng[1] };
     this.setState({ center });
   }
+
+  //TODO
+  //worker function to calculate the map extremes of each activity to find a mid point
+  //Also calculate distance and change zoom as needed
+  findCenterAndZoom() {}
 
   removeAct(e, id) {
     let activities = this.state.activities;
@@ -320,7 +325,10 @@ class App extends Component {
               </a>
               <br />
               Source Code:
-              <a href="http://www.github.com/sselfridge/mapper.bike" target="_blank">
+              <a
+                href="http://www.github.com/sselfridge/mapper.bike"
+                target="_blank"
+              >
                 View on GitHub
               </a>
             </div>
