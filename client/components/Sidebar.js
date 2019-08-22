@@ -67,7 +67,7 @@ const Sidebar = props => {
   }
 
   return (
-    <div id="sidebar">
+    <div class="sidebar">
       <div id="mapControls">
         {demoFog}
         <span id="dateLabel">Date Range:</span>

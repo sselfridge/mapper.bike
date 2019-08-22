@@ -11,6 +11,11 @@ button {
     cursor: pointer;
 }
 
+hr {
+    margin: 0 10;
+    padding-left: 10px;
+}
+
 a.button {
     padding: 10 20;
     border-radius: 10px;
@@ -31,6 +36,10 @@ a.button {
 
 #container {
     display: flex;
+}
+
+#demoBtn {
+
 }
 
 #dimScreen {
@@ -57,23 +66,25 @@ a.button {
     justify-content: space-between;
 }
 
-#menuModal{
+#menuModal {
     background-color: rgb(250, 250, 250);
     position: absolute;
-    width: 220px;
-    height: 160px;
     right: 5px;
     top: 5px;
     z-index: 10;
     border-radius: 5px;
 }
 
-#menuModal > a {
+#menuModal>a {
     display: block;
     padding: 10px;
     text-align: right;
-    /* margin-left:10px; */
-    
+    text-decoration: none;
+    color: rgb(10, 10, 10);
+}
+
+#menuModal>a:hover {
+    color: rgb(120, 120, 120)
 }
 
 .hamburger {

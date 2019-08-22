@@ -40,7 +40,7 @@ class App extends Component {
       flashMessage: "",
       demoMode: false,
       dimScreen: false,
-      showMenu: false
+      showMenu: true
     };
 
     this.selectedActivity = {
@@ -56,7 +56,6 @@ class App extends Component {
       weight: this.state.defaultStrokeWeight,
       zIndex: 2
     };
-
 
     this.onLineClick = this.onLineClick.bind(this);
     this.getActivities = this.getActivities.bind(this);
@@ -234,7 +233,7 @@ class App extends Component {
 
   toggleShowMenu() {
     const showMenu = !this.state.showMenu;
-    const dimScreen = showMenu
+    const dimScreen = showMenu;
     this.setState({ dimScreen, showMenu });
   }
 
@@ -344,13 +343,14 @@ class App extends Component {
           {this.state.currentUser.firstname === null &&
           this.state.demoMode === false ? (
             // prettier-ignore
-            <div>
+            <div class="sidebar">
               <a href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}>
                   <img src="client/img/connectStrava.png" />
                 </a>
-                None of your data is kept on our server
+                <span>None of your data is kept on our servers</span>
                 <br/>
-                <button onClick={this.getDemoActivities}>Click Here To Load Demo</button>
+                <span>Want to try it out without linking your Strava</span>
+                <button id="demoBtn" onClick={this.getDemoActivities}>Click Here To Load Demo</button>
           </div>
           ) : (
             <div>
