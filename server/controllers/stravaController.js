@@ -364,7 +364,7 @@ function getDemoData(req, res, next) {
 }
 
 function errorDispatch(error) {
-  console.log(`we have an error, but ssssshhhhhhh`);
+  console.log(`ERROR Will Robinson! ASYNC ERROR`);
   console.log(error);
 }
 
