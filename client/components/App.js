@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
 import Sidebar from "./Sidebar";
+import DefaultSidebar from "./DefaultSidebar"
 import config from "../../config/keys";
 import axios from "axios";
 
@@ -40,7 +41,7 @@ class App extends Component {
       flashMessage: "",
       demoMode: false,
       dimScreen: false,
-      showMenu: true
+      showMenu: false,
     };
 
     this.selectedActivity = {
@@ -226,7 +227,7 @@ class App extends Component {
           firstname: null,
           lastname: null
         };
-        this.setState({ currentUser: emptyUser });
+        this.setState({ currentUser: emptyUser, demoMode: false });
       }
     });
   }
@@ -342,16 +343,7 @@ class App extends Component {
         <div id="leftSide">
           {this.state.currentUser.firstname === null &&
           this.state.demoMode === false ? (
-            // prettier-ignore
-            <div class="sidebar">
-              <a href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}>
-                  <img src="client/img/connectStrava.png" />
-                </a>
-                <span>None of your data is kept on our servers</span>
-                <br/>
-                <span>Want to try it out without linking your Strava</span>
-                <button id="demoBtn" onClick={this.getDemoActivities}>Click Here To Load Demo</button>
-          </div>
+            < DefaultSidebar getDemoActivities={this.getDemoActivities} />
           ) : (
             <div>
               Welcome {this.state.currentUser.firstname}

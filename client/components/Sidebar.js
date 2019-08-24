@@ -29,7 +29,8 @@ const Sidebar = props => {
 
   const demoFog = props.demoMode ? (
     <div id="fogOfDemo">
-      <span id="demoText">Not Available in Demo</span>
+      <span id="demoText">Controls Not Available in Demo</span>
+      <span id='demoInstructions'>Try zip code 80477 or click 'hide map' and zoom out to see rides in other areas.</span>
     </div>
   ) : (
     <></>
@@ -67,7 +68,7 @@ const Sidebar = props => {
   }
 
   return (
-    <div class="sidebar">
+    <div className="sidebar">
       <div id="mapControls">
         {demoFog}
         <span id="dateLabel">Date Range:</span>
@@ -111,7 +112,7 @@ const Sidebar = props => {
         <div id="titleList">{titleArray}</div>
       </div>
       <a>
-        <img onClick={props.stravaLogout} src="client/img/pwrdBy.svg" />
+        <img src="client/img/pwrdBy.svg" />
       </a>
     </div>
   );

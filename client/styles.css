@@ -30,7 +30,6 @@ a.button {
 }
 
 #board {
-    /* height: 1500px; */
     flex-grow: 1;
 }
 
