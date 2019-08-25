@@ -8,7 +8,7 @@ const RideTitle = props => {
     selected,
     removeAct,
     num,
-    startLatLng,
+    midLatLng,
     highlightTitle
   } = props;
   let removeLink, rideLink, lineBreak;
@@ -32,7 +32,7 @@ const RideTitle = props => {
 
   return (
     <div className={`activityTitle ${selectedStyle}`} id={`ride${id}`}>
-      <span target="_blank" onClick={e => highlightTitle(e, id, startLatLng)}>
+      <span target="_blank" onClick={e => highlightTitle(e, id, midLatLng)}>
         {num}: {name}
       </span>
       {lineBreak}

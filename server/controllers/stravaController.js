@@ -295,7 +295,6 @@ function cleanUpStravaData(stravaData, activityType) {
     newActivity.selected = false;
     newActivity.weight = 2;
     newActivity.color = "blue";
-    newActivity.startLatLng = element.start_latlng;
 
     if (newActivity.line) {
       //only grab activities with a polyline
@@ -377,8 +376,11 @@ function getPointsFromActivities(req, res, next) {
   activities.forEach(activity => {
     try {
       const decodedPath = decodePolyline(activity.line);
-      // pointsArray.push(decodedPath);
       activity.points = decodedPath;
+      //get mid point of activity for centering map
+      //TODO: This would be better by getting the 4 extremes and using them
+      const midPoint = decodedPath[Math.floor(decodedPath.length / 2)];
+      activity.midLatLng = [midPoint.lat, midPoint.lng];
     } catch (error) {
       console.log(`Error decoding activity: ${activity.name}`);
     }
