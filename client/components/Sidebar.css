@@ -17,8 +17,13 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    color:white;
+    color: white;
     text-align: center;
+}
+
+
+#demoBtn {
+    margin: 0px 50px;
 }
 
 #demoText {
@@ -26,7 +31,7 @@
     color: white;
 }
 
-#demoInstructions{
+#demoInstructions {
     font-size: 0.7em;
     padding: 0 6;
 }
@@ -39,10 +44,6 @@
 
 #mapControls {
     width: 340px;
-}
-
-#sidebar {
-    height: 600px;
 }
 
 #title {
@@ -80,6 +81,16 @@
     cursor: pointer;
 }
 
+.demoText {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.marginTop {
+    margin-top: 30;
+}
+
 .react-date-picker {
     height: 35;
 }
@@ -103,11 +114,18 @@
     text-decoration: none;
 }
 
-.selected {
+.selectedTitle {
     font-size: 20;
     font-weight: 800;
-    /* height: 100px; */
     margin-bottom: 25px;
+}
+
+.sidebar {
+    height: 600px;
+}
+
+.smallText {
+    font-size: .6em;
 }
 
 .zipinput {

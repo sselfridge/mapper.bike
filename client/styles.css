@@ -37,10 +37,6 @@ a.button {
     display: flex;
 }
 
-#demoBtn {
-
-}
-
 #dimScreen {
     position: absolute;
     width: 3000px;

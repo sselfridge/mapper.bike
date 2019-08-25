@@ -16,7 +16,7 @@ const RideTitle = props => {
   let stravaLink = `https://www.strava.com/activities/${id}`;
 
   if (selected == true) {
-    selectedStyle = "selected";
+    selectedStyle = "selectedTitle";
     rideLink = (
       <a className="rideLink button" href={stravaLink} target="_blank">
         View On Strava

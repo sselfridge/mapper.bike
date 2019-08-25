@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
 import Sidebar from "./Sidebar";
-import DefaultSidebar from "./DefaultSidebar"
+import DefaultSidebar from "./DefaultSidebar";
 import config from "../../config/keys";
 import axios from "axios";
 
@@ -41,7 +41,7 @@ class App extends Component {
       flashMessage: "",
       demoMode: false,
       dimScreen: false,
-      showMenu: false,
+      showMenu: false
     };
 
     this.selectedActivity = {
@@ -343,7 +343,7 @@ class App extends Component {
         <div id="leftSide">
           {this.state.currentUser.firstname === null &&
           this.state.demoMode === false ? (
-            < DefaultSidebar getDemoActivities={this.getDemoActivities} />
+            <DefaultSidebar getDemoActivities={this.getDemoActivities} />
           ) : (
             <div>
               Welcome {this.state.currentUser.firstname}
