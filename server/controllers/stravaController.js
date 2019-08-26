@@ -22,6 +22,8 @@ const stravaController = {};
 stravaController.setStravaOauth = setStravaOauth;
 stravaController.loadStravaProfile = loadStravaProfile;
 stravaController.getActivities = getActivities;
+stravaController.getDemoData = getDemoData;
+stravaController.clearCookie = clearCookie;
 stravaController.getPointsFromActivities = getPointsFromActivities;
 
 function setStravaOauth(req, res, next) {
@@ -92,7 +94,6 @@ function loadStravaProfile(req, res, next) {
       console.log(
         `Session Valid - allow to proceed. User: ${payload.althleteID}`
       );
-      // console.log(payload);
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
       res.locals.althleteID = payload.althleteID;
@@ -156,6 +157,11 @@ function loadStravaProfile(req, res, next) {
       );
     }
   });
+}
+
+function clearCookie(req,res,next){
+  res.clearCookie("stravajwt");
+  next();
 }
 
 //activity not in db already - create new activity and insert
@@ -276,14 +282,6 @@ function buildStravaData(  before,  after,  page,  stravaData,  accessToken,  ca
   );
 }
 
-function getDummydata(file = "stockData") {
-  const dummyData = fs.readFileSync(__dirname + `/../../${file}.json`);
-  // const dummyData = fs.readFileSync(__dirname + "/../../bigDummy.json")
-  let stravaData = JSON.parse(dummyData);
-  console.log(`Cleaning up from dummyData`);
-  return cleanUpStravaData(stravaData);
-}
-
 function cleanUpStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
@@ -353,14 +351,19 @@ function getActivities(req, res, next) {
       return next();
     })
     .catch(errorDispatch);
+}
 
-  // activities = getDummydata("BigDummy");
-  // res.locals.activities = activities;
-  // return next();
+function getDemoData(req, res, next) {
+  console.log("Getting Demo Data");
+  const demoData = fs.readFileSync(__dirname + `/../../config/demoData.json`);
+  let stravaData = JSON.parse(demoData);
+  console.log(`Cleaning up from demoData`);
+  res.locals.activities = cleanUpStravaData(stravaData);
+  return next();
 }
 
 function errorDispatch(error) {
-  console.log(`we have an error, but ssssshhhhhhh`);
+  console.log(`ERROR Will Robinson! ASYNC ERROR`);
   console.log(error);
 }
 

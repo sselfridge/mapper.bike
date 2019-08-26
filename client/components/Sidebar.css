@@ -8,6 +8,34 @@
     margin-left: 10px;
 }
 
+#fogOfDemo {
+    background-color: rgba(15, 15, 15, 0.75);
+    z-index: 5;
+    border-radius: 5px;
+    font-weight: 800;
+    font-size: 1.4em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+
+
+#demoBtn {
+    margin: 0px 50px;
+}
+
+#demoText {
+    margin: auto;
+    color: white;
+}
+
+#demoInstructions {
+    font-size: 0.7em;
+    padding: 0 6;
+}
+
 #getActBtn {
     color: white;
     background-color: rgb(55, 194, 0);
@@ -16,11 +44,6 @@
 
 #mapControls {
     width: 340px;
-}
-
-#sidebar {
-    margin-top: 20px;
-    height: 600px;
 }
 
 #title {
@@ -54,6 +77,20 @@
     font-weight: 800;
 }
 
+.activityTitle>span:hover {
+    cursor: pointer;
+}
+
+.demoText {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.marginTop {
+    margin-top: 30;
+}
+
 .react-date-picker {
     height: 35;
 }
@@ -77,11 +114,18 @@
     text-decoration: none;
 }
 
-.selected {
+.selectedTitle {
     font-size: 20;
     font-weight: 800;
-    /* height: 100px; */
     margin-bottom: 25px;
+}
+
+.sidebar {
+    height: 600px;
+}
+
+.smallText {
+    font-size: .6em;
 }
 
 .zipinput {

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
 import Sidebar from "./Sidebar";
+import DefaultSidebar from "./DefaultSidebar";
 import config from "../../config/keys";
 import axios from "axios";
 
@@ -37,7 +38,10 @@ class App extends Component {
         lat: null,
         lang: null
       },
-      flashMessage: ""
+      flashMessage: "",
+      demoMode: false,
+      dimScreen: false,
+      showMenu: false
     };
 
     this.selectedActivity = {
@@ -54,10 +58,9 @@ class App extends Component {
       zIndex: 2
     };
 
-    // this.onMarkerClick = this.onMarkerClick.bind(this);
-    // this.onClose = this.onClose.bind(this);
     this.onLineClick = this.onLineClick.bind(this);
     this.getActivities = this.getActivities.bind(this);
+    this.getDemoActivities = this.getDemoActivities.bind(this);
     this.toggleBlackground = this.toggleBlackground.bind(this);
     this.highlightTitle = this.highlightTitle.bind(this);
     this.selectActivity = this.selectActivity.bind(this);
@@ -68,6 +71,9 @@ class App extends Component {
     this.setActivityType = this.setActivityType.bind(this);
     this.centerOnZip = this.centerOnZip.bind(this);
     this.flashMessage = this.flashMessage.bind(this);
+    this.stravaLogout = this.stravaLogout.bind(this);
+    this.toggleDim = this.toggleDim.bind(this);
+    this.toggleShowMenu = this.toggleShowMenu.bind(this);
   }
 
   //used by clicking a line in the map or hovering over it on the side
@@ -168,6 +174,17 @@ class App extends Component {
     });
   }
 
+  getDemoActivities() {
+    this.setState({ loadingActivites: true });
+    axios.get("/api/getDemoData").then(res => {
+      this.setState({
+        activities: res.data,
+        loadingActivites: false,
+        demoMode: true
+      });
+    });
+  }
+
   setAfterDate(newDate) {
     this.setState({ afterDate: newDate });
   }
@@ -205,6 +222,31 @@ class App extends Component {
     setTimeout(() => {
       this.setState({ flashMessage: "" });
     }, 5000);
+  }
+
+  stravaLogout() {
+    axios.get("/api/logout").then(res => {
+      if (res.status === 200) {
+        const emptyUser = {
+          avatar: null,
+          firstname: null,
+          lastname: null
+        };
+        this.setState({ currentUser: emptyUser, demoMode: false });
+      }
+    });
+  }
+
+  toggleShowMenu() {
+    const showMenu = !this.state.showMenu;
+    const dimScreen = showMenu;
+    this.setState({ dimScreen, showMenu });
+  }
+
+  toggleDim() {
+    const dimScreen = !this.state.dimScreen;
+    const showMenu = false;
+    this.setState({ dimScreen, showMenu });
   }
 
   componentWillMount() {
@@ -278,19 +320,35 @@ class App extends Component {
     console.log(`App ENV:${process.env.NODE_ENV}`);
     console.log(`client: ${config.client_id}`);
 
+    const dimScreen = this.state.dimScreen ? (
+      <div id="dimScreen" onClick={this.toggleDim} />
+    ) : (
+      <></>
+    );
+
+    const hamburgerMenu = this.state.showMenu ? (
+      <div id="menuModal">
+        <a target="_blank" href="http://www.github.com/sselfridge/mapper.bike">
+          View source on GitHub
+        </a>
+        <hr />
+        <a href="mailto:Sam.Selfridge@gmail.com">Sam.Selfridge@gmail.com</a>
+        <hr />
+        <a href="" onClick={this.stravaLogout}>
+          Logout
+        </a>
+      </div>
+    ) : (
+      <></>
+    );
+
     return (
       <div id="container">
+        {dimScreen}
         <div id="leftSide">
-          {this.state.currentUser.firstname === null ? (
-            // prettier-ignore
-            <div>
-              <a href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}>
-                  <img src="client/img/connectStrava.png" />
-                </a>
-                None of your data is kept on our server
-                <br/>
-                Strava-less Demo coming soon!
-          </div>
+          {this.state.currentUser.firstname === null &&
+          this.state.demoMode === false ? (
+            <DefaultSidebar getDemoActivities={this.getDemoActivities} />
           ) : (
             <div>
               Welcome {this.state.currentUser.firstname}
@@ -308,6 +366,8 @@ class App extends Component {
                 loadingActivites={this.state.loadingActivites}
                 centerOnZip={this.centerOnZip}
                 flashMessage={this.state.flashMessage}
+                demoMode={this.state.demoMode}
+                stravaLogout={this.stravaLogout}
               />
             </div>
           )}
@@ -319,18 +379,15 @@ class App extends Component {
               Mapper.Bike <span id="betatext">beta {`v-${VERSION}`}</span>
             </div>{" "}
             <div>
-              Feedback? Contact me at:
+              {/* Feedback? Contact me at:
               <a href="mailto:sam.selfridge@gmail.com?subject=Mapper.Bike">
                 Sam.Selfridge@gmail.com
               </a>
               <br />
               Source Code:
-              <a
-                href="http://www.github.com/sselfridge/mapper.bike"
-                target="_blank"
-              >
-                View on GitHub
-              </a>
+            */}
+              <span onClick={this.toggleShowMenu} className="hamburger" />
+              {hamburgerMenu}
             </div>
           </div>
 
