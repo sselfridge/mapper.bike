@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
+import Geocode from "react-geocode";
 import Sidebar from "./Sidebar";
 import DefaultSidebar from "./DefaultSidebar";
 import config from "../../config/keys";
@@ -69,11 +70,12 @@ class App extends Component {
     this.setAfterDate = this.setAfterDate.bind(this);
     this.setBeforeDate = this.setBeforeDate.bind(this);
     this.setActivityType = this.setActivityType.bind(this);
-    this.centerOnZip = this.centerOnZip.bind(this);
+    this.centerOnLocation = this.centerOnLocation.bind(this);
     this.flashMessage = this.flashMessage.bind(this);
     this.stravaLogout = this.stravaLogout.bind(this);
     this.toggleDim = this.toggleDim.bind(this);
     this.toggleShowMenu = this.toggleShowMenu.bind(this);
+    // this.centerFromSearch = this.centerFromSearch.bind(this);
   }
 
   //used by clicking a line in the map or hovering over it on the side
@@ -196,24 +198,43 @@ class App extends Component {
     console.log(e.target.value);
     this.setState({ activityType: e.target.value });
   }
-  centerOnZip(e) {
-    if (e.key == "Enter") {
-      if (!/^\d{5}/.test(e.target.value)) {
-        this.flashMessage("5 Digit US zipcodes only");
-        return;
-      } //only query if zip is 5 numbers
-      axios
-        .get(`/api/getLatLngZip/${e.target.value}`)
-        .then(res => {
-          if (res.data) {
-            this.setState({ center: res.data });
-          }
-        })
-        .catch(err => {
-          this.flashMessage("5 Digit US zipcodes only");
-        });
+
+  centerOnLocation(e) {
+    if (e.key === "Enter") {
+      // console.log('Looking up:',e.target.value);
+      Geocode.fromAddress(e.target.value).then(
+        response => {
+          const { lat, lng } = response.results[0].geometry.location;
+          this.setState({ center: { lat, lng } });
+          // console.log(lat, lng);
+        },
+        error => {
+          console.error(error); 
+          // this.flashMessage(error)
+          //TODO translate errors to front end
+        }
+      );
     }
   }
+
+  // centerOnZip(e) {
+  //   if (e.key === "Enter") {
+  //     if (!/^\d{5}/.test(e.target.value)) {
+  //       this.flashMessage("5 Digit US zipcodes only");
+  //       return;
+  //     } //only query if zip is 5 numbers
+  //     axios
+  //       .get(`/api/getLatLngZip/${e.target.value}`)
+  //       .then(res => {
+  //         if (res.data) {
+  //           this.setState({ center: res.data });
+  //         }
+  //       })
+  //       .catch(err => {
+  //         this.flashMessage("5 Digit US zipcodes only");
+  //       });
+  //   }
+  // }
 
   flashMessage(message, type) {
     const flashMessage = message;
@@ -265,6 +286,8 @@ class App extends Component {
     const polyLineArray = [];
 
     console.log("Version:", VERSION);
+    Geocode.setApiKey(config.mapsApi)
+
 
     //create poly line components to add
     activities.forEach((activity, index) => {
@@ -346,8 +369,7 @@ class App extends Component {
       <div id="container">
         {dimScreen}
         <div id="leftSide">
-          {this.state.currentUser.firstname === null &&
-          this.state.demoMode === false ? (
+          {this.state.currentUser.firstname === null && this.state.demoMode === false ? (
             <DefaultSidebar getDemoActivities={this.getDemoActivities} />
           ) : (
             <div>
@@ -364,7 +386,7 @@ class App extends Component {
                 setBeforeDate={this.setBeforeDate}
                 setActivityType={this.setActivityType}
                 loadingActivites={this.state.loadingActivites}
-                centerOnZip={this.centerOnZip}
+                centerOnLocation={this.centerOnLocation}
                 flashMessage={this.state.flashMessage}
                 demoMode={this.state.demoMode}
                 stravaLogout={this.stravaLogout}
@@ -379,13 +401,6 @@ class App extends Component {
               Mapper.Bike <span id="betatext">beta {`v-${VERSION}`}</span>
             </div>{" "}
             <div>
-              {/* Feedback? Contact me at:
-              <a href="mailto:sam.selfridge@gmail.com?subject=Mapper.Bike">
-                Sam.Selfridge@gmail.com
-              </a>
-              <br />
-              Source Code:
-            */}
               <span onClick={this.toggleShowMenu} className="hamburger" />
               {hamburgerMenu}
             </div>
