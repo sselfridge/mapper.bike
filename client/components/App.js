@@ -209,9 +209,14 @@ class App extends Component {
           // console.log(lat, lng);
         },
         error => {
-          console.error(error); 
-          // this.flashMessage(error)
-          //TODO translate errors to front end
+          console.error(error);
+          const errMsg = error.message
+          
+          
+          if(errMsg === "Server returned status code ZERO_RESULTS") {
+            this.flashMessage("No location found")
+          }
+          
         }
       );
     }
@@ -286,8 +291,7 @@ class App extends Component {
     const polyLineArray = [];
 
     console.log("Version:", VERSION);
-    Geocode.setApiKey(config.mapsApi)
-
+    Geocode.setApiKey(config.mapsApi);
 
     //create poly line components to add
     activities.forEach((activity, index) => {
