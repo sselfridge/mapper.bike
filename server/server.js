@@ -69,6 +69,8 @@ app.get(
   }
 );
 
+//This route has been deprecated, keeping it around for a bit in case the
+// new issue has bugs popup
 app.get("/api/getLatLngZip/:zip", (req, res) => {
   if (!/^\d{5}/.test(req.params.zip)) {
     res.status(400).send("Only 5 digit zipcodes allowed");
