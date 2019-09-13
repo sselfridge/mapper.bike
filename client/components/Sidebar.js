@@ -99,7 +99,7 @@ const Sidebar = props => {
         <input
           className="zipinput"
           type="text"
-          placeholder="Center on Zip Code"
+          placeholder="Center on Location. Hit enter to submit"
           onKeyDown={props.centerOnLocation}
         />
         {/* mapControls */}
