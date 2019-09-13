@@ -4,7 +4,7 @@ const path = require("path");
 const decodePolyline = require("decode-google-map-polyline");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const fs = require("fs");
 
 // const mongoURI = "mongodb://localhost/meinmap";
@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(analyticController.getUserData);
-
+ 
 //Testing route for turning a path to polyline
 app.get("/api/getPath", (req, res) => {
   console.log(`Hitting getPath`);

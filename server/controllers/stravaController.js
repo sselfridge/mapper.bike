@@ -3,7 +3,7 @@ const jwtoken = require("jsonwebtoken");
 const request = require("request");
 const decodePolyline = require("decode-google-map-polyline");
 const fs = require("fs");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const dayInSeconds = 86400;
 const dbSet = new Set();
 
