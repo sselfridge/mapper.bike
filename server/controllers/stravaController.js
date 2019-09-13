@@ -1,20 +1,17 @@
-const Activity = require("./../models/activityModel");
 const jwtoken = require("jsonwebtoken");
 const request = require("request");
 const decodePolyline = require("decode-google-map-polyline");
 const fs = require("fs");
-const mongoose = require("mongoose");
 const dayInSeconds = 86400;
-const dbSet = new Set();
+
+// DB requirments, not being used but keeping around for the future
+// const Activity = require("./../models/activityModel");
+// const mongoose = require("mongoose");
 
 const config = require("../../config/keys");
 
 let needToPingStrava = false; //flag if we need to make a strava querey or if we have all activities locally
 let useDummyData = false;
-
-//globals that I shouldn't use but meh
-let before;
-let after;
 
 const secretSuperKey = config.secretSuperKey; //used for JWT stuffs
 
@@ -194,40 +191,41 @@ function putActivityinDB(activity) {
   // return reterr;
 }
 
-function fetchFromDB(after, before, accessToken) {
-  return new Promise((resolve, reject) => {
-    resolve([accessToken]); //ignore DB for now
-    return;
-    console.log("This Shouldn't happen&&&&&&&&&&&&&&&&&&&&&&&&&");
-    Activity.find({ date: { $lte: before, $gte: after } }, (err, docs) => {
-      console.log(`Searching DB`);
-      if (err) {
-        console.log(`Error with DB: ${err}`);
-        resolve([], accessToken);
-      } else {
-        console.log(`Found docs from DB: ${docs.length}`);
-        let newActivityArray = [];
-        docs.forEach(activity => {
-          const newActivity = {
-            id: activity.id,
-            name: activity.name,
-            line: activity.line,
-            date: activity.date,
-            color: activity.color,
-            selected: activity.selected
-          };
-          newActivityArray.push(newActivity);
-        });
+// Not using DB currently, keeping old code if we move to that in the future
+// function fetchFromDB(after, before, accessToken) {
+//   return new Promise((resolve, reject) => {
+//     resolve([accessToken]); //ignore DB for now
+//     return;
+//     console.log("This Shouldn't happen&&&&&&&&&&&&&&&&&&&&&&&&&");
+//     Activity.find({ date: { $lte: before, $gte: after } }, (err, docs) => {
+//       console.log(`Searching DB`);
+//       if (err) {
+//         console.log(`Error with DB: ${err}`);
+//         resolve([], accessToken);
+//       } else {
+//         console.log(`Found docs from DB: ${docs.length}`);
+//         let newActivityArray = [];
+//         docs.forEach(activity => {
+//           const newActivity = {
+//             id: activity.id,
+//             name: activity.name,
+//             line: activity.line,
+//             date: activity.date,
+//             color: activity.color,
+//             selected: activity.selected
+//           };
+//           newActivityArray.push(newActivity);
+//         });
 
-        //do we have all the dates in our DB already?
-        resolve(newActivityArray, accessToken);
-      }
-    }); //dnif
-  });
-}
+//         //do we have all the dates in our DB already?
+//         resolve(newActivityArray, accessToken);
+//       }
+//     }); //dnif
+//   });
+// }
 
 //expect the accessToken to be the last entry in the array
-function pingStrava(activities) {
+function pingStrava(before,after,activities) {
   const accessToken = activities.pop();
   console.log("Ping Strava with accessToken:", accessToken);
   return new Promise((resolve, reject) => {
@@ -338,8 +336,7 @@ function getActivities(req, res, next) {
   let activities = [];
 
   // check db for activties in this range
-  fetchFromDB(after, before, res.locals.accessToken)
-    .then(pingStrava)
+  pingStrava(after, before, res.locals.accessToken)
     .then(result => {
       console.log(`Cleaning up from ping strava ${result.length}`);
       result = cleanUpStravaData(result, activityType);
