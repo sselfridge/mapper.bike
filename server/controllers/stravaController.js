@@ -218,7 +218,11 @@ function pingStrava(after, before, accessToken) {
     let stravaData = [];
     const page = 1;
     const query = `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&per_page=200&page=`;
-
+    const queryData = {
+      page: 1,
+      query: `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&per_page=200&page=`,
+      accessToken: accessToken,
+    }
     const callback = function(err, resultStravaArray) {
       if (err) {
         console.log(`Error with strava ${err}`);
@@ -228,13 +232,13 @@ function pingStrava(after, before, accessToken) {
       }
     };
 
-    buildStravaData(query, page, stravaData, accessToken, callback);
+    buildStravaData(queryData, stravaData, callback);
   });
 }
 
 // prettier-ignore
-function buildStravaData(query, page, stravaData,  accessToken,  callback) {
-  let stravaQuery = query + page;
+function buildStravaData(queryData, stravaData,  callback) {
+  let stravaQuery = queryData.query + queryData.page;
   console.log(stravaQuery);
   console.log(
     `========================CALLING STRAVA API==============================`
@@ -243,7 +247,7 @@ function buildStravaData(query, page, stravaData,  accessToken,  callback) {
     {
       url: stravaQuery,
       headers: {
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${queryData.accessToken}`
       }
     },
     function(err, httpResponse, body) {
@@ -260,13 +264,15 @@ function buildStravaData(query, page, stravaData,  accessToken,  callback) {
         console.log(`less than 200 results`);
         callback(null,stravaData) ;
       } else {
-        console.log('More than 200, getting more');
+        console.log('More than 200 results, getting more');
         // prettier-ignore
-        buildStravaData(query,page + 1,stravaData,accessToken,callback);      }
+        queryData.page++;
+        buildStravaData(queryData,stravaData,callback);      }
     }
   );
 }
 
+//take the activity data from strava and parse it for display on the map
 function cleanUpStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
@@ -281,8 +287,8 @@ function cleanUpStravaData(stravaData, activityType) {
     newActivity.weight = 2;
     newActivity.color = "blue";
 
+    //only grab activities with a polyline
     if (newActivity.line) {
-      //only grab activities with a polyline
       // if (!dbSet.has(newActivity.id)) { //TODO re-introduce DB stuffs
       //   dbSet.add(newActivity.id);
       //   let err = putActivityinDB(newActivity);
@@ -319,18 +325,12 @@ function getActivities(req, res, next) {
   //   [after, before] = [before, after];
   // }
 
-  // let activities = [];
-
-  // check db for activties in this range
   pingStrava(after, before, res.locals.accessToken)
     .then(result => {
-      console.log(`Cleaning up ${result.length} entries from ping strava `);
       result = cleanUpStravaData(result, activityType);
-      // result = result.concat(activities);
-      console.log(`Resolving DB promise result Length: ${result.length}`);
+      console.log(`Cleaned up result length: ${result.length}`);
 
       res.locals.activities = result;
-      console.log(`Got results from DB / Strava: Length: ${result == null}`);
       return next();
     })
     .catch(errorDispatch);
