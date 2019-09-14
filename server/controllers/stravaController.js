@@ -2,16 +2,12 @@ const jwtoken = require("jsonwebtoken");
 const request = require("request");
 const decodePolyline = require("decode-google-map-polyline");
 const fs = require("fs");
-const dayInSeconds = 86400;
 
 // DB requirments, not being used but keeping around for the future
 // const Activity = require("./../models/activityModel");
 // const mongoose = require("mongoose");
 
 const config = require("../../config/keys");
-
-let needToPingStrava = false; //flag if we need to make a strava querey or if we have all activities locally
-let useDummyData = false;
 
 const secretSuperKey = config.secretSuperKey; //used for JWT stuffs
 
@@ -40,8 +36,7 @@ function setStravaOauth(req, res, next) {
     function(err, httpResponse, body) {
       if (err) {
         console.log(`Error with strava auth ${err}`);
-        res.locals.err =
-          "Error with strava - try again or logging with username/password";
+        res.locals.err = "Error with strava - try again or logging with username/password";
         return next();
       }
 
@@ -80,7 +75,6 @@ function setStravaOauth(req, res, next) {
 }
 
 function loadStravaProfile(req, res, next) {
-  // console.log("Starting Strava Profile");
   let hubCookie = req.cookies.stravajwt;
 
   jwtoken.verify(hubCookie, secretSuperKey, (err, payload) => {
@@ -88,9 +82,7 @@ function loadStravaProfile(req, res, next) {
       console.log(`Token Invalid: ${err}`);
       res.locals.err = "Strava token invalid";
     } else {
-      console.log(
-        `Session Valid - allow to proceed. User: ${payload.althleteID}`
-      );
+      console.log(`Session Valid - allow to proceed. User: ${payload.althleteID}`);
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
       res.locals.althleteID = payload.althleteID;
@@ -104,8 +96,7 @@ function loadStravaProfile(req, res, next) {
         function(err, httpResponse, body) {
           if (err) {
             console.log(`Error with strava auth ${err}`);
-            res.locals.err =
-              "Error with strava - try again or logging with username/password";
+            res.locals.err = "Error with strava - try again or logging with username/password";
             return next();
           }
           console.log(`Status:${httpResponse.statusCode}`);
@@ -143,10 +134,7 @@ function loadStravaProfile(req, res, next) {
               firstname: stravaData.firstname,
               lastname: stravaData.lastname
             };
-            fs.appendFileSync(
-              "logs/users.txt",
-              `${stravaData.firstname} ${stravaData.lastname}\n`
-            );
+            fs.appendFileSync("logs/users.txt", `${stravaData.firstname} ${stravaData.lastname}\n`);
 
             return next();
           }
@@ -156,42 +144,42 @@ function loadStravaProfile(req, res, next) {
   });
 }
 
-function clearCookie(req,res,next){
+function clearCookie(req, res, next) {
   res.clearCookie("stravajwt");
   next();
 }
+// Not using DB currently, keeping old code if we move to that in the future
 
 //activity not in db already - create new activity and insert
-function putActivityinDB(activity) {
-  const newAct = new Activity(activity);
-  let reterr = null;
-  try {
-    //try catch because my duplication errors are annoying
-    newAct.save(err => {
-      if (err) {
-        console.log("Error Creating Activity:", err);
-        let errMsg;
-        switch (err.code) {
-          case 11000:
-            // do nothing, expecting lots of dupications
-            // errMsg = "None unique Activity taken, please pick something else";
-            err = null;
-            break;
+// function putActivityinDB(activity) {
+//   const newAct = new Activity(activity);
+//   let reterr = null;
+//   try {
+//     //try catch because my duplication errors are annoying
+//     newAct.save(err => {
+//       if (err) {
+//         console.log("Error Creating Activity:", err);
+//         let errMsg;
+//         switch (err.code) {
+//           case 11000:
+//             // do nothing, expecting lots of dupications
+//             // errMsg = "None unique Activity taken, please pick something else";
+//             err = null;
+//             break;
 
-          default:
-            errMsg = "Error creating Activity, try again later";
-            break;
-        }
-        err = errMsg;
-      }
-    });
-  } catch (error) {
-    console.log(`Caught a DB error: ${error}`);
-  }
-  // return reterr;
-}
+//           default:
+//             errMsg = "Error creating Activity, try again later";
+//             break;
+//         }
+//         err = errMsg;
+//       }
+//     });
+//   } catch (error) {
+//     console.log(`Caught a DB error: ${error}`);
+//   }
+//   // return reterr;
+// }
 
-// Not using DB currently, keeping old code if we move to that in the future
 // function fetchFromDB(after, before, accessToken) {
 //   return new Promise((resolve, reject) => {
 //     resolve([accessToken]); //ignore DB for now
@@ -224,29 +212,29 @@ function putActivityinDB(activity) {
 //   });
 // }
 
-//expect the accessToken to be the last entry in the array
-function pingStrava(before,after,activities) {
-  const accessToken = activities.pop();
+function pingStrava(after, before, accessToken) {
   console.log("Ping Strava with accessToken:", accessToken);
   return new Promise((resolve, reject) => {
     let stravaData = [];
-    buildStravaData(before, after, 1, stravaData, accessToken, function(
-      err,
-      stravaData
-    ) {
+    const page = 1;
+    const query = `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&per_page=200&page=`;
+
+    const callback = function(err, resultStravaArray) {
       if (err) {
         console.log(`Error with strava ${err}`);
         resolve([]);
       } else {
-        resolve(stravaData);
+        resolve(resultStravaArray);
       }
-    });
+    };
+
+    buildStravaData(query, page, stravaData, accessToken, callback);
   });
 }
 
 // prettier-ignore
-function buildStravaData(  before,  after,  page,  stravaData,  accessToken,  callback) {
-  let stravaQuery = `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&page=${page}&per_page=200`;
+function buildStravaData(query, page, stravaData,  accessToken,  callback) {
+  let stravaQuery = query + page;
   console.log(stravaQuery);
   console.log(
     `========================CALLING STRAVA API==============================`
@@ -263,7 +251,6 @@ function buildStravaData(  before,  after,  page,  stravaData,  accessToken,  ca
         callback(err);
       }
       console.log(`Strava Data Aquired!!`);
-      // console.log(body);
       let newData = JSON.parse(body);
       let newLength = newData.length;
       console.log(`Got ${newLength} new results`);
@@ -275,7 +262,7 @@ function buildStravaData(  before,  after,  page,  stravaData,  accessToken,  ca
       } else {
         console.log('More than 200, getting more');
         // prettier-ignore
-        buildStravaData(before,after,page + 1,stravaData,accessToken,callback);      }
+        buildStravaData(query,page + 1,stravaData,accessToken,callback);      }
     }
   );
 }
@@ -326,21 +313,20 @@ function getActivities(req, res, next) {
   before = req.query.before;
   activityType = req.query.type;
   console.log(`Type:${activityType}`);
-  needToPingStrava = true;
 
   //swap if after is later than before
   // if (after > before) {
   //   [after, before] = [before, after];
   // }
 
-  let activities = [];
+  // let activities = [];
 
   // check db for activties in this range
   pingStrava(after, before, res.locals.accessToken)
     .then(result => {
-      console.log(`Cleaning up from ping strava ${result.length}`);
+      console.log(`Cleaning up ${result.length} entries from ping strava `);
       result = cleanUpStravaData(result, activityType);
-      result = result.concat(activities);
+      // result = result.concat(activities);
       console.log(`Resolving DB promise result Length: ${result.length}`);
 
       res.locals.activities = result;
