@@ -9,7 +9,6 @@ const fs = require("fs");
 
 const config = require("../../config/keys");
 
-
 const stravaController = {};
 stravaController.setStravaOauth = setStravaOauth;
 stravaController.loadStravaProfile = loadStravaProfile;
@@ -218,8 +217,8 @@ function pingStrava(after, before, accessToken) {
     const queryData = {
       page: 1,
       query: `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&per_page=200&page=`,
-      accessToken: accessToken,
-    }
+      accessToken: accessToken
+    };
     const callback = function(err, resultStravaArray) {
       if (err) {
         console.log(`Error with strava ${err}`);
