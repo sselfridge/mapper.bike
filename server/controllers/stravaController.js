@@ -215,8 +215,6 @@ function pingStrava(after, before, accessToken) {
   console.log("Ping Strava with accessToken:", accessToken);
   return new Promise((resolve, reject) => {
     let stravaData = [];
-    const page = 1;
-    const query = `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&per_page=200&page=`;
     const queryData = {
       page: 1,
       query: `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&per_page=200&page=`,
@@ -309,7 +307,7 @@ function makeEpochSecondsTime(string) {
   return number;
 }
 
-//fetch activities in the date range between before and after
+// fetch activities in the date range between before and after
 // activities stored in res.locals.activities in polyline format
 // need to turn into points to be placed on map
 // done by getPointsFromActivites
@@ -349,7 +347,7 @@ function errorDispatch(error) {
   console.log(error);
 }
 
-//take polyline and decode into GPS points to be placed on map in polyline component
+// take polyline and decode into GPS points to be placed on map in polyline component
 // ya I know its weird but here we are
 function getPointsFromActivities(req, res, next) {
   let activities = res.locals.activities;
