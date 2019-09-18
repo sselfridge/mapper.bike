@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(analyticController.getUserData);
-
+ 
 //Testing route for turning a path to polyline
 app.get("/api/getPath", (req, res) => {
   console.log(`Hitting getPath`);
