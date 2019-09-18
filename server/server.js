@@ -159,19 +159,5 @@ app.use((err, req, res, next) => {
   res.status(200).send("Something Broke, we're sorry");
 });
 
-// function heartbeat() {
-//   // console.log("Heartbeat");
-//   if (Date.now() - heartbeatLast > heartbeatFreq) {
-//     heartbeatLast = Date.now();
-//     const date = new Date();
-//     console.log(
-//       `Heartbeat: ${date.getMonth() +
-//         1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}`
-//     );
-//   }
-// }
-
-// setInterval(heartbeat, 10000);
-
 app.listen(3000); //listens on port 3000 -> http://localhost:3000/
 console.log(`Listening on Port 3000`);
