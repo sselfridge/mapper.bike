@@ -210,13 +210,11 @@ class App extends Component {
         },
         error => {
           console.error(error);
-          const errMsg = error.message
-          
-          
-          if(errMsg === "Server returned status code ZERO_RESULTS") {
-            this.flashMessage("No location found")
+          const errMsg = error.message;
+
+          if (errMsg === "Server returned status code ZERO_RESULTS") {
+            this.flashMessage("No location found");
           }
-          
         }
       );
     }
@@ -376,7 +374,7 @@ class App extends Component {
             <DefaultSidebar getDemoActivities={this.getDemoActivities} />
           ) : (
             <div>
-              Welcome {this.state.currentUser.firstname}
+              Welcome {`${this.state.currentUser.firstname} ${this.state.currentUser.lastname}`}
               <Sidebar
                 getActivities={this.getActivities}
                 toggleBlackground={this.toggleBlackground}
