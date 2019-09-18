@@ -9,7 +9,6 @@ const fs = require("fs");
 
 const config = require("../../config/keys");
 
-const secretSuperKey = config.secretSuperKey; //used for JWT stuffs
 
 const stravaController = {};
 stravaController.setStravaOauth = setStravaOauth;
@@ -67,7 +66,7 @@ function setStravaOauth(req, res, next) {
         althleteID: bodyArray[3]
       };
 
-      let jwt = jwtoken.sign(payload, secretSuperKey, { expiresIn: "6h" });
+      let jwt = jwtoken.sign(payload, config.secretSuperKey, { expiresIn: "6h" });
       res.cookie("stravajwt", jwt, { httpOnly: true });
       return next();
     }
@@ -77,7 +76,7 @@ function setStravaOauth(req, res, next) {
 function loadStravaProfile(req, res, next) {
   let hubCookie = req.cookies.stravajwt;
 
-  jwtoken.verify(hubCookie, secretSuperKey, (err, payload) => {
+  jwtoken.verify(hubCookie, config.secretSuperKey, (err, payload) => {
     if (err) {
       console.log(`Token Invalid: ${err}`);
       res.locals.err = "Strava token invalid";
