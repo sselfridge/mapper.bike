@@ -4,7 +4,7 @@ const path = require("path");
 const decodePolyline = require("decode-google-map-polyline");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const fs = require("fs");
 
 // const mongoURI = "mongodb://localhost/meinmap";
