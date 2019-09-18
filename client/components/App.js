@@ -149,7 +149,7 @@ class App extends Component {
   }
 
   getActivities() {
-    console.log("getting activities!!!");
+    console.log("getActivities()");
     this.setState({ loadingActivites: true });
     let beforeDate = "";
     let afterDate = "";
@@ -210,13 +210,11 @@ class App extends Component {
         },
         error => {
           console.error(error);
-          const errMsg = error.message
-          
-          
-          if(errMsg === "Server returned status code ZERO_RESULTS") {
-            this.flashMessage("No location found")
+          const errMsg = error.message;
+
+          if (errMsg === "Server returned status code ZERO_RESULTS") {
+            this.flashMessage("No location found");
           }
-          
         }
       );
     }
@@ -290,7 +288,6 @@ class App extends Component {
     const activities = this.state.activities;
     const polyLineArray = [];
 
-    console.log("Version:", VERSION);
     Geocode.setApiKey(config.mapsApi);
 
     //create poly line components to add
@@ -344,8 +341,8 @@ class App extends Component {
         visible={this.state.blackgroundActive}
       />
     ];
-    console.log(`App ENV:${process.env.NODE_ENV}`);
-    console.log(`client: ${config.client_id}`);
+    console.debug(`App ENV:${process.env.NODE_ENV}`);
+    console.debug(`client: ${config.client_id}`);
 
     const dimScreen = this.state.dimScreen ? (
       <div id="dimScreen" onClick={this.toggleDim} />
@@ -377,7 +374,7 @@ class App extends Component {
             <DefaultSidebar getDemoActivities={this.getDemoActivities} />
           ) : (
             <div>
-              Welcome {this.state.currentUser.firstname}
+              Welcome {`${this.state.currentUser.firstname} ${this.state.currentUser.lastname}`}
               <Sidebar
                 getActivities={this.getActivities}
                 toggleBlackground={this.toggleBlackground}

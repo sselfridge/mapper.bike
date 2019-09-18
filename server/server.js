@@ -4,9 +4,10 @@ const path = require("path");
 const decodePolyline = require("decode-google-map-polyline");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-// const mongoose = require("mongoose");
 const fs = require("fs");
 
+// DB code, might use in the future
+// const mongoose = require("mongoose");
 // const mongoURI = "mongodb://localhost/meinmap";
 // mongoose.connect(mongoURI, { useNewUrlParser: true });
 
@@ -49,25 +50,21 @@ app.get("/api/getPath", (req, res) => {
   res.send(JSON.stringify(polyArray));
 });
 
-app.get(
-  "/api/getStravaUser",
-  stravaController.loadStravaProfile,
-  (req, res) => {
-    if (res.locals.err) {
-      res.status(444).send("Error during profile fetch");
-      return;
-    }
-    if (res.locals.user) {
-      //user profile exists send infoback
-      console.log(`User logged in to strava`);
-      res.send(JSON.stringify(res.locals.user));
-      return;
-    }
-    //no user logged in
-    console.log(`User not logged in to strava`);
-    res.status(201).send("User Not logged in");
+app.get("/api/getStravaUser", stravaController.loadStravaProfile, (req, res) => {
+  if (res.locals.err) {
+    res.status(444).send("Error during profile fetch");
+    return;
   }
-);
+  if (res.locals.user) {
+    //user profile exists send infoback
+    console.log(`User logged in to strava`);
+    res.send(JSON.stringify(res.locals.user));
+    return;
+  }
+  //no user logged in
+  console.log(`User not logged in to strava`);
+  res.status(201).send("User Not logged in");
+});
 
 //This route has been deprecated, keeping it around for a bit in case the
 // new issue has bugs popup
@@ -161,20 +158,6 @@ app.use((err, req, res, next) => {
   if (err.code != 11000) console.log(err); //11000 is a mongoDB error
   res.status(200).send("Something Broke, we're sorry");
 });
-
-// function heartbeat() {
-//   // console.log("Heartbeat");
-//   if (Date.now() - heartbeatLast > heartbeatFreq) {
-//     heartbeatLast = Date.now();
-//     const date = new Date();
-//     console.log(
-//       `Heartbeat: ${date.getMonth() +
-//         1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}`
-//     );
-//   }
-// }
-
-// setInterval(heartbeat, 10000);
 
 app.listen(3000); //listens on port 3000 -> http://localhost:3000/
 console.log(`Listening on Port 3000`);
