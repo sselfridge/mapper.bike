@@ -13,7 +13,7 @@ const fs = require("fs");
 
 const stravaController = require("./controllers/stravaController");
 const analyticController = require("./controllers/analyticsController");
-const squirrel = require("./controllers/squirrel");
+// const squirrel = require("./controllers/squirrel");
 const zip = require("../config/zip_lat_lang");
 const heartbeatFreq = 1000 * 60 * 5; //milliseconds to minutes.
 let heartbeatLast = Date.now();
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(analyticController.getUserData);
-
+ 
 //Testing route for turning a path to polyline
 app.get("/api/getPath", (req, res) => {
   console.log(`Hitting getPath`);
@@ -142,9 +142,9 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.get("/api/squirrel", squirrel, (req, res) => {
-  res.send();
-});
+// app.get("/api/squirrel", squirrel, (req, res) => {
+//   res.send();
+// });
 
 app.use("*", (req, res) => {
   console.log("ERROR Catch All -- Req Url:", req.url);
@@ -159,19 +159,19 @@ app.use((err, req, res, next) => {
   res.status(200).send("Something Broke, we're sorry");
 });
 
-function heartbeat() {
-  // console.log("Heartbeat");
-  if (Date.now() - heartbeatLast > heartbeatFreq) {
-    heartbeatLast = Date.now();
-    const date = new Date();
-    console.log(
-      `Heartbeat: ${date.getMonth() +
-        1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}`
-    );
-  }
-}
+// function heartbeat() {
+//   // console.log("Heartbeat");
+//   if (Date.now() - heartbeatLast > heartbeatFreq) {
+//     heartbeatLast = Date.now();
+//     const date = new Date();
+//     console.log(
+//       `Heartbeat: ${date.getMonth() +
+//         1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}`
+//     );
+//   }
+// }
 
-setInterval(heartbeat, 10000);
+// setInterval(heartbeat, 10000);
 
 app.listen(3000); //listens on port 3000 -> http://localhost:3000/
 console.log(`Listening on Port 3000`);
