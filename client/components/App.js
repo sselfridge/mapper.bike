@@ -149,7 +149,7 @@ class App extends Component {
   }
 
   getActivities() {
-    console.log("getting activities!!!");
+    console.log("getActivities()");
     this.setState({ loadingActivites: true });
     let beforeDate = "";
     let afterDate = "";
@@ -290,7 +290,6 @@ class App extends Component {
     const activities = this.state.activities;
     const polyLineArray = [];
 
-    console.log("Version:", VERSION);
     Geocode.setApiKey(config.mapsApi);
 
     //create poly line components to add
@@ -344,8 +343,8 @@ class App extends Component {
         visible={this.state.blackgroundActive}
       />
     ];
-    console.log(`App ENV:${process.env.NODE_ENV}`);
-    console.log(`client: ${config.client_id}`);
+    console.debug(`App ENV:${process.env.NODE_ENV}`);
+    console.debug(`client: ${config.client_id}`);
 
     const dimScreen = this.state.dimScreen ? (
       <div id="dimScreen" onClick={this.toggleDim} />
