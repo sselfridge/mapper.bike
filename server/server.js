@@ -12,7 +12,7 @@ const fs = require("fs");
 
 const stravaController = require("./controllers/stravaController");
 const analyticController = require("./controllers/analyticsController");
-const squirrel = require("./controllers/squirrel");
+// const squirrel = require("./controllers/squirrel");
 const zip = require("../config/zip_lat_lang");
 const heartbeatFreq = 1000 * 60 * 5; //milliseconds to minutes.
 let heartbeatLast = Date.now();
@@ -145,9 +145,9 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.get("/api/squirrel", squirrel, (req, res) => {
-  res.send();
-});
+// app.get("/api/squirrel", squirrel, (req, res) => {
+//   res.send();
+// });
 
 app.use("*", (req, res) => {
   console.log("ERROR Catch All -- Req Url:", req.url);

@@ -1,4 +1,4 @@
-const Activity = require("./../models/activityModel");
+// const Activity = require("./../models/activityModel");
 const jwtoken = require("jsonwebtoken");
 const request = require("request");
 const decodePolyline = require("decode-google-map-polyline");
