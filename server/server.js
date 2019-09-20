@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(analyticController.getUserData);
- 
+
 //Testing route for turning a path to polyline
 app.get("/api/getPath", (req, res) => {
   console.log(`Hitting getPath`);
@@ -120,7 +120,7 @@ app.get("/api/logout", stravaController.clearCookie, (req, res) => {
 });
 
 // statically serve everything in the build folder on the route '/build'
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
   console.log(`Server in Production mode!`);
   app.use("/build", express.static(path.join(__dirname, "../build")));
   // serve index.html on the route '/'
@@ -150,7 +150,7 @@ app.use("*", (req, res) => {
   console.log("ERROR Catch All -- Req Url:", req.url);
   // prettier-ignore
   if(req.url === "/") console.log("NODE_ENV must be 'production' Current:", process.env.NODE_ENV)
-  res.send("404 - that did not go well");
+  res.status(404).send("404 - that did not go well");
 });
 
 app.use((err, req, res, next) => {
@@ -159,5 +159,4 @@ app.use((err, req, res, next) => {
   res.status(200).send("Something Broke, we're sorry");
 });
 
-app.listen(3000); //listens on port 3000 -> http://localhost:3000/
-console.log(`Listening on Port 3000`);
+module.exports = app;
