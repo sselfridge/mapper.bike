@@ -300,10 +300,12 @@ function cleanUpStravaData(stravaData, activityType) {
   return activities;
 }
 
-function makeEpochSecondsTime(string) {
-  const date = new Date(string);
-  const number = Math.floor(date.getTime() / 1000);
-  return number;
+// takes a string that represnts a date and returns the epoch time in seconds
+// "2012-02-15T21:20:29Z" --> 1329340829
+function makeEpochSecondsTime(timeString) {
+  const date = new Date(timeString);
+  const seconds = Math.floor(date.getTime() / 1000);
+  return seconds;
 }
 
 // fetch activities in the date range between before and after
