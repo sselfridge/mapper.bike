@@ -206,14 +206,13 @@ class App extends Component {
         response => {
           const { lat, lng } = response.results[0].geometry.location;
           this.setState({ center: { lat, lng } });
-          // console.log(lat, lng);
         },
         error => {
           console.error(error);
           const errMsg = error.message;
 
           if (errMsg === "Server returned status code ZERO_RESULTS") {
-            this.flashMessage("No location found");
+            this.flashMessage("Location not found");
           }
         }
       );
