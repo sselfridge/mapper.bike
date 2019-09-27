@@ -132,7 +132,10 @@ function loadStravaProfile(req, res, next) {
               firstname: stravaData.firstname,
               lastname: stravaData.lastname
             };
-            fs.appendFileSync("logs/users.txt", formatUserNameLog(stravaData.firstname,stravaData.lastname));
+            fs.appendFileSync(
+              "logs/users.txt",
+              formatUserNameLog(stravaData.firstname, stravaData.lastname)
+            );
 
             return next();
           }
@@ -143,14 +146,15 @@ function loadStravaProfile(req, res, next) {
 }
 
 //make names the same length and add a date stamp
-function formatUserNameLog(firstname,lastname){
+function formatUserNameLog(firstname, lastname) {
   let str = firstname + " " + lastname;
-  if(str.length > 30){
-    str = str.substring(0,30);
+  if (str.length > 30) {
+    str = str.substring(0, 30);
   } else {
-    while(str.length < 30 ) str = str + " "
+    while (str.length < 30) str = str + " ";
   }
-  return str + Date() + '\n'
+  let date = new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" });
+  return str + date + "-PST \n";
 }
 
 function clearCookie(req, res, next) {
