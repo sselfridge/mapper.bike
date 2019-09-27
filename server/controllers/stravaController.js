@@ -99,7 +99,7 @@ function loadStravaProfile(req, res, next) {
           }
           console.log(`Status:${httpResponse.statusCode}`);
           if (httpResponse.statusCode === 401) {
-            // access token expired - refresh it
+            // access token expired - clear it so it can be refreshed
             res.clearCookie("stravajwt");
             next();
             return;
@@ -132,7 +132,7 @@ function loadStravaProfile(req, res, next) {
               firstname: stravaData.firstname,
               lastname: stravaData.lastname
             };
-            fs.appendFileSync("logs/users.txt", `${stravaData.firstname} ${stravaData.lastname}\n`);
+            fs.appendFileSync("logs/users.txt", formatUserNameLog(stravaData.firstname,stravaData.lastname));
 
             return next();
           }
@@ -140,6 +140,17 @@ function loadStravaProfile(req, res, next) {
       );
     }
   });
+}
+
+//make names the same length and add a date stamp
+function formatUserNameLog(firstname,lastname){
+  let str = firstname + " " + lastname;
+  if(str.length > 30){
+    str = str.substring(0,30);
+  } else {
+    while(str.length < 30 ) str = str + " "
+  }
+  return str + Date() + '\n'
 }
 
 function clearCookie(req, res, next) {
