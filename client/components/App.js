@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
+import { GoogleApiWrapper, Map, Polyline, Polygon, HeatMap } from "google-maps-react";
 import Geocode from "react-geocode";
 import Sidebar from "./Sidebar";
 import DefaultSidebar from "./DefaultSidebar";
@@ -283,10 +283,15 @@ class App extends Component {
     this.setState({ afterDate });
   }
 
+  // componentDidMount(){
+  //   this.getDemoActivities();
+  // this.setState({demoMode:true})
+  // }
+
   render() {
     const activities = this.state.activities;
     const polyLineArray = [];
-
+    const heatmapArray = [];
     Geocode.setApiKey(config.mapsApi);
 
     //create poly line components to add
@@ -305,6 +310,9 @@ class App extends Component {
         />
       );
       polyLineArray.push(newLine);
+
+      let newHeat = <HeatMap positions={activity.points} tag={id} key={"heat" + id} radius={10} opacity={.7} zIndex={5}/>;
+      heatmapArray.push(newHeat);
     });
 
     //create blackground polygon:
@@ -364,7 +372,6 @@ class App extends Component {
     ) : (
       <></>
     );
-
     return (
       <div id="container">
         {dimScreen}
@@ -420,6 +427,7 @@ class App extends Component {
             }}
           >
             {blackground}
+            {heatmapArray}
             {polyLineArray}
           </Map>
         </div>
