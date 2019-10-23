@@ -17,7 +17,7 @@ const DefaultSidebar = props => {
       <div id="demoInfo" className="marginTop">
         <br />
         <span className="demoText">Want to try it out without linking your Strava?</span>
-        <br/>
+        <br />
         <button id="demoBtn" onClick={props.getDemoActivities}>
           Click Here To Load Demo data
         </button>
