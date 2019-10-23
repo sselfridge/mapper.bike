@@ -249,6 +249,8 @@ class App extends Component {
 
   stravaLogout() {
     axios.get("/api/logout").then(res => {
+      console.log('User Logged Out',res.status);
+      
       if (res.status === 200) {
         const emptyUser = {
           avatar: null,
@@ -272,7 +274,7 @@ class App extends Component {
     this.setState({ dimScreen, showMenu });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     axios.get(`/api/getStravaUser`).then(res => {
       if (res.status === 200) {
         this.setState({ currentUser: res.data });
@@ -340,8 +342,8 @@ class App extends Component {
         visible={this.state.blackgroundActive}
       />
     ];
-    console.debug(`App ENV:${process.env.NODE_ENV}`);
-    console.debug(`client: ${config.client_id}`);
+    // console.debug(`App ENV:${process.env.NODE_ENV}`);
+    // console.debug(`client: ${config.client_id}`);
 
     const dimScreen = this.state.dimScreen ? (
       <div id="dimScreen" onClick={this.toggleDim} />
