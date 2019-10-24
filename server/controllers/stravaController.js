@@ -47,9 +47,11 @@ function setStravaOauth(req, res, next) {
       bodyArray = tokenRegex.exec(body);
       // console.log(`body`);
       // console.log(body);
-      console.log(`Refresh Token: ${bodyArray[1]}`);
-      console.log(`accessToken: ${bodyArray[2]}`);
+      // console.log(`Refresh Token: ${bodyArray[1]}`);
+      // console.log(`accessToken: ${bodyArray[2]}`);
       // console.log(`Athlete Number: ${bodyArray[3]}`);
+
+      // SAMPLE RESPONSE as of 10/23/2019
       // {"token_type":"Bearer","expires_at":1571883514,"expires_in":20504,"refresh_token":"a4d6b48cc0d5502d17ba59e6d87f8ae3b173a813",
       // "access_token":"e4f2b085afaeee810085b683d085334f5e7887e8",
       // "athlete":{ "id":1075670,"username":"sirclesam","resource_state":2,"firstname":"Sam ","lastname":"Wise | LG",
@@ -77,7 +79,9 @@ function checkAndRefreshStravaToken(res) {
   return new Promise((resolve, reject) => {
     const now = Date.now() / 1000;
     const expiredDiff = res.locals.expires_at - now;
-    if (expiredDiff < 0) {
+    console.log("Token Expires in:",expiredDiff / 60);
+    if (expiredDiff <= 0) {
+      console.log("Token Expired, refreshing");
       request.post(
         {
           url: "https://www.strava.com/api/v3/oauth/token",
@@ -94,9 +98,10 @@ function checkAndRefreshStravaToken(res) {
             res.locals.err = "Error with strava - try again or logging with username/password";
             return reject(err);
           }
-          if (httpResponse != 200) {
+          if (httpResponse.statusCode != 200) {
             console.log("Non 200 response for token refresh");
             console.log(body);
+            return reject(`200 status expected. Refresh request res code:${httpResponse.statusCode}`)
           }
           tokenRegex = /.*access_token":"([^"]+).*expires_at":(\d+).*refresh_token":"([^"]+)/;
           bodyArray = tokenRegex.exec(body);
@@ -115,7 +120,7 @@ function checkAndRefreshStravaToken(res) {
         }
       );
     } else { //token not expired proceed as usual
-      resolve();
+      return resolve();
     }
   });
 }
@@ -156,7 +161,7 @@ function loadStravaProfile(req, res, next) {
                 res.clearCookie("stravajwt");
                 return next();
               } else {
-                console.log(`strava Profile Aquired !!`);
+                console.log(`Strava Profile Aquired !!`);
                 let stravaData = JSON.parse(body);
                 res.locals.user = {
                   avatar: stravaData.profile,
