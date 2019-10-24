@@ -202,7 +202,10 @@ class App extends Component {
   centerOnLocation(e) {
     if (e.key === "Enter") {
       // console.log('Looking up:',e.target.value);
-      Geocode.fromAddress(e.target.value).then(
+      const address = encodeURIComponent(e.target.value);
+      const GOOGLE_API = "https://maps.google.com/maps/api/geocode/json";
+      let url = GOOGLE_API + `?key=${config.mapsApi}` + `&address=${address}`;
+      Geocode.fromAddress().then(
         response => {
           const { lat, lng } = response.results[0].geometry.location;
           this.setState({ center: { lat, lng } });
