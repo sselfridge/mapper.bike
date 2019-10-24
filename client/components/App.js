@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
-import Geocode from "react-geocode";
 import Sidebar from "./Sidebar";
 import DefaultSidebar from "./DefaultSidebar";
 import config from "../../config/keys";
@@ -205,21 +204,22 @@ class App extends Component {
       const address = encodeURIComponent(e.target.value);
       const GOOGLE_API = "https://maps.google.com/maps/api/geocode/json";
       let url = GOOGLE_API + `?key=${config.mapsApi}` + `&address=${address}`;
-      Geocode.fromAddress().then(
-        response => {
-          const { lat, lng } = response.results[0].geometry.location;
-          this.setState({ center: { lat, lng } });
-        },
-        error => {
-          console.error(error);
-          const errMsg = error.message;
-
-          if (errMsg === "Server returned status code ZERO_RESULTS") {
+      axios
+        .get(url)
+        .then(response => {
+          console.log(response.data);
+          if (response.data.status === "ZERO_RESULTS") {
             this.flashMessage("Location not found");
+            return;
           }
-        }
-      );
-    }
+          const { lat, lng } = response.data.results[0].geometry.location;
+          this.setState({ center: { lat, lng } });
+        })
+        .catch(error => {
+          console.error(error);
+          this.flashMessage("Error with location - try another query");
+        });
+    } //if e.key
   }
 
   // centerOnZip(e) {
@@ -289,8 +289,6 @@ class App extends Component {
   render() {
     const activities = this.state.activities;
     const polyLineArray = [];
-
-    Geocode.setApiKey(config.mapsApi);
 
     //create poly line components to add
     activities.forEach((activity, index) => {
