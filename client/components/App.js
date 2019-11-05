@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
-import Geocode from "react-geocode";
 import Sidebar from "./Sidebar";
 import DefaultSidebar from "./DefaultSidebar";
 import config from "../../config/keys";
@@ -202,21 +201,25 @@ class App extends Component {
   centerOnLocation(e) {
     if (e.key === "Enter") {
       // console.log('Looking up:',e.target.value);
-      Geocode.fromAddress(e.target.value).then(
-        response => {
-          const { lat, lng } = response.results[0].geometry.location;
-          this.setState({ center: { lat, lng } });
-        },
-        error => {
-          console.error(error);
-          const errMsg = error.message;
-
-          if (errMsg === "Server returned status code ZERO_RESULTS") {
+      const address = encodeURIComponent(e.target.value);
+      const GOOGLE_API = "https://maps.google.com/maps/api/geocode/json";
+      let url = GOOGLE_API + `?key=${config.mapsApi}` + `&address=${address}`;
+      axios
+        .get(url)
+        .then(response => {
+          console.log(response.data);
+          if (response.data.status === "ZERO_RESULTS") {
             this.flashMessage("Location not found");
+            return;
           }
-        }
-      );
-    }
+          const { lat, lng } = response.data.results[0].geometry.location;
+          this.setState({ center: { lat, lng } });
+        })
+        .catch(error => {
+          console.error(error);
+          this.flashMessage("Error with location - try another query");
+        });
+    } //if e.key
   }
 
   // centerOnZip(e) {
@@ -283,13 +286,17 @@ class App extends Component {
     const afterDate = new Date();
     afterDate.setMonth(afterDate.getMonth() - 2);
     this.setState({ afterDate });
+
+    // // Uncomment to activate Demo on default
+    // if(this.state.demoMode === false){
+    //   this.getDemoActivities()
+    // }
+
   }
 
   render() {
     const activities = this.state.activities;
     const polyLineArray = [];
-
-    Geocode.setApiKey(config.mapsApi);
 
     //create poly line components to add
     activities.forEach((activity, index) => {
@@ -345,11 +352,14 @@ class App extends Component {
     // console.debug(`App ENV:${process.env.NODE_ENV}`);
     // console.debug(`client: ${config.client_id}`);
 
+
     const dimScreen = this.state.dimScreen ? (
       <div id="dimScreen" onClick={this.toggleDim} />
     ) : (
       <></>
     );
+
+
 
     const hamburgerMenu = this.state.showMenu ? (
       <div id="menuModal">

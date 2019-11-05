@@ -139,48 +139,65 @@ function loadStravaProfile(req, res, next) {
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
       res.locals.althleteID = payload.althleteID;
-      checkAndRefreshStravaToken(res)
-        .then(() => {
-          request.get(
-            {
-              url: "https://www.strava.com/api/v3/athlete",
-              headers: {
-                Authorization: `Bearer ${res.locals.accessToken}`
+      console.log(`Althlete ID:`,res.locals.althleteID);
+      console.log("Access Token: ",res.locals.accessToken);
+      request.get(
+        {
+          url: "https://www.strava.com/api/v3/athlete",
+          headers: {
+            Authorization: `Bearer ${res.locals.accessToken}`
+          }
+        },
+        function(err, httpResponse, body) {
+          if (err) {
+            console.log(`Error with strava auth ${err}`);
+            res.locals.err = "Error with strava - try again or logging with username/password";
+            return next();
+          }
+          console.log(`Status:${httpResponse.statusCode}`);
+          if (httpResponse.statusCode === 401) {
+            // access token expired - clear it so it can be refreshed
+            res.clearCookie("stravajwt");
+            next();
+            return;
+            request.post(
+              {
+                // TODO - refresh access token behind the scenes
+                url: "https://www.strava.com/oauth/token",
+                body: {
+                  client_id: config.client_id,
+                  client_secret: config.client_secret,
+                  grant_type: "refresh_token",
+                  refresh_token: res.locals.refreshToken
+                }
+              },
+              function(err, httpResponse, body) {
+                if (err) {
+                  console.log(`Error with strava auth ${err}`);
+                  res.locals.err =
+                    "Error with strava - try again or logging with username/password";
+                  return next();
+                }
+                console.log();
               }
-            },
-            function(err, httpResponse, body) {
-              if (err) {
-                console.log(`Error with strava auth ${err}`);
-                res.locals.err = "Error with strava - try again or logging with username/password";
-                return next();
-              }
-              console.log(`Status:${httpResponse.statusCode}`);
-              if (httpResponse.statusCode === 401) {
-                // access token expired - clear it so it can be refreshed
-                // TODO handle expired token, shouldn't happen if the jwt expires_at check is working
-                res.clearCookie("stravajwt");
-                return next();
-              } else {
-                console.log(`Strava Profile Aquired !!`);
-                let stravaData = JSON.parse(body);
-                res.locals.user = {
-                  avatar: stravaData.profile,
-                  firstname: stravaData.firstname,
-                  lastname: stravaData.lastname
-                };
-                fs.appendFileSync(
-                  "logs/users.txt",
-                  formatUserNameLog(stravaData.firstname, stravaData.lastname)
-                );
+            );
+          } else {
+            console.log(`strava Profile Aquired !!`);
+            let stravaData = JSON.parse(body);
+            res.locals.user = {
+              avatar: stravaData.profile,
+              firstname: stravaData.firstname,
+              lastname: stravaData.lastname
+            };
+            fs.appendFileSync(
+              "logs/users.txt",
+              formatUserNameLog(stravaData.firstname, stravaData.lastname)
+            );
 
-                return next();
-              }
-            }
-          );
-        })
-        .catch(err => {
-          console.log("Bad thing happen while refresh Token", err);
-        });
+            return next();
+          }
+        }
+      );
     }
   });
 }
@@ -331,6 +348,7 @@ function buildStravaData(queryData, stravaData,  callback) {
 function cleanUpStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
+  // console.log(stravaData[0]); //uncomment to view stravaData format
   stravaData.forEach(element => {
     //see config/dataNotes.js for element data types
     const newActivity = {};
@@ -338,6 +356,8 @@ function cleanUpStravaData(stravaData, activityType) {
     newActivity.name = element.name;
     newActivity.line = element.map.summary_polyline;
     newActivity.date = makeEpochSecondsTime(element.start_date_local);
+    newActivity.distance = element.distance;
+    newActivity.elapsedTime = element.elapsed_time;
     newActivity.selected = false;
     newActivity.weight = 2;
     newActivity.color = "blue";
