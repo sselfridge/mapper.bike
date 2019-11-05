@@ -117,7 +117,29 @@
 .selectedTitle {
     font-size: 20;
     font-weight: 800;
-    margin-bottom: 25px;
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 5px 10px 5px 20px;
+    margin: 5px;
+}
+
+.rideInfo{
+    font-size: 15;
+    font-weight: 200;
+}
+
+.rideInfoDate{
+    float:left;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.rideInfoDistance{
+    float:right;
+}
+
+.rideInfoElapsedTime{
+float:right;
 }
 
 .sidebar {

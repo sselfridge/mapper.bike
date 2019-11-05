@@ -65,7 +65,7 @@ function setStravaOauth(req, res, next) {
         althleteID: bodyArray[3]
       };
 
-      let jwt = jwtoken.sign(payload, config.secretSuperKey, { expiresIn: "6h" });
+      let jwt = jwtoken.sign(payload, config.secretSuperKey);
       res.cookie("stravajwt", jwt, { httpOnly: true });
       return next();
     }
@@ -84,6 +84,8 @@ function loadStravaProfile(req, res, next) {
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
       res.locals.althleteID = payload.althleteID;
+      console.log(`Althlete ID:`,res.locals.althleteID);
+      console.log("Access Token: ",res.locals.accessToken);
       request.get(
         {
           url: "https://www.strava.com/api/v3/athlete",
@@ -287,6 +289,7 @@ function buildStravaData(queryData, stravaData,  callback) {
 function cleanUpStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
+  console.log(stravaData[0]); //uncomment to view stravaData format
   stravaData.forEach(element => {
     //see config/dataNotes.js for element data types
     const newActivity = {};
@@ -294,6 +297,8 @@ function cleanUpStravaData(stravaData, activityType) {
     newActivity.name = element.name;
     newActivity.line = element.map.summary_polyline;
     newActivity.date = makeEpochSecondsTime(element.start_date_local);
+    newActivity.distance = element.distance;
+    newActivity.elapsedTime = element.elapsed_time;
     newActivity.selected = false;
     newActivity.weight = 2;
     newActivity.color = "blue";

@@ -275,7 +275,7 @@ class App extends Component {
     this.setState({ dimScreen, showMenu });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     axios.get(`/api/getStravaUser`).then(res => {
       if (res.status === 200) {
         this.setState({ currentUser: res.data });
@@ -284,6 +284,11 @@ class App extends Component {
     const afterDate = new Date();
     afterDate.setMonth(afterDate.getMonth() - 2);
     this.setState({ afterDate });
+
+    if(this.state.demoMode === false){
+      this.getDemoActivities()
+    }
+
   }
 
   render() {
@@ -344,11 +349,14 @@ class App extends Component {
     console.debug(`App ENV:${process.env.NODE_ENV}`);
     console.debug(`client: ${config.client_id}`);
 
+
     const dimScreen = this.state.dimScreen ? (
       <div id="dimScreen" onClick={this.toggleDim} />
     ) : (
       <></>
     );
+
+
 
     const hamburgerMenu = this.state.showMenu ? (
       <div id="menuModal">
