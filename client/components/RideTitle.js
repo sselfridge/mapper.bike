@@ -34,7 +34,7 @@ const RideTitle = props => {
 
     const dateObj = new Date(dateInt * 1000);
     const readableDate = `${dateObj.toLocaleString("default", {
-      month: "short"
+      month: "long"
     })} ${dateObj.getDate()}`;
 
     const distanceMiles = distance / 1609;
