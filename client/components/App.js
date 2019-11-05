@@ -285,9 +285,10 @@ class App extends Component {
     afterDate.setMonth(afterDate.getMonth() - 2);
     this.setState({ afterDate });
 
-    if(this.state.demoMode === false){
-      this.getDemoActivities()
-    }
+    // // Uncomment to activate Demo on default
+    // if(this.state.demoMode === false){
+    //   this.getDemoActivities()
+    // }
 
   }
 

@@ -18,7 +18,7 @@ const RideTitle = props => {
   let selectedTitle = "";
   let stravaLink = `https://www.strava.com/activities/${id}`;
 
-  if (selected == true) {
+  if (selected === true) {
     selectedTitle = "selectedTitle";
     rideLink = (
       <a className="rideLink button" href={stravaLink} target="_blank">
@@ -57,7 +57,7 @@ const RideTitle = props => {
   return (
     <div className={`activityTitle ${selectedTitle}`} id={`ride${id}`}>
       <span target="_blank" onClick={e => highlightTitle(e, id, midLatLng)}>
-        {num}: {name}
+        {selected ? "" : `${num} :` } {name}
       </span>
       {lineBreak}
       {rideInfo}
