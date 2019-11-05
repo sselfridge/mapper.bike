@@ -14,13 +14,13 @@ const RideTitle = props => {
     midLatLng,
     highlightTitle
   } = props;
-  let removeLink, rideLink, lineBreak,rideInfo;
+  let removeLink, rideLink, lineBreak, rideInfo;
   let selectedTitle = "";
   let stravaLink = `https://www.strava.com/activities/${id}`;
 
   if (selected == true) {
     selectedTitle = "selectedTitle";
-     rideLink = (
+    rideLink = (
       <a className="rideLink button" href={stravaLink} target="_blank">
         View On Strava
       </a>
@@ -31,22 +31,27 @@ const RideTitle = props => {
       </a>
     );
     lineBreak = <br />;
-    const dateObj = new Date(dateInt);
-    const readableDate = `${dateObj.toLocaleString('default', { month: 'short' })} ${dateObj.getDate()}`
-  
-      const distanceMiles = distance / 1609
-      const totalHours = elapsedTime / 3600
-      const hours = Math.floor(totalHours)
-      const minutes = Math.floor((totalHours - hours) * 60)
+
+    const dateObj = new Date(dateInt * 1000);
+    const readableDate = `${dateObj.toLocaleString("default", {
+      month: "short"
+    })} ${dateObj.getDate()}`;
+
+    const distanceMiles = distance / 1609;
+    const totalHours = elapsedTime / 3600;
+    const hours = Math.floor(totalHours);
+    const minutes = Math.floor((totalHours - hours) * 60);
     rideInfo = (
       <div className="rideInfo">
         <span className="rideInfoDate">{readableDate}</span>
         <span className="rideInfoDistance">{distanceMiles.toFixed(2)} mi</span>
         <br></br>
         <span> </span>
-        <span className="rideInfoElapsedTime">{hours}:{minutes} hrs </span>
+        <span className="rideInfoElapsedTime">
+          {hours}:{minutes} hrs
+        </span>
       </div>
-    )
+    );
   }
 
   return (

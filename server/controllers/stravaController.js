@@ -289,7 +289,7 @@ function buildStravaData(queryData, stravaData,  callback) {
 function cleanUpStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
-  console.log(stravaData[0]); //uncomment to view stravaData format
+  // console.log(stravaData[0]); //uncomment to view stravaData format
   stravaData.forEach(element => {
     //see config/dataNotes.js for element data types
     const newActivity = {};
