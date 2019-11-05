@@ -59,19 +59,31 @@ function setStravaOauth(req, res, next) {
       //             "created_at":"2012-09-06T17:53:52Z","updated_at":"2019-10-12T17:01:50Z","badge_type_id":1,
       //             "profile_medium":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
       //             "profile":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/large.jpg","friend":null,"follower":null}}
-      //JWS token time
+
       let payload = {
         expires_at: bodyArray[1],
         refreshToken: bodyArray[2],
         accessToken: bodyArray[3],
-        althleteID: bodyArray[4]
+        athleteID: bodyArray[4]
       };
 
-      let jwt = jwtoken.sign(payload, config.secretSuperKey);
-      res.cookie("stravajwt", jwt, { httpOnly: true });
+      setJWTCookie(res, payload);
+
       return next();
     }
   );
+}
+
+// let payload = {
+//   expires_at,
+//   refreshToken,
+//   accessToken,
+//   athleteID
+// };
+function setJWTCookie(res, payload) {
+  console.log("Set JWT");
+  let jwt = jwtoken.sign(payload, config.secretSuperKey);
+  res.cookie("stravajwt", jwt, { httpOnly: true });
 }
 
 //check if the accesstoken is expired, if so request a new one
@@ -118,6 +130,15 @@ function checkAndRefreshStravaToken(res) {
 
           refreshToken = bodyArray[3];
           res.locals.refreshToken = refreshToken;
+
+          let payload = {
+            expires_at: res.locals.expires_at,
+            refreshToken: res.locals.refreshToken,
+            accessToken: res.locals.accessToken,
+            athleteID: res.locals.athleteID
+          };
+          setJWTCookie(res,payload)
+
           return resolve();
         }
       );
@@ -137,11 +158,11 @@ function loadStravaProfile(req, res, next) {
       console.log(`Token Invalid: ${err}`);
       res.locals.err = "JWT / Cookie token invalid";
     } else {
-      console.log(`JWT Valid - allow to proceed. AlthleteID: ${payload.althleteID}`);
+      console.log(`JWT Valid - allow to proceed. athleteID: ${payload.athleteID}`);
       res.locals.expires_at = payload.expires_at;
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
-      res.locals.althleteID = payload.althleteID;
+      res.locals.athleteID = payload.athleteID;
       console.log("Access Token: ", res.locals.accessToken);
       checkAndRefreshStravaToken(res)
         .then(() => {
