@@ -79,7 +79,7 @@ function checkAndRefreshStravaToken(res) {
   return new Promise((resolve, reject) => {
     const now = Date.now() / 1000;
     const expiredDiff = res.locals.expires_at - now;
-    console.log("Token Expires in:",expiredDiff / 60);
+    console.log("Token Expires in (minutes):", expiredDiff / 60);
     if (expiredDiff <= 0) {
       console.log("Token Expired, refreshing");
       request.post(
@@ -101,7 +101,9 @@ function checkAndRefreshStravaToken(res) {
           if (httpResponse.statusCode != 200) {
             console.log("Non 200 response for token refresh");
             console.log(body);
-            return reject(`200 status expected. Refresh request res code:${httpResponse.statusCode}`)
+            return reject(
+              `200 status expected. Refresh request res code:${httpResponse.statusCode}`
+            );
           }
           tokenRegex = /.*access_token":"([^"]+).*expires_at":(\d+).*refresh_token":"([^"]+)/;
           bodyArray = tokenRegex.exec(body);
@@ -119,7 +121,8 @@ function checkAndRefreshStravaToken(res) {
           return resolve();
         }
       );
-    } else { //token not expired proceed as usual
+    } else {
+      //token not expired proceed as usual
       return resolve();
     }
   });
@@ -132,72 +135,55 @@ function loadStravaProfile(req, res, next) {
   jwtoken.verify(hubCookie, config.secretSuperKey, (err, payload) => {
     if (err) {
       console.log(`Token Invalid: ${err}`);
-      res.locals.err = "Strava token invalid";
+      res.locals.err = "JWT / Cookie token invalid";
     } else {
-      console.log(`Session Valid - allow to proceed. User: ${payload.althleteID}`);
+      console.log(`JWT Valid - allow to proceed. AlthleteID: ${payload.althleteID}`);
       res.locals.expires_at = payload.expires_at;
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
       res.locals.althleteID = payload.althleteID;
-      console.log(`Althlete ID:`,res.locals.althleteID);
-      console.log("Access Token: ",res.locals.accessToken);
-      request.get(
-        {
-          url: "https://www.strava.com/api/v3/athlete",
-          headers: {
-            Authorization: `Bearer ${res.locals.accessToken}`
-          }
-        },
-        function(err, httpResponse, body) {
-          if (err) {
-            console.log(`Error with strava auth ${err}`);
-            res.locals.err = "Error with strava - try again or logging with username/password";
-            return next();
-          }
-          console.log(`Status:${httpResponse.statusCode}`);
-          if (httpResponse.statusCode === 401) {
-            // access token expired - clear it so it can be refreshed
-            res.clearCookie("stravajwt");
-            next();
-            return;
-            request.post(
-              {
-                // TODO - refresh access token behind the scenes
-                url: "https://www.strava.com/oauth/token",
-                body: {
-                  client_id: config.client_id,
-                  client_secret: config.client_secret,
-                  grant_type: "refresh_token",
-                  refresh_token: res.locals.refreshToken
-                }
-              },
-              function(err, httpResponse, body) {
-                if (err) {
-                  console.log(`Error with strava auth ${err}`);
-                  res.locals.err =
-                    "Error with strava - try again or logging with username/password";
-                  return next();
-                }
-                console.log();
+      console.log("Access Token: ", res.locals.accessToken);
+      checkAndRefreshStravaToken(res)
+        .then(() => {
+          request.get(
+            {
+              url: "https://www.strava.com/api/v3/athlete",
+              headers: {
+                Authorization: `Bearer ${res.locals.accessToken}`
               }
-            );
-          } else {
-            console.log(`strava Profile Aquired !!`);
-            let stravaData = JSON.parse(body);
-            res.locals.user = {
-              avatar: stravaData.profile,
-              firstname: stravaData.firstname,
-              lastname: stravaData.lastname
-            };
-            fs.appendFileSync(
-              "logs/users.txt",
-              formatUserNameLog(stravaData.firstname, stravaData.lastname)
-            );
+            },
+            function(err, httpResponse, body) {
+              if (err) {
+                console.log(`Error with strava auth request: ${err}`);
+                res.locals.err = "Error with strava - try again or use another username/password";
+                return next();
+              }
+              if (httpResponse.statusCode === 401) {
+                // access token expired - clear it so it can be refreshed
+                res.clearCookie("stravajwt", { httpOnly: true });
+                next();
+                return;
+              } else {
+                console.log(`strava token valid !!`);
+                let stravaData = JSON.parse(body);
+                res.locals.user = {
+                  avatar: stravaData.profile,
+                  firstname: stravaData.firstname,
+                  lastname: stravaData.lastname
+                };
+                fs.appendFileSync(
+                  "logs/users.txt",
+                  formatUserNameLog(stravaData.firstname, stravaData.lastname)
+                );
 
-            return next();
-          }
-        }
-      );
+                return next();
+              }
+            }
+          );
+        })
+        .catch(err => {
+          console.log("Bad thing happen while trying to refresh Token", err);
+        });
     }
   });
 }
