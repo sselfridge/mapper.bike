@@ -302,6 +302,7 @@ class App extends Component {
   render() {
     const activities = this.state.activities;
     const polyLineArray = [];
+    const heatmapArray = [];
 
     //create poly line components to add
     activities.forEach((activity, index) => {
@@ -439,7 +440,7 @@ class App extends Component {
             }}
           >
             {blackground}
-            {heatmapArray}
+            {/* {heatmapArray} */}
             {polyLineArray}
           </Map>
         </div>
