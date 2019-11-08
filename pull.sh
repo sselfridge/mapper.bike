@@ -5,6 +5,7 @@ arr=( "git pull")
 arr+=("npm install")
 arr+=("npm run build")
 arr+=("pm2 restart map")
+arr+=("git log -1")
 
 for i in "${arr[@]}"
 do

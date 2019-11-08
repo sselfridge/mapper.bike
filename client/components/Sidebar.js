@@ -56,6 +56,9 @@ const Sidebar = props => {
           id={activity.id}
           key={"ride" + activity.id}
           name={activity.name}
+          dateInt={activity.date}
+          distance={activity.distance}
+          elapsedTime={activity.elapsedTime}
           selected={activity.selected}
           highlightTitle={props.highlightTitle}
           removeAct={props.removeAct}

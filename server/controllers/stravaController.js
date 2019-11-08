@@ -43,107 +43,187 @@ function setStravaOauth(req, res, next) {
         console.log(`Status Code: ${httpResponse.statusCode}: Body:${body}`);
         return next();
       }
-      tokenRegex = /refresh_token":"([^"]+).*access_token":"([^"]+).*"athlete":{"id":(\d+)/;
+      tokenRegex = /expires_at":(\d+).*refresh_token":"([^"]+).*access_token":"([^"]+).*"athlete":{"id":(\d+)/;
       bodyArray = tokenRegex.exec(body);
       // console.log(`body`);
       // console.log(body);
       // console.log(`Refresh Token: ${bodyArray[1]}`);
       // console.log(`accessToken: ${bodyArray[2]}`);
       // console.log(`Athlete Number: ${bodyArray[3]}`);
-      // "{"token_type":"Bearer","access_token":"adaa94e12ea9e8d3c85ea3cd6932a7ff833b3f30",
-      // "athlete":{"id":1075670,"username":"sirclesam","resource_state":2,"firstname":"Sam "
-      // ,"lastname":"Wise | LG","city":"Los Angeles","state":"California",
-      // "country":"United States","sex":"M","premium":true,"summit":true,
-      // "created_at":"2012-09-06T17:53:52Z","updated_at":"2019-04-20T13:03:34Z"
-      // ,"badge_type_id":1,
-      // "profile_medium":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg","profile":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/large.jpg","friend":null,"follower":null}}"
 
-      //JWS token time
+      // SAMPLE RESPONSE as of 10/23/2019
+      // {"token_type":"Bearer","expires_at":1571883514,"expires_in":20504,"refresh_token":"a4d6b48cc0d5502d17ba59e6d87f8ae3b173a813",
+      // "access_token":"e4f2b085afaeee810085b683d085334f5e7887e8",
+      // "athlete":{ "id":1075670,"username":"sirclesam","resource_state":2,"firstname":"Sam ","lastname":"Wise | LG",
+      //             "city":"Los Angeles","state":"California","country":"United States","sex":"M","premium":true,"summit":true,
+      //             "created_at":"2012-09-06T17:53:52Z","updated_at":"2019-10-12T17:01:50Z","badge_type_id":1,
+      //             "profile_medium":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
+      //             "profile":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/large.jpg","friend":null,"follower":null}}
+
       let payload = {
-        refreshToken: bodyArray[1],
-        accessToken: bodyArray[2],
-        althleteID: bodyArray[3]
+        expires_at: bodyArray[1],
+        refreshToken: bodyArray[2],
+        accessToken: bodyArray[3],
+        athleteID: bodyArray[4]
       };
 
-      let jwt = jwtoken.sign(payload, config.secretSuperKey, { expiresIn: "6h" });
-      res.cookie("stravajwt", jwt, { httpOnly: true });
+      setJWTCookie(res, payload);
+
       return next();
     }
   );
 }
 
+// let payload = {
+//   expires_at,
+//   refreshToken,
+//   accessToken,
+//   athleteID
+// };
+function setJWTCookie(res, payload) {
+  console.log("Set JWT");
+  let jwt = jwtoken.sign(payload, config.secretSuperKey);
+  res.cookie("stravajwt", jwt, { httpOnly: true });
+}
+
+//check if the accesstoken is expired, if so request a new one
+function checkAndRefreshStravaToken(res) {
+  return new Promise((resolve, reject) => {
+    const now = Date.now() / 1000;
+    const expiredDiff = res.locals.expires_at - now;
+    console.log("Token Expires in (minutes):", expiredDiff / 60);
+    if (expiredDiff <= 0) {
+      console.log("Token Expired, refreshing");
+      request.post(
+        {
+          url: "https://www.strava.com/api/v3/oauth/token",
+          form: {
+            client_id: config.client_id,
+            client_secret: config.client_secret,
+            grant_type: "refresh_token",
+            refresh_token: res.locals.refreshToken
+          }
+        },
+        function(err, httpResponse, body) {
+          if (err) {
+            console.log(`Error with strava api ${err}`);
+            res.locals.err = "Error with strava - try again or logging with username/password";
+            return reject(err);
+          }
+          if (httpResponse.statusCode != 200) {
+            console.log("Non 200 response for token refresh");
+            console.log(body);
+            return reject(
+              `200 status expected. Refresh request res code:${httpResponse.statusCode}`
+            );
+          }
+          tokenRegex = /.*access_token":"([^"]+).*expires_at":(\d+).*refresh_token":"([^"]+)/;
+          bodyArray = tokenRegex.exec(body);
+          console.log("body: ", body);
+          // body:  {"token_type":"Bearer","access_token":"e4f2b085afaeee810085b683d085334f5e7887e8",
+          // "expires_at":1571883514,"expires_in":17153,"refresh_token":"a4d6b48cc0d5502d17ba59e6d87f8ae3b173a813"}
+          accessToken = bodyArray[1];
+          res.locals.accessToken = accessToken;
+
+          expires_at = bodyArray[2];
+          res.locals.expires_at = expires_at;
+
+          refreshToken = bodyArray[3];
+          res.locals.refreshToken = refreshToken;
+
+          let payload = {
+            expires_at: res.locals.expires_at,
+            refreshToken: res.locals.refreshToken,
+            accessToken: res.locals.accessToken,
+            athleteID: res.locals.athleteID
+          };
+          setJWTCookie(res,payload)
+
+          return resolve();
+        }
+      );
+    } else {
+      //token not expired proceed as usual
+      return resolve();
+    }
+  });
+}
+
 function loadStravaProfile(req, res, next) {
+  console.log("loadStravaProfile");
   let hubCookie = req.cookies.stravajwt;
 
   jwtoken.verify(hubCookie, config.secretSuperKey, (err, payload) => {
     if (err) {
       console.log(`Token Invalid: ${err}`);
-      res.locals.err = "Strava token invalid";
+      res.locals.err = "JWT / Cookie token invalid";
     } else {
-      console.log(`Session Valid - allow to proceed. User: ${payload.althleteID}`);
+      console.log(`JWT Valid - allow to proceed. athleteID: ${payload.athleteID}`);
+      res.locals.expires_at = payload.expires_at;
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
-      res.locals.althleteID = payload.althleteID;
-      request.get(
-        {
-          url: "https://www.strava.com/api/v3/athlete",
-          headers: {
-            Authorization: `Bearer ${res.locals.accessToken}`
-          }
-        },
-        function(err, httpResponse, body) {
-          if (err) {
-            console.log(`Error with strava auth ${err}`);
-            res.locals.err = "Error with strava - try again or logging with username/password";
-            return next();
-          }
-          console.log(`Status:${httpResponse.statusCode}`);
-          if (httpResponse.statusCode === 401) {
-            // access token expired - refresh it
-            res.clearCookie("stravajwt");
-            next();
-            return;
-            request.post(
-              {
-                // TODO - refresh access token behind the scenes
-                url: "https://www.strava.com/oauth/token",
-                body: {
-                  client_id: config.client_id,
-                  client_secret: config.client_secret,
-                  grant_type: "refresh_token",
-                  refresh_token: res.locals.refreshToken
-                }
-              },
-              function(err, httpResponse, body) {
-                if (err) {
-                  console.log(`Error with strava auth ${err}`);
-                  res.locals.err =
-                    "Error with strava - try again or logging with username/password";
-                  return next();
-                }
-                console.log();
+      res.locals.athleteID = payload.athleteID;
+      console.log("Access Token: ", res.locals.accessToken);
+      checkAndRefreshStravaToken(res)
+        .then(() => {
+          request.get(
+            {
+              url: "https://www.strava.com/api/v3/athlete",
+              headers: {
+                Authorization: `Bearer ${res.locals.accessToken}`
               }
-            );
-          } else {
-            console.log(`strava Profile Aquired !!`);
-            let stravaData = JSON.parse(body);
-            res.locals.user = {
-              avatar: stravaData.profile,
-              firstname: stravaData.firstname,
-              lastname: stravaData.lastname
-            };
-            fs.appendFileSync("logs/users.txt", `${stravaData.firstname} ${stravaData.lastname}\n`);
+            },
+            function(err, httpResponse, body) {
+              if (err) {
+                console.log(`Error with strava auth request: ${err}`);
+                res.locals.err = "Error with strava - try again or use another username/password";
+                return next();
+              }
+              if (httpResponse.statusCode === 401) {
+                // access token expired - clear it so it can be refreshed
+                res.clearCookie("stravajwt", { httpOnly: true });
+                next();
+                return;
+              } else {
+                console.log(`strava token valid !!`);
+                let stravaData = JSON.parse(body);
+                res.locals.user = {
+                  avatar: stravaData.profile,
+                  firstname: stravaData.firstname,
+                  lastname: stravaData.lastname
+                };
+                fs.appendFileSync(
+                  "logs/users.txt",
+                  formatUserNameLog(stravaData.firstname, stravaData.lastname)
+                );
 
-            return next();
-          }
-        }
-      );
+                return next();
+              }
+            }
+          );
+        })
+        .catch(err => {
+          console.log("Bad thing happen while trying to refresh Token", err);
+        });
     }
   });
 }
 
+//make names the same length and add a date stamp
+function formatUserNameLog(firstname, lastname) {
+  let str = firstname + " " + lastname;
+  if (str.length > 30) {
+    str = str.substring(0, 30);
+  } else {
+    while (str.length < 30) str = str + " ";
+  }
+  let date = new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" });
+  return str + date + "-PST \n";
+}
+
 function clearCookie(req, res, next) {
-  res.clearCookie("stravajwt");
+  console.log("clear cookie: stravajwt");
+  res.clearCookie("stravajwt", { httpOnly: true });
   next();
 }
 // Not using DB currently, keeping old code if we move to that in the future
@@ -219,15 +299,18 @@ function pingStrava(after, before, accessToken) {
       query: `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&per_page=200&page=`,
       accessToken: accessToken
     };
+
+    //build callback for recusrive strava calls
     const callback = function(err, resultStravaArray) {
       if (err) {
         console.log(`Error with strava ${err}`);
-        resolve([]);
+        return resolve([]);
       } else {
-        resolve(resultStravaArray);
+        return resolve(resultStravaArray);
       }
     };
 
+    //initial call to get data, will call itself recursivly until it reaches the end of data
     buildStravaData(queryData, stravaData, callback);
   });
 }
@@ -272,6 +355,7 @@ function buildStravaData(queryData, stravaData,  callback) {
 function cleanUpStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
+  // console.log(stravaData[0]); //uncomment to view stravaData format
   stravaData.forEach(element => {
     //see config/dataNotes.js for element data types
     const newActivity = {};
@@ -279,6 +363,8 @@ function cleanUpStravaData(stravaData, activityType) {
     newActivity.name = element.name;
     newActivity.line = element.map.summary_polyline;
     newActivity.date = makeEpochSecondsTime(element.start_date_local);
+    newActivity.distance = element.distance;
+    newActivity.elapsedTime = element.elapsed_time;
     newActivity.selected = false;
     newActivity.weight = 2;
     newActivity.color = "blue";

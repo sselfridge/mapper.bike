@@ -12,12 +12,12 @@ const DefaultSidebar = props => {
         >
           <img src="client/img/connectStrava.png" />
         </a>
-        <span className="demoText">None of your data is kept on our servers</span>
+        <span className="demoText">None of your data is kept on our <span title="As if there were more than one...there is not">servers</span></span>
       </div>
       <div id="demoInfo" className="marginTop">
         <br />
         <span className="demoText">Want to try it out without linking your Strava?</span>
-        <br/>
+        <br />
         <button id="demoBtn" onClick={props.getDemoActivities}>
           Click Here To Load Demo data
         </button>
