@@ -1,4 +1,5 @@
 const jwtoken = require("jsonwebtoken");
+const Cryptr = require("cryptr");
 const request = require("request");
 const decodePolyline = require("decode-google-map-polyline");
 const fs = require("fs");
@@ -8,6 +9,7 @@ const fs = require("fs");
 // const mongoose = require("mongoose");
 
 const config = require("../../config/keys");
+const cryptr = new Cryptr(config.secretSuperKey);
 
 const stravaController = {};
 stravaController.setStravaOauth = setStravaOauth;
@@ -82,8 +84,9 @@ function setStravaOauth(req, res, next) {
 // };
 function setJWTCookie(res, payload) {
   console.log("Set JWT");
-  let jwt = jwtoken.sign(payload, config.secretSuperKey);
-  res.cookie("stravajwt", jwt, { httpOnly: true });
+  const jwt = jwtoken.sign(payload, config.secretSuperKey);
+  const crypted = cryptr.encrypt(jwt);
+  res.cookie("stravajwt", crypted, { httpOnly: true });
 }
 
 //check if the accesstoken is expired, if so request a new one
@@ -92,6 +95,7 @@ function checkAndRefreshStravaToken(res) {
     const now = Date.now() / 1000;
     const expiredDiff = res.locals.expires_at - now;
     console.log("Token Expires in (minutes):", expiredDiff / 60);
+    console.log("Refresh Token", res.locals.refreshToken);
     if (expiredDiff <= 0) {
       console.log("Token Expired, refreshing");
       request.post(
@@ -137,7 +141,7 @@ function checkAndRefreshStravaToken(res) {
             accessToken: res.locals.accessToken,
             athleteID: res.locals.athleteID
           };
-          setJWTCookie(res,payload)
+          setJWTCookie(res, payload);
 
           return resolve();
         }
@@ -151,8 +155,14 @@ function checkAndRefreshStravaToken(res) {
 
 function loadStravaProfile(req, res, next) {
   console.log("loadStravaProfile");
-  let hubCookie = req.cookies.stravajwt;
-
+  const jwt = req.cookies.stravajwt;
+  let hubCookie;
+  try {
+    //this fails badly if the key is wrong
+    hubCookie = cryptr.decrypt(jwt);    
+  } catch (error) {
+    hubCookie = 'This Will Fail'
+  }
   jwtoken.verify(hubCookie, config.secretSuperKey, (err, payload) => {
     if (err) {
       console.log(`Token Invalid: ${err}`);
