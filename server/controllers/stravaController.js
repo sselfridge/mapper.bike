@@ -3,12 +3,20 @@ const Cryptr = require("cryptr");
 const request = require("request");
 const decodePolyline = require("decode-google-map-polyline");
 const fs = require("fs");
+const config = require("../../config/keys");
+
+var strava = require("strava-v3");
+strava.config({
+  // "access_token"  : "Your apps access token (Required for Quickstart)",
+  client_id: config.client_id,
+  client_secret: config.client_secret,
+  redirect_uri: config.redirect_uri,
+});
 
 // DB requirments, not being used but keeping around for the future
 // const Activity = require("./../models/activityModel");
 // const mongoose = require("mongoose");
 
-const config = require("../../config/keys");
 const cryptr = new Cryptr(config.secretSuperKey);
 
 const stravaController = {};
@@ -20,60 +28,74 @@ stravaController.clearCookie = clearCookie;
 stravaController.getPointsFromActivities = getPointsFromActivities;
 
 function setStravaOauth(req, res, next) {
-  let stravaCode = req.query.code;
-  console.log(`Strava Code: ${stravaCode}`);
+  let code = req.query.code;
+  console.log(`Strava Code: ${code}`);
 
-  request.post(
-    {
-      url: "https://www.strava.com/oauth/token",
-      form: {
-        client_id: config.client_id,
-        client_secret: config.client_secret,
-        grant_type: "authorization_code",
-        code: stravaCode
-      }
-    },
-    function(err, httpResponse, body) {
-      if (err) {
-        console.log(`Error with strava auth ${err}`);
-        res.locals.err = "Error with strava - try again or logging with username/password";
-        return next();
-      }
+  strava.oauth.getToken(code).then((result) => {
+    console.log("Result");
+    console.log(result);
+    let payload = {
+      expires_at: result.expires_at,
+      refreshToken: result.refresh_token,
+      accessToken: result.access_token,
+      athleteID: result.athlete.id,
+    };
 
-      // No error but can still be a bad request ie status code 400
-      if (httpResponse.statusCode != 200) {
-        console.log(`Status Code: ${httpResponse.statusCode}: Body:${body}`);
-        return next();
-      }
-      tokenRegex = /expires_at":(\d+).*refresh_token":"([^"]+).*access_token":"([^"]+).*"athlete":{"id":(\d+)/;
-      bodyArray = tokenRegex.exec(body);
-      // console.log(`body`);
-      // console.log(body);
-      // console.log(`Refresh Token: ${bodyArray[1]}`);
-      // console.log(`accessToken: ${bodyArray[2]}`);
-      // console.log(`Athlete Number: ${bodyArray[3]}`);
+    setJWTCookie(res, payload);
+    next();
+  });
 
-      // SAMPLE RESPONSE as of 10/23/2019
-      // {"token_type":"Bearer","expires_at":1571883514,"expires_in":20504,"refresh_token":"a4d6b48cc0d5502d17ba59e6d87f8ae3b173a813",
-      // "access_token":"e4f2b085afaeee810085b683d085334f5e7887e8",
-      // "athlete":{ "id":1075670,"username":"sirclesam","resource_state":2,"firstname":"Sam ","lastname":"Wise | LG",
-      //             "city":"Los Angeles","state":"California","country":"United States","sex":"M","premium":true,"summit":true,
-      //             "created_at":"2012-09-06T17:53:52Z","updated_at":"2019-10-12T17:01:50Z","badge_type_id":1,
-      //             "profile_medium":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
-      //             "profile":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/large.jpg","friend":null,"follower":null}}
+  // request.post(
+  //   {
+  //     url: "https://www.strava.com/oauth/token",
+  //     form: {
+  //       client_id: config.client_id,
+  //       client_secret: config.client_secret,
+  //       grant_type: "authorization_code",
+  //       code: stravaCode
+  //     }
+  //   },
+  //   function(err, httpResponse, body) {
+  //     if (err) {
+  //       console.log(`Error with strava auth ${err}`);
+  //       res.locals.err = "Error with strava - try again or logging with username/password";
+  //       return next();
+  //     }
 
-      let payload = {
-        expires_at: bodyArray[1],
-        refreshToken: bodyArray[2],
-        accessToken: bodyArray[3],
-        athleteID: bodyArray[4]
-      };
+  //     // No error but can still be a bad request ie status code 400
+  //     if (httpResponse.statusCode != 200) {
+  //       console.log(`Status Code: ${httpResponse.statusCode}: Body:${body}`);
+  //       return next();
+  //     }
+  //     tokenRegex = /expires_at":(\d+).*refresh_token":"([^"]+).*access_token":"([^"]+).*"athlete":{"id":(\d+)/;
+  //     bodyArray = tokenRegex.exec(body);
+  //     // console.log(`body`);
+  //     // console.log(body);
+  //     // console.log(`Refresh Token: ${bodyArray[1]}`);
+  //     // console.log(`accessToken: ${bodyArray[2]}`);
+  //     // console.log(`Athlete Number: ${bodyArray[3]}`);
 
-      setJWTCookie(res, payload);
+  //     // SAMPLE RESPONSE as of 10/23/2019
+  //     // {"token_type":"Bearer","expires_at":1571883514,"expires_in":20504,"refresh_token":"a4d6b48cc0d5502d17ba59e6d87f8ae3b173a813",
+  //     // "access_token":"e4f2b085afaeee810085b683d085334f5e7887e8",
+  //     // "athlete":{ "id":1075670,"username":"sirclesam","resource_state":2,"firstname":"Sam ","lastname":"Wise | LG",
+  //     //             "city":"Los Angeles","state":"California","country":"United States","sex":"M","premium":true,"summit":true,
+  //     //             "created_at":"2012-09-06T17:53:52Z","updated_at":"2019-10-12T17:01:50Z","badge_type_id":1,
+  //     //             "profile_medium":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
+  //     //             "profile":"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/large.jpg","friend":null,"follower":null}}
 
-      return next();
-    }
-  );
+  //     let payload = {
+  //       expires_at: bodyArray[1],
+  //       refreshToken: bodyArray[2],
+  //       accessToken: bodyArray[3],
+  //       athleteID: bodyArray[4]
+  //     };
+
+  //     setJWTCookie(res, payload);
+
+  //     return next();
+  //   }
+  // );
 }
 
 // let payload = {
@@ -105,10 +127,10 @@ function checkAndRefreshStravaToken(res) {
             client_id: config.client_id,
             client_secret: config.client_secret,
             grant_type: "refresh_token",
-            refresh_token: res.locals.refreshToken
-          }
+            refresh_token: res.locals.refreshToken,
+          },
         },
-        function(err, httpResponse, body) {
+        function (err, httpResponse, body) {
           if (err) {
             console.log(`Error with strava api ${err}`);
             res.locals.err = "Error with strava - try again or logging with username/password";
@@ -139,7 +161,7 @@ function checkAndRefreshStravaToken(res) {
             expires_at: res.locals.expires_at,
             refreshToken: res.locals.refreshToken,
             accessToken: res.locals.accessToken,
-            athleteID: res.locals.athleteID
+            athleteID: res.locals.athleteID,
           };
           setJWTCookie(res, payload);
 
@@ -159,9 +181,9 @@ function loadStravaProfile(req, res, next) {
   let hubCookie;
   try {
     //this fails badly if the key is wrong
-    hubCookie = cryptr.decrypt(jwt);    
+    hubCookie = cryptr.decrypt(jwt);
   } catch (error) {
-    hubCookie = 'This Will Fail'
+    hubCookie = "This Will Fail";
   }
   jwtoken.verify(hubCookie, config.secretSuperKey, (err, payload) => {
     if (err) {
@@ -180,10 +202,10 @@ function loadStravaProfile(req, res, next) {
             {
               url: "https://www.strava.com/api/v3/athlete",
               headers: {
-                Authorization: `Bearer ${res.locals.accessToken}`
-              }
+                Authorization: `Bearer ${res.locals.accessToken}`,
+              },
             },
-            function(err, httpResponse, body) {
+            function (err, httpResponse, body) {
               if (err) {
                 console.log(`Error with strava auth request: ${err}`);
                 res.locals.err = "Error with strava - try again or use another username/password";
@@ -200,7 +222,7 @@ function loadStravaProfile(req, res, next) {
                 res.locals.user = {
                   avatar: stravaData.profile,
                   firstname: stravaData.firstname,
-                  lastname: stravaData.lastname
+                  lastname: stravaData.lastname,
                 };
                 fs.appendFileSync(
                   "logs/users.txt",
@@ -212,7 +234,7 @@ function loadStravaProfile(req, res, next) {
             }
           );
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("Bad thing happen while trying to refresh Token", err);
         });
     }
@@ -307,11 +329,11 @@ function pingStrava(after, before, accessToken) {
     const queryData = {
       page: 1,
       query: `https://www.strava.com/api/v3/athlete/activities?&after=${after}&before=${before}&per_page=200&page=`,
-      accessToken: accessToken
+      accessToken: accessToken,
     };
 
     //build callback for recusrive strava calls
-    const callback = function(err, resultStravaArray) {
+    const callback = function (err, resultStravaArray) {
       if (err) {
         console.log(`Error with strava ${err}`);
         return resolve([]);
@@ -366,7 +388,7 @@ function cleanUpStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
   // console.log(stravaData[0]); //uncomment to view stravaData format
-  stravaData.forEach(element => {
+  stravaData.forEach((element) => {
     //see config/dataNotes.js for element data types
     const newActivity = {};
     newActivity.id = element.id;
@@ -420,7 +442,7 @@ function getActivities(req, res, next) {
   // }
 
   pingStrava(after, before, res.locals.accessToken)
-    .then(result => {
+    .then((result) => {
       result = cleanUpStravaData(result, activityType);
       console.log(`Cleaned up result length: ${result.length}`);
 
@@ -450,7 +472,7 @@ function getPointsFromActivities(req, res, next) {
   let activities = res.locals.activities;
 
   // let pointsArray = []
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     try {
       const decodedPath = decodePolyline(activity.line);
       activity.points = decodedPath;
