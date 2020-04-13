@@ -49,7 +49,7 @@
     "git-revision-webpack-plugin": "^3.0.3",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^24.9.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "nodemon": "^1.18.9",
     "react-test-renderer": "^16.9.0",
     "sass-loader": "^7.1.0",
