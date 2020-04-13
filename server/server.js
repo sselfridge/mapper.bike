@@ -98,8 +98,12 @@ app.get(
   "/api/getActivities",
   stravaController.loadStravaProfile,
   stravaController.getActivities,
-  stravaController.getPointsFromActivities,
   (req, res) => {
+    if (res.locals.err) {
+      console.log(res.locals.err);
+      res.status(523).send("Error with get Activites");
+      return; 
+    }
     console.log(`Sending Back ${res.locals.activities.length} activities`);
     res.send(JSON.stringify(res.locals.activities));
   }
@@ -108,7 +112,6 @@ app.get(
 app.get(
   "/api/getDemoData",
   stravaController.getDemoData,
-  stravaController.getPointsFromActivities,
   (req, res) => {
     console.log(`Sending Back ${res.locals.activities.length} activities`);
     res.send(JSON.stringify(res.locals.activities));
