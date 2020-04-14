@@ -64,68 +64,7 @@ function setJWTCookie(res, payload) {
   res.cookie("stravajwt", crypted, { httpOnly: true });
 }
 
-//check if the accesstoken is expired, if so request a new one
-function checkAndRefreshStravaClient(res) {
-  return new Promise((resolve, reject) => {
-    const expires_at = res.locals.expires_at;
-    console.log("Token Expires", expires_at.fromNow());
-    console.log("Refresh Token", res.locals.refreshToken);
-    if (m().isAfter()) {
-      console.log("Token Expired, refreshing");
-      // request.post(
-      //   {
-      //     url: "https://www.strava.com/api/v3/oauth/token",
-      //     form: {
-      //       client_id: config.client_id,
-      //       client_secret: config.client_secret,
-      //       grant_type: "refresh_token",
-      //       refresh_token: res.locals.refreshToken,
-      //     },
-      //   },
-      //   function (err, httpResponse, body) {
-      //     if (err) {
-      //       console.log(`Error with strava api ${err}`);
-      //       res.locals.err = "Error with strava - try again or logging with username/password";
-      //       return reject(err);
-      //     }
-      //     if (httpResponse.statusCode != 200) {
-      //       console.log("Non 200 response for token refresh");
-      //       console.log(body);
-      //       return reject(
-      //         `200 status expected. Refresh request res code:${httpResponse.statusCode}`
-      //       );
-      //     }
-      //     tokenRegex = /.*access_token":"([^"]+).*expires_at":(\d+).*refresh_token":"([^"]+)/;
-      //     bodyArray = tokenRegex.exec(body);
-      //     console.log("body: ", body);
-      // body:  {"token_type":"Bearer","access_token":"e4f2b085afaeee810085b683d085334f5e7887e8",
-      // "expires_at":1571883514,"expires_in":17153,"refresh_token":"a4d6b48cc0d5502d17ba59e6d87f8ae3b173a813"}
-      stravaAPI.oauth
-        .refreshToken(res.locals.refreshToken)
-        .then((result) => {
-          console.log("Refresh Token Result:");
-          console.log(result);
-          // let payload = {
-          //   expires_at: res.locals.expires_at,
-          //   refreshToken: res.locals.refreshToken,
-          //   accessToken: res.locals.accessToken,
-          //   athleteID: res.locals.athleteID,
-          // };
-          setJWTCookie(res, payload);
-          // res.locals.strava = new stravaAPI.client(result.accessToken)
-          return reject("Need to update token refresh code");
-        })
-        .catch((err) => {
-          console.log("Error During Token Refresh");
-          console.log(err);
-          reject("Error During Token Refresh");
-        });
-    } else {
-      console.log("Token Not Expired");
-      return resolve();
-    }
-  });
-}
+
 
 function loadStravaProfile(req, res, next) {
   console.log("loadStravaProfile");
@@ -150,7 +89,7 @@ function loadStravaProfile(req, res, next) {
       res.locals.refreshToken = payload.refreshToken;
       res.locals.athleteID = payload.athleteID;
       console.log("Access Token: ", res.locals.accessToken);
-      checkAndRefreshStravaClient(res)
+      utils.checkAndRefreshStravaClient(res)
         .then(() => res.locals.strava.athlete.get({}))
         .then((result) => {
           res.locals.user = {
@@ -160,21 +99,10 @@ function loadStravaProfile(req, res, next) {
           };
 
           utils.logUser(result.firstname, result.lastname);
-
-          // stravaClient.athletes
-          //   .stats({ id: result.id })
-          //   .then((result) => {
-          //     console.log("Athlete Stats:");
-          //     // console.log(result);
-          //   })
-          //   .catch((err) => {
-          //     console.log("handled Rejection");
-          //     console.log(err.message);
-          //   });
           next();
         })
         .catch((err) => {
-          console.log("Error while trying to refresh Token\n", err);
+          console.log("Error while trying to refresh Token\n", err.message);
           res.locals.err = "Error During Token Refresh";
           next();
         });
@@ -374,7 +302,7 @@ function getActivities(req, res, next) {
       res.locals.activities = utils.decodePoly(result);
       return next();
     })
-    .catch((err)=>errorDispatch(err,req,res,next));
+    .catch((err) => errorDispatch(err, req, res, next));
 }
 
 function getDemoData(req, res, next) {
@@ -388,10 +316,10 @@ function getDemoData(req, res, next) {
   return next();
 }
 
-function errorDispatch(err,req,res,next) {
+function errorDispatch(err, req, res, next) {
   console.log(`ERROR Will Robinson! ASYNC ERROR`);
   console.log(err);
-  res.locals.err = "err"
+  res.locals.err = "err";
   next();
 }
 

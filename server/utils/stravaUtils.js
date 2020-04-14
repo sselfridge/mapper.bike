@@ -1,4 +1,5 @@
 const fs = require("fs");
+const m = require('moment')
 const decodePolyline = require("decode-google-map-polyline");
 
 const USERLOGFILE = "logs/users.txt";
@@ -15,7 +16,6 @@ module.exports = {
     str += date + "-PST \n";
     fs.appendFileSync(USERLOGFILE, str);
   },
-
   // take polyline and decode into GPS points to be placed on map in polyline component
   // ya I know its weird but here we are
   decodePoly: (activities) => {
@@ -34,4 +34,45 @@ module.exports = {
 
     return activities;
   },
+  
+//check if the accesstoken is expired, if so request a new one
+ checkAndRefreshStravaClient:(res) => {
+  return new Promise((resolve, reject) => {
+    const expires_at = res.locals.expires_at;
+    console.log(`Token Expires at ${expires_at.format("hh:mm A")},`, expires_at.fromNow());
+    console.log("Refresh Token", res.locals.refreshToken);
+    if (m().isAfter(expires_at)) {
+      console.log("Token Expired, refreshing");
+
+      stravaAPI.oauth
+        .refreshToken(res.locals.refreshToken)
+        .then((result) => {
+          let payload = {
+            expires_at: result.expires_at,
+            refreshToken: result.refreshToken,
+            accessToken: result.accessToken,
+            athleteID: res.locals.athleteID,
+          };
+          setJWTCookie(res, payload);
+          res.locals.expires_at = result.expires_at;
+          res.locals.accessToken = result.access_token;
+          res.locals.strava = new stravaAPI.client(result.accessToken);
+          return resolve();
+        })
+        .catch((err) => {
+          console.log("Error During Token Refresh");
+          console.log(err);
+          reject("Error During Token Refresh");
+        });
+    } else {
+      console.log("Token Not Expired");
+      return resolve();
+    }
+  });
+}
+
 };
+
+
+
+
