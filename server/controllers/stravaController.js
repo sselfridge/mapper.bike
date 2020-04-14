@@ -3,6 +3,9 @@ const m = require("moment");
 const Cryptr = require("cryptr");
 const request = require("request");
 const fs = require("fs");
+
+const decodePolyline = require("decode-google-map-polyline");
+
 const config = require("../../config/keys");
 const utils = require("../utils/stravaUtils");
 
@@ -20,13 +23,15 @@ stravaAPI.config({
 
 const cryptr = new Cryptr(config.secretSuperKey);
 
-const stravaController = {};
-stravaController.setStravaOauth = setStravaOauth;
-stravaController.loadStravaProfile = loadStravaProfile;
-stravaController.getActivities = getActivities;
-stravaController.getDemoData = getDemoData;
-stravaController.clearCookie = clearCookie;
+const stravaController = {
+  setStravaOauth,
+  loadStravaProfile,
+  getActivities,
+  getDemoData,
+  clearCookie,
+};
 
+// EXPORTED Functions
 function setStravaOauth(req, res, next) {
   let code = req.query.code;
   console.log(`Strava Code: ${code}`);
@@ -35,7 +40,7 @@ function setStravaOauth(req, res, next) {
     .getToken(code)
     .then((result) => {
       let payload = {
-        expires_at: result.expires_at,
+        expiresAt: result.expires_at,
         refreshToken: result.refresh_token,
         accessToken: result.access_token,
         athleteID: result.athlete.id,
@@ -50,21 +55,6 @@ function setStravaOauth(req, res, next) {
       next();
     });
 }
-
-// let payload = {
-//   expires_at,
-//   refreshToken,
-//   accessToken,
-//   athleteID
-// };
-function setJWTCookie(res, payload) {
-  console.log("Set JWT");
-  const jwt = jwtoken.sign(payload, config.secretSuperKey);
-  const crypted = cryptr.encrypt(jwt);
-  res.cookie("stravajwt", crypted, { httpOnly: true });
-}
-
-
 
 function loadStravaProfile(req, res, next) {
   console.log("loadStravaProfile");
@@ -83,13 +73,13 @@ function loadStravaProfile(req, res, next) {
       clearCookie(req, res, next);
     } else {
       console.log(`JWT Valid - allow to proceed. athleteID: ${payload.athleteID}`);
-      res.locals.expires_at = m.unix(payload.expires_at);
+      res.locals.expiresAt = m.unix(payload.expiresAt);
       res.locals.strava = new stravaAPI.client(payload.accessToken);
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
       res.locals.athleteID = payload.athleteID;
       console.log("Access Token: ", res.locals.accessToken);
-      utils.checkAndRefreshStravaClient(res)
+      checkAndRefreshStravaClient(res)
         .then(() => res.locals.strava.athlete.get({}))
         .then((result) => {
           res.locals.user = {
@@ -115,69 +105,92 @@ function clearCookie(req, res, next) {
   res.clearCookie("stravajwt", { httpOnly: true });
   next();
 }
-// Not using DB currently, keeping old code if we move to that in the future
 
-//activity not in db already - create new activity and insert
-// function putActivityinDB(activity) {
-//   const newAct = new Activity(activity);
-//   let reterr = null;
-//   try {
-//     //try catch because my duplication errors are annoying
-//     newAct.save(err => {
-//       if (err) {
-//         console.log("Error Creating Activity:", err);
-//         let errMsg;
-//         switch (err.code) {
-//           case 11000:
-//             // do nothing, expecting lots of dupications
-//             // errMsg = "None unique Activity taken, please pick something else";
-//             err = null;
-//             break;
+// fetch activities in the date range between before and after
+// activities stored in res.locals.activities in polyline format
+// need to turn into points to be placed on map
+// done by getPointsFromActivites
+function getActivities(req, res, next) {
+  const after = req.query.after;
+  const before = req.query.before;
+  const activityType = req.query.type;
+  console.log(`Type:${activityType}`);
 
-//           default:
-//             errMsg = "Error creating Activity, try again later";
-//             break;
-//         }
-//         err = errMsg;
-//       }
-//     });
-//   } catch (error) {
-//     console.log(`Caught a DB error: ${error}`);
-//   }
-//   // return reterr;
-// }
+  pingStrava(after, before, res.locals.accessToken)
+    .then((result) => {
+      result = cleanUpStravaData(result, activityType);
+      console.log(`Cleaned up result length: ${result.length}`);
 
-// function fetchFromDB(after, before, accessToken) {
-//   return new Promise((resolve, reject) => {
-//     resolve([accessToken]); //ignore DB for now
-//     return;
-//     console.log("This Shouldn't happen&&&&&&&&&&&&&&&&&&&&&&&&&");
-//     Activity.find({ date: { $lte: before, $gte: after } }, (err, docs) => {
-//       console.log(`Searching DB`);
-//       if (err) {
-//         console.log(`Error with DB: ${err}`);
-//         resolve([], accessToken);
-//       } else {
-//         console.log(`Found docs from DB: ${docs.length}`);
-//         let newActivityArray = [];
-//         docs.forEach(activity => {
-//           const newActivity = {
-//             id: activity.id,
-//             name: activity.name,
-//             line: activity.line,
-//             date: activity.date,
-//             color: activity.color,
-//             selected: activity.selected
-//           };
-//           newActivityArray.push(newActivity);
-//         });
+      res.locals.activities = decodePoly(result);
+      return next();
+    })
+    .catch((err) => errorDispatch(err, req, res, next));
+}
 
-//         //do we have all the dates in our DB already?
-//         resolve(newActivityArray, accessToken);
-//       }
-//     }); //dnif
-//   });
-// }
+function getDemoData(req, res, next) {
+  console.log("Getting Demo Data");
+  const demoData = fs.readFileSync(__dirname + `/../../config/demoData.json`);
+  let stravaData = JSON.parse(demoData);
+  console.log(`Cleaning up from demoData`);
+  const result = cleanUpStravaData(stravaData);
+  res.locals.activities = decodePoly(result);
+
+  return next();
+}
+
+// Utility Functions
+// Not middleware for requests, but more complex than basic untility
+
+//check if the accesstoken is expired, if so request a new one
+const checkAndRefreshStravaClient = (res) => {
+  return new Promise((resolve, reject) => {
+    const expiresAt = res.locals.expiresAt;
+    console.log(`Token Expires at ${expiresAt.format("hh:mm A")},`, expiresAt.fromNow());
+    console.log("Refresh Token:", res.locals.refreshToken);
+    if (m().isAfter(expiresAt)) {
+      console.log("Token Expired");
+
+      stravaAPI.oauth
+        .refreshToken(res.locals.refreshToken)
+        .then((result) => {
+          console.log("Refresh Result");
+          console.log(result);
+          let payload = {
+            expiresAt: result.expires_at,
+            refreshToken: result.refresh_token,
+            accessToken: result.access_token,
+            athleteID: res.locals.athleteID,
+          };
+          setJWTCookie(res, payload);
+          res.locals.expiresAt = result.expires_at;
+          res.locals.accessToken = result.access_token;
+          res.locals.strava = new stravaAPI.client(result.access_token);
+          return reject("Need to get proper refesh data");
+        })
+        .catch((err) => {
+          console.log("Error During Token Refresh");
+          console.log(err);
+          reject("Error During Token Refresh");
+        });
+    } else {
+      console.log("Token Not Expired");
+      return resolve();
+    }
+  });
+};
+
+// let payload = {
+//   expiresAt,
+//   refreshToken,
+//   accessToken,
+//   athleteID
+// };
+function setJWTCookie(res, payload) {
+  console.log("Set JWT", payload);
+  const jwt = jwtoken.sign(payload, config.secretSuperKey);
+  const crypted = cryptr.encrypt(jwt);
+  res.cookie("stravajwt", crypted, { httpOnly: true });
+}
 
 function pingStrava(after, before, accessToken) {
   console.log("Ping Strava with accessToken:", accessToken);
@@ -236,7 +249,8 @@ function buildStravaData(queryData, stravaData,  callback) {
         console.log('More than 200 results, getting more');
         // prettier-ignore
         queryData.page++;
-        buildStravaData(queryData,stravaData,callback);      }
+        buildStravaData(queryData,stravaData,callback);      
+      }
     }
   );
 }
@@ -252,20 +266,15 @@ function cleanUpStravaData(stravaData, activityType) {
     newActivity.id = element.id;
     newActivity.name = element.name;
     newActivity.line = element.map.summary_polyline;
-    newActivity.date = makeEpochSecondsTime(element.start_date_local);
+    newActivity.date = utils.makeEpochSecondsTime(element.start_date_local);
     newActivity.distance = element.distance;
     newActivity.elapsedTime = element.elapsed_time;
     newActivity.selected = false;
     newActivity.weight = 2;
     newActivity.color = "blue";
 
-    //only grab activities with a polyline
+    //only grab activities with a polyline AKA non-trainer rides
     if (newActivity.line) {
-      // if (!dbSet.has(newActivity.id)) { //TODO re-introduce DB stuffs
-      //   dbSet.add(newActivity.id);
-      //   let err = putActivityinDB(newActivity);
-      //   if (err) console.error("Error with DB stuff", err);
-      // }
       if (activityType === "Ride") {
         if (element.type === "Ride") activities.push(newActivity);
       } else {
@@ -276,45 +285,22 @@ function cleanUpStravaData(stravaData, activityType) {
   return activities;
 }
 
-// takes a string that represnts a date and returns the epoch time in seconds
-// "2012-02-15T21:20:29Z" --> 1329340829
-function makeEpochSecondsTime(timeString) {
-  const date = new Date(timeString);
-  const seconds = Math.floor(date.getTime() / 1000);
-  return seconds;
-}
+const decodePoly = (activities) => {
+  // take polyline and decode into GPS points to be placed on map in polyline component
+  // ya I know its weird but here we are
+  activities.forEach((activity) => {
+    try {
+      const decodedPath = decodePolyline(activity.line);
+      activity.points = decodedPath;
+    } catch (error) {
+      console.log(`Error decoding activity: ${activity.name}`);
+      console.log(error);
+    }
+    utils.addMidPoint(activity);
+  });
 
-// fetch activities in the date range between before and after
-// activities stored in res.locals.activities in polyline format
-// need to turn into points to be placed on map
-// done by getPointsFromActivites
-function getActivities(req, res, next) {
-  after = req.query.after;
-  before = req.query.before;
-  activityType = req.query.type;
-  console.log(`Type:${activityType}`);
-
-  pingStrava(after, before, res.locals.accessToken)
-    .then((result) => {
-      result = cleanUpStravaData(result, activityType);
-      console.log(`Cleaned up result length: ${result.length}`);
-
-      res.locals.activities = utils.decodePoly(result);
-      return next();
-    })
-    .catch((err) => errorDispatch(err, req, res, next));
-}
-
-function getDemoData(req, res, next) {
-  console.log("Getting Demo Data");
-  const demoData = fs.readFileSync(__dirname + `/../../config/demoData.json`);
-  let stravaData = JSON.parse(demoData);
-  console.log(`Cleaning up from demoData`);
-  result = cleanUpStravaData(stravaData);
-  res.locals.activities = utils.decodePoly(result);
-
-  return next();
-}
+  return activities;
+};
 
 function errorDispatch(err, req, res, next) {
   console.log(`ERROR Will Robinson! ASYNC ERROR`);

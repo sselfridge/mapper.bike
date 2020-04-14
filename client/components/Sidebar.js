@@ -30,7 +30,7 @@ const Sidebar = props => {
   const demoFog = props.demoMode ? (
     <div id="fogOfDemo">
       <span id="demoText">Controls Not Available in Demo</span>
-      <span id='demoInstructions'>Try zip code 80477 or click 'hide map' and zoom out to see rides in other areas.</span>
+      <span id='demoInstructions'>Try zip code 80477 or click &apos;hide map&apos; and zoom out to see rides in other areas.</span>
     </div>
   ) : (
     <></>
@@ -39,7 +39,7 @@ const Sidebar = props => {
   const introMessage =
     props.activities.length === 0 ? (
       <div id="introMessage">
-        Click 'Get Activities' to load rides onto map
+        Click &apos;Get Activities&apos; to load rides onto map
         <br />
         <br />
         Change Activity type or Date range to get more

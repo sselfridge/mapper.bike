@@ -5,8 +5,11 @@ import DefaultSidebar from "./DefaultSidebar";
 import config from "../../config/keys";
 import axios from "axios";
 
-//functions go here
+// Get git version from ENV var
+// eslint-disable-next-line no-undef
+const version = VERSION
 
+//functions go here
 class App extends Component {
   constructor(props) {
     super(props);
@@ -15,7 +18,7 @@ class App extends Component {
       google: null,
       mapStyles: {
         width: "75%",
-        height: "95%"
+        height: "95%",
       },
       loadingActivites: false,
       activeMarker: {},
@@ -32,30 +35,30 @@ class App extends Component {
       currentUser: {
         avatar: null,
         firstname: null,
-        lastname: null
+        lastname: null,
       },
       center: {
         lat: null,
-        lang: null
+        lang: null,
       },
       flashMessage: "",
       demoMode: false,
       dimScreen: false,
-      showMenu: false
+      showMenu: false,
     };
 
     this.selectedActivity = {
       color: "#52eb0c",
       selected: true,
       weight: this.state.selectedStrokeWeight,
-      zIndex: 90
+      zIndex: 90,
     };
 
     this.notSelectedActivity = {
       color: "blue",
       selected: false,
       weight: this.state.defaultStrokeWeight,
-      zIndex: 2
+      zIndex: 2,
     };
 
     this.onLineClick = this.onLineClick.bind(this);
@@ -80,7 +83,7 @@ class App extends Component {
   //used by clicking a line in the map or hovering over it on the side
   selectActivity(id) {
     let activities = this.state.activities;
-    activities.forEach(activity => {
+    activities.forEach((activity) => {
       if (activity.id === id) {
         activity.selected = this.selectedActivity.selected;
         activity.color = this.selectedActivity.color;
@@ -97,14 +100,14 @@ class App extends Component {
     this.setState({ activities });
   }
 
-  onLineClick(e, line, clickPoint) {
+  onLineClick(e, line) {
     console.log(`Line Clicked!!!`);
     const id = line.tag;
     const rideEl = document.getElementById(`ride${id}`);
     rideEl.scrollIntoView({
       behavior: "auto",
       block: "center",
-      inline: "center"
+      inline: "center",
     });
 
     this.selectActivity(id);
@@ -142,7 +145,6 @@ class App extends Component {
   }
 
   dateToEpoch(date) {
-    let newDate = new Date(date);
     const number = Math.floor(date.getTime() / 1000);
     return number;
   }
@@ -170,18 +172,18 @@ class App extends Component {
     }
     const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&${activityType}`;
 
-    axios.get(quereyString).then(res => {
+    axios.get(quereyString).then((res) => {
       this.setState({ activities: res.data, loadingActivites: false });
     });
   }
 
   getDemoActivities() {
     this.setState({ loadingActivites: true });
-    axios.get("/api/getDemoData").then(res => {
+    axios.get("/api/getDemoData").then((res) => {
       this.setState({
         activities: res.data,
         loadingActivites: false,
-        demoMode: true
+        demoMode: true,
       });
     });
   }
@@ -206,7 +208,7 @@ class App extends Component {
       let url = GOOGLE_API + `?key=${config.mapsApi}` + `&address=${address}`;
       axios
         .get(url)
-        .then(response => {
+        .then((response) => {
           console.log(response.data);
           if (response.data.status === "ZERO_RESULTS") {
             this.flashMessage("Location not found");
@@ -215,7 +217,7 @@ class App extends Component {
           const { lat, lng } = response.data.results[0].geometry.location;
           this.setState({ center: { lat, lng } });
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
           this.flashMessage("Error with location - try another query");
         });
@@ -241,7 +243,7 @@ class App extends Component {
   //   }
   // }
 
-  flashMessage(message, type) {
+  flashMessage(message) {
     const flashMessage = message;
     this.setState({ flashMessage });
 
@@ -251,14 +253,14 @@ class App extends Component {
   }
 
   stravaLogout() {
-    axios.get("/api/logout").then(res => {
-      console.log('User Logged Out',res.status);
-      
+    axios.get("/api/logout").then((res) => {
+      console.log("User Logged Out", res.status);
+
       if (res.status === 200) {
         const emptyUser = {
           avatar: null,
           firstname: null,
-          lastname: null
+          lastname: null,
         };
         this.setState({ currentUser: emptyUser, demoMode: false });
       }
@@ -278,7 +280,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios.get(`/api/getStravaUser`).then(res => {
+    axios.get(`/api/getStravaUser`).then((res) => {
       if (res.status === 200) {
         this.setState({ currentUser: res.data });
       }
@@ -291,7 +293,6 @@ class App extends Component {
     // if(this.state.demoMode === false){
     //   this.getDemoActivities()
     // }
-
   }
 
   render() {
@@ -324,7 +325,7 @@ class App extends Component {
           { lat: 89, lng: 1 },
           { lat: -60, lng: 1 },
           { lat: -60, lng: -179 },
-          { lat: 89, lng: -179 }
+          { lat: 89, lng: -179 },
         ]}
         key="blackground0"
         fillColor="black"
@@ -339,7 +340,7 @@ class App extends Component {
           { lat: 89, lng: 1 },
           { lat: -60, lng: 1 },
           { lat: -60, lng: -180 },
-          { lat: 89, lng: -180 }
+          { lat: 89, lng: -180 },
         ]}
         key="blackground1"
         fillColor="black"
@@ -347,11 +348,10 @@ class App extends Component {
         clickable={false}
         zIndex={-99}
         visible={this.state.blackgroundActive}
-      />
+      />,
     ];
     // console.debug(`App ENV:${process.env.NODE_ENV}`);
     // console.debug(`client: ${config.client_id}`);
-
 
     const dimScreen = this.state.dimScreen ? (
       <div id="dimScreen" onClick={this.toggleDim} />
@@ -359,11 +359,13 @@ class App extends Component {
       <></>
     );
 
-
-
     const hamburgerMenu = this.state.showMenu ? (
       <div id="menuModal">
-        <a target="_blank" href="http://www.github.com/sselfridge/mapper.bike">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="http://www.github.com/sselfridge/mapper.bike"
+        >
           View source on GitHub
         </a>
         <hr />
@@ -410,7 +412,7 @@ class App extends Component {
         <div id="board">
           <div id="header">
             <div id="title">
-              Mapper.Bike <span id="betatext">beta {`v-${VERSION}`}</span>
+              Mapper.Bike <span id="betatext">beta {`v-${version}`}</span>
             </div>{" "}
             <div>
               <span onClick={this.toggleShowMenu} className="hamburger" />
@@ -428,7 +430,7 @@ class App extends Component {
             center={this.state.center}
             initialCenter={{
               lat: 33.945602,
-              lng: -118.483297
+              lng: -118.483297,
             }}
           >
             {blackground}
@@ -442,5 +444,5 @@ class App extends Component {
 
 export default GoogleApiWrapper({
   apiKey: config.mapsApi,
-  libraries: ["geometry", "visualization"]
+  libraries: ["geometry", "visualization"],
 })(App);

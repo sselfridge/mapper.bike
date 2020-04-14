@@ -12,6 +12,28 @@
     "win": "concurrently \"cross-env NODE_ENV=development nodemon server/start.js\" \"webpack-dev-server --open\"",
     "test": "jest --verbose"
   },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "no-unused-expressions": "warn",
+      "react/prop-types": "warn"
+    },
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+  },
   "nodemonConfig": {
     "ignore": [
       "build",
@@ -48,6 +70,8 @@
     "concurrently": "^4.1.1",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.19.0",
     "git-revision-webpack-plugin": "^3.0.3",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^24.9.0",
