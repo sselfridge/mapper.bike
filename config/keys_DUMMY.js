@@ -2,7 +2,7 @@ const env = process.env.NODE_ENV;
 
 console.log(`ENV:${env}`);
 
-prodKeys = {
+const prodKeys = {
   client_id: "",
   client_secret: "",
   callback_uri: "",
@@ -13,7 +13,7 @@ prodKeys = {
   mapsApi: ""
 };
 
-devKeys = {
+const devKeys = {
   client_id: "",
   client_secret: " ",
   callback_uri: "",
