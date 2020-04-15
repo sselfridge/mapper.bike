@@ -58,46 +58,27 @@ function setStravaOauth(req, res, next) {
 
 function loadStravaProfile(req, res, next) {
   console.log("loadStravaProfile");
-  const jwt = req.cookies.stravajwt;
-  let hubCookie;
-  try {
-    //this fails badly if the key is wrong
-    hubCookie = cryptr.decrypt(jwt);
-  } catch (error) {
-    hubCookie = "This Will Fail";
-  }
-  jwtoken.verify(hubCookie, config.secretSuperKey, (err, payload) => {
-    if (err) {
-      console.log(`Token Invalid: ${err}`);
-      res.locals.err = "JWT / Cookie token invalid";
-      clearCookie(req, res, next);
-    } else {
-      console.log(`JWT Valid - allow to proceed. athleteID: ${payload.athleteID}`);
-      res.locals.expiresAt = m.unix(payload.expiresAt);
-      res.locals.strava = new stravaAPI.client(payload.accessToken);
-      res.locals.accessToken = payload.accessToken;
-      res.locals.refreshToken = payload.refreshToken;
-      res.locals.athleteID = payload.athleteID;
-      console.log("Access Token: ", res.locals.accessToken);
-      checkAndRefreshStravaClient(res)
-        .then(() => res.locals.strava.athlete.get({}))
-        .then((result) => {
-          res.locals.user = {
-            avatar: result.profile,
-            firstname: result.firstname,
-            lastname: result.lastname,
-          };
+  const jwt = decryptJwt(req.cookies.stravajwt);
 
-          utils.logUser(result.firstname, result.lastname);
-          next();
-        })
-        .catch((err) => {
-          console.log("Error while trying to refresh Token\n", err.message);
-          res.locals.err = "Error During Token Refresh";
-          next();
-        });
-    }
-  });
+  checkStravaClient(res, jwt)
+    .then(checkRefreshToken)
+    .then(() => res.locals.strava.athlete.get({}))
+    .then((result) => {
+      res.locals.user = {
+        avatar: result.profile,
+        firstname: result.firstname,
+        lastname: result.lastname,
+      };
+
+      utils.logUser(result.firstname, result.lastname);
+      next();
+    })
+    .catch((err) => {
+      console.log("Error while trying to refresh Token\n", err.message);
+      res.locals.err = "Error During Token Refresh";
+      clearCookie(req, res, next);
+      next();
+    });
 }
 
 function clearCookie(req, res, next) {
@@ -141,20 +122,37 @@ function getDemoData(req, res, next) {
 // Utility Functions
 // Not middleware for requests, but more complex than basic untility
 
+const checkStravaClient = (res, jwt) => {
+  return new Promise((resolve, reject) => {
+    jwtoken.verify(jwt, config.secretSuperKey, (err, payload) => {
+      if (err) return reject("JWT / Cookie Invalid");
+      console.log(`JWT Valid - allow to proceed. athleteID: ${payload.athleteID}`);
+      res.locals.expiresAt = m.unix(payload.expiresAt);
+      res.locals.strava = new stravaAPI.client(payload.accessToken);
+      res.locals.accessToken = payload.accessToken;
+      res.locals.refreshToken = payload.refreshToken;
+      res.locals.athleteID = payload.athleteID;
+      console.log("Access Token: ", res.locals.accessToken);
+      return resolve(res);
+    });
+  });
+};
+
 //check if the accesstoken is expired, if so request a new one
-const checkAndRefreshStravaClient = (res) => {
+const checkRefreshToken = (res) => {
   return new Promise((resolve, reject) => {
     const expiresAt = res.locals.expiresAt;
     console.log(`Token Expires at ${expiresAt.format("hh:mm A")},`, expiresAt.fromNow());
     console.log("Refresh Token:", res.locals.refreshToken);
-    if (m().isAfter(expiresAt)) {
+    if (m().isBefore(expiresAt)) {
+      console.log("Token Not Expired");
+      return resolve();
+    } else {
       console.log("Token Expired");
 
       stravaAPI.oauth
         .refreshToken(res.locals.refreshToken)
         .then((result) => {
-          console.log("Refresh Result");
-          console.log(result);
           let payload = {
             expiresAt: result.expires_at,
             refreshToken: result.refresh_token,
@@ -165,16 +163,13 @@ const checkAndRefreshStravaClient = (res) => {
           res.locals.expiresAt = result.expires_at;
           res.locals.accessToken = result.access_token;
           res.locals.strava = new stravaAPI.client(result.access_token);
-          return reject("Need to get proper refesh data");
+          return resolve();
         })
         .catch((err) => {
           console.log("Error During Token Refresh");
           console.log(err);
           reject("Error During Token Refresh");
         });
-    } else {
-      console.log("Token Not Expired");
-      return resolve();
     }
   });
 };
@@ -301,6 +296,17 @@ const decodePoly = (activities) => {
 
   return activities;
 };
+
+function decryptJwt(jwt) {
+  let hubCookie;
+  try {
+    //this fails badly if the key is wrong
+    hubCookie = cryptr.decrypt(jwt);
+  } catch (error) {
+    hubCookie = "This Will Fail";
+  }
+  return hubCookie;
+}
 
 function errorDispatch(err, req, res, next) {
   console.log(`ERROR Will Robinson! ASYNC ERROR`);
