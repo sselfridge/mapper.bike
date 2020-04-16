@@ -21,7 +21,6 @@
     text-align: center;
 }
 
-
 #demoBtn {
     margin: 0px 50px;
 }
@@ -81,6 +80,29 @@
     cursor: pointer;
 }
 
+.typeBtn {
+    display: inline-block;
+    height: 39px;
+    width: 39px;
+    border: 1px solid black;
+    background-color: gray;
+}
+
+.typeSelected {
+    background-color: darkgrey;
+}
+
+#activityType>img:first-child {
+    border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px;
+    margin-left: 5px;
+}
+
+#activityType>img:last-child {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
 .demoText {
     display: block;
     width: 100%;
@@ -124,23 +146,23 @@
     background: lightblue;
 }
 
-.rideInfo{
+.rideInfo {
     font-size: 15;
     font-weight: 200;
 }
 
-.rideInfoDate{
-    float:left;
+.rideInfoDate {
+    float: left;
     font-size: 20px;
     padding: 5px;
 }
 
-.rideInfoDistance{
-    float:right;
+.rideInfoDistance {
+    float: right;
 }
 
-.rideInfoElapsedTime{
-float:right;
+.rideInfoElapsedTime {
+    float: right;
 }
 
 .sidebar {

@@ -7,7 +7,7 @@ import axios from "axios";
 
 // Get git version from ENV var
 // eslint-disable-next-line no-undef
-const version = VERSION
+const version = VERSION;
 
 //functions go here
 class App extends Component {
@@ -29,7 +29,7 @@ class App extends Component {
       clickedLines: [],
       afterDate: new Date(),
       beforeDate: new Date(),
-      activityType: "Ride",
+      activityType: { Ride: true, VirtualRide: false, Run: false },
       selectedStrokeWeight: 6,
       defaultStrokeWeight: 2,
       currentUser: {
@@ -168,8 +168,9 @@ class App extends Component {
       afterDate = `after=${0}`;
     }
     if (this.state.activityType !== "") {
-      activityType = `type=${this.state.activityType}`;
+      activityType = `type=${JSON.stringify(this.state.activityType)}`;
     }
+
     const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&${activityType}`;
 
     axios.get(quereyString).then((res) => {
@@ -195,9 +196,12 @@ class App extends Component {
     console.log(`New Before Date ${newDate}`);
     this.setState({ beforeDate: newDate });
   }
-  setActivityType(e) {
-    console.log(e.target.value);
-    this.setState({ activityType: e.target.value });
+  setActivityType(type) {
+    console.log('set Type');
+    document.getElementById(`type${type}`).classList.toggle("typeSelected")
+    const activityType = this.state.activityType;
+    activityType[type] = !activityType[type]
+    this.setState({ activityType });
   }
 
   centerOnLocation(e) {

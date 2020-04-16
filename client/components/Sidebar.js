@@ -6,16 +6,11 @@ import ReactLoading from "react-loading";
 import "./Sidebar.css";
 import "./Sidebar-Grid.css";
 
-const Sidebar = props => {
+const Sidebar = (props) => {
   const loadingActivites = props.loadingActivites ? (
     <div className="loadingActivites">
       {/* TODO: Loading Animation for MS Edge */}
-      <ReactLoading
-        type="spinningBubbles"
-        color="#FC4C02"
-        width="100%"
-        height={"320px"}
-      />
+      <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"320px"} />
     </div>
   ) : (
     <></>
@@ -30,7 +25,9 @@ const Sidebar = props => {
   const demoFog = props.demoMode ? (
     <div id="fogOfDemo">
       <span id="demoText">Controls Not Available in Demo</span>
-      <span id='demoInstructions'>Try zip code 80477 or click &apos;hide map&apos; and zoom out to see rides in other areas.</span>
+      <span id="demoInstructions">
+        Try zip code 80477 or click &apos;hide map&apos; and zoom out to see rides in other areas.
+      </span>
     </div>
   ) : (
     <></>
@@ -84,15 +81,39 @@ const Sidebar = props => {
         <label id="typeLabel" forhtml="activityType">
           Activity Type
         </label>
-        <select
+        {/* <select
           id="activityType"
           name="activityType"
           onChange={props.setActivityType}
         >
-          <option value="Ride">Ride Only</option>
-          <option value="all">All Activities</option>
-        </select>
+          <option value="Ride">Rides Only</option>
+          <option value="VirtualRide">Virtual Rides Only</option>
 
+          <option value="all">All Activities</option>
+        </select> */}
+        <div id="activityType">
+          <img
+          id="typeRide"
+            className={"typeBtn typeSelected"}
+            src="./client/img/ride.png"
+            title="Ride"
+            onClick={(e)=> props.setActivityType("Ride")}
+          />
+          <img
+          id="typeVirtualRide"
+            className={"typeBtn"}
+            src="./client/img/trainer.png"
+            title="Virtual Ride"
+            onClick={(e)=> props.setActivityType("VirtualRide")}
+          />
+          <img
+          id="typeRun"
+            className={"typeBtn"}
+            src="./client/img/shoe.png"
+            title="Run"
+            onClick={(e)=> props.setActivityType("Run")}
+          />
+        </div>
         <button id="getActBtn" onClick={props.getActivities}>
           Get Activities
         </button>

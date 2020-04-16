@@ -94,8 +94,7 @@ function clearCookie(req, res, next) {
 function getActivities(req, res, next) {
   const after = req.query.after;
   const before = req.query.before;
-  const activityType = req.query.type;
-  console.log(`Type:${activityType}`);
+  const activityType = JSON.parse(req.query.type);
 
   pingStrava(after, before, res.locals.accessToken)
     .then((result) => {
@@ -270,9 +269,7 @@ function cleanUpStravaData(stravaData, activityType) {
 
     //only grab activities with a polyline AKA non-trainer rides
     if (newActivity.line) {
-      if (activityType === "Ride") {
-        if (element.type === "Ride") activities.push(newActivity);
-      } else {
+      if (activityType[element.type] === true) {
         activities.push(newActivity);
       }
     }
