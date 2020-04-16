@@ -87,8 +87,7 @@ a.button {
     display: inline-block;
     width: 1.25em;
     height: 0.8em;
-    margin-top: .3em;
-    margin-right: 0.3em;
+    top: 4px;
     border-top: 0.2em solid rgb(10, 10, 10);
     border-bottom: 0.2em solid rgb(10, 10, 10);
 }
@@ -100,4 +99,29 @@ a.button {
     left: 0px;
     width: 100%;
     border-top: 0.2em solid rgb(10, 10, 10);
+}
+
+.headerRight {
+    display: flex;
+}
+
+.headerRight>* {
+    margin: 5px 10px;
+}
+
+.userAvatar {
+    height: 30px;
+    width: 30px;
+    border-radius: 20px;
+}
+
+.userInfo {
+    display: flex;
+}
+
+.userName {
+    padding: 10px;
+    line-height: 2;
+    text-decoration: none;
+    color:black;
 }

@@ -82,24 +82,32 @@
 
 .typeBtn {
     display: inline-block;
-    height: 39px;
-    width: 39px;
     border: 1px solid black;
     background-color: gray;
     cursor: pointer;
+    padding: 0 5px;
 }
 
 .typeSelected {
     background-color: darkgrey;
+    opacity: 100%;
 }
 
-#activityType>img:first-child {
+.typeImg{
+    height: 39px;
+    width: 39px;
+    opacity: 50%;
+
+}
+
+
+#activityType>div:first-child {
     border-bottom-left-radius: 15px;
     border-top-left-radius: 15px;
     margin-left: 5px;
 }
 
-#activityType>img:last-child {
+#activityType>div:last-child {
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
 }

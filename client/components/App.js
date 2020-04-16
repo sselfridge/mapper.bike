@@ -5,6 +5,8 @@ import DefaultSidebar from "./DefaultSidebar";
 import config from "../../config/keys";
 import axios from "axios";
 
+import HeaderRight from "./HeaderRight";
+
 // Get git version from ENV var
 // eslint-disable-next-line no-undef
 const version = VERSION;
@@ -17,8 +19,8 @@ class App extends Component {
       blackgroundActive: false,
       google: null,
       mapStyles: {
-        width: "75%",
-        height: "95%",
+        width: "calc(100% - 360px)",
+        height: "calc(100% - 55px)",
       },
       loadingActivites: false,
       activeMarker: {},
@@ -36,6 +38,7 @@ class App extends Component {
         avatar: null,
         firstname: null,
         lastname: null,
+        althleteId: null,
       },
       center: {
         lat: null,
@@ -197,10 +200,10 @@ class App extends Component {
     this.setState({ beforeDate: newDate });
   }
   setActivityType(type) {
-    console.log('set Type');
-    document.getElementById(`type${type}`).classList.toggle("typeSelected")
+    console.log("set Type");
+    document.getElementById(`type${type}`).classList.toggle("typeSelected");
     const activityType = this.state.activityType;
-    activityType[type] = !activityType[type]
+    activityType[type] = !activityType[type];
     this.setState({ activityType });
   }
 
@@ -363,26 +366,6 @@ class App extends Component {
       <></>
     );
 
-    const hamburgerMenu = this.state.showMenu ? (
-      <div id="menuModal">
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="http://www.github.com/sselfridge/mapper.bike"
-        >
-          View source on GitHub
-        </a>
-        <hr />
-        <a href="mailto:Sam.Selfridge@gmail.com">Sam.Selfridge@gmail.com</a>
-        <hr />
-        <a href="" onClick={this.stravaLogout}>
-          Logout
-        </a>
-      </div>
-    ) : (
-      <></>
-    );
-
     return (
       <div id="container">
         {dimScreen}
@@ -391,7 +374,6 @@ class App extends Component {
             <DefaultSidebar getDemoActivities={this.getDemoActivities} />
           ) : (
             <div>
-              Welcome {`${this.state.currentUser.firstname} ${this.state.currentUser.lastname}`}
               <Sidebar
                 getActivities={this.getActivities}
                 toggleBlackground={this.toggleBlackground}
@@ -418,10 +400,12 @@ class App extends Component {
             <div id="title">
               Mapper.Bike <span id="betatext">beta {`v-${version}`}</span>
             </div>{" "}
-            <div>
-              <span onClick={this.toggleShowMenu} className="hamburger" />
-              {hamburgerMenu}
-            </div>
+            <HeaderRight
+              toggleShowMenu={this.toggleShowMenu}
+              showMenu={this.state.showMenu}
+              stravaLogout={this.stravaLogout}
+              currentUser={this.state.currentUser}
+            />
           </div>
 
           {/* TODO Add ability to center map on current location */}

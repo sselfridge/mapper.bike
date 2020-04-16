@@ -92,27 +92,30 @@ const Sidebar = (props) => {
           <option value="all">All Activities</option>
         </select> */}
         <div id="activityType">
-          <img
-          id="typeRide"
-            className={"typeBtn typeSelected"}
-            src="./client/img/ride.png"
-            title="Ride"
-            onClick={(e)=> props.setActivityType("Ride")}
-          />
-          <img
-          id="typeVirtualRide"
-            className={"typeBtn"}
-            src="./client/img/trainer.png"
-            title="Virtual Ride"
-            onClick={(e)=> props.setActivityType("VirtualRide")}
-          />
-          <img
-          id="typeRun"
-            className={"typeBtn"}
-            src="./client/img/shoe.png"
-            title="Run"
-            onClick={(e)=> props.setActivityType("Run")}
-          />
+          <div id="typeRide" className="typeBtn typeSelected">
+            <img
+              className={"typeImg"}
+              src="./client/img/ride.png"
+              title="Ride"
+              onClick={() => props.setActivityType("Ride")}
+            />
+          </div>
+          <div id="typeVirtualRide" className="typeBtn">
+            <img
+              className={"typeImg"}
+              src="./client/img/trainer.png"
+              title="Virtual Ride"
+              onClick={() => props.setActivityType("VirtualRide")}
+            />
+          </div>
+          <div id="typeRun" className="typeBtn">
+            <img
+              className={"typeImg"}
+              src="./client/img/shoe.png"
+              title="Run"
+              onClick={() => props.setActivityType("Run")}
+            />
+          </div>
         </div>
         <button id="getActBtn" onClick={props.getActivities}>
           Get Activities
