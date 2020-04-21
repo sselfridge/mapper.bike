@@ -285,7 +285,7 @@ function cleanUpStravaData(stravaData, activityType) {
 
     //only grab activities with a polyline AKA non-trainer rides
     if (newActivity.line) {
-      if (activityType[element.type] === true) {
+      if (activityType === undefined || activityType[element.type] === true) {
         db.addActivity(newActivity);
         activities.push(newActivity);
       }
