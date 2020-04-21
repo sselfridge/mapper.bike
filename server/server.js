@@ -21,8 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(analyticController.getUserData);
-app.use(logReq)
-
+app.use(logReq);
 
 app.get("/api/getStravaUser", stravaController.loadStravaProfile, (req, res) => {
   if (res.locals.err) {
@@ -54,7 +53,7 @@ app.get("/api/getLatLngZip/:zip", (req, res) => {
   }
   const center = {
     lat: latlng[0],
-    lng: latlng[1]
+    lng: latlng[1],
   };
   res.json(center);
 });
@@ -76,7 +75,7 @@ app.get(
     if (res.locals.err) {
       console.log(res.locals.err);
       res.status(523).send("Error with get Activites");
-      return; 
+      return;
     }
     console.log(`Sending Back ${res.locals.activities.length} activities`);
     res.send(JSON.stringify(res.locals.activities));
@@ -84,15 +83,20 @@ app.get(
 );
 
 app.get(
-  "/api/getDemoData",
-  stravaController.getDemoData,
+  "/api/getActivityDetail",
+  stravaController.loadStravaProfile,
+  stravaController.getActivityDetail,
   (req, res) => {
-    console.log(`Sending Back ${res.locals.activities.length} activities`);
-    res.send(JSON.stringify(res.locals.activities));
+    res.send("Done");
   }
 );
 
-app.get("/api/logout",stravaController.clearCookie, (req, res) => {
+app.get("/api/getDemoData", stravaController.getDemoData, (req, res) => {
+  console.log(`Sending Back ${res.locals.activities.length} activities`);
+  res.send(JSON.stringify(res.locals.activities));
+});
+
+app.get("/api/logout", stravaController.clearCookie, (req, res) => {
   res.send("Ok");
 });
 
@@ -109,7 +113,7 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
   // TODO: redo this to bundle image in webpack
   app.get("/client/img/:image", (req, res) => {
     const imagePath = path.join(__dirname, `../client/img/${req.params.image}`);
-    fs.exists(imagePath, function(exists) {
+    fs.exists(imagePath, function (exists) {
       if (exists) {
         res.sendFile(imagePath);
       } else {
@@ -129,12 +133,11 @@ app.use("*", (req, res) => {
 app.use((err, req, res, next) => {
   console.log(`Catch All Error:======================================`);
   if (err.code != 11000) console.log(err); //11000 is a mongoDB error
-  res.status(200).send("Something Broke, we're sorry");
+  res.status(500).send("Something Broke, we're sorry");
   next();
 });
 
-
-function logReq(req,res,next){
+function logReq(req, res, next) {
   console.log(req.url);
   next();
 }

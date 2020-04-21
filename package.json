@@ -24,6 +24,7 @@
     },
     "rules": {
       "no-unused-expressions": "warn",
+      "no-unused-vars": "warn",
       "react/prop-types": "warn"
     },
     "parserOptions": {
@@ -43,11 +44,14 @@
   "author": "Sam Selfridge Sam.Selfridge@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "aws-sdk": "^2.658.0",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.4",
     "cryptr": "^6.0.1",
     "decode-google-map-polyline": "^1.0.1",
+    "dynamodb": "^1.2.1",
     "express": "^4.12.3",
     "google-maps-react": "github:sselfridge/google-maps-react",
     "jsonwebtoken": "^8.5.1",

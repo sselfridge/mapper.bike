@@ -3,6 +3,7 @@ const m = require("moment");
 const Cryptr = require("cryptr");
 const request = require("request");
 const fs = require("fs");
+const db = require("./dbController");
 
 const decodePolyline = require("decode-google-map-polyline");
 
@@ -29,6 +30,8 @@ const stravaController = {
   getActivities,
   getDemoData,
   clearCookie,
+  getActivityDetail,
+  status: {},
 };
 
 // EXPORTED Functions
@@ -68,7 +71,7 @@ function loadStravaProfile(req, res, next) {
         avatar: result.profile,
         firstname: result.firstname,
         lastname: result.lastname,
-        althleteId: result.id
+        althleteId: result.id,
       };
 
       utils.logUser(result.firstname, result.lastname);
@@ -117,6 +120,18 @@ function getDemoData(req, res, next) {
   res.locals.activities = decodePoly(result);
 
   return next();
+}
+
+function getActivityDetail(req, res, next) {
+  const strava = res.locals.strava;
+  db.getEmptyActivities()
+    .then((activites) => fetchActivityDetails(activites, res))
+
+    .then((result) => {
+      console.log("result");
+      console.log(result);
+      next();
+    });
 }
 
 // Utility Functions
@@ -250,7 +265,7 @@ function buildStravaData(queryData, stravaData,  callback) {
   );
 }
 
-//take the activity data from strava and parse it for display on the map
+//take the activity summary data from strava and parse it for display on the map
 function cleanUpStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   let activities = [];
@@ -271,12 +286,32 @@ function cleanUpStravaData(stravaData, activityType) {
     //only grab activities with a polyline AKA non-trainer rides
     if (newActivity.line) {
       if (activityType[element.type] === true) {
+        db.addActivity(newActivity);
         activities.push(newActivity);
       }
     }
   });
   return activities;
 }
+
+const fetchActivityDetails = (activitiesFromDB,res) => {
+  const strava = res.locals.strava
+  const activityIds = activitiesFromDB.Items.map(act => parseInt(act.id.N))
+  return new Promise((resolve, reject) => {
+    let rate = strava.rateLimiting.fractionReached()
+    while(rate < .75){
+      const result = strava.activities.get({id: 3189689567}).then(result =>{
+        console.log('result');
+        console.log(Object.keys(result));
+        console.log('Strave Rate Limits');
+        console.log(strava.rateLimiting.fractionReached());
+        next();
+    
+      })
+    }
+
+  });
+};
 
 const decodePoly = (activities) => {
   // take polyline and decode into GPS points to be placed on map in polyline component

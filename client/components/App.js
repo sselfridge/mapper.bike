@@ -80,7 +80,7 @@ class App extends Component {
     this.stravaLogout = this.stravaLogout.bind(this);
     this.toggleDim = this.toggleDim.bind(this);
     this.toggleShowMenu = this.toggleShowMenu.bind(this);
-    // this.centerFromSearch = this.centerFromSearch.bind(this);
+    this.getActityDetails = this.getActityDetails.bind(this);
   }
 
   //used by clicking a line in the map or hovering over it on the side
@@ -179,6 +179,14 @@ class App extends Component {
     axios.get(quereyString).then((res) => {
       this.setState({ activities: res.data, loadingActivites: false });
     });
+  }
+
+  getActityDetails(){
+    const quereyString = '/api/getActivityDetail'
+    axios.get(quereyString).then(res=>{
+      console.log('App Retval:');
+      console.log(res);
+    })
   }
 
   getDemoActivities() {
@@ -391,6 +399,7 @@ class App extends Component {
                 demoMode={this.state.demoMode}
                 stravaLogout={this.stravaLogout}
               />
+              <button onClick={this.getActityDetails}>TEST</button>
             </div>
           )}
         </div>
