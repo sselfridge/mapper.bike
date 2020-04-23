@@ -124,14 +124,55 @@ function getDemoData(req, res, next) {
 
 function getActivityDetail(req, res, next) {
   const strava = res.locals.strava;
-  db.getEmptyActivities()
-    .then((activites) => fetchActivityDetails(activites, res))
 
-    .then((result) => {
-      console.log("result");
-      console.log(result);
-      next();
-    });
+
+  db.getEmptyActivities()
+  .then(results => {
+
+    results.Items.forEach(result =>{
+      const id = result.id;
+      
+      strava.activities.get({ id }).then((activity) => {
+        activity.date = utils.makeEpochSecondsTime(activity.start_date)
+        let rate = strava.rateLimiting
+        console.log(`Strava Rate:`);
+        console.log(rate);
+        activity.segment_efforts.forEach(effort =>{
+          if(effort.kom_rank !== null){
+            db.addSegmentEffort(effort);
+          }
+        })
+    
+        db.addActivity(activity)
+      });      
+    })
+    
+    next();
+  })
+
+
+  // const id = 3255989795;
+
+  // strava.activities.get({ id }).then((activity) => {
+  //   activity.date = utils.makeEpochSecondsTime(activity.start_date)
+
+  //   activity.segment_efforts.forEach(effort =>{
+  //     if(effort.kom_rank !== null){
+  //       db.addSegmentEffort(effort);
+  //     }
+  //   })
+
+  //   db.addActivity(activity)
+  //   next();
+  // });
+  // db.getEmptyActivities()
+  //   .then((activites) => fetchActivityDetails(activites, res))
+
+  //   .then((result) => {
+  //     console.log("result");
+  //     console.log(result);
+  //     next();
+  //   });
 }
 
 // Utility Functions
@@ -294,22 +335,20 @@ function cleanUpStravaData(stravaData, activityType) {
   return activities;
 }
 
-const fetchActivityDetails = (activitiesFromDB,res) => {
-  const strava = res.locals.strava
-  const activityIds = activitiesFromDB.Items.map(act => parseInt(act.id.N))
+const fetchActivityDetails = (activitiesFromDB, res) => {
+  const strava = res.locals.strava;
+  const activityIds = activitiesFromDB.Items.map((act) => parseInt(act.id.N));
   return new Promise((resolve, reject) => {
-    let rate = strava.rateLimiting.fractionReached()
-    while(rate < .75){
-      const result = strava.activities.get({id: 3189689567}).then(result =>{
-        console.log('result');
+    let rate = strava.rateLimiting.fractionReached();
+    while (rate < 0.75) {
+      const result = strava.activities.get({ id: 3189689567 }).then((result) => {
+        console.log("result");
         console.log(Object.keys(result));
-        console.log('Strave Rate Limits');
+        console.log("Strave Rate Limits");
         console.log(strava.rateLimiting.fractionReached());
-        next();
-    
-      })
+        
+      });
     }
-
   });
 };
 

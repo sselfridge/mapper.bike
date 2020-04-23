@@ -22,37 +22,41 @@ module.exports = {
           console.log("DB Error", err);
           return;
         }
+        console.log("Added to DB");
         resolve(data);
       });
     });
   },
   getEmptyActivities() {
     return new Promise((resolve, reject) => {
-      var params = {
+      const params = {
         TableName: "TestActivities",
-        ScanFilter: {
-          path: {
-            ComparisonOperator: "NULL",
-          },
+        IndexName: "kind-index",
+        KeyConditionExpression: "kind = :kind",
+        ExpressionAttributeValues: {
+          ":kind": { S: "summary" },
         },
-        Select: "ALL_ATTRIBUTES",
+        ProjectionExpression: "id",
       };
-      db.scan(params, (err, data) => {
+
+      db.query(params, (err, data) => {
         if (err) {
           return reject(err);
+        } else {
+          return resolve(flatten(data));
         }
-        resolve(data);
       });
     });
   },
-  addSegment(effort) {
+  addSegmentEffort(effort) {
     return new Promise((resolve, reject) => {
       var params = {
         TableName: "TestSegments",
         Item: {
-          id: { N: effort.segment.id },
+          id: { N: `${effort.segment.id}` },
           name: { S: effort.segment.name },
-          rank: { N: effort.kom_rank },
+          rank: { N: `${effort.kom_rank}` },
+          kind: { S: "summary" },
         },
       };
 
@@ -67,20 +71,23 @@ module.exports = {
   },
   getPathlessSegments() {
     return new Promise((resolve, reject) => {
-      var params = {
+      const params = {
         TableName: "TestSegments",
-        ScanFilter: {
-          path: {
-            ComparisonOperator: "NULL",
-          },
+        IndexName: "kind-index",
+        KeyConditionExpression: "kind = :kind",
+        ExpressionAttributeValues: {
+          ":kind": { S: "summary" },
         },
-        Select: "ALL_ATTRIBUTES",
+        // ProjectionExpression: "ALL",
       };
-      db.scan(params, (err, data) => {
+
+      db.query(params, (err, data) => {
         if (err) {
+          console.log(err);
           return reject(err);
+        } else {
+          return resolve(data);
         }
-        resolve(data);
       });
     });
   },
@@ -107,17 +114,68 @@ const makeActivityItem = (activity) => {
     item = {
       id: { N: `${activity.id}` },
       date: { N: `${activity.date}` },
+      kind: { S: "full" },
+      name: { S: activity.name },
+      distance: { N: `${activity.distance}` },
+      path: { S: activity.map.polyline },
+      elapsedTime: { N: `${activity.elapsed_time}` },
     };
   } else {
     item = {
       id: { N: `${activity.id}` },
       date: { N: `${activity.date}` },
-      name: { S: activity.name },
-      distance: { N: `${activity.distance}` },
-      path: { S: activity.map.polyline },
-      elapsedTime: { N: `${activity.elapsedTime}` },
+      kind: { S: "summary" },
     };
   }
 
   return item;
 };
+
+
+
+const queryIndex = (field, equals) => {
+  const params = {
+    TableName: "TestActivities",
+    IndexName: "kind-index",
+    KeyConditionExpression: "kind = :kind",
+    ExpressionAttributeValues: {
+      ":kind": { S: "full" },
+    },
+    // ProjectionExpression: "ALL",
+  };
+
+  db.query(params, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else console.log(data);
+  });
+};
+
+
+var descriptors = ['L', 'M', 'N', 'S'];
+
+function flatten(o) {
+
+  // flattens single property objects that have descriptors  
+  for (let d of descriptors) {
+    if (o.hasOwnProperty(d)) {
+      return o[d];
+    }
+  }
+
+  Object.keys(o).forEach((k) => {
+
+    for (let d of descriptors) {
+      if (o[k].hasOwnProperty(d)) {
+        o[k] = o[k][d];
+      }
+    }
+    if (Array.isArray(o[k])) {
+      o[k] = o[k].map(e => flatten(e))
+    } else if (typeof o[k] === 'object') {
+      o[k] = flatten(o[k])
+    }
+  });
+
+  return o;
+}
