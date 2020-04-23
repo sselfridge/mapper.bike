@@ -184,8 +184,7 @@ class App extends Component {
   getActityDetails(){
     const quereyString = '/api/getActivityDetail'
     axios.get(quereyString).then(res=>{
-      console.log('App Retval:');
-      console.log(res);
+      this.setState({ activities: res.data, loadingActivites: false });
     })
   }
 

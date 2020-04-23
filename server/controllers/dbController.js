@@ -69,6 +69,33 @@ module.exports = {
       });
     });
   },
+  addSegment(segment) {
+    return new Promise((resolve,reject)=>{
+      var params = {
+        TableName: "TestSegments",
+        Item: {
+          id: { N: `${segment.id}` },
+          name: { S: segment.name },
+          rank: { N: `${segment.rank}` },
+          kind: { S: "full" },
+          path: { S: segment.map.polyline},
+          distance: {N: `${segment.distance}`},
+          date: { S: segment.athlete_segment_stats.pr_date},
+          elapsedTime: {N: `${segment.athlete_segment_stats.pr_elapsed_time}`}
+        },
+      };
+
+      db.putItem(params, (err, data) => {
+        if (err) {
+          console.log("DB Error", err);
+          return reject(err);
+        }
+        console.log(`Added to DB: ${segment.name}`);
+        resolve(data);
+      });
+
+    })
+  },
   getPathlessSegments() {
     return new Promise((resolve, reject) => {
       const params = {
@@ -86,7 +113,7 @@ module.exports = {
           console.log(err);
           return reject(err);
         } else {
-          return resolve(data);
+          return resolve(flatten(data));
         }
       });
     });
@@ -95,14 +122,14 @@ module.exports = {
   getAllSegments() {
     return new Promise((resolve, reject) => {
       var params = {
-        TableName: "TestActivites",
+        TableName: "TestSegments",
         Select: "ALL_ATTRIBUTES",
       };
       db.scan(params, (err, data) => {
         if (err) {
           return reject(err);
         }
-        resolve(data);
+        resolve(flatten(data));
       });
     });
   },

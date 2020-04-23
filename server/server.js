@@ -87,7 +87,13 @@ app.get(
   stravaController.loadStravaProfile,
   stravaController.getActivityDetail,
   (req, res) => {
-    res.send("Done");
+    console.log(`Sending Back ${res.locals.segments.length} segments`);
+    if (res.locals.err) {
+      console.log(res.locals.err);
+      res.status(523).send("Error with get segments ");
+      return;
+    }
+    res.send(JSON.stringify(res.locals.segments));
   }
 );
 

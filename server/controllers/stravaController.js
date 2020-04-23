@@ -63,7 +63,7 @@ function loadStravaProfile(req, res, next) {
   console.log("loadStravaProfile");
   const jwt = decryptJwt(req.cookies.stravajwt);
 
-  checkStravaClient(res, jwt)
+  decodeCookie(res, jwt)
     .then(checkRefreshToken)
     .then(() => res.locals.strava.athlete.get({}))
     .then((result) => {
@@ -78,8 +78,8 @@ function loadStravaProfile(req, res, next) {
       next();
     })
     .catch((err) => {
-      console.log("Error while trying to refresh Token\n", err.message);
-      res.locals.err = "Error During Token Refresh";
+      console.log("Error while loading Strava Profile\n", err.message);
+      res.locals.err = "Error Loading Strava Profile";
       clearCookie(req, res, next);
       next();
     });
@@ -125,31 +125,57 @@ function getDemoData(req, res, next) {
 function getActivityDetail(req, res, next) {
   const strava = res.locals.strava;
 
+  // db.getEmptyActivities()
+  // .then(results => {
+  //   results.Items.forEach(result =>{
+  //     const id = result.id;
+  //     strava.activities.get({ id }).then((activity) => {
+  //       activity.date = utils.makeEpochSecondsTime(activity.start_date)
+  //       let rate = strava.rateLimiting
+  //       console.log(`Strava Rate:`);
+  //       console.log(rate);
+  //       activity.segment_efforts.forEach(effort =>{
+  //         if(effort.kom_rank !== null){
+  //           db.addSegmentEffort(effort);
+  //         }
+  //       })
 
-  db.getEmptyActivities()
-  .then(results => {
+  //       db.addActivity(activity)
+  //     });
+  //   })
 
-    results.Items.forEach(result =>{
-      const id = result.id;
-      
-      strava.activities.get({ id }).then((activity) => {
-        activity.date = utils.makeEpochSecondsTime(activity.start_date)
-        let rate = strava.rateLimiting
-        console.log(`Strava Rate:`);
-        console.log(rate);
-        activity.segment_efforts.forEach(effort =>{
-          if(effort.kom_rank !== null){
-            db.addSegmentEffort(effort);
-          }
-        })
-    
-        db.addActivity(activity)
-      });      
-    })
-    
+  //   next();
+  // })
+
+  // db.getPathlessSegments().then((segments) => {
+  //   segments.Items.forEach((segment) => {
+  //     strava.segments.get({ id: segment.id }).then((fullSegment) => {
+  //       fullSegment.rank = segment.rank;
+  //       db.addSegment(fullSegment);
+  //     });
+  //   });
+
+  //   next();
+  // });
+
+  db.getAllSegments().then((segments) => {
+    const newSegments = []
+    segments.Items.forEach((segment) => {
+      const newActivity = {};
+      newActivity.id = segment.id;
+      newActivity.name = segment.name;
+      newActivity.line = segment.path;
+      newActivity.date = utils.makeEpochSecondsTime(segment.date);
+      newActivity.distance = segment.distance;
+      newActivity.elapsedTime = segment.elapsedTime;
+      newActivity.selected = false;
+      newActivity.weight = 2;
+      newActivity.color = "blue";
+      newSegments.push(newActivity);
+    });
+    res.locals.segments = decodePoly(newSegments);
     next();
-  })
-
+  });
 
   // const id = 3255989795;
 
@@ -158,6 +184,7 @@ function getActivityDetail(req, res, next) {
 
   //   activity.segment_efforts.forEach(effort =>{
   //     if(effort.kom_rank !== null){
+  //      //TODO add effort date to segment info
   //       db.addSegmentEffort(effort);
   //     }
   //   })
@@ -178,7 +205,7 @@ function getActivityDetail(req, res, next) {
 // Utility Functions
 // Not middleware for requests, but more complex than basic untility
 
-const checkStravaClient = (res, jwt) => {
+const decodeCookie = (res, jwt) => {
   return new Promise((resolve, reject) => {
     jwtoken.verify(jwt, config.secretSuperKey, (err, payload) => {
       if (err) return reject("JWT / Cookie Invalid");
@@ -346,7 +373,6 @@ const fetchActivityDetails = (activitiesFromDB, res) => {
         console.log(Object.keys(result));
         console.log("Strave Rate Limits");
         console.log(strava.rateLimiting.fractionReached());
-        
       });
     }
   });
