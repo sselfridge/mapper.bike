@@ -10,9 +10,10 @@ const fs = require("fs");
 // const mongoURI = "mongodb://localhost/meinmap";
 // mongoose.connect(mongoURI, { useNewUrlParser: true });
 
+const oAuthStrava = require("./controllers/oAuthStrava")
 const stravaController = require("./controllers/stravaController");
 const analyticController = require("./controllers/analyticsController");
-// const squirrel = require("./controllers/squirrel");
+
 const zip = require("../config/zip_lat_lang");
 
 const config = require("../config/keys");
@@ -23,7 +24,7 @@ app.use(cookieParser());
 app.use(analyticController.getUserData);
 app.use(logReq);
 
-app.get("/api/getStravaUser", stravaController.loadStravaProfile, (req, res) => {
+app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   if (res.locals.err) {
     res.status(444).send("Error during profile fetch");
     return;
@@ -58,7 +59,7 @@ app.get("/api/getLatLngZip/:zip", (req, res) => {
   res.json(center);
 });
 
-app.get("/api/strava/callback", stravaController.setStravaOauth, (req, res) => {
+app.get("/api/strava/callback", oAuthStrava.setStravaOauth, (req, res) => {
   console.log(`Strava CallBack Happening`);
   if (res.locals.err) {
     console.log(res.locals.err);
@@ -69,7 +70,7 @@ app.get("/api/strava/callback", stravaController.setStravaOauth, (req, res) => {
 
 app.get(
   "/api/getActivities",
-  stravaController.loadStravaProfile,
+  oAuthStrava.loadStravaProfile,
   stravaController.getActivities,
   (req, res) => {
     if (res.locals.err) {
@@ -84,15 +85,29 @@ app.get(
 
 app.get(
   "/api/getActivityDetail",
-  stravaController.loadStravaProfile,
+  oAuthStrava.loadStravaProfile,
   stravaController.getActivityDetail,
   (req, res) => {
-    console.log(`Sending Back ${res.locals.segments.length} segments`);
+    console.log("fin");
+    res.send(res.locals.activities);
+  }
+);
+
+app.get(
+  "/api/segments",
+  oAuthStrava.loadStravaProfile,
+  stravaController.getSegments,
+  (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
       res.status(523).send("Error with get segments ");
       return;
     }
+    if (res.locals.pending) {
+      res.status(203).send("Data Pending, checkback soon");
+      return;
+    }
+
     res.send(JSON.stringify(res.locals.segments));
   }
 );

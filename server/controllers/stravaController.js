@@ -25,71 +25,16 @@ stravaAPI.config({
 const cryptr = new Cryptr(config.secretSuperKey);
 
 const stravaController = {
-  setStravaOauth,
-  loadStravaProfile,
+
   getActivities,
+  getSegments,
   getDemoData,
   clearCookie,
   getActivityDetail,
   status: {},
 };
 
-// EXPORTED Functions
-function setStravaOauth(req, res, next) {
-  let code = req.query.code;
-  console.log(`Strava Code: ${code}`);
 
-  stravaAPI.oauth
-    .getToken(code)
-    .then((result) => {
-      let payload = {
-        expiresAt: result.expires_at,
-        refreshToken: result.refresh_token,
-        accessToken: result.access_token,
-        athleteID: result.athlete.id,
-      };
-
-      setJWTCookie(res, payload);
-      next();
-    })
-    .catch((err) => {
-      console.log("Error during Oauth");
-      console.log(err);
-      next();
-    });
-}
-
-function loadStravaProfile(req, res, next) {
-  console.log("loadStravaProfile");
-  const jwt = decryptJwt(req.cookies.stravajwt);
-
-  decodeCookie(res, jwt)
-    .then(checkRefreshToken)
-    .then(() => res.locals.strava.athlete.get({}))
-    .then((result) => {
-      res.locals.user = {
-        avatar: result.profile,
-        firstname: result.firstname,
-        lastname: result.lastname,
-        althleteId: result.id,
-      };
-
-      utils.logUser(result.firstname, result.lastname);
-      next();
-    })
-    .catch((err) => {
-      console.log("Error while loading Strava Profile\n", err.message);
-      res.locals.err = "Error Loading Strava Profile";
-      clearCookie(req, res, next);
-      next();
-    });
-}
-
-function clearCookie(req, res, next) {
-  console.log("clear cookie: stravajwt");
-  res.clearCookie("stravajwt", { httpOnly: true });
-  next();
-}
 
 // fetch activities in the date range between before and after
 // activities stored in res.locals.activities in polyline format
@@ -99,6 +44,7 @@ function getActivities(req, res, next) {
   const after = req.query.after;
   const before = req.query.before;
   const activityType = JSON.parse(req.query.type);
+  const kind = req.query.kind;
 
   pingStrava(after, before, res.locals.accessToken)
     .then((result) => {
@@ -122,8 +68,26 @@ function getDemoData(req, res, next) {
   return next();
 }
 
+function getSegments(req, res, next) {
+  return next();
+}
+
 function getActivityDetail(req, res, next) {
   const strava = res.locals.strava;
+
+  const after = 1556348400;
+  const before = 1588048677;
+
+  fetchActivitesFromStrava(strava,after,before)
+  .then((result) => {
+    result = cleanUpStravaData(result, {Ride: true,VirtualRide: false,Run: false});
+    console.log(`Cleaned up result length: ${result.length}`);
+
+    res.locals.activities = decodePoly(result);
+    return next();
+  })
+  .catch((err) => errorDispatch(err, req, res, next));
+
 
   // db.getEmptyActivities()
   // .then(results => {
@@ -158,24 +122,24 @@ function getActivityDetail(req, res, next) {
   //   next();
   // });
 
-  db.getAllSegments().then((segments) => {
-    const newSegments = []
-    segments.Items.forEach((segment) => {
-      const newActivity = {};
-      newActivity.id = segment.id;
-      newActivity.name = segment.name;
-      newActivity.line = segment.path;
-      newActivity.date = utils.makeEpochSecondsTime(segment.date);
-      newActivity.distance = segment.distance;
-      newActivity.elapsedTime = segment.elapsedTime;
-      newActivity.selected = false;
-      newActivity.weight = 2;
-      newActivity.color = "blue";
-      newSegments.push(newActivity);
-    });
-    res.locals.segments = decodePoly(newSegments);
-    next();
-  });
+  // db.getAllSegments().then((segments) => {
+  //   const newSegments = [];
+  //   segments.Items.forEach((segment) => {
+  //     const newActivity = {};
+  //     newActivity.id = segment.id;
+  //     newActivity.name = segment.name;
+  //     newActivity.line = segment.path;
+  //     newActivity.date = utils.makeEpochSecondsTime(segment.date);
+  //     newActivity.distance = segment.distance;
+  //     newActivity.elapsedTime = segment.elapsedTime;
+  //     newActivity.selected = false;
+  //     newActivity.weight = 2;
+  //     newActivity.color = "blue";
+  //     newSegments.push(newActivity);
+  //   });
+  //   res.locals.segments = decodePoly(newSegments);
+  //   next();
+  // });
 
   // const id = 3255989795;
 
@@ -205,57 +169,15 @@ function getActivityDetail(req, res, next) {
 // Utility Functions
 // Not middleware for requests, but more complex than basic untility
 
-const decodeCookie = (res, jwt) => {
-  return new Promise((resolve, reject) => {
-    jwtoken.verify(jwt, config.secretSuperKey, (err, payload) => {
-      if (err) return reject("JWT / Cookie Invalid");
-      console.log(`JWT Valid - allow to proceed. athleteID: ${payload.athleteID}`);
-      res.locals.expiresAt = m.unix(payload.expiresAt);
-      res.locals.strava = new stravaAPI.client(payload.accessToken);
-      res.locals.accessToken = payload.accessToken;
-      res.locals.refreshToken = payload.refreshToken;
-      res.locals.athleteID = payload.athleteID;
-      console.log("Access Token: ", res.locals.accessToken);
-      return resolve(res);
-    });
-  });
-};
 
-//check if the accesstoken is expired, if so request a new one
-const checkRefreshToken = (res) => {
-  return new Promise((resolve, reject) => {
-    const expiresAt = res.locals.expiresAt;
-    console.log(`Token Expires at ${expiresAt.format("hh:mm A")},`, expiresAt.fromNow());
-    console.log("Refresh Token:", res.locals.refreshToken);
-    if (m().isBefore(expiresAt)) {
-      console.log("Token Not Expired");
-      return resolve();
-    } else {
-      console.log("Token Expired");
 
-      stravaAPI.oauth
-        .refreshToken(res.locals.refreshToken)
-        .then((result) => {
-          let payload = {
-            expiresAt: result.expires_at,
-            refreshToken: result.refresh_token,
-            accessToken: result.access_token,
-            athleteID: res.locals.athleteID,
-          };
-          setJWTCookie(res, payload);
-          res.locals.expiresAt = result.expires_at;
-          res.locals.accessToken = result.access_token;
-          res.locals.strava = new stravaAPI.client(result.access_token);
-          return resolve();
-        })
-        .catch((err) => {
-          console.log("Error During Token Refresh");
-          console.log(err);
-          reject("Error During Token Refresh");
-        });
-    }
-  });
-};
+
+
+function clearCookie(req, res, next) {
+  console.log("clear cookie: mapperjwt");
+  res.clearCookie("mapperjwt", { httpOnly: true });
+  next();
+}
 
 // let payload = {
 //   expiresAt,
@@ -263,11 +185,36 @@ const checkRefreshToken = (res) => {
 //   accessToken,
 //   athleteID
 // };
-function setJWTCookie(res, payload) {
-  console.log("Set JWT", payload);
-  const jwt = jwtoken.sign(payload, config.secretSuperKey);
-  const crypted = cryptr.encrypt(jwt);
-  res.cookie("stravajwt", crypted, { httpOnly: true });
+
+
+function fetchActivitesFromStrava(strava, after, before) {
+  return new Promise((resolve, reject) => {
+    const params = { after, before, page: 1, per_page: 200 };
+    const r = { strava, resolve, reject, activities: [] };
+    return fetchActivitesRecursivly(params, r);
+  });
+}
+
+function fetchActivitesRecursivly(params, r) {
+  console.log(`Recursive Call:${params.page}`);
+  r.strava.athlete
+    .listActivities(params)
+    .then((activities) => {
+      r.activities = r.activities.concat(activities);
+      if (activities.length < 200) {
+        console.log('Recursive CAll');
+        return r.resolve(r.activities);
+      } else {
+        params.page++;        
+        fetchActivitesRecursivly(params, r);
+        return
+      }
+    })
+    .catch((err) => {
+      console.log(`Strava Fetch Error`);
+      console.log(err);
+      return r.reject([]);
+    });
 }
 
 function pingStrava(after, before, accessToken) {
@@ -354,7 +301,7 @@ function cleanUpStravaData(stravaData, activityType) {
     //only grab activities with a polyline AKA non-trainer rides
     if (newActivity.line) {
       if (activityType === undefined || activityType[element.type] === true) {
-        db.addActivity(newActivity);
+        // db.addActivity(newActivity);
         activities.push(newActivity);
       }
     }
@@ -395,16 +342,7 @@ const decodePoly = (activities) => {
   return activities;
 };
 
-function decryptJwt(jwt) {
-  let hubCookie;
-  try {
-    //this fails badly if the key is wrong
-    hubCookie = cryptr.decrypt(jwt);
-  } catch (error) {
-    hubCookie = "This Will Fail";
-  }
-  return hubCookie;
-}
+
 
 function errorDispatch(err, req, res, next) {
   console.log(`ERROR Will Robinson! ASYNC ERROR`);
