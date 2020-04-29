@@ -10,7 +10,7 @@ const fs = require("fs");
 // const mongoURI = "mongodb://localhost/meinmap";
 // mongoose.connect(mongoURI, { useNewUrlParser: true });
 
-const oAuthStrava = require("./controllers/oAuthStrava")
+const oAuthStrava = require("./controllers/oAuthStrava");
 const stravaController = require("./controllers/stravaController");
 const analyticController = require("./controllers/analyticsController");
 
@@ -75,7 +75,7 @@ app.get(
   (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
-      res.status(523).send("Error with get Activites");
+      res.status(523).send("Error with get Activities");
       return;
     }
     console.log(`Sending Back ${res.locals.activities.length} activities`);

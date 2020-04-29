@@ -22,7 +22,7 @@ class App extends Component {
         width: "calc(100% - 360px)",
         height: "calc(100% - 55px)",
       },
-      loadingActivites: false,
+      loadingActivities: false,
       activeMarker: {},
       selectedPlace: {},
       polyLineArray: [],
@@ -154,7 +154,7 @@ class App extends Component {
 
   getActivities() {
     console.log("getActivities()");
-    this.setState({ loadingActivites: true });
+    this.setState({ loadingActivities: true });
     let beforeDate = "";
     let afterDate = "";
     let activityType = "type=''";
@@ -177,23 +177,23 @@ class App extends Component {
     const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&${activityType}`;
 
     axios.get(quereyString).then((res) => {
-      this.setState({ activities: res.data, loadingActivites: false });
+      this.setState({ activities: res.data, loadingActivities: false });
     });
   }
 
-  getActityDetails(){
-    const quereyString = '/api/getActivityDetail'
-    axios.get(quereyString).then(res=>{
-      this.setState({ activities: res.data, loadingActivites: false });
-    })
+  getActityDetails() {
+    const quereyString = "/api/getActivityDetail";
+    axios.get(quereyString).then((res) => {
+      this.setState({ activities: res.data, loadingActivities: false });
+    });
   }
 
   getDemoActivities() {
-    this.setState({ loadingActivites: true });
+    this.setState({ loadingActivities: true });
     axios.get("/api/getDemoData").then((res) => {
       this.setState({
         activities: res.data,
-        loadingActivites: false,
+        loadingActivities: false,
         demoMode: true,
       });
     });
@@ -392,7 +392,7 @@ class App extends Component {
                 beforeDate={this.state.beforeDate}
                 setBeforeDate={this.setBeforeDate}
                 setActivityType={this.setActivityType}
-                loadingActivites={this.state.loadingActivites}
+                loadingActivities={this.state.loadingActivities}
                 centerOnLocation={this.centerOnLocation}
                 flashMessage={this.state.flashMessage}
                 demoMode={this.state.demoMode}

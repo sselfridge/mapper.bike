@@ -7,8 +7,8 @@ import "./Sidebar.css";
 import "./Sidebar-Grid.css";
 
 const Sidebar = (props) => {
-  const loadingActivites = props.loadingActivites ? (
-    <div className="loadingActivites">
+  const loadingActivities = props.loadingActivities ? (
+    <div className="loadingActivities">
       {/* TODO: Loading Animation for MS Edge */}
       <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"320px"} />
     </div>
@@ -132,7 +132,7 @@ const Sidebar = (props) => {
         {/* mapControls */}
       </div>
       {flashMessage}
-      {loadingActivites}
+      {loadingActivities}
       <div>
         <h2>{titleArray.length} Rides on map</h2>
         {introMessage}

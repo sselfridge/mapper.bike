@@ -30,7 +30,7 @@ var params;
 // });
 
 // var params = {
-//   TableName: 'TestActivites',
+//   TableName: 'TestActivities',
 //   Item: {
 //     'id' : {N: '322456'},
 //     'athleteId' : {S: 'ID:1423456'},
