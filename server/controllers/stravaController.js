@@ -3,7 +3,7 @@ const m = require("moment");
 const Cryptr = require("cryptr");
 const request = require("request");
 const fs = require("fs");
-const db = require("./dbController");
+const db = require("../db/segments");
 
 const decodePolyline = require("decode-google-map-polyline");
 
@@ -25,7 +25,6 @@ stravaAPI.config({
 const cryptr = new Cryptr(config.secretSuperKey);
 
 const stravaController = {
-
   getActivities,
   getSegments,
   getDemoData,
@@ -34,12 +33,10 @@ const stravaController = {
   status: {},
 };
 
-
-
 // fetch activities in the date range between before and after
 // activities stored in res.locals.activities in polyline format
 // need to turn into points to be placed on map
-// done by getPointsFromActivites
+// done by getPointsFromActivities
 function getActivities(req, res, next) {
   const after = req.query.after;
   const before = req.query.before;
@@ -72,22 +69,34 @@ function getSegments(req, res, next) {
   return next();
 }
 
-function getActivityDetail(req, res, next) {
+async function getActivityDetail(req, res, next) {
   const strava = res.locals.strava;
 
-  const after = 1556348400;
+  const after = 1556348200;
   const before = 1588048677;
 
-  fetchActivitesFromStrava(strava,after,before)
-  .then((result) => {
-    result = cleanUpStravaData(result, {Ride: true,VirtualRide: false,Run: false});
-    console.log(`Cleaned up result length: ${result.length}`);
-
-    res.locals.activities = decodePoly(result);
-    return next();
-  })
-  .catch((err) => errorDispatch(err, req, res, next));
-
+  try {
+    const result = await fetchActivitiesFromStrava(strava, after, before);
+    if (Array.isArray(result)) {
+      console.log("Array out!");
+      console.log(result.length);
+      console.log(result[0]);
+    } else {
+      console.log("non Array");
+      console.log(result);
+    }
+    const cleanedUpResult = cleanUpStravaData(result, {
+      Ride: true,
+      VirtualRide: false,
+      Run: false,
+    });
+    res.locals.activities = decodePoly(cleanedUpResult);
+    next();
+  } catch (err) {
+    console.log("");
+    res.locals.activities = [];
+    errorDispatch(err, req, res, next);
+  }
 
   // db.getEmptyActivities()
   // .then(results => {
@@ -157,7 +166,7 @@ function getActivityDetail(req, res, next) {
   //   next();
   // });
   // db.getEmptyActivities()
-  //   .then((activites) => fetchActivityDetails(activites, res))
+  //   .then((activities) => fetchActivityDetails(activities, res))
 
   //   .then((result) => {
   //     console.log("result");
@@ -168,10 +177,6 @@ function getActivityDetail(req, res, next) {
 
 // Utility Functions
 // Not middleware for requests, but more complex than basic untility
-
-
-
-
 
 function clearCookie(req, res, next) {
   console.log("clear cookie: mapperjwt");
@@ -186,35 +191,32 @@ function clearCookie(req, res, next) {
 //   athleteID
 // };
 
-
-function fetchActivitesFromStrava(strava, after, before) {
-  return new Promise((resolve, reject) => {
-    const params = { after, before, page: 1, per_page: 200 };
-    const r = { strava, resolve, reject, activities: [] };
-    return fetchActivitesRecursivly(params, r);
-  });
+async function fetchActivitiesFromStrava(strava, after, before) {
+  const params = { after, before, page: 1, per_page: 200 };
+  const r = { strava, activities: [] };
+  const activities = await fetchActivitiesRecursivly(params, r);
+  console.log("Post Awiat;", activities);
+  return activities;
 }
 
-function fetchActivitesRecursivly(params, r) {
+
+async function fetchActivitiesRecursivly(params, r) {
+  const page = params.page;
   console.log(`Recursive Call:${params.page}`);
-  r.strava.athlete
-    .listActivities(params)
-    .then((activities) => {
-      r.activities = r.activities.concat(activities);
-      if (activities.length < 200) {
-        console.log('Recursive CAll');
-        return r.resolve(r.activities);
-      } else {
-        params.page++;        
-        fetchActivitesRecursivly(params, r);
-        return
-      }
-    })
-    .catch((err) => {
-      console.log(`Strava Fetch Error`);
-      console.log(err);
-      return r.reject([]);
-    });
+  resultActivities = await r.strava.athlete.listActivities(params);
+
+  r.activities = r.activities.concat(resultActivities);
+  if (resultActivities.length < 200) {
+    console.log("Recursive Call End", page);
+  } else {
+    console.log("We have go to deeper", page);
+    params.page++;
+    await fetchActivitiesRecursivly(params, r);
+  }
+
+  console.log("End of this Func", page);
+  console.log(r.activities.length);
+  return r.activities;
 }
 
 function pingStrava(after, before, accessToken) {
@@ -341,8 +343,6 @@ const decodePoly = (activities) => {
 
   return activities;
 };
-
-
 
 function errorDispatch(err, req, res, next) {
   console.log(`ERROR Will Robinson! ASYNC ERROR`);
