@@ -4,18 +4,21 @@ var AWS = require("aws-sdk");
 var credentials = new AWS.SharedIniFileCredentials({ profile: "dbuser" });
 AWS.config.credentials = credentials;
 AWS.config.update({ region: "us-west-2" });
-const utils = require('./utils')
-
+const utils = require("./utils");
 
 var db = new AWS.DynamoDB();
 
 module.exports = {
-  addActivity,
-  getEmptyActivities,
+  add,
+  pop,
+  getAllEmptyActivities,
+  remove,
+  countByAthelete,
 };
-function addActivity(activity) {
+
+function add(data) {
   return new Promise((resolve, reject) => {
-    const item = makeActivityItem(activity);
+    const item = makeActivityItem(data);
 
     var params = {
       TableName: "TestActivities",
@@ -32,7 +35,11 @@ function addActivity(activity) {
     });
   });
 }
-function getEmptyActivities() {
+
+//return 1 activity
+function pop() {}
+
+function getAllEmptyActivities() {
   return new Promise((resolve, reject) => {
     const params = {
       TableName: "TestActivities",
@@ -54,6 +61,7 @@ function getEmptyActivities() {
   });
 }
 
+async function remove(id) {}
 
 const makeActivityItem = (activity) => {
   let item = {};
@@ -78,6 +86,8 @@ const makeActivityItem = (activity) => {
   return item;
 };
 
+async function countByAthelete(id) {}
+
 const queryIndex = (field, equals) => {
   const params = {
     TableName: "TestActivities",
@@ -95,4 +105,3 @@ const queryIndex = (field, equals) => {
     } else console.log(data);
   });
 };
-

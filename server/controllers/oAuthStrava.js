@@ -18,7 +18,8 @@ stravaAPI.config({
 
 module.exports = {
     setStravaOauth,
-    loadStravaProfile
+    loadStravaProfile,
+    clearCookie
 }
 
 
@@ -68,8 +69,7 @@ function loadStravaProfile(req, res, next) {
     .catch((err) => {
       console.log("Error while loading Strava Profile\n", err.message);
       res.locals.err = "Error Loading Strava Profile";
-      utils.clearCookie(req, res, next);
-      next();
+      clearCookie(req, res, next);     
     });
 }
 
@@ -112,7 +112,6 @@ const checkRefreshToken = (res) => {
 function decryptJwt(jwt) {
   let hubCookie;
   try {
-    //this fails badly if the key is wrong
     hubCookie = cryptr.decrypt(jwt);
   } catch (error) {
     hubCookie = "This Will Fail";
@@ -142,3 +141,9 @@ const decodeCookie = (res, jwt) => {
     });
   });
 };
+
+function clearCookie(req, res, next) {
+  console.log("clear cookie: mapperjwt");
+  res.clearCookie("mapperjwt", { httpOnly: true });
+  next();
+}

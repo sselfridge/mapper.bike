@@ -11,7 +11,8 @@ const fs = require("fs");
 // mongoose.connect(mongoURI, { useNewUrlParser: true });
 
 const oAuthStrava = require("./controllers/oAuthStrava");
-const stravaController = require("./controllers/stravaController");
+const summaryController = require("./controllers/summaryStrava");
+const segmentController = require("./controllers/segmentsStrava");
 const analyticController = require("./controllers/analyticsController");
 
 const zip = require("../config/zip_lat_lang");
@@ -69,9 +70,9 @@ app.get("/api/strava/callback", oAuthStrava.setStravaOauth, (req, res) => {
 });
 
 app.get(
-  "/api/getActivities",
+  "/api/summaryActivities",
   oAuthStrava.loadStravaProfile,
-  stravaController.getActivities,
+  summaryController.getSummeries,
   (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
@@ -83,41 +84,35 @@ app.get(
   }
 );
 
-app.get(
-  "/api/getActivityDetail",
-  oAuthStrava.loadStravaProfile,
-  stravaController.getActivityDetail,
-  (req, res) => {
+app.get("/api/test", oAuthStrava.loadStravaProfile, segmentController.test, (req, res) => {
+  if (res.locals.err) {
+    res.send("DOH!!");
+  } else {
     console.log("fin");
     res.send(res.locals.activities);
   }
-);
+});
 
-app.get(
-  "/api/segments",
-  oAuthStrava.loadStravaProfile,
-  stravaController.getSegments,
-  (req, res) => {
-    if (res.locals.err) {
-      console.log(res.locals.err);
-      res.status(523).send("Error with get segments ");
-      return;
-    }
-    if (res.locals.pending) {
-      res.status(203).send("Data Pending, checkback soon");
-      return;
-    }
-
-    res.send(JSON.stringify(res.locals.segments));
+app.get("/api/segments", oAuthStrava.loadStravaProfile, segmentController.segments, (req, res) => {
+  if (res.locals.err) {
+    console.log(res.locals.err);
+    res.status(523).send("Error with get segments ");
+    return;
   }
-);
+  if (res.locals.pending) {
+    res.status(203).send("Data Pending, checkback soon");
+    return;
+  }
 
-app.get("/api/getDemoData", stravaController.getDemoData, (req, res) => {
+  res.send(JSON.stringify(res.locals.segments));
+});
+
+app.get("/api/getDemoData", summaryController.getDemoData, (req, res) => {
   console.log(`Sending Back ${res.locals.activities.length} activities`);
   res.send(JSON.stringify(res.locals.activities));
 });
 
-app.get("/api/logout", stravaController.clearCookie, (req, res) => {
+app.get("/api/logout", oAuthStrava.clearCookie, (req, res) => {
   res.send("Ok");
 });
 

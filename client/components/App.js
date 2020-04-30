@@ -80,7 +80,7 @@ class App extends Component {
     this.stravaLogout = this.stravaLogout.bind(this);
     this.toggleDim = this.toggleDim.bind(this);
     this.toggleShowMenu = this.toggleShowMenu.bind(this);
-    this.getActityDetails = this.getActityDetails.bind(this);
+    this.test = this.test.bind(this);
   }
 
   //used by clicking a line in the map or hovering over it on the side
@@ -174,17 +174,17 @@ class App extends Component {
       activityType = `type=${JSON.stringify(this.state.activityType)}`;
     }
 
-    const quereyString = `/api/getActivities?${beforeDate}&${afterDate}&${activityType}`;
+    const quereyString = `/api/summaryActivities?${beforeDate}&${afterDate}&${activityType}`;
 
     axios.get(quereyString).then((res) => {
       this.setState({ activities: res.data, loadingActivities: false });
     });
   }
 
-  getActityDetails() {
-    const quereyString = "/api/getActivityDetail";
+  test() {
+    const quereyString = "/api/test";
     axios.get(quereyString).then((res) => {
-      this.setState({ activities: res.data, loadingActivities: false });
+      console.log(res);
     });
   }
 
@@ -398,7 +398,7 @@ class App extends Component {
                 demoMode={this.state.demoMode}
                 stravaLogout={this.stravaLogout}
               />
-              <button onClick={this.getActityDetails}>TEST</button>
+              <button onClick={this.test}>TEST</button>
             </div>
           )}
         </div>

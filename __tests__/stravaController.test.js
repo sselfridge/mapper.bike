@@ -1,4 +1,4 @@
-const SC = require("../server/controllers/stravaController");
+const SC = require("../server/controllers/summaryStrava");
 
 describe("Strava Controller Unit Tests", () => {
   describe("Testing loading the Mock Demo Data", () => {
