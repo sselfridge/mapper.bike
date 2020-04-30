@@ -25,7 +25,7 @@ function intializeUser(req, res, next) {
     //return if already there.
 
     //kick_off get activities
-    addToActivityQueue(strava,tokens);
+    addToActivityQueue(strava);
     //get stats
     const count = totalUserActivites(strava, user.althleteIdd);
 
@@ -54,16 +54,20 @@ async function totalUserActivites(strava, id) {
   return count;
 }
 
-async function addToActivityQueue(strava, user) {
+async function addToActivityQueue(strava) {
   try {
     //2534960296 is 2050
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 0, 2534960296);
     //March + April Rides
-    const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1583039622, 1588220022);
+    const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1585724400, 1588220022);
+    // 1 result
+    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1588057200, 1588220022);
+    console.log(`Adding ${result.length} activites to DB`);
     result.forEach((activity) => {
       if (!activity.map.summary_polyline) return; //skip activites with no line
-      db.addActivity(activity.id,activity.athlete.id);
+      db.addActivity(activity.id, activity.athlete.id);
     });
+    console.log('Done Adding to DB');
   } catch (error) {
     //Do nothing for now, add event emitter here if this starts to become a problem
   }
@@ -77,28 +81,30 @@ async function test(req, res, next) {
   // const result = await strava.segments.listLeaderboard({ id: 23295888, page_size: 200 });
 
   try {
-    const id = res.locals.user.althleteId;
-    console.log(res.locals);
-    const result = await strava.athletes.stats({ id });
-    if (Array.isArray(result)) {
-      console.log(result.length);
-      result.forEach((element) => {
-        //   if (element.kom_rank > 0) {
-        console.log(element.start_date);
-        console.log(element.kom_rank);
-        //   }}
-      });
-    } else {
-      // console.log(result);
-      const total = result.all_ride_totals.count + result.all_run_totals.count;
-      console.log(`Total Activities: ${total}`);
+
+    const strava = res.locals.strava;
+    const user = res.locals.user;
+    
+      const accessToken = res.locals.accessToken
+      const refreshToken = res.locals.refreshToken
+    
+    const userData = {
+      id: user.althleteId,
+      accessToken,
+      refreshToken
     }
+    console.log(user);
+    console.log(userData);
+
+    await db.addUser(userData);
+
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);
     res.locals.err = "AAAAAAAAA";
   }
 
+  console.log('Test Done');
   next();
   // db.getEmptyActivities()
   // .then(results => {

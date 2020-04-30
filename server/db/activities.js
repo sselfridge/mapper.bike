@@ -1,12 +1,6 @@
-var AWS = require("aws-sdk");
+const db = require("./config");
 
-//aws creds stored in ~/.aws/credentials
-var credentials = new AWS.SharedIniFileCredentials({ profile: "dbuser" });
-AWS.config.credentials = credentials;
-AWS.config.update({ region: "us-west-2" });
-const utils = require("./utils");
-
-var db = new AWS.DynamoDB();
+const TableName = "activities";
 
 module.exports = {
   add,
@@ -16,22 +10,23 @@ module.exports = {
   countByAthelete,
 };
 
-function add(data) {
+function add(id, athleteId) {
+  console.log('Running Add');
   return new Promise((resolve, reject) => {
-    const item = makeActivityItem(data);
-
     var params = {
-      TableName: "TestActivities",
-      Item: item,
+      TableName,
+      Item: { id, athleteId },
     };
 
-    db.putItem(params, (err, data) => {
+
+
+    db.put(params, (err, data) => {
       if (err) {
         console.log("DB Error", err);
-        return;
+        return reject(err);
       }
       console.log("Added to DB");
-      resolve(data);
+      resolve();
     });
   });
 }
@@ -55,36 +50,13 @@ function getAllEmptyActivities() {
       if (err) {
         return reject(err);
       } else {
-        return resolve(utils.flatten(data));
+        return resolve(flatten(data));
       }
     });
   });
 }
 
 async function remove(id) {}
-
-const makeActivityItem = (activity) => {
-  let item = {};
-  if (activity.segment_efforts) {
-    item = {
-      id: { N: `${activity.id}` },
-      date: { N: `${activity.date}` },
-      kind: { S: "full" },
-      name: { S: activity.name },
-      distance: { N: `${activity.distance}` },
-      path: { S: activity.map.polyline },
-      elapsedTime: { N: `${activity.elapsed_time}` },
-    };
-  } else {
-    item = {
-      id: { N: `${activity.id}` },
-      date: { N: `${activity.date}` },
-      kind: { S: "summary" },
-    };
-  }
-
-  return item;
-};
 
 async function countByAthelete(id) {}
 

@@ -1,21 +1,84 @@
+const db = require("./config");
 
+const TableName = "users";
 
+const users = {
+  exists,
+  get,
+  update,
+  remove,
+};
 
+function update(data) {
+  const { id, accessToken, refreshToken } = data;
 
+  const params = {
+    TableName,
+    Key: { id },
+    UpdateExpression: "set #a = :a, #r = :r",
+    ExpressionAttributeNames: { "#a": "accessToken", "#r": "refreshToken" },
+    ExpressionAttributeValues: {
+      ":a": accessToken,
+      ":r": refreshToken,
+    },
+  };
 
-const updateUser = (id, accessToken, refreshToken,segCount) => {};
-
-const getUser = (id) => {};
-
-
-
-const makeUserItem = (id,accessToken,refeshToken) =>{
-    const Item = {}
-
-    return Item;
+  db.update(params, (err, data) => {
+    if (err) {
+      console.log("Error", err);
+    } else {
+      console.log("Success", data);
+    }
+  });
 }
 
-const userInDB = (id)=>{
+function get(id) {
+  console.log("Get User Func");
+  return new Promise((resolve, reject) => {
+    const params = {
+      Key: {
+        id,
+      },
+      TableName,
+    };
 
-    return false;
+    console.log("params");
+    console.log(params);
+
+    db.get(params, (err, data) => {
+      if (err) {
+        console.log("getUser Error", err);
+        reject(err);
+      } else {
+        console.log("getUser Data");
+        console.log(data);
+        resolve(data.Item);
+      }
+    });
+  });
 }
+
+function exists(id) {
+  console.log("user Exists func");
+  return new Promise((resolve, reject) => {
+    get(id)
+      .then((user) => {
+        if (user) {
+          console.log('Resolving as true');
+
+          resolve(true);
+        } else {
+          console.log('Resolving as false');
+          console.log(user);
+          resolve(false);
+        }
+      })
+      .catch((err) => reject(err));
+  });
+}
+
+function remove(id) {
+  return new Promise((resolve, reject) => {});
+}
+
+module.exports = users;

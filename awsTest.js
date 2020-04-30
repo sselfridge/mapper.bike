@@ -6,8 +6,10 @@ AWS.config.credentials = credentials;
 AWS.config.update({ region: "us-west-2" });
 
 var db = new AWS.DynamoDB();
+var client = new AWS.DynamoDB.DocumentClient();
 var params;
-// var params = {
+
+//  params = {
 //     TableName : "TestActivities",
 //     KeySchema: [
 //         { AttributeName: "id", KeyType: "HASH"},  //Partition key
@@ -21,7 +23,7 @@ var params;
 //     BillingMode: "PAY_PER_REQUEST"
 // };
 
-// dynamodb.createTable(params, function(err, data) {
+// db.createTable(params, function(err, data) {
 //     if (err) {
 //         console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
 //     } else {
@@ -29,17 +31,16 @@ var params;
 //     }
 // });
 
-// var params = {
-//   TableName: 'TestActivities',
+// params = {
+//   TableName: 'activities',
 //   Item: {
-//     'id' : {N: '322456'},
-//     'athleteId' : {S: 'ID:1423456'},
-//     'path' : {S: "23456789876543234567898765432345678987654345678"}
+//     'id' : 3221234456,
+//     'athleteId' : 14231234456,
 //   }
 // };
 
 // // Call DynamoDB to add the item to the table
-// dynamodb.putItem(params, function(err, data) {
+// client.put(params, function(err, data) {
 //   if (err) {
 //     console.log("Error", err);
 //   } else {
@@ -47,7 +48,72 @@ var params;
 //   }
 // });
 
-// var params = {
+params = {
+  TableName: "users",
+  Key: {
+    id: 123456
+  },
+  UpdateExpression: 'set #a = :a, #r = :r',
+  ExpressionAttributeNames: {'#a' : 'accessToken', '#r': 'refreshToken'},
+  ExpressionAttributeValues: {
+    ':a' : 'asdf',
+    ':r' : 'qwer',
+  }
+};
+
+client.update(params, (err, data) => {
+  if (err) {
+    console.log("Error", err);
+  } else {
+    console.log("Success", data);
+  }
+});
+
+// params = {
+//   TableName: 'activities',
+//   Limit: 10
+// }
+
+// client.scan(params,(err,data)=>{
+//   if (err) {
+//     console.log("Error", err);
+//   } else {
+//     console.log("Success", data);
+//   }
+// // })
+// params = {
+//   Key: {
+//     id: 3244434795,
+//   },
+//   TableName: "activities",
+// };
+
+// client.get(params, (err, data) => {
+//   if (err) {
+//     console.log("Error", err);
+//   } else {
+//     console.log("Success", data);
+//   }
+// });
+
+// params = {
+//   TableName: 'activities',
+//   Item: {
+//     'id' : {N: '322456'},
+//     'athleteId' : {N: '1423456'},
+//   }
+// };
+
+// // Call DynamoDB to add the item to the table
+// db.putItem(params, function(err, data) {
+//   if (err) {
+//     console.log("Error", err);
+//   } else {
+//     console.log("Success", data);
+//   }
+// });
+
+//  params = {
 //     // ExpressionAttributeNames: {
 //     //  "#ID": "id",
 //     //  "#AI": "athleteId",
@@ -68,7 +134,7 @@ var params;
 //     Select: 'ALL_ATTRIBUTES'
 //    }
 
-//    dynamodb.scan(params, function(err, data) {
+//    db.scan(params, function(err, data) {
 //      if (err) console.log(err, err.stack); // an error occurred
 //      else    { console.log(data); console.log(data.Items);}
 
@@ -84,7 +150,7 @@ var params;
 //   // ProjectionExpression: "ALL",
 // };
 
-// dynamodb.query(params, (err, data) => {
+// db.query(params, (err, data) => {
 //   if (err) {
 //     console.log(err);
 //   }
@@ -92,22 +158,21 @@ var params;
 //   console.log(data);
 // });
 
- params = {
-  TableName: "TestSegments",
-  Select: "ALL_ATTRIBUTES",
-};
-db.scan(params, (err, data) => {
-  if (err) {
-    console.log(err);
-  }
-  console.log((flatten(data)))
-});
+//  params = {
+//   TableName: "TestSegments",
+//   Select: "ALL_ATTRIBUTES",
+// };
+// db.scan(params, (err, data) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log((flatten(data)))
+// });
 
-var descriptors = ['L', 'M', 'N', 'S'];
+var descriptors = ["L", "M", "N", "S"];
 
 function flatten(o) {
-
-  // flattens single property objects that have descriptors  
+  // flattens single property objects that have descriptors
   for (let d of descriptors) {
     if (o.hasOwnProperty(d)) {
       return o[d];
@@ -115,16 +180,15 @@ function flatten(o) {
   }
 
   Object.keys(o).forEach((k) => {
-
     for (let d of descriptors) {
       if (o[k].hasOwnProperty(d)) {
         o[k] = o[k][d];
       }
     }
     if (Array.isArray(o[k])) {
-      o[k] = o[k].map(e => flatten(e))
-    } else if (typeof o[k] === 'object') {
-      o[k] = flatten(o[k])
+      o[k] = o[k].map((e) => flatten(e));
+    } else if (typeof o[k] === "object") {
+      o[k] = flatten(o[k]);
     }
   });
 
