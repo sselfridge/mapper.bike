@@ -91,19 +91,26 @@ async function addToActivityQueue(strava) {
 }
 
 async function test(req, res, next) {
-  console.log('Start Test');
+  console.log("Start Test");
   const strava = res.locals.strava;
 
   // const result = await strava.segments.listEfforts({ id: 23295888, page_size: 200 });
   // const result = await strava.segments.listStarred({});
   // const result = await strava.segments.listLeaderboard({ id: 23295888, page_size: 200 });
 
-
   try {
-    const stravaQ = require('../services/stravaQueue')
+    // const stravaQ = require('../services/stravaQueue')
 
-    stravaQ.processQueue();
+    // stravaQ.processQueue();
 
+    const segmentDetails = require("../db/segmentDetails");
+    // const details = [{ id: 12345 }, { id: 987654321 }];
+    const details = [{ id: 12345 }, { id: 987654321 }, { id: 76534, line: 'aerqew LINE'}];
+
+    const result = await segmentDetails.batchUpdate(details);
+
+    console.log("Result");
+    console.log(result);
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);

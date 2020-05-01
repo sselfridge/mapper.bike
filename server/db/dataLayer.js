@@ -1,6 +1,7 @@
 const activities = require("./activities");
 const users = require("./users");
-const segments = require("./segmentEfforts");
+const efforts = require("./segmentEfforts");
+const details = require("./segmentDetails");
 const utils = require("./utils");
 
 const dataLayer = {
@@ -48,11 +49,12 @@ async function addSegmentRank(data) {}
 async function getRankedSegments(altheteId) {}
 async function getSegmentDetails(id) {}
 
-async function storeSegments(segments){
-  const rankedSegments = utils.parseRankedSegments(segments)
-  const segmentDetails = utils.parseSegmentDetails(segments)
-}
+async function storeSegments(segments) {
+  const rankedSegments = utils.parseRankedSegments(segments);
+  const segmentDetails = utils.parseSegmentDetails(segments);
 
+  await Promise.all([efforts.batchAdd(rankedSegments), details.batchAdd(segmentDetails)]);
+}
 
 async function getActivity() {}
 async function getEmptySegment() {}

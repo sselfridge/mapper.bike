@@ -1,45 +1,69 @@
-const utils = require('./utils')
-var client = require('./config')
+const utils = require("./utils");
+var client = require("./config");
 
-const TableName = 'segmentDetails'
+const TableName = "segmentDetails";
 
 module.exports = {
-  add,
+  update,
+  batchUpdate,
   pop,
   get,
 };
 
-function add(data) {
-  const {id, path} = data;
+function update(data) {
+  const { id, line } = data;
 
   return new Promise((resolve, reject) => {
-    var params = {
-      TableName,
-      Item: {
-        id ,
-        path,
-      },
+    const params = {
+      TableName: "segmentDetails",
+      Key: { id },
     };
 
-    client.put(params, (err, data) => {
+    if (line) {
+      params.UpdateExpression = "set #p = :p, #h = :h";
+      params.ExpressionAttributeNames = { "#p": "line", "#h": "hasLine" };
+      params.ExpressionAttributeValues = {
+        ":p": line,
+        ":h": "true",
+      };
+    } else {
+      params.UpdateExpression = "set #h = :h";
+      params.ExpressionAttributeNames = { "#h": "hasLine" };
+      params.ConditionExpression = "attribute_not_exists(hasLine)";
+      params.ExpressionAttributeValues = {
+        ":h": "false",
+      };
+    }
+
+    client.update(params, (err) => {
       if (err) {
-        console.log("DB Error", err);
-        return reject(err);
+        if (err.code === "ConditionalCheckFailedException") {
+          // conditions not met, update aborted
+          return resolve();
+        } else {
+          //reject all other errors
+          return reject(err);
+        }
+      } else {
+        resolve();
       }
-      resolve(data);
     });
   });
 }
 
+function batchUpdate(segments) {
+  const promiseArr = segments.map((segment) => update(segment));
+  return Promise.all(promiseArr);
+}
 
 function pop() {
   return new Promise((resolve, reject) => {
     const params = {
       TableName,
-      IndexName: "kind-index",
-      KeyConditionExpression: "kind = :kind",
+      IndexName: "line-index",
+      KeyConditionExpression: "line = :p",
       ExpressionAttributeValues: {
-        ":kind": undefined,
+        ":p": null,
       },
       // ProjectionExpression: "ALL",
     };
@@ -56,7 +80,7 @@ function pop() {
 }
 
 function get(id) {
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const params = {
       Key: {
         id,
@@ -75,8 +99,6 @@ function get(id) {
   });
 }
 
-
-
 const queryIndex = (field, equals) => {
   const params = {
     TableName: "TestActivities",
@@ -94,5 +116,3 @@ const queryIndex = (field, equals) => {
     } else console.log(data);
   });
 };
-
-

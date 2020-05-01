@@ -5,6 +5,7 @@ const TableName = "segmentRanks";
 
 module.exports = {
   addSegment,
+  batchAdd,
   getAllSegments,
   getPathlessSegments,
 };
@@ -33,6 +34,12 @@ function add(segment) {
       resolve(data);
     });
   });
+}
+
+function batchAdd(segments){
+  return new Promise((resolve,reject)=>{
+    
+  })
 }
 
 function addSegment(segment) {

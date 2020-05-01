@@ -169,14 +169,49 @@ var params;
 //   console.log((flatten(data)))
 // });
 
- params = {
-  TableName : 'users',
-  Key: {
-    id: 123456,
-  }
-};
+//  params = {
+//   TableName : 'users',
+//   Key: {
+//     id: 123456,
+//   }
+// };
 
-client.delete(params, function(err, data) {
-  if (err) console.log(err);
-  else console.log(data);
-});
+// client.delete(params, function(err, data) {
+//   if (err) console.log(err);
+//   else console.log(data);
+// });
+
+
+// bulk update
+// const details = [{ id: 12345 }, { id: 987654321 }];
+// const detailsMore = [
+//   { id: 12345, path: "ThisPath" },
+//   { id: 987654321, path: "ThisPath" },
+// ];
+// const lastDetails = [{ id: 12345 }, { id: 987654321 }];
+
+// const data = { id: 1234 };
+
+// const { id, path } = data;
+
+// params = {
+//   TableName: "segmentDetails",
+//   Key: { id },
+// };
+
+// if (path) {
+//   params.UpdateExpression = "set #a = :a";
+//     (params.ExpressionAttributeNames = { "#a": "path" });
+//     (params.ExpressionAttributeValues = {
+//       ":a": path,
+//     });
+// }
+
+// client.update(params, (err, data) => {
+//   if (err) {
+//     console.log("DB Error", err);
+//   } else {
+//     console.log("Success");
+//     console.log(data);
+//   }
+// });
