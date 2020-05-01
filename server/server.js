@@ -84,14 +84,20 @@ app.get(
   }
 );
 
-app.get("/api/test", oAuthStrava.loadStravaProfile, segmentController.test, (req, res) => {
-  if (res.locals.err) {
-    res.send("DOH!!");
-  } else {
-    console.log("fin");
-    res.send(res.locals.activities);
+app.get(
+  "/api/test",
+  oAuthStrava.loadStravaProfile,
+  segmentController.updateUserDB,
+  segmentController.test,
+  (req, res) => {
+    if (res.locals.err) {
+      res.status(500).send("DOH!!");
+    } else {
+      console.log("fin");
+      res.send(res.locals.activities);
+    }
   }
-});
+);
 
 app.get("/api/segments", oAuthStrava.loadStravaProfile, segmentController.segments, (req, res) => {
   if (res.locals.err) {

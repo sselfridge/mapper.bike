@@ -1,16 +1,18 @@
 const activities = require("./activities");
 const users = require("./users");
-const segments = require("./segments");
+const segments = require("./segmentEfforts");
 const utils = require("./utils");
 
 const dataLayer = {
   addActivity,
   deleteActivity,
+  deleteActivities,
   popActivities,
 
   getSegmentPath,
   addSegmentRank,
   getRankedSegments,
+  storeSegments,
 
   addUser,
   updateUser,
@@ -22,11 +24,15 @@ async function addActivity(id, altheteId) {
   await activities.add(id, altheteId);
 }
 
-async function popActivities(limit = 10) {
+async function popActivities(limit = 1) {
   return await activities.pop(limit);
 }
 
 async function deleteActivity(id) {}
+
+async function deleteActivities(ids) {
+  await activities.batchDelete(ids);
+}
 
 //stop calling if hit rate limit
 async function getSegmentPath(id) {
@@ -42,6 +48,12 @@ async function addSegmentRank(data) {}
 async function getRankedSegments(altheteId) {}
 async function getSegmentDetails(id) {}
 
+async function storeSegments(segments){
+  const rankedSegments = utils.parseRankedSegments(segments)
+  const segmentDetails = utils.parseSegmentDetails(segments)
+}
+
+
 async function getActivity() {}
 async function getEmptySegment() {}
 
@@ -53,13 +65,19 @@ async function addUser(data) {
   if (userExists) {
     throw new Error("User Already in DB");
   } else {
-    console.log("Update user:", data);
+    console.log("Add user:", data);
     await users.update(data);
-    console.log("User Updated");
   }
 }
 
-async function updateUser(id) {}
+async function updateUser(data) {
+  const id = data.id;
+  const userExists = await users.exists(id);
+  if (!userExists) throw new Error("Update Error: User not in DB");
+  else {
+    await users.update(data);
+  }
+}
 
 async function getUser(id) {
   const user = await users.get(id);

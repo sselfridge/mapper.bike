@@ -48,26 +48,26 @@ var params;
 //   }
 // });
 
-params = {
-  TableName: "users",
-  Key: {
-    id: 123456
-  },
-  UpdateExpression: 'set #a = :a, #r = :r',
-  ExpressionAttributeNames: {'#a' : 'accessToken', '#r': 'refreshToken'},
-  ExpressionAttributeValues: {
-    ':a' : 'asdf',
-    ':r' : 'qwer',
-  }
-};
+// params = {
+//   TableName: "users",
+//   Key: {
+//     id: 123456
+//   },
+//   UpdateExpression: 'set #a = :a, #r = :r',
+//   ExpressionAttributeNames: {'#a' : 'accessToken', '#r': 'refreshToken'},
+//   ExpressionAttributeValues: {
+//     ':a' : 'asdf',
+//     ':r' : 'qwer',
+//   }
+// };
 
-client.update(params, (err, data) => {
-  if (err) {
-    console.log("Error", err);
-  } else {
-    console.log("Success", data);
-  }
-});
+// client.update(params, (err, data) => {
+//   if (err) {
+//     console.log("Error", err);
+//   } else {
+//     console.log("Success", data);
+//   }
+// });
 
 // params = {
 //   TableName: 'activities',
@@ -169,28 +169,14 @@ client.update(params, (err, data) => {
 //   console.log((flatten(data)))
 // });
 
-var descriptors = ["L", "M", "N", "S"];
-
-function flatten(o) {
-  // flattens single property objects that have descriptors
-  for (let d of descriptors) {
-    if (o.hasOwnProperty(d)) {
-      return o[d];
-    }
+ params = {
+  TableName : 'users',
+  Key: {
+    id: 123456,
   }
+};
 
-  Object.keys(o).forEach((k) => {
-    for (let d of descriptors) {
-      if (o[k].hasOwnProperty(d)) {
-        o[k] = o[k][d];
-      }
-    }
-    if (Array.isArray(o[k])) {
-      o[k] = o[k].map((e) => flatten(e));
-    } else if (typeof o[k] === "object") {
-      o[k] = flatten(o[k]);
-    }
-  });
-
-  return o;
-}
+client.delete(params, function(err, data) {
+  if (err) console.log(err);
+  else console.log(data);
+});

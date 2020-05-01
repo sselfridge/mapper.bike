@@ -1,26 +1,31 @@
-const utils = require('./utils')
-var client = require('./config')
+const utils = require("./utils");
+var client = require("./config");
 
+const TableName = "segmentRanks";
 
 module.exports = {
   addSegment,
   getAllSegments,
-  getPathlessSegments
+  getPathlessSegments,
 };
 
-function addSegmentEffort(effort) {
+function add(segment) {
+  const { id, segmentId, athleteId, name, rank, date } = segment;
+
   return new Promise((resolve, reject) => {
     var params = {
-      TableName: "TestSegments",
+      TableName,
       Item: {
-        id: { N: `${effort.segment.id}` },
-        name: { S: effort.segment.name },
-        rank: { N: `${effort.kom_rank}` },
-        kind: { S: "summary" },
+        id,
+        segmentId,
+        athleteId,
+        name,
+        rank,
+        date,
       },
     };
 
-    client.putItem(params, (err, data) => {
+    client.put(params, (err, data) => {
       if (err) {
         console.log("DB Error", err);
         return reject(err);
@@ -29,6 +34,7 @@ function addSegmentEffort(effort) {
     });
   });
 }
+
 function addSegment(segment) {
   return new Promise((resolve, reject) => {
     var params = {
@@ -93,8 +99,6 @@ function getAllSegments() {
   });
 }
 
-
-
 const queryIndex = (field, equals) => {
   const params = {
     TableName: "TestActivities",
@@ -112,5 +116,3 @@ const queryIndex = (field, equals) => {
     } else console.log(data);
   });
 };
-
-

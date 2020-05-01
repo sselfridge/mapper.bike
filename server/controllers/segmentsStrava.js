@@ -7,27 +7,31 @@ const segmentController = {
   test,
   segments,
   intializeUser,
+  updateUserDB,
 };
 
-function updateUserDB(req,res,next){
-  //update user info in DB
+async function updateUserDB(req, res, next) {
+  console.log("updating user in DB");
+  const userData = makeUserData(res);
+  try {
+    await db.updateUser(userData);
+  } catch (err) {
+    res.locals.err = err;
+    next();
+  }
+  next();
 }
 
-function intializeUser(req, res, next) {
+async function intializeUser(req, res, next) {
   try {
     const strava = res.locals.strava;
-    const user = res.locals.user;
-    const tokens = {
-      accessToken: res.locals.accessToken,
-      refreshToken: res.locals.refreshToken,
-    };
-    //Add User to DB
-    //return if already there.
+    const userData = makeUserData(res);
+    await db.updateUser(userData); //TODO switch this to add user
 
     //kick_off get activities
     addToActivityQueue(strava);
     //get stats
-    const count = totalUserActivites(strava, user.althleteIdd);
+    const count = totalUserActivites(strava, res.user.althleteId);
 
     res.locals.data = { activityCount: count };
     next();
@@ -35,6 +39,18 @@ function intializeUser(req, res, next) {
     res.locals.err = err;
     next();
   }
+}
+
+function makeUserData(res) {
+  const user = res.locals.user;
+  const accessToken = res.locals.accessToken;
+  const refreshToken = res.locals.refreshToken;
+  const userData = {
+    id: user.althleteId,
+    accessToken,
+    refreshToken,
+  };
+  return userData;
 }
 
 async function checkInitStatus(req, res, next) {
@@ -67,24 +83,26 @@ async function addToActivityQueue(strava) {
       if (!activity.map.summary_polyline) return; //skip activites with no line
       db.addActivity(activity.id, activity.athlete.id);
     });
-    console.log('Done Adding to DB');
+    console.log("Done Adding to DB");
   } catch (error) {
+    console.error("Error while Adding to activtity table:", error.message);
     //Do nothing for now, add event emitter here if this starts to become a problem
   }
 }
 
 async function test(req, res, next) {
+  console.log('Start Test');
   const strava = res.locals.strava;
 
   // const result = await strava.segments.listEfforts({ id: 23295888, page_size: 200 });
   // const result = await strava.segments.listStarred({});
   // const result = await strava.segments.listLeaderboard({ id: 23295888, page_size: 200 });
 
-  try {
 
-    const activities = await db.popActivities();
-    console.log("Activities ==============");
-    console.log(activities);
+  try {
+    const stravaQ = require('../services/stravaQueue')
+
+    stravaQ.processQueue();
 
   } catch (err) {
     console.log("CRAP!!!");
@@ -92,7 +110,7 @@ async function test(req, res, next) {
     res.locals.err = "AAAAAAAAA";
   }
 
-  console.log('Test Done');
+  console.log("Test Done");
   next();
   // db.getEmptyActivities()
   // .then(results => {

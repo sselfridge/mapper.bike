@@ -3,13 +3,14 @@ const client = require("./config");
 const TableName = "users";
 
 const users = {
-  exists,
-  get,
   update,
+  get,
+  exists,
   remove,
 };
 
 function update(data) {
+  return new Promise((resolve,reject)=>{
   const { id, accessToken, refreshToken } = data;
 
   const params = {
@@ -25,11 +26,13 @@ function update(data) {
 
   client.update(params, (err, data) => {
     if (err) {
-      console.log("Error", err);
+      console.log("User Update Error", err);
+      reject(err)
     } else {
-      console.log("Success", data);
+      resolve(data)
     }
   });
+})
 }
 
 function get(id) {
@@ -41,9 +44,6 @@ function get(id) {
       },
       TableName,
     };
-
-    console.log("params");
-    console.log(params);
 
     client.get(params, (err, data) => {
       if (err) {
@@ -64,12 +64,11 @@ function exists(id) {
     get(id)
       .then((user) => {
         if (user) {
-          console.log('Resolving as true');
+          console.log("User Exists:",id);
 
           resolve(true);
         } else {
-          console.log('Resolving as false');
-          console.log(user);
+          console.log("User Does Not Exist",id);
           resolve(false);
         }
       })
@@ -78,7 +77,19 @@ function exists(id) {
 }
 
 function remove(id) {
-  return new Promise((resolve, reject) => {});
+  return new Promise((resolve, reject) => {
+    const params = {
+      TableName,
+      Key: {
+        id,
+      },
+    };
+
+    client.delete(params, function (err) {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
 }
 
 module.exports = users;

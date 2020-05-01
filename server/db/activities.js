@@ -5,31 +5,30 @@ const TableName = "activities";
 module.exports = {
   add,
   pop,
-  getAllEmptyActivities,
   remove,
+  batchDelete,
   countByAthelete,
 };
 
 function add(id, athleteId) {
-  console.log("Running Add");
   return new Promise((resolve, reject) => {
     var params = {
       TableName,
       Item: { id, athleteId },
     };
 
-    client.put(params, (err, data) => {
+    client.put(params, (err) => {
       if (err) {
         console.log("DB Error", err);
         return reject(err);
       }
-      console.log("Added to DB");
+      console.log("Activity added to DB");
       resolve();
     });
   });
 }
 
-//return 1 activity
+//return Limit activities
 function pop(Limit) {
   return new Promise((resolve, reject) => {
     const params = {
@@ -42,10 +41,24 @@ function pop(Limit) {
         console.log("Activty Pop Error", err);
         reject(err);
       } else {
-        console.log("Success", data);
         resolve(data.Items);
       }
     });
+  });
+}
+
+function batchDelete(ids) {
+  return new Promise((resolve, reject) => {
+    const params = makeBatchDeleteParams(ids);
+
+    client.batchWrite(params, (err,data)=>{
+      if(err){
+        reject(err);
+      }else{
+        resolve();
+      }
+    })
+
   });
 }
 
@@ -65,7 +78,7 @@ function getAllEmptyActivities() {
       if (err) {
         return reject(err);
       } else {
-        return resolve(flatten(data));
+        return resolve(data);
       }
     });
   });
@@ -92,3 +105,15 @@ const queryIndex = (field, equals) => {
     } else console.log(data);
   });
 };
+
+const makeBatchDeleteParams = (ids) => {
+  var params = { RequestItems: {} };
+  params.RequestItems[TableName] = []
+  ids.forEach(id => {
+    const newItem =  { DeleteRequest: {Key: { id },}};
+    params.RequestItems[TableName].push(newItem)
+  });
+  return params;
+};
+
+
