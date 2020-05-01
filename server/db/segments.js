@@ -1,11 +1,6 @@
-var AWS = require("aws-sdk");
-
-//aws creds stored in ~/.aws/credentials
-var credentials = new AWS.SharedIniFileCredentials({ profile: "dbuser" });
-AWS.config.credentials = credentials;
-AWS.config.update({ region: "us-west-2" });
 const utils = require('./utils')
-var db = new AWS.DynamoDB();
+var client = require('./config')
+
 
 module.exports = {
   addSegment,
@@ -25,7 +20,7 @@ function addSegmentEffort(effort) {
       },
     };
 
-    db.putItem(params, (err, data) => {
+    client.putItem(params, (err, data) => {
       if (err) {
         console.log("DB Error", err);
         return reject(err);
@@ -50,7 +45,7 @@ function addSegment(segment) {
       },
     };
 
-    db.putItem(params, (err, data) => {
+    client.putItem(params, (err, data) => {
       if (err) {
         console.log("DB Error", err);
         return reject(err);
@@ -72,7 +67,7 @@ function getPathlessSegments() {
       // ProjectionExpression: "ALL",
     };
 
-    db.query(params, (err, data) => {
+    client.query(params, (err, data) => {
       if (err) {
         console.log(err);
         return reject(err);
@@ -89,7 +84,7 @@ function getAllSegments() {
       TableName: "TestSegments",
       Select: "ALL_ATTRIBUTES",
     };
-    db.scan(params, (err, data) => {
+    client.scan(params, (err, data) => {
       if (err) {
         return reject(err);
       }
@@ -111,7 +106,7 @@ const queryIndex = (field, equals) => {
     // ProjectionExpression: "ALL",
   };
 
-  db.query(params, (err, data) => {
+  client.query(params, (err, data) => {
     if (err) {
       console.log(err);
     } else console.log(data);

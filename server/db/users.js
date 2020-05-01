@@ -1,4 +1,4 @@
-const db = require("./config");
+const client = require("./config");
 
 const TableName = "users";
 
@@ -23,7 +23,7 @@ function update(data) {
     },
   };
 
-  db.update(params, (err, data) => {
+  client.update(params, (err, data) => {
     if (err) {
       console.log("Error", err);
     } else {
@@ -45,7 +45,7 @@ function get(id) {
     console.log("params");
     console.log(params);
 
-    db.get(params, (err, data) => {
+    client.get(params, (err, data) => {
       if (err) {
         console.log("getUser Error", err);
         reject(err);

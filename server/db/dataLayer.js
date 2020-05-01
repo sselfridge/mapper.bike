@@ -6,6 +6,7 @@ const utils = require("./utils");
 const dataLayer = {
   addActivity,
   deleteActivity,
+  popActivities,
 
   getSegmentPath,
   addSegmentRank,
@@ -17,13 +18,13 @@ const dataLayer = {
   deleteUser,
 };
 
-
-
 async function addActivity(id, altheteId) {
   await activities.add(id, altheteId);
 }
 
-async function getActivties(limit = 10) {}
+async function popActivities(limit = 10) {
+  return await activities.pop(limit);
+}
 
 async function deleteActivity(id) {}
 
@@ -45,16 +46,16 @@ async function getActivity() {}
 async function getEmptySegment() {}
 
 async function addUser(data) {
-  console.log('Data: Add USer');
+  console.log("Data: Add USer");
   const id = data.id;
   const userExists = await users.exists(id);
-  console.log('User Exists:', userExists);
+  console.log("User Exists:", userExists);
   if (userExists) {
     throw new Error("User Already in DB");
   } else {
-    console.log('Update user:',data);
+    console.log("Update user:", data);
     await users.update(data);
-    console.log('User Updated');
+    console.log("User Updated");
   }
 }
 

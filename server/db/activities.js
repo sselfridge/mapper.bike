@@ -1,4 +1,4 @@
-const db = require("./config");
+const client = require("./config");
 
 const TableName = "activities";
 
@@ -11,16 +11,14 @@ module.exports = {
 };
 
 function add(id, athleteId) {
-  console.log('Running Add');
+  console.log("Running Add");
   return new Promise((resolve, reject) => {
     var params = {
       TableName,
       Item: { id, athleteId },
     };
 
-
-
-    db.put(params, (err, data) => {
+    client.put(params, (err, data) => {
       if (err) {
         console.log("DB Error", err);
         return reject(err);
@@ -32,7 +30,24 @@ function add(id, athleteId) {
 }
 
 //return 1 activity
-function pop() {}
+function pop(Limit) {
+  return new Promise((resolve, reject) => {
+    const params = {
+      TableName,
+      Limit,
+    };
+
+    client.scan(params, (err, data) => {
+      if (err) {
+        console.log("Activty Pop Error", err);
+        reject(err);
+      } else {
+        console.log("Success", data);
+        resolve(data.Items);
+      }
+    });
+  });
+}
 
 function getAllEmptyActivities() {
   return new Promise((resolve, reject) => {
@@ -46,7 +61,7 @@ function getAllEmptyActivities() {
       ProjectionExpression: "id",
     };
 
-    db.query(params, (err, data) => {
+    client.query(params, (err, data) => {
       if (err) {
         return reject(err);
       } else {
@@ -71,7 +86,7 @@ const queryIndex = (field, equals) => {
     // ProjectionExpression: "ALL",
   };
 
-  db.query(params, (err, data) => {
+  client.query(params, (err, data) => {
     if (err) {
       console.log(err);
     } else console.log(data);

@@ -82,21 +82,9 @@ async function test(req, res, next) {
 
   try {
 
-    const strava = res.locals.strava;
-    const user = res.locals.user;
-    
-      const accessToken = res.locals.accessToken
-      const refreshToken = res.locals.refreshToken
-    
-    const userData = {
-      id: user.althleteId,
-      accessToken,
-      refreshToken
-    }
-    console.log(user);
-    console.log(userData);
-
-    await db.addUser(userData);
+    const activities = await db.popActivities();
+    console.log("Activities ==============");
+    console.log(activities);
 
   } catch (err) {
     console.log("CRAP!!!");
