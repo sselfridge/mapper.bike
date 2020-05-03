@@ -4,6 +4,8 @@ const efforts = require("./segmentEfforts");
 const details = require("./segmentDetails");
 const utils = require("./utils");
 
+const LIMIT_SIZE = 10;
+
 const dataLayer = {
   addActivity,
   deleteActivity,
@@ -12,8 +14,11 @@ const dataLayer = {
 
   getSegmentPath,
   addSegmentRank,
-  getRankedSegments,
+  getEfforts,
   storeSegments,
+
+  popDetails,
+  addDetails,
 
   addUser,
   updateUser,
@@ -25,7 +30,7 @@ async function addActivity(id, altheteId) {
   await activities.add(id, altheteId);
 }
 
-async function popActivities(limit = 1) {
+async function popActivities(limit = LIMIT_SIZE) {
   return await activities.pop(limit);
 }
 
@@ -45,9 +50,17 @@ async function getSegmentPath(id) {
   //return path
 }
 
+async function popDetails(Limit = LIMIT_SIZE){
+  return await details.pop(Limit)
+}
+
+async function addDetails(data){
+  await details.update(data);
+}
+
 async function addSegmentRank(data) {}
-async function getRankedSegments(altheteId) {}
 async function getSegmentDetails(id) {}
+async function getEfforts(altheteId) {}
 
 async function storeSegments(segments) {
   const rankedSegments = utils.parseRankedSegments(segments);

@@ -36,7 +36,6 @@ function update(data) {
 }
 
 function get(id) {
-  console.log("Get User Func");
   return new Promise((resolve, reject) => {
     const params = {
       Key: {
@@ -50,8 +49,6 @@ function get(id) {
         console.log("getUser Error", err);
         reject(err);
       } else {
-        console.log("getUser Data");
-        console.log(data);
         resolve(data.Item);
       }
     });
@@ -59,16 +56,12 @@ function get(id) {
 }
 
 function exists(id) {
-  console.log("user Exists func");
   return new Promise((resolve, reject) => {
     get(id)
       .then((user) => {
         if (user) {
-          console.log("User Exists:",id);
-
           resolve(true);
         } else {
-          console.log("User Does Not Exist",id);
           resolve(false);
         }
       })

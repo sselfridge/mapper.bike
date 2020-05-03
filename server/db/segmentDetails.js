@@ -5,14 +5,15 @@ const TableName = "segmentDetails";
 
 module.exports = {
   update,
-  batchUpdate,
+  batchAdd,
   pop,
   get,
 };
 
 function update(data) {
   const { id, line } = data;
-
+  console.log('segment Detail Update');
+  console.log(data);
   return new Promise((resolve, reject) => {
     const params = {
       TableName: "segmentDetails",
@@ -38,33 +39,36 @@ function update(data) {
     client.update(params, (err) => {
       if (err) {
         if (err.code === "ConditionalCheckFailedException") {
-          // conditions not met, update aborted
           return resolve();
         } else {
           //reject all other errors
+          console.log('Segment Details Err');
+          console.log(err.message);
           return reject(err);
         }
       } else {
-        resolve();
+        return resolve();
       }
     });
   });
 }
 
-function batchUpdate(segments) {
+function batchAdd(segments) {
+  console.log('Batch Update Segment Details');
   const promiseArr = segments.map((segment) => update(segment));
   return Promise.all(promiseArr);
 }
 
-function pop() {
+function pop(Limit) {
   return new Promise((resolve, reject) => {
     const params = {
       TableName,
-      IndexName: "line-index",
-      KeyConditionExpression: "line = :p",
+      IndexName: "hasLine-index",
+      KeyConditionExpression: "hasLine = :h",
       ExpressionAttributeValues: {
-        ":p": null,
+        ":h": 'false',
       },
+      Limit,
       // ProjectionExpression: "ALL",
     };
 
@@ -73,7 +77,7 @@ function pop() {
         console.log(err);
         return reject(err);
       } else {
-        return resolve(data);
+        return resolve(data.Items);
       }
     });
   });

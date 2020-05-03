@@ -4,9 +4,9 @@ var client = require("./config");
 const TableName = "segmentRanks";
 
 module.exports = {
-  addSegment,
+  add,
   batchAdd,
-  getAllSegments,
+  getEfforts,
   getPathlessSegments,
 };
 
@@ -36,9 +36,14 @@ function add(segment) {
   });
 }
 
-function batchAdd(segments){
+async function batchAdd(efforts){
+  const promiseArr = efforts.map((segment) => add(segment));
+  await Promise.all(promiseArr);
+}
+
+function getEfforts(athleteId){
   return new Promise((resolve,reject)=>{
-    
+
   })
 }
 

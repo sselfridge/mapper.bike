@@ -91,10 +91,12 @@ app.get(
   segmentController.test,
   (req, res) => {
     if (res.locals.err) {
+      console.log('Error!!');
+      console.log(res.locals.err);
       res.status(500).send("DOH!!");
     } else {
       console.log("fin");
-      res.send(res.locals.activities);
+      res.send("OK");
     }
   }
 );

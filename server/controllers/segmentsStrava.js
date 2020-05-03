@@ -12,7 +12,7 @@ const segmentController = {
 
 async function updateUserDB(req, res, next) {
   console.log("updating user in DB");
-  const userData = makeUserData(res);
+  const userData = getUserData(res);
   try {
     await db.updateUser(userData);
   } catch (err) {
@@ -25,14 +25,14 @@ async function updateUserDB(req, res, next) {
 async function intializeUser(req, res, next) {
   try {
     const strava = res.locals.strava;
-    const userData = makeUserData(res);
+    const userData = getUserData(res);
     await db.updateUser(userData); //TODO switch this to add user
 
     //kick_off get activities
     addToActivityQueue(strava);
-    //get stats
-    const count = totalUserActivites(strava, res.user.althleteId);
-
+    console.log('Activities Added');
+    const count = await   totalUserActivites(strava, res.locals.user.athleteId);
+    console.log('Total Count',count);
     res.locals.data = { activityCount: count };
     next();
   } catch (err) {
@@ -41,12 +41,12 @@ async function intializeUser(req, res, next) {
   }
 }
 
-function makeUserData(res) {
+function getUserData(res) {
   const user = res.locals.user;
   const accessToken = res.locals.accessToken;
   const refreshToken = res.locals.refreshToken;
   const userData = {
-    id: user.althleteId,
+    id: user.athleteId,
     accessToken,
     refreshToken,
   };
@@ -78,7 +78,6 @@ async function addToActivityQueue(strava) {
     const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1585724400, 1588220022);
     // 1 result
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1588057200, 1588220022);
-    console.log(`Adding ${result.length} activites to DB`);
     result.forEach((activity) => {
       if (!activity.map.summary_polyline) return; //skip activites with no line
       db.addActivity(activity.id, activity.athlete.id);
@@ -99,18 +98,26 @@ async function test(req, res, next) {
   // const result = await strava.segments.listLeaderboard({ id: 23295888, page_size: 200 });
 
   try {
-    // const stravaQ = require('../services/stravaQueue')
+    const stravaQ = require('../services/stravaQueue')
 
-    // stravaQ.processQueue();
+    await stravaQ.processQueue();
 
-    const segmentDetails = require("../db/segmentDetails");
-    // const details = [{ id: 12345 }, { id: 987654321 }];
-    const details = [{ id: 12345 }, { id: 987654321 }, { id: 76534, line: 'aerqew LINE'}];
+    // const segmentDetails = require("../db/segmentDetails");
+    // // const details = [{ id: 12345 }, { id: 987654321 }];
+    // const details = [
+    //   { id: 12 },
+    //   { id: 876545676 },
+    //   { id: 876545675 },
+    //   { id: 876545686 },
+    //   { id: 876545685 },
+    //   { id: 765234234, line: "aerqew LINE  " },
+    // ];
 
-    const result = await segmentDetails.batchUpdate(details);
+    // // const result = await segmentDetails.batchUpdate(details);
+    // const result = await segmentDetails.pop();
 
-    console.log("Result");
-    console.log(result);
+    // console.log("Result");
+    // console.log(result);
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);

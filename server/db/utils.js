@@ -3,24 +3,20 @@ const utils = {
   parseSegmentDetails,
 };
 
-function parseRankedSegments(segments) {
-  const rankedSegments = segments.map((segment) => {
-    return {
-      id: segment.id,
-      name: segment.name,
-      athleteId: segment.athlete.id,
-      activity: segment.activity.id,
-      date: segment.start_date,
-      rank: segment.kom_rank,
-    };
-  });
-  return rankedSegments;
+function parseRankedSegments(efforts) {
+  return efforts.map((effort) => ({
+    id: effort.id,
+    name: effort.segment.name,
+    segmentId: effort.segment.id,
+    athleteId: effort.athlete.id,
+    activity: effort.activity.id,
+    date: effort.start_date,
+    rank: effort.kom_rank,
+  }));
 }
 
-function parseSegmentDetails(segments) {
-  return segments.map((segment) => {
-    return { id: segment.id };
-  });
+function parseSegmentDetails(efforts) {
+  return efforts.map((effort) => ({ id: effort.segment.id }));
 }
 
 // eslint-disable-next-line no-unused-vars

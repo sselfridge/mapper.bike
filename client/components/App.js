@@ -38,7 +38,7 @@ class App extends Component {
         avatar: null,
         firstname: null,
         lastname: null,
-        althleteId: null,
+        athleteId: null,
       },
       center: {
         lat: null,

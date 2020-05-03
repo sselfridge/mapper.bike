@@ -60,7 +60,7 @@ function loadStravaProfile(req, res, next) {
         avatar: result.profile,
         firstname: result.firstname,
         lastname: result.lastname,
-        althleteId: result.id,
+        athleteId: result.id,
       };
 
       utils.logUser(result.firstname, result.lastname);

@@ -19,10 +19,8 @@ const HeaderRight = ({ toggleShowMenu, showMenu, stravaLogout, currentUser }) =>
     </div>
   );
 
-  console.log("currentUser");
-  console.log(currentUser);
 
-  const profileLink = `https://www.strava.com/athletes/${currentUser.althleteId}`
+  const profileLink = `https://www.strava.com/athletes/${currentUser.athleteId}`
 
   return (
     <div className={"headerRight"}>

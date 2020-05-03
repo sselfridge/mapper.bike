@@ -7,6 +7,7 @@ module.exports = {
   pop,
   remove,
   batchDelete,
+  batchAdd,
   countByAthelete,
 };
 
@@ -51,7 +52,7 @@ function batchDelete(ids) {
   return new Promise((resolve, reject) => {
     const params = makeBatchDeleteParams(ids);
 
-    client.batchWrite(params, (err,data)=>{
+    client.batchWrite(params, (err)=>{
       if(err){
         reject(err);
       }else{
@@ -61,6 +62,13 @@ function batchDelete(ids) {
 
   });
 }
+
+function batchAdd(activities){
+  return new Promise((resolve,reject)=>{
+    reject("Not implmented")
+  })
+}
+
 
 function getAllEmptyActivities() {
   return new Promise((resolve, reject) => {
