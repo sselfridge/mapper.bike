@@ -89,6 +89,7 @@ app.get(
   oAuthStrava.loadStravaProfile,
   segmentController.updateUserDB,
   segmentController.test,
+  // segmentController.intializeUser,
   (req, res) => {
     if (res.locals.err) {
       console.log('Error!!');

@@ -54,7 +54,6 @@ function update(data) {
 }
 
 function batchAdd(segments) {
-  console.log('Batch Update Segment Details');
   const promiseArr = segments.map((segment) => update(segment));
   return Promise.all(promiseArr);
 }

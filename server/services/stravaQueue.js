@@ -3,7 +3,6 @@ const db = require("../db/dataLayer");
 
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
-  access_token  : config.client_access_token,
   client_id: config.client_id,
   client_secret: config.client_secret,
   redirect_uri: config.redirect_uri,
@@ -17,24 +16,24 @@ async function processQueue() {
   console.log("Process Queue");
   //check strava rate
   //if less than .75 proceed
-  const stravaRate = stravaAPI.rateLimiting.fractionReached();
-  console.log("Strava Rate:==========================", stravaRate);
-  if (stravaRate > 0.75) {
-    console.log("Over strava Quota");
-  }
+  let stravaRate = stravaAPI.rateLimiting.fractionReached();
+  while (stravaRate < 0.75) {
+    console.log("Strava Rate:==========================", stravaRate);
 
-  // await getActivityDetails();
-  // console.log("Activity Detail Completed");
+    try {
+      await getActivityDetails();
+      await processPathlessSegments();
+    } catch (error) {
+      console.log("Queue Error:", error.message);
+      console.log(error.errors);
+    }
+    stravaRate = stravaAPI.rateLimiting.fractionReached();
 
-  //get segment path
-  try {
-    await processPathlessSegments();
-    
-  } catch (error) {
-    console.log('Error:',error.message);
-  }
+  } 
 
-  console.log('Process Done');
+  console.log("Process Done");
+  console.log("Strava Useage at:",stravaRate);
+  console.log(stravaAPI.rateLimiting);
 }
 
 async function getActivityDetails() {
@@ -43,11 +42,16 @@ async function getActivityDetails() {
   const completedActivities = [];
   const activities = await db.popActivities();
   console.log(`Geting details for ${activities.length} activities`);
+  if(activities.length === 0) return 
+
   for (const activity of activities) {
     const athleteId = activity.athleteId;
     const strava = await getClient(athleteId, memo);
 
-    const fullActivity = await strava.activities.get({ id: activity.id, include_all_efforts: true });
+    const fullActivity = await strava.activities.get({
+      id: activity.id,
+      include_all_efforts: true,
+    });
     const result = await parseActivity(fullActivity);
     if (result) completedActivities.push(activity.id);
   }
@@ -82,7 +86,6 @@ const parseRankedSegments = (activity) => {
     return [];
   }
 
-
   activity.segment_efforts.forEach((effort, index) => {
     if (effort.kom_rank !== null) {
       console.log(effort.kom_rank);
@@ -93,28 +96,38 @@ const parseRankedSegments = (activity) => {
   return rankedSegments;
 };
 
-
-async function processPathlessSegments(){
-  // get segment ids
+async function processPathlessSegments() {
+  console.log('Get pathless Segments');
   const memo = {};
   const strava = await getClient(1075670, memo);
-  
-  const segments = await db.popDetails()
-  const ids = segments.map(segment => (segment.id))
 
+  console.log('popDetails');
+  const segments = await db.popDetails();
+  const ids = segments.map((segment) => segment.id);
+
+  if(ids.length === 0) return;
+
+  console.log('Parse segment Ids',ids);
   for (const id of ids) {
-    const data = await getSegmentDetails(strava, id);
-    await db.addDetails(data)
-    console.log('DB Detail added');    
+    let data = await getSegmentDetails(strava, id);
+    if(!data){
+      data = {id, line: "error"}
+    }
+    await db.addDetails(data);
+    console.log("DB Detail added");
   }
-
 }
 
-async function getSegmentDetails(strava,id){
-  const result = await strava.segments.get({id})
-  return {
-    id: result.id,
-    line: result.map.polyline
+async function getSegmentDetails(strava, id) {
+  console.log('getting detail for id:',id);
+  try {
+    const result = await strava.segments.get({ id });
+    return {
+      id: result.id,
+      line: result.map.polyline,
+    };
+  } catch (error) {
+      console.log("Error:::::",error.message);
   }
 }
 

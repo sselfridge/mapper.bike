@@ -1,5 +1,4 @@
 
-const request = require("request");
 const fs = require("fs");
 
 const decodePolyline = require("decode-google-map-polyline");
@@ -24,7 +23,6 @@ const summaryController = {
   getSummeries,
   getDemoData,
   fetchActivitiesFromStrava,
-  status: {},
 };
 
 // fetch activities in the date range between before and after

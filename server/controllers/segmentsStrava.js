@@ -31,7 +31,7 @@ async function intializeUser(req, res, next) {
     //kick_off get activities
     addToActivityQueue(strava);
     console.log('Activities Added');
-    const count = await   totalUserActivites(strava, res.locals.user.athleteId);
+    const count = await  totalUserActivites(strava, res.locals.user.athleteId);
     console.log('Total Count',count);
     res.locals.data = { activityCount: count };
     next();
@@ -72,10 +72,12 @@ async function totalUserActivites(strava, id) {
 
 async function addToActivityQueue(strava) {
   try {
-    //2534960296 is 2050
-    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 0, 2534960296);
+    
+    const result = await summaryStrava.fetchActivitiesFromStrava(strava, 0, 2550000000);
     //March + April Rides
-    const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1585724400, 1588220022);
+    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1585724400, 1588220022);
+    //2020 Rides
+    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1577865600, 1588539708);
     // 1 result
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1588057200, 1588220022);
     result.forEach((activity) => {
