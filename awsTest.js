@@ -181,7 +181,6 @@ var params;
 //   else console.log(data);
 // });
 
-
 // bulk update
 // const details = [{ id: 12345 }, { id: 987654321 }];
 // const detailsMore = [
@@ -215,3 +214,40 @@ var params;
 //     console.log(data);
 //   }
 // });
+
+// params = {
+//   TableName: "segmentRanks",
+//   IndexName: "athleteId-rank-index",
+//   KeyConditionExpression: "athleteId = :a AND #rank <= :r",
+//   ExpressionAttributeNames: { "#rank": "rank" },
+//   ExpressionAttributeValues: {
+//     ":a": 1075670,
+//     ":r": 2
+//   },
+// };
+
+
+// client.query(params, (err, data) => {
+//   if (err) {
+//     console.log("DB Error", err);
+//   } else {
+//     console.log("Success");
+//     console.log(data);
+//   }
+// });
+
+ params = {
+  Key: {
+    id: ,
+  },
+  TableName,
+};
+
+client.get(params, (err, data) => {
+  if (err) {
+    console.log("get Segment Details Error", err);
+    reject(err);
+  } else {
+    resolve(data.Item);
+  }
+});

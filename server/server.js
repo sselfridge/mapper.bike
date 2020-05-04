@@ -102,7 +102,7 @@ app.get(
   }
 );
 
-app.get("/api/segments", oAuthStrava.loadStravaProfile, segmentController.segments, (req, res) => {
+app.get("/api/segments", oAuthStrava.loadStravaProfile, (req, res) => {
   if (res.locals.err) {
     console.log(res.locals.err);
     res.status(523).send("Error with get segments ");

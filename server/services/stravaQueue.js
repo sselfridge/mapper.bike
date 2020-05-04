@@ -97,24 +97,21 @@ const parseRankedSegments = (activity) => {
 };
 
 async function processPathlessSegments() {
-  console.log('Get pathless Segments');
+  console.log('processPathlessSegments');
   const memo = {};
   const strava = await getClient(1075670, memo);
 
-  console.log('popDetails');
   const segments = await db.popDetails();
   const ids = segments.map((segment) => segment.id);
 
   if(ids.length === 0) return;
 
-  console.log('Parse segment Ids',ids);
   for (const id of ids) {
     let data = await getSegmentDetails(strava, id);
     if(!data){
       data = {id, line: "error"}
     }
     await db.addDetails(data);
-    console.log("DB Detail added");
   }
 }
 

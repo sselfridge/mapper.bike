@@ -101,21 +101,3 @@ function get(id) {
     });
   });
 }
-
-const queryIndex = (field, equals) => {
-  const params = {
-    TableName: "TestActivities",
-    IndexName: "kind-index",
-    KeyConditionExpression: "kind = :kind",
-    ExpressionAttributeValues: {
-      ":kind": { S: "full" },
-    },
-    // ProjectionExpression: "ALL",
-  };
-
-  client.query(params, (err, data) => {
-    if (err) {
-      console.log(err);
-    } else console.log(data);
-  });
-};

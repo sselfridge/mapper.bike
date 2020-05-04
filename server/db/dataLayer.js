@@ -13,8 +13,8 @@ const dataLayer = {
   popActivities,
 
   getSegmentPath,
-  addSegmentRank,
   getEfforts,
+  getEffortsWithPath,
   storeSegments,
 
   popDetails,
@@ -50,27 +50,32 @@ async function getSegmentPath(id) {
   //return path
 }
 
-async function popDetails(Limit = LIMIT_SIZE){
-  return await details.pop(Limit)
+async function popDetails(Limit = LIMIT_SIZE) {
+  return await details.pop(Limit);
 }
 
-async function addDetails(data){
+async function addDetails(data) {
   await details.update(data);
 }
 
-async function addSegmentRank(data) {}
-async function getSegmentDetails(id) {}
-async function getEfforts(altheteId) {}
+async function getEfforts(altheteId, rank = 10) {
+  return await efforts.get(altheteId, rank);
+}
+
+async function getEffortsWithPath(altheteId, rank = 10) {
+  const results = await efforts.get(altheteId, rank);
+  for (const effort of results) {
+    const effortDetail = await details.get(effort.segmentId);
+    if (effortDetail.line) effort.line = effortDetail.line;
+  }
+  return results;
+}
 
 async function storeSegments(segments) {
   const rankedSegments = utils.parseRankedSegments(segments);
   const segmentDetails = utils.parseSegmentDetails(segments);
-
   await Promise.all([efforts.batchAdd(rankedSegments), details.batchAdd(segmentDetails)]);
 }
-
-async function getActivity() {}
-async function getEmptySegment() {}
 
 async function addUser(data) {
   console.log("Data: Add USer");
