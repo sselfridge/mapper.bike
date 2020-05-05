@@ -158,23 +158,23 @@ class App extends Component {
     let beforeDate = "";
     let afterDate = "";
     let activityType = "type=''";
-    if (this.state.beforeDate) {
-      let epochDate = this.dateToEpoch(this.state.beforeDate);
-      beforeDate = `before=${epochDate}`;
-    } else {
-      beforeDate = `before=${9999999999}`;
-    }
     if (this.state.afterDate) {
       let epochDate = this.dateToEpoch(this.state.afterDate);
       afterDate = `after=${epochDate}`;
     } else {
       afterDate = `after=${0}`;
     }
+    if (this.state.beforeDate) {
+      let epochDate = this.dateToEpoch(this.state.beforeDate);
+      beforeDate = `before=${epochDate}`;
+    } else {
+      beforeDate = `before=${9999999999}`;
+    }
     if (this.state.activityType !== "") {
       activityType = `type=${JSON.stringify(this.state.activityType)}`;
     }
 
-    const quereyString = `/api/summaryActivities?${beforeDate}&${afterDate}&${activityType}`;
+    const quereyString = `/api/summaryActivities?${afterDate}&${beforeDate}&${activityType}`;
 
     axios.get(quereyString).then((res) => {
       this.setState({ activities: res.data, loadingActivities: false });
@@ -203,11 +203,9 @@ class App extends Component {
     this.setState({ afterDate: newDate });
   }
   setBeforeDate(newDate) {
-    console.log(`New Before Date ${newDate}`);
     this.setState({ beforeDate: newDate });
   }
   setActivityType(type) {
-    console.log("set Type");
     document.getElementById(`type${type}`).classList.toggle("typeSelected");
     const activityType = this.state.activityType;
     activityType[type] = !activityType[type];
@@ -315,9 +313,9 @@ class App extends Component {
 
     //create poly line components to add
     activities.forEach((activity, index) => {
-      let id = activity.id;
+      const id = activity.id;
       // console.log(`Adding line: ${id}`);
-      let newLine = (
+      const newLine = (
         <Polyline
           onClick={this.onLineClick}
           path={activity.points}
