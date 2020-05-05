@@ -23,10 +23,18 @@ function update(data) {
     if (line) {
       params.UpdateExpression = "set #p = :p, #h = :h";
       params.ExpressionAttributeNames = { "#p": "line", "#h": "hasLine" };
-      params.ExpressionAttributeValues = {
-        ":p": line,
-        ":h": "true",
-      };
+      if(line === 'error'){
+        params.ExpressionAttributeValues = {
+          ":p": line,
+          ":h": "error",
+        };
+      }else {
+        params.ExpressionAttributeValues = {
+          ":p": line,
+          ":h": "true",
+        };
+
+      }
     } else {
       params.UpdateExpression = "set #h = :h";
       params.ExpressionAttributeNames = { "#h": "hasLine" };
@@ -58,14 +66,14 @@ function batchAdd(segments) {
   return Promise.all(promiseArr);
 }
 
-function pop(Limit) {
+function pop(Limit,value = 'false') {
   return new Promise((resolve, reject) => {
     const params = {
       TableName,
       IndexName: "hasLine-index",
       KeyConditionExpression: "hasLine = :h",
       ExpressionAttributeValues: {
-        ":h": 'false',
+        ":h": value,
       },
       Limit,
       // ProjectionExpression: "ALL",

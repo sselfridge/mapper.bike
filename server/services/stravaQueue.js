@@ -1,5 +1,6 @@
 const config = require("../../config/keys");
 const db = require("../db/dataLayer");
+const m = require("moment");
 
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
@@ -7,6 +8,7 @@ stravaAPI.config({
   client_secret: config.client_secret,
   redirect_uri: config.redirect_uri,
 });
+let APP_STRAVA = null;
 
 const stravaQueue = {
   processQueue,
@@ -14,26 +16,26 @@ const stravaQueue = {
 
 async function processQueue() {
   console.log("Process Queue");
-  //check strava rate
-  //if less than .75 proceed
-  let stravaRate = stravaAPI.rateLimiting.fractionReached();
-  while (stravaRate < 0.75) {
-    console.log("Strava Rate:==========================", stravaRate);
+  await getStravaClient();
 
+  let stravaRatePercent = await stravaRate();
+  //if less than .75 proceed
+  while (stravaRatePercent < 75) {
+    let processed = 0;
     try {
-      await getActivityDetails();
-      await processPathlessSegments();
+      processed += await getActivityDetails();
+      processed += await processPathlessSegments();
     } catch (error) {
       console.log("Queue Error:", error.message);
       console.log(error.errors);
+      break;
     }
-    stravaRate = stravaAPI.rateLimiting.fractionReached();
-
-  } 
+    stravaRatePercent = stravaRate();
+    console.log(`Strava Rate currently at: ${stravaRatePercent}%`);
+    if(processed === 0) break;
+  } //while
 
   console.log("Process Done");
-  console.log("Strava Useage at:",stravaRate);
-  console.log(stravaAPI.rateLimiting);
 }
 
 async function getActivityDetails() {
@@ -42,7 +44,7 @@ async function getActivityDetails() {
   const completedActivities = [];
   const activities = await db.popActivities();
   console.log(`Geting details for ${activities.length} activities`);
-  if(activities.length === 0) return 
+  if (activities.length === 0) return 0;
 
   for (const activity of activities) {
     const athleteId = activity.athleteId;
@@ -57,6 +59,7 @@ async function getActivityDetails() {
   }
 
   await db.deleteActivities(completedActivities);
+  return activities.length;
 }
 
 async function parseActivity(activity) {
@@ -86,7 +89,7 @@ const parseRankedSegments = (activity) => {
     return [];
   }
 
-  activity.segment_efforts.forEach((effort, index) => {
+  activity.segment_efforts.forEach((effort) => {
     if (effort.kom_rank !== null) {
       console.log(effort.kom_rank);
       rankedSegments.push(effort);
@@ -96,36 +99,52 @@ const parseRankedSegments = (activity) => {
   return rankedSegments;
 };
 
+function stravaRate() {
+  const stravaRate = stravaAPI.rateLimiting.fractionReached();
+  const percent = (stravaRate * 100).toFixed(2);
+  return percent;
+}
+
 async function processPathlessSegments() {
-  console.log('processPathlessSegments');
-  const memo = {};
-  const strava = await getClient(1075670, memo);
+  console.log("processPathlessSegments");
 
   const segments = await db.popDetails();
   const ids = segments.map((segment) => segment.id);
 
-  if(ids.length === 0) return;
+  if (ids.length === 0) return 0;
 
   for (const id of ids) {
-    let data = await getSegmentDetails(strava, id);
-    if(!data){
-      data = {id, line: "error"}
+    let data = await getSegmentDetails(id);
+    if (!data) {
+      data = { id, line: "error" };
     }
     await db.addDetails(data);
   }
+  return ids.length;
 }
 
-async function getSegmentDetails(strava, id) {
-  console.log('getting detail for id:',id);
+async function getSegmentDetails(id) {
+  if (APP_STRAVA === null) await getStravaClient();
   try {
-    const result = await strava.segments.get({ id });
+    const result = await APP_STRAVA.segments.get({ id });
     return {
       id: result.id,
       line: result.map.polyline,
     };
   } catch (error) {
-      console.log("Error:::::",error.message);
+    console.log("Error:::::", error.message);
   }
+}
+
+async function getStravaClient() {
+  const refreshToken = config.client_refresh;
+  const result = await stravaAPI.oauth.refreshToken(refreshToken);
+  const expires = m.unix(result.expires_at);
+
+  console.log("App Token Expires at:", expires.format("hh:mm A"));
+  console.log(expires.fromNow());
+
+  APP_STRAVA = new stravaAPI.client(result.access_token);
 }
 
 module.exports = stravaQueue;

@@ -8,11 +8,9 @@ const LIMIT_SIZE = 10;
 
 const dataLayer = {
   addActivity,
-  deleteActivity,
   deleteActivities,
   popActivities,
 
-  getSegmentPath,
   getEfforts,
   getEffortsWithPath,
   storeSegments,
@@ -34,20 +32,8 @@ async function popActivities(limit = LIMIT_SIZE) {
   return await activities.pop(limit);
 }
 
-async function deleteActivity(id) {}
-
 async function deleteActivities(ids) {
   await activities.batchDelete(ids);
-}
-
-//stop calling if hit rate limit
-async function getSegmentPath(id) {
-  //check for path in DB
-  //if strava queue < .50 - throw error otherwise
-  //get segment path from strava
-  // save to db
-  //
-  //return path
 }
 
 async function popDetails(Limit = LIMIT_SIZE) {
@@ -59,11 +45,16 @@ async function addDetails(data) {
 }
 
 async function getEfforts(altheteId, rank = 10) {
-  return await efforts.get(altheteId, rank);
+  if (rank === "error") {
+    return await efforts.getErrors(altheteId);
+  } else {
+    return await efforts.get(altheteId, rank);
+  }
 }
 
+//TODO promise.all this for performace
 async function getEffortsWithPath(altheteId, rank = 10) {
-  const results = await efforts.get(altheteId, rank);
+  const results = await getEfforts(altheteId, rank);
   for (const effort of results) {
     const effortDetail = await details.get(effort.segmentId);
     if (effortDetail.line) effort.line = effortDetail.line;
@@ -104,6 +95,14 @@ async function getUser(id) {
   return user;
 }
 
-async function deleteUser(id) {}
+async function deleteUser(altheteId) {
+  //delete efforts
+  const results = await efforts.get(altheteId, 10);
+  const ids = results.map((result) => result.id);
+  console.log(ids);
+  efforts.batchDelete(ids);
+  users.remove(altheteId);
+
+}
 
 module.exports = dataLayer;

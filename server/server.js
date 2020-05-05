@@ -15,15 +15,18 @@ const summaryController = require("./controllers/summaryStrava");
 const segmentController = require("./controllers/segmentsStrava");
 const analyticController = require("./controllers/analyticsController");
 
+const stravaQ = require('./services/stravaQueue');
 const zip = require("../config/zip_lat_lang");
-
 const config = require("../config/keys");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(analyticController.getUserData);
 app.use(logReq);
+
+const timer = 900000 //15min 1000 * 60 * 15
+const interval = setInterval(stravaQ.processQueue, timer);
+
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   if (res.locals.err) {
@@ -61,7 +64,7 @@ app.get("/api/getLatLngZip/:zip", (req, res) => {
 });
 
 app.get("/api/strava/callback", oAuthStrava.setStravaOauth, (req, res) => {
-  console.log(`Strava CallBack Happening`);
+  console.log(`Strava Oauth CallBack Happening`);
   if (res.locals.err) {
     console.log(res.locals.err);
     res.status(523).send("Error with Oauth");
@@ -92,7 +95,7 @@ app.get(
   // segmentController.intializeUser,
   (req, res) => {
     if (res.locals.err) {
-      console.log('Error!!');
+      console.log("Error!!");
       console.log(res.locals.err);
       res.status(500).send("DOH!!");
     } else {
@@ -102,19 +105,40 @@ app.get(
   }
 );
 
-app.get("/api/segments", oAuthStrava.loadStravaProfile, (req, res) => {
-  if (res.locals.err) {
-    console.log(res.locals.err);
-    res.status(523).send("Error with get segments ");
-    return;
-  }
-  if (res.locals.pending) {
-    res.status(203).send("Data Pending, checkback soon");
-    return;
-  }
+app.post(
+  "/api/initialize",
+  oAuthStrava.loadStravaProfile,
+  segmentController.intializeUser,
+  (req, res) => {
+    if (res.locals.err) {
+      console.log(res.locals.err);
+      res.status(523).send("Error intializing user ");
+      return;
+    }
+    const count = res.locals.data.activityCount;
 
-  res.send(JSON.stringify(res.locals.segments));
-});
+    res.send(count);
+  }
+);
+
+app.get(
+  "/api/segmentEfforts",
+  oAuthStrava.loadStravaProfile,
+  segmentController.segmentEfforts,
+  (req, res) => {
+    if (res.locals.err) {
+      console.log(res.locals.err);
+      res.status(523).send("Error with get segments ");
+      return;
+    }
+    if (res.locals.pending) {
+      res.status(203).send("Data Pending, checkback soon");
+      return;
+    }
+
+    res.send(JSON.stringify(res.locals.segmentEfforts));
+  }
+);
 
 app.get("/api/getDemoData", summaryController.getDemoData, (req, res) => {
   console.log(`Sending Back ${res.locals.activities.length} activities`);
@@ -127,10 +151,10 @@ app.get("/api/logout", oAuthStrava.clearCookie, (req, res) => {
 
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
-  console.log(`Server in Production mode!`);
+  console.log(`Server in Production/Test mode!`);
   app.use("/build", express.static(path.join(__dirname, "../build")));
   // serve index.html on the route '/'
-  app.get("/", (req, res) => {
+  app.get("/", analyticController.getUserData, (req, res) => {
     console.log("Sending out the index");
     res.sendFile(path.join(__dirname, "../index.html"));
   });

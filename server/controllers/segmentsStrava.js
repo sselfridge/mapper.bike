@@ -26,12 +26,11 @@ async function intializeUser(req, res, next) {
   try {
     const strava = res.locals.strava;
     const userData = getUserData(res);
-    await db.updateUser(userData); //TODO switch this to add user
+    await db.addUser(userData); 
 
     //kick_off get activities
     addToActivityQueue(strava);
-    console.log('Activities Added');
-    const count = await  totalUserActivites(strava, res.locals.user.athleteId);
+    const count = await totalUserActivites(strava, res.locals.user.athleteId);
     res.locals.data = { activityCount: count };
     next();
   } catch (err) {
@@ -60,11 +59,11 @@ async function checkInitStatus(req, res, next) {
 async function checkSegmentSyncStatus(req, res, next) {}
 
 async function segmentEfforts(req, res, next) {
+  const athleteId = res.locals.user.athleteId;
+  const rank = req.query.rank ? req.query.rank : 1;
 
-
-
-
-  res.send("ok");
+  const efforts = await db.getEffortsWithPath(athleteId, rank);
+  res.locals.segmentEfforts = efforts;
 }
 
 async function totalUserActivites(strava, id) {
@@ -75,7 +74,6 @@ async function totalUserActivites(strava, id) {
 
 async function addToActivityQueue(strava) {
   try {
-
     const result = await summaryStrava.fetchActivitiesFromStrava(strava, 0, 2550000000);
     //March + April Rides
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1585724400, 1588220022);
@@ -96,29 +94,12 @@ async function addToActivityQueue(strava) {
 
 async function test(req, res, next) {
   console.log("Start Test");
-  const strava = res.locals.strava;
 
   try {
-    // const stravaQ = require('../services/stravaQueue')
-    // await stravaQ.processQueue();
 
-    const result  = await db.getEffortsWithPath(1075670, 1)
+    await db.deleteUser(10645041)
 
-    console.log('result');
-
-    let longest = {name: "", length: 0}
-    result.forEach(element => {
-      if(longest.length < element.line.length){
-        longest.name = element.name
-        longest.id = element.segmentId
-        longest.length = element.line.length
-      }
-    });
-
-    console.log("LongTest");
-    console.log(longest);
-   
-  } catch (err) { 
+  } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);
     res.locals.err = "AAAAAAAAA";
