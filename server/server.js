@@ -90,9 +90,9 @@ app.get(
 app.get(
   "/api/test",
   oAuthStrava.loadStravaProfile,
-  segmentController.updateUserDB,
-  segmentController.test,
-  // segmentController.intializeUser,
+  segmentController.intializeUser,
+  // segmentController.updateUserDB,
+  // segmentController.test,
   (req, res) => {
     if (res.locals.err) {
       console.log("Error!!");

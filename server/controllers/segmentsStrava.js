@@ -17,25 +17,26 @@ async function updateUserDB(req, res, next) {
     await db.updateUser(userData);
   } catch (err) {
     res.locals.err = err;
-    next();
+    return next();
   }
-  next();
+  return next();
 }
 
 async function intializeUser(req, res, next) {
+  console.log("Initalize user");
   try {
     const strava = res.locals.strava;
     const userData = getUserData(res);
-    await db.addUser(userData); 
+    await db.addUser(userData);
 
     //kick_off get activities
     addToActivityQueue(strava);
     const count = await totalUserActivites(strava, res.locals.user.athleteId);
     res.locals.data = { activityCount: count };
-    next();
+    return next();
   } catch (err) {
     res.locals.err = err;
-    next();
+    return next();
   }
 }
 
@@ -96,9 +97,7 @@ async function test(req, res, next) {
   console.log("Start Test");
 
   try {
-
     await db.deleteUser(10645041)
-
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);
