@@ -1,11 +1,10 @@
-import React from 'react';
-import { render } from 'react-dom';
-import App from './components/App';
+import React from "react";
+import { render } from "react-dom";
+import App from "./components/App";
+import ThemedApp from './containers/ThemedApp'
 
 // eslint-disable-next-line no-unused-vars
-import styles from './styles.css';
+import styles from "./styles.css";
 
-render(
-  <App />,
-  document.getElementById('root')
-);
+
+render(<ThemedApp />, document.getElementById("root"));

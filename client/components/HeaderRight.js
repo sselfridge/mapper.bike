@@ -1,6 +1,20 @@
 import React from "react";
+import {makeStyles} from '@material-ui/core'
+ 
+const useStyles = makeStyles({
+  root: {
+    backgroundColor: 'green'
+  },
+});
 
-const HeaderRight = ({ toggleShowMenu, showMenu, stravaLogout, currentUser }) => {
+const HeaderRight = (props) => {
+
+  const { toggleShowMenu, showMenu, stravaLogout, currentUser } = props
+
+  console.log("Header Props");
+  console.log(props);
+
+  const classes = useStyles();
   const modalMenu = (
     <div id="menuModal">
       <a
@@ -24,7 +38,7 @@ const HeaderRight = ({ toggleShowMenu, showMenu, stravaLogout, currentUser }) =>
 
   return (
     <div className={"headerRight"}>
-      {currentUser && (
+      {currentUser.firstname && (
         <span className={"userInfo"}>
           <div>
             <a className="userName" href={profileLink} rel="noopener noreferrer" target="_blank">

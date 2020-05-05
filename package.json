@@ -45,6 +45,7 @@
   "author": "Sam Selfridge Sam.Selfridge@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.9.13",
     "aws-sdk": "^2.658.0",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",

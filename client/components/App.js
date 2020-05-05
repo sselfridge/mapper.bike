@@ -23,17 +23,11 @@ class App extends Component {
         height: "calc(100% - 55px)",
       },
       loadingActivities: false,
-      activeMarker: {},
-      selectedPlace: {},
-      polyLineArray: [],
-      currentLine: null,
       activities: [],
-      clickedLines: [],
       afterDate: new Date(),
       beforeDate: new Date(),
       activityType: { Ride: true, VirtualRide: false, Run: false },
-      selectedStrokeWeight: 6,
-      defaultStrokeWeight: 2,
+
       currentUser: {
         avatar: null,
         firstname: null,
@@ -50,17 +44,20 @@ class App extends Component {
       showMenu: false,
     };
 
+    this.selectedStrokeWeight = 6;
+    this.defaultStrokeWeight = 2;
+
     this.selectedActivity = {
       color: "#52eb0c",
       selected: true,
-      weight: this.state.selectedStrokeWeight,
+      weight: this.selectedStrokeWeight,
       zIndex: 90,
     };
 
     this.notSelectedActivity = {
       color: "blue",
       selected: false,
-      weight: this.state.defaultStrokeWeight,
+      weight: this.defaultStrokeWeight,
       zIndex: 2,
     };
 
@@ -127,6 +124,7 @@ class App extends Component {
     const center = { lat: midLatLng[0], lng: midLatLng[1] };
     this.setState({ center });
   }
+
 
   //TODO
   //worker function to calculate the map extremes of each activity to find a mid point
