@@ -145,7 +145,7 @@ app.get("/api/getDemoData", summaryController.getDemoData, (req, res) => {
   res.send(JSON.stringify(res.locals.activities));
 });
 
-app.get("/api/logout", oAuthStrava.clearCookie, (req, res) => {
+app.post("/api/logout", oAuthStrava.clearCookie, (req, res) => {
   res.send("Ok");
 });
 
