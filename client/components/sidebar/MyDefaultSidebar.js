@@ -38,4 +38,9 @@ const DefaultSidebar = props => {
   );
 };
 
+
+DefaultSidebar.propTypes ={
+  getDemoActivities: PropTypes.func.isRequired
+}
+
 export default DefaultSidebar;

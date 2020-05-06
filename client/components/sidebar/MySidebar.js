@@ -7,15 +7,20 @@ import TabbedSidebar from "./TabbedSidebar";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 355,
-    overflow: "hidden",
+    // overflow: "hidden",
   },
 }));
 
 const MySidebar = (props) => {
   const classes = useStyles();
-  const { currentUser } = props;
+  const { currentUser, getDemoActivities } = props;
+  
 
-  const sidebar = currentUser.firstname ? <TabbedSidebar {...props} /> : <MyDefaultSidebar />;
+  const sidebar = currentUser.firstname ? (
+    <TabbedSidebar {...props} />
+  ) : (
+    <MyDefaultSidebar getDemoActivities={getDemoActivities} />
+  );
 
   return <div className={classes.root}>{sidebar}</div>;
 };

@@ -14,26 +14,17 @@ const useStyles = makeStyles((theme) => ({
     width: 150,
   },
   datePicking: {
-    padding: 20,
+    padding: 10,
     display: "flex",
   },
-  fromCal: {
-    left: -20,
-    position: "absolute",
-    "&  button": {
-      fontSize: "1.1em",
-    },
-  },
-  toCal: {
-    left: -170,
-    position: "absolute",
+  calendarStyle: {
     "&  button": {
       fontSize: "1.1em",
     },
   },
 }));
 
-export default function ActivitiesTab() {
+export default function ActivitiesTab(props) {
   const classes = useStyles();
 
   const [oldDate, setDate] = useState(new Date());
@@ -50,7 +41,7 @@ export default function ActivitiesTab() {
             onChange={onChange}
             value={oldDate}
             calendarIcon={null}
-            calendarClassName={classes.fromCal}
+            calendarClassName={classes.calendarStyle}
           />
         </div>
         <div className={classes.date}>
@@ -60,7 +51,7 @@ export default function ActivitiesTab() {
             onChange={onChange}
             value={oldDate}
             calendarIcon={null}
-            calendarClassName={classes.toCal}
+            calendarClassName={classes.calendarStyle}
           />
         </div>
       </div>

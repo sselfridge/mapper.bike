@@ -1,5 +1,8 @@
 import React, { useState } from "react";
+import PropTypes from 'prop-types'
 import { makeStyles } from "@material-ui/core";
+
+import {getActivities} from '../api/strava';
 
 import MyMap from "../components/MyMap";
 import MySidebar from "../components/sidebar/MySidebar";
@@ -18,19 +21,23 @@ const Board = (props) => {
 
   const [activities, setActivities] = useState([]);
 
-  const [activeTab, setActiveTab] = useState(0);
+  
+
 
   return (
     <div className={classes.root}>
       <MySidebar
         currentUser={currentUser}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
         activities={activities}
+        setActivities={setActivities}
       />
-      <MyMap />
+      <MyMap activities={activities}/>
     </div>
   );
 };
+
+Board.propTypes ={
+  currentUser: PropTypes.obj
+}
 
 export default Board;

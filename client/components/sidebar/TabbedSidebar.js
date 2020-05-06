@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core";
 
@@ -27,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+
+
 
   return (
     <div
@@ -57,7 +59,7 @@ function a11yProps(index) {
 export default function TabbedSidebar(props) {
   const classes = useStyles();
 
-  const { activeTab, setActiveTab } = props;
+  const [activeTab, setActiveTab] = useState(0);
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -82,6 +84,5 @@ export default function TabbedSidebar(props) {
 }
 
 TabbedSidebar.propTypes = {
-  activeTab: PropTypes.number.isRequired,
-  setActiveTab: PropTypes.func.isRequired,
+
 };
