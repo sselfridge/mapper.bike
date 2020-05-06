@@ -15,7 +15,7 @@ const MySidebar = (props) => {
   const classes = useStyles();
   const { currentUser } = props;
 
-  const sidebar = currentUser ? <TabbedSidebar {...props} /> : <MyDefaultSidebar />;
+  const sidebar = currentUser.firstname ? <TabbedSidebar {...props} /> : <MyDefaultSidebar />;
 
   return <div className={classes.root}>{sidebar}</div>;
 };

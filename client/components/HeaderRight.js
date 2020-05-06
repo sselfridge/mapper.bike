@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+
 import { makeStyles, Modal } from "@material-ui/core";
-// import MenuIcon from "@material-ui/core/MenuIcon";
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
 
 const useStyles = makeStyles((theme) => ({
@@ -23,18 +24,17 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "20px",
   },
   menuIcon: {
-    padding: "7px 7px 7px 7px",
+    padding: 7,
   },
   modalPaper: {
+    fontFamily: theme.typography.fontFamily,
     position: "absolute",
     width: 200,
     backgroundColor: "white",
     top: 5,
     right: 5,
     border: "2px solid #000",
-    // borderRadius: 25,
     boxShadow: "10px 5px 5px black",
-    padding: theme.spacing(2, 4, 3),
     "& > a": {
       textAlign: "right",
       textDecoration: "none",
@@ -55,9 +55,6 @@ const HeaderRight = (props) => {
   function handleClose() {
     setModalOpen(false);
   }
-
-  console.log("Header Props");
-  console.log(props);
 
   const modalMenu = (
     <div style={{ top: 0, right: 0 }} className={classes.modalPaper} id="menuModal">
@@ -108,6 +105,11 @@ const HeaderRight = (props) => {
       {/* {showMenu && modalMenu} */}
     </div>
   );
+};
+
+HeaderRight.propTypes = {
+  stravaLogout: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired,
 };
 
 export default HeaderRight;

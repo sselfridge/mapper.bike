@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import Board from "./Board";
 import { Paper, makeStyles } from "@material-ui/core";
 
-import { NULL_USER, getCurrentUser } from "../api/strava";
+import { NULL_USER, getCurrentUser, logout } from "../api/strava";
 
 const useStyles = makeStyles((theme) => {
   
@@ -17,10 +17,20 @@ const useStyles = makeStyles((theme) => {
 })}
 );
 
+
+
+
 const NewApp = (props) => {
   const classes = useStyles();
 
   const [currentUser, setCurrentUser] = useState(NULL_USER);
+
+
+  const stravaLogout = ()=>{
+    logout().then(()=>{
+      setCurrentUser(NULL_USER)
+    });
+  }
 
   //Fetch Data
   useEffect(() => {
@@ -31,7 +41,7 @@ const NewApp = (props) => {
 
   return (
     <Paper className={classes.root}>
-      <Header currentUser={currentUser} />
+      <Header currentUser={currentUser} stravaLogout={stravaLogout} />
       <Board currentUser={currentUser} />
     </Paper>
   );

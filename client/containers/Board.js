@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
 
 import MyMap from "../components/MyMap";
-import MySidebar from "../components/MySidebar";
+import MySidebar from "../components/sidebar/MySidebar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,7 +22,12 @@ const Board = (props) => {
 
   return (
     <div className={classes.root}>
-      <MySidebar currentUser={currentUser} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <MySidebar
+        currentUser={currentUser}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        activities={activities}
+      />
       <MyMap />
     </div>
   );

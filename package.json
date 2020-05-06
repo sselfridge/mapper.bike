@@ -63,7 +63,6 @@
     "react-dom": "^16.3.1",
     "react-loading": "^2.0.3",
     "strava-v3": "^2.0.5",
-    "twilio": "^3.33.2",
     "webpack": "^4.29.3"
   },
   "devDependencies": {

@@ -14,9 +14,6 @@ const MyMap = (props) => {
   const classes = useStyles();
   const { center, blackGroundActive } = props;
 
-  console.log("blackGround");
-  console.log(blackground);
-
   return (
     <div>
       <Map

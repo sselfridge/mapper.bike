@@ -1,9 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {makeStyles} from '@material-ui/core'
 import ReactLoading from "react-loading";
-import config from "../../config/keys";
+import config from "../../../config/keys";
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexDirection: "row",
+  },
+}));
 
 const DefaultSidebar = props => {
+
+  const {getDemoActivities} = props;
+
   return (
     <div className="sidebar marginTop">
       <div>
@@ -18,7 +30,7 @@ const DefaultSidebar = props => {
         <br />
         <span className="demoText">Want to try it out without linking your Strava?</span>
         <br />
-        <button id="demoBtn" onClick={props.getDemoActivities}>
+        <button id="demoBtn" onClick={getDemoActivities}>
           Click Here To Load Demo data
         </button>
       </div>

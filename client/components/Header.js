@@ -1,6 +1,9 @@
 import React from "react";
-import HeaderRight from "./HeaderRight";
+import PropTypes from "prop-types";
+
 import { makeStyles } from "@material-ui/core";
+
+import HeaderRight from "./HeaderRight";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,10 +37,17 @@ const Header = (props) => {
         Mapper.Bike <span className={classes.betaText}>beta {`v-${version}`}</span>
       </div>
       <div className={classes.headerRight}>
-        <HeaderRight currentUser={props.currentUser} />
+        <HeaderRight {...props} />
       </div>
     </div>
   );
+};
+
+
+
+Header.propTypes = {
+  stravaLogout: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired,
 };
 
 export default Header;

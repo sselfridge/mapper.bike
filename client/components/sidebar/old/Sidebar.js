@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import RideTitle from "./RideTitle";
+import RideTitle from "../../RideTitle";
 import DatePicker from "react-date-picker";
 import ReactLoading from "react-loading";
 import "./Sidebar.css";
