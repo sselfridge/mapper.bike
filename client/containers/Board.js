@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from "react";
-import config from "../../config/keys";
+import { makeStyles } from "@material-ui/core";
 
-import MyMap from '../components/MyMap'
+import MyMap from "../components/MyMap";
+import MySidebar from "../components/MySidebar";
 
-import {makeStyles} from '@material-ui/core'
-const useStyles = makeStyles(theme =>({}))
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexDirection: "row",
+  },
+}));
 
+const Board = (props) => {
+  const classes = useStyles();
 
+  const { currentUser } = props;
 
-const Board = props =>{
+  const [activities, setActivities] = useState([]);
 
-    const [activities, setActivities] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
 
-
-
-    return (
-        <>
-            
-            <MyMap/>
-        </>
-    )
-}
-
+  return (
+    <div className={classes.root}>
+      <MySidebar currentUser={currentUser} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <MyMap />
+    </div>
+  );
+};
 
 export default Board;

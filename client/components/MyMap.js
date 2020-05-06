@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
+import { makeStyles } from "@material-ui/core";
+
+import { blackground } from "../constants/map";
+
 import config from "../../config/keys";
 
-import { makeStyles } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   root: {},
-  asdf: {
-    backgroundColor: "red",
-  },
 }));
 
 const MyMap = (props) => {
   const classes = useStyles();
-  const { center } = props;
+  const { center, blackGroundActive } = props;
+
+  console.log("blackGround");
+  console.log(blackground);
 
   return (
     <div>
       <Map
         id="mapcomp"
         containerStyle={{
-          width: "calc(100% - 360px)",
-          height: "calc(100% - 55px)",
+          width: "calc(100% - 375px)",
+          height: "calc(100% - 60px)",
         }}
         google={props.google}
         zoom={11} //higher number = closer zoom
@@ -30,7 +33,9 @@ const MyMap = (props) => {
           lat: 33.945602,
           lng: -118.483297,
         }}
-      ></Map>
+      >
+        {blackGroundActive && blackground}
+      </Map>
     </div>
   );
 };

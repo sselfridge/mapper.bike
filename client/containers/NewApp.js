@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from "react";
-import Header from '../components/Header'
-import Board from './Board'
+import Header from "../components/Header";
+import Board from "./Board";
 import { Paper, makeStyles } from "@material-ui/core";
 
 import { NULL_USER, getCurrentUser } from "../api/strava";
 
-
-const useStyles = makeStyles(theme =>({
-  root :{}
-}))
-
+const useStyles = makeStyles((theme) => {
+  
+  // console.log('App Theme');
+  // console.log(theme.typography.fontFamily);
+  
+  return ({
+  root: {
+    fontFamily: theme.typography.fontFamily
+  },
+})}
+);
 
 const NewApp = (props) => {
   const classes = useStyles();
 
   const [currentUser, setCurrentUser] = useState(NULL_USER);
-
 
   //Fetch Data
   useEffect(() => {
@@ -25,9 +30,9 @@ const NewApp = (props) => {
   }, []);
 
   return (
-    <Paper>
-      <Header currentUser={currentUser}/>
-      <Board />
+    <Paper className={classes.root}>
+      <Header currentUser={currentUser} />
+      <Board currentUser={currentUser} />
     </Paper>
   );
 };

@@ -1,22 +1,66 @@
-import React from "react";
-import {makeStyles} from '@material-ui/core'
- 
-const useStyles = makeStyles({
+import React, { useState } from "react";
+import { makeStyles, Modal } from "@material-ui/core";
+// import MenuIcon from "@material-ui/core/MenuIcon";
+import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
+
+const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: 'green'
+    display: "flex",
   },
-});
+  userInfo: {
+    display: "flex",
+    padding: "10px 0px",
+  },
+  username: {
+    padding: 10,
+    lineHeight: 2,
+    textDecoration: "none",
+    color: "black",
+  },
+  userAvatar: {
+    height: "30px",
+    width: "30px",
+    borderRadius: "20px",
+  },
+  menuIcon: {
+    padding: "7px 7px 7px 7px",
+  },
+  modalPaper: {
+    position: "absolute",
+    width: 200,
+    backgroundColor: "white",
+    top: 5,
+    right: 5,
+    border: "2px solid #000",
+    // borderRadius: 25,
+    boxShadow: "10px 5px 5px black",
+    padding: theme.spacing(2, 4, 3),
+    "& > a": {
+      textAlign: "right",
+      textDecoration: "none",
+      color: "black",
+    },
+  },
+}));
 
 const HeaderRight = (props) => {
+  const { stravaLogout, currentUser } = props;
+  const classes = useStyles();
 
-  const { toggleShowMenu, showMenu, stravaLogout, currentUser } = props
+  const [modalOpen, setModalOpen] = useState(false);
+
+  function handleOpen() {
+    setModalOpen(true);
+  }
+  function handleClose() {
+    setModalOpen(false);
+  }
 
   console.log("Header Props");
   console.log(props);
 
-  const classes = useStyles();
   const modalMenu = (
-    <div id="menuModal">
+    <div style={{ top: 0, right: 0 }} className={classes.modalPaper} id="menuModal">
       <a
         target="_blank"
         rel="noopener noreferrer"
@@ -33,23 +77,35 @@ const HeaderRight = (props) => {
     </div>
   );
 
-
-  const profileLink = `https://www.strava.com/athletes/${currentUser.athleteId}`
+  const profileLink = `https://www.strava.com/athletes/${currentUser.athleteId}`;
 
   return (
-    <div className={"headerRight"}>
+    <div className={classes.root}>
       {currentUser.firstname && (
-        <span className={"userInfo"}>
+        <span className={classes.userInfo}>
           <div>
-            <a className="userName" href={profileLink} rel="noopener noreferrer" target="_blank">
+            <a
+              className={classes.username}
+              href={profileLink}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               {currentUser.firstname} {currentUser.lastname}
             </a>
           </div>
-          <img className={"userAvatar"} src={currentUser.avatar} />
+          <img className={classes.userAvatar} src={currentUser.avatar} />
         </span>
       )}
-      <span onClick={toggleShowMenu} className="hamburger" />
-      {showMenu && modalMenu}
+      <MenuRoundedIcon className={classes.menuIcon} fontSize="large" onClick={handleOpen} />
+      <Modal
+        open={modalOpen}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {modalMenu}
+      </Modal>
+      {/* {showMenu && modalMenu} */}
     </div>
   );
 };

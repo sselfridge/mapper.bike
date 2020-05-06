@@ -1,19 +1,26 @@
 import React from "react";
 import HeaderRight from "./HeaderRight";
-import { makeStyles, createStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => {
-  console.log("theme");
-  console.log(theme);
-
-  return {
-    root: {
-      backgroundColor: theme.palette.primary.main,
-      display: "flex",
-      justifyContent: "space-between",
-    },
-  };
-});
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.primary.main,
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  title: {
+    fontSize: "2em",
+    fontWeight: 800,
+    marginLeft: '40%',
+  },
+  betaText: {
+    fontSize: ".6em",
+    color: "#FC4C02",
+  },
+  headerRight: {
+    alignSelf: "flex-end",
+  },
+}));
 
 // eslint-disable-next-line no-undef
 const version = VERSION;
@@ -21,15 +28,14 @@ const version = VERSION;
 const Header = (props) => {
   const classes = useStyles();
 
-    console.log("Header Props");
-    console.log(props);
-
   return (
     <div className={classes.root}>
-      <div id="title">
-        Mapper.Bike <span id="betatext">beta {`v-${version}`}</span>
+      <div className={classes.title}>
+        Mapper.Bike <span className={classes.betaText}>beta {`v-${version}`}</span>
       </div>
-      <HeaderRight className={classes.headerRight} currentUser={props.currentUser} />
+      <div className={classes.headerRight}>
+        <HeaderRight currentUser={props.currentUser} />
+      </div>
     </div>
   );
 };
