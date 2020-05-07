@@ -5,7 +5,7 @@ import DefaultSidebar from "./DefaultSidebar";
 import config from "../../config/keys";
 import axios from "axios";
 
-import HeaderRight from "./HeaderRight";
+import HeaderRight from "./header/HeaderRight";
 
 // Get git version from ENV var
 // eslint-disable-next-line no-undef

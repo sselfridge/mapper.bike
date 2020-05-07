@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Header from "../components/Header";
+import Header from "../components/header/Header";
 import Board from "./Board";
 import { Paper, makeStyles } from "@material-ui/core";
 
@@ -7,8 +7,8 @@ import { NULL_USER, getCurrentUser, logout } from "../api/strava";
 
 const useStyles = makeStyles((theme) => {
   
-  // console.log('App Theme');
-  // console.log(theme.typography.fontFamily);
+  console.log('App Theme');
+  console.log(theme.palette);
   
   return ({
   root: {

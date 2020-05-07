@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { makeStyles, Modal } from "@material-ui/core";
+import { makeStyles, Modal, Button } from "@material-ui/core";
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
+import MenuModal from "./MenuModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,21 +27,6 @@ const useStyles = makeStyles((theme) => ({
   menuIcon: {
     padding: 7,
   },
-  modalPaper: {
-    fontFamily: theme.typography.fontFamily,
-    position: "absolute",
-    width: 200,
-    backgroundColor: "white",
-    top: 5,
-    right: 5,
-    border: "2px solid #000",
-    boxShadow: "10px 5px 5px black",
-    "& > a": {
-      textAlign: "right",
-      textDecoration: "none",
-      color: "black",
-    },
-  },
 }));
 
 const HeaderRight = (props) => {
@@ -55,24 +41,6 @@ const HeaderRight = (props) => {
   function handleClose() {
     setModalOpen(false);
   }
-
-  const modalMenu = (
-    <div style={{ top: 0, right: 0 }} className={classes.modalPaper} id="menuModal">
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="http://www.github.com/sselfridge/mapper.bike"
-      >
-        View source on GitHub
-      </a>
-      <hr />
-      <a href="mailto:Sam.Selfridge@gmail.com">Sam.Selfridge@gmail.com</a>
-      <hr />
-      <a href="" onClick={stravaLogout}>
-        Logout
-      </a>
-    </div>
-  );
 
   const profileLink = `https://www.strava.com/athletes/${currentUser.athleteId}`;
 
@@ -94,15 +62,7 @@ const HeaderRight = (props) => {
         </span>
       )}
       <MenuRoundedIcon className={classes.menuIcon} fontSize="large" onClick={handleOpen} />
-      <Modal
-        open={modalOpen}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {modalMenu}
-      </Modal>
-      {/* {showMenu && modalMenu} */}
+      <MenuModal stravaLogout={stravaLogout} handleClose={handleClose} modalOpen={modalOpen} />
     </div>
   );
 };

@@ -9,10 +9,7 @@ import NewApp from "./NewApp";
 const theme = createMuiTheme({
   overrides: {
     MuiTab: {
-      // Name of the rule
       root: {
-        // Some CSS
-        // minWidth: 100,
         width: "50%",
         "@media (min-width: 0px)": {
           minWidth: 100,
@@ -20,6 +17,9 @@ const theme = createMuiTheme({
       },
     },
   },
+  // typography:{
+  //   fontFamily: ['Arial', 'Helvetica', 'sans-serif']
+  // },
   palette: {
     primary: lightBlue,
     secondary: green,
