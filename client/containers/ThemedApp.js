@@ -16,6 +16,9 @@ const theme = createMuiTheme({
         },
       },
     },
+    Button: {
+      
+    }
   },
   // typography:{
   //   fontFamily: ['Arial', 'Helvetica', 'sans-serif']

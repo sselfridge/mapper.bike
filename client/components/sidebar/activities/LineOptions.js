@@ -10,7 +10,11 @@ const useStyles = makeStyles((theme) => ({
   colorBox: {
     height: theme.spacing(4),
     width: theme.spacing(4),
+    marginLeft: "25%",
     border: "2px black solid",
+  },
+  getBtn:{
+      marginTop: theme.spacing(2)
   },
   picker: {
     position: "absolute",
@@ -66,6 +70,10 @@ const LineOptions = (props) => {
           onChange={(e, val) => setLineThickness(val)}
         />
       </section>
+      <section>
+          <InputLabel></InputLabel>
+          <Button className={classes.getBtn} variant="contained"  color='primary'>Get Rides</Button>
+      </section>
       {showPicker && (
         <ClickAwayListener onClickAway={() => setShowPicker(false)}>
           <div className={classes.picker}>
@@ -73,7 +81,6 @@ const LineOptions = (props) => {
           </div>
         </ClickAwayListener>
       )}
-      <Button>Get Rides</Button>
     </div>
   );
 };

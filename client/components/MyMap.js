@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MyMap = (props) => {
   const classes = useStyles();
-  const { center, blackGroundActive } = props;
+  const { center, blackgroundActive } = props;
 
   return (
     <div>
@@ -31,7 +31,7 @@ const MyMap = (props) => {
           lng: -118.483297,
         }}
       >
-        {blackGroundActive && blackground}
+        {blackgroundActive && blackground}
       </Map>
     </div>
   );

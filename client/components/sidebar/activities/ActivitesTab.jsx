@@ -34,10 +34,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const calcAfterDate =() =>{
+  const now = new Date();
+  const afterDate = new Date()
+  afterDate.setMonth(now.getMonth() - 2)
+  return afterDate;
+}
+
+
 export default function ActivitiesTab(props) {
   const classes = useStyles();
 
-  const [oldDate, setDate] = useState(new Date());
+  const { blackgroundActive, setBlackground } = props;
+
+  const [beforeDate, setBefore] = useState(new Date());
+
+  const [afterDate, setAfter] = useState(calcAfterDate());
   const [activityType, setActivityType] = useState({
     Ride: true,
     VirtualRide: true,
@@ -46,13 +58,15 @@ export default function ActivitiesTab(props) {
   });
 
   const toggleActivityType = (type) => {
-    console.log("Toggle:", type);
     const newActTypes = _.cloneDeep(activityType);
     newActTypes[type] = !newActTypes[type];
     setActivityType(newActTypes);
   };
 
-  const onChange = (newDate) => setDate(newDate);
+  const onAfterChange = (newDate) => setAfter(newDate);
+  const onBeforeChange = (newDate) => setBefore(newDate);
+
+  console.log(blackgroundActive);
 
   return (
     <div className={classes.root}>
@@ -61,8 +75,8 @@ export default function ActivitiesTab(props) {
           <InputLabel>From:</InputLabel>
           <DatePicker
             className={classes.datePicker}
-            onChange={onChange}
-            value={oldDate}
+            onChange={onAfterChange}
+            value={afterDate}
             calendarIcon={null}
             calendarClassName={classes.calendarStyle}
           />
@@ -71,8 +85,8 @@ export default function ActivitiesTab(props) {
           <InputLabel>To:</InputLabel>
           <DatePicker
             className={classes.datePicker}
-            onChange={onChange}
-            value={oldDate}
+            onChange={onBeforeChange}
+            value={beforeDate}
             calendarIcon={null}
             calendarClassName={classes.calendarStyle}
           />
@@ -86,7 +100,7 @@ export default function ActivitiesTab(props) {
         </section>
         <section>
           <InputLabel>Hide Map</InputLabel>
-          <Switch></Switch>
+          <Switch value={blackgroundActive} onChange={() => {setBlackground(!blackgroundActive)}} />
         </section>
       </div>
       <LineOptions />

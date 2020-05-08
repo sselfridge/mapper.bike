@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 import { makeStyles } from "@material-ui/core";
 
 import MyDefaultSidebar from "./MyDefaultSidebar";
@@ -24,5 +25,12 @@ const MySidebar = (props) => {
 
   return <div className={classes.root}>{sidebar}</div>;
 };
+
+MySidebar.propTypes ={
+  getDemoActivities: PropTypes.func,
+  currentUser: PropTypes.shape({
+    firstname: PropTypes.string
+  })
+}
 
 export default MySidebar;
