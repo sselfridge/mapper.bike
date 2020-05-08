@@ -6,18 +6,21 @@ import AllInclusiveRoundedIcon from "@material-ui/icons/AllInclusiveRounded";
 const useStyles = makeStyles((theme) => ({
   activityType:{
     display: 'flex',
-    
-  },
-  typeBtn: {
-    margin: theme.spacing(0.5),
-    border: 'none',
-    // padding: theme.spacing(0, 1),
-    '&:not(:first-child)': {
-      borderRadius: theme.shape.borderRadius,
-    },
     '&:first-child': {
       borderRadius: theme.shape.borderRadius,
     },
+  },
+  typeBtn: {
+    border: 'none',
+    backgroundColor: 'lightgray',
+    padding: theme.spacing(0, 1),
+    borderRadius: 15,
+    // '&:not(:first-child)': {
+    //   borderRadius: theme.shape.borderRadius,
+    // },
+    // '&:first-child': {
+    //   borderRadius: theme.shape.borderRadius,
+    // },
   },
   paper: {
     display: "flex",
