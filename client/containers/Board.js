@@ -20,7 +20,6 @@ const Board = (props) => {
   const { currentUser } = props;
 
   const [activities, setActivities] = useState([]);
-
   
 
 
@@ -31,7 +30,7 @@ const Board = (props) => {
         activities={activities}
         setActivities={setActivities}
       />
-      <MyMap activities={activities}/>
+      <MyMap activities={activities} />
     </div>
   );
 };

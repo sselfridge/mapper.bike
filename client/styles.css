@@ -1,10 +1,14 @@
 
-
 body {
     background: #03a9f4;
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
     
+}
+
+section {
+    margin: 5;
+    padding: 3;
 }
 
 button {
