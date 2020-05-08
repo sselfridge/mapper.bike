@@ -95,9 +95,16 @@ async function addToActivityQueue(strava) {
 
 async function test(req, res, next) {
   console.log("Start Test");
+  const strava = res.locals.strava;
+
+  const after = 1583694918;
+  const before = 1588965318;
+
+  const params = { before, after, page: 1, per_page: 200 };
 
   try {
-    await db.deleteUser(10645041)
+    const asdf = await strava.athlete.listActivities(params);
+    console.log(asdf.length);
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);

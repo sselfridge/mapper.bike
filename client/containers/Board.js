@@ -21,17 +21,28 @@ const Board = (props) => {
 
   const [activities, setActivities] = useState([]);
   const [blackgroundActive, setBlackground] = useState(false);
+  const [lineWeight, setLineWeight] = useState(3);
+  const [lineColor, setLineColor] = useState("blue");
 
   return (
     <div className={classes.root}>
       <MySidebar
-      currentUser={currentUser}
+        currentUser={currentUser}
         blackgroundActive={blackgroundActive}
         setBlackground={setBlackground}
         activities={activities}
         setActivities={setActivities}
+        lineColor={lineColor}
+        setLineColor={setLineColor}
+        lineWeight={lineWeight}
+        setLineWeight={setLineWeight}
       />
-      <MyMap blackgroundActive={blackgroundActive} activities={activities} />
+      <MyMap
+        blackgroundActive={blackgroundActive}
+        activities={activities}
+        lineColor={lineColor}
+        lineWeight={lineWeight}
+      />
     </div>
   );
 };

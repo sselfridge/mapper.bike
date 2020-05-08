@@ -6,6 +6,7 @@ import green from "@material-ui/core/colors/green";
 
 import NewApp from "./NewApp";
 
+
 const theme = createMuiTheme({
   overrides: {
     MuiTab: {
@@ -16,9 +17,6 @@ const theme = createMuiTheme({
         },
       },
     },
-    Button: {
-      
-    }
   },
   // typography:{
   //   fontFamily: ['Arial', 'Helvetica', 'sans-serif']
@@ -32,6 +30,8 @@ const theme = createMuiTheme({
     danger: "orange",
   },
 });
+
+theme.shape.borderRadius = theme.spacing(1.2);
 
 const ThemedApp = () => {
   return (

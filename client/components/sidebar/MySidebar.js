@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core";
 
 import MyDefaultSidebar from "./MyDefaultSidebar";
@@ -17,6 +17,9 @@ const MySidebar = (props) => {
   const classes = useStyles();
   const { currentUser, getDemoActivities } = props;
 
+  console.log("y sidebar props");
+  console.log(props);
+
   const sidebar = currentUser.firstname ? (
     <TabbedSidebar {...props} />
   ) : (
@@ -26,11 +29,11 @@ const MySidebar = (props) => {
   return <div className={classes.root}>{sidebar}</div>;
 };
 
-MySidebar.propTypes ={
+MySidebar.propTypes = {
   getDemoActivities: PropTypes.func,
   currentUser: PropTypes.shape({
-    firstname: PropTypes.string
-  })
-}
+    firstname: PropTypes.string,
+  }),
+};
 
 export default MySidebar;

@@ -77,6 +77,7 @@ app.get(
   oAuthStrava.loadStravaProfile,
   summaryController.getSummeries,
   (req, res) => {
+  console.log('back here');
     if (res.locals.err) {
       console.log(res.locals.err);
       res.status(523).send("Error with get Activities");
@@ -90,9 +91,9 @@ app.get(
 app.get(
   "/api/test",
   oAuthStrava.loadStravaProfile,
-  segmentController.intializeUser,
+  // segmentController.intializeUser,
   // segmentController.updateUserDB,
-  // segmentController.test,
+  segmentController.test,
   (req, res) => {
     if (res.locals.err) {
       console.log("Error!!");

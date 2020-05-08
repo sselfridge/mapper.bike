@@ -1,4 +1,3 @@
-
 const fs = require("fs");
 
 const decodePolyline = require("decode-google-map-polyline");
@@ -18,7 +17,6 @@ stravaAPI.config({
 // const Activity = require("./../models/activityModel");
 // const mongoose = require("mongoose");
 
-
 const summaryController = {
   getSummeries,
   getDemoData,
@@ -30,11 +28,22 @@ const summaryController = {
 // need to turn into points to be placed on map
 // done by getPointsFromActivities
 async function getSummeries(req, res, next) {
-  const after = req.query.after;
-  const before = req.query.before;
-  const activityType = JSON.parse(req.query.type);
+  console.log("Get Summaries");
+  const after = parseInt(req.query.after);
+  const before = parseInt(req.query.before);
+
+  console.log('req.query.type: ', req.query.type);
+  const activityType = req.query.type ? JSON.parse(req.query.type) : undefined;
+  console.log('activityType: ', activityType);
+  
+
+
 
   const strava = res.locals.strava;
+
+  console.log("getSummiers with:");
+  console.log('after : ', after);
+  console.log('before: ', before);
 
   try {
     const result = await fetchActivitiesFromStrava(strava, after, before);
@@ -71,8 +80,6 @@ function getDemoData(req, res, next) {
 // Utility Functions
 // Not middleware for requests, but more complex than basic untility
 
-
-
 // let payload = {
 //   expiresAt,
 //   refreshToken,
@@ -81,18 +88,21 @@ function getDemoData(req, res, next) {
 // };
 
 async function fetchActivitiesFromStrava(strava, after, before) {
+  console.log("Fetching with:");
+  console.log('after : ', after);
+  console.log('before: ', before);
+
   const params = { after, before, page: 1, per_page: 200 };
   const r = { strava, activities: [] };
   const activities = await fetchActivitiesRecursivly(params, r);
   return activities;
 }
 
-
 async function fetchActivitiesRecursivly(params, r) {
   const page = params.page;
   console.log(`Recursive Call:${params.page}`);
   const resultActivities = await r.strava.athlete.listActivities(params);
-
+  console.log(`Adding ${resultActivities.length} new activities`);
   r.activities = r.activities.concat(resultActivities);
   if (resultActivities.length < 200) {
     console.log("Recursive Call End", page);

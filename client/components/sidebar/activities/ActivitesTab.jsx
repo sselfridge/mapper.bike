@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import DatePicker from "react-date-picker";
 import _ from "lodash";
-import { Switch } from "@material-ui/core";
+import { Switch, Button } from "@material-ui/core";
+
+import { getActivities, apiTest } from "../../../api/strava";
+
 import InputLabel from "../../styledMui/InputLabel";
 import ActivityTypeSelect from "./ActivityTypeSelect";
 import LineOptions from "./LineOptions";
@@ -34,18 +37,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const calcAfterDate =() =>{
+const calcAfterDate = () => {
   const now = new Date();
-  const afterDate = new Date()
-  afterDate.setMonth(now.getMonth() - 2)
+  const afterDate = new Date();
+  afterDate.setMonth(now.getMonth() - 2);
   return afterDate;
-}
-
+};
 
 export default function ActivitiesTab(props) {
   const classes = useStyles();
 
-  const { blackgroundActive, setBlackground } = props;
+  // console.log("props");
+  // console.log(props);
+
+  const { blackgroundActive, setBlackground, setActivities, ...rest } = props;
 
   const [beforeDate, setBefore] = useState(new Date());
 
@@ -66,10 +71,22 @@ export default function ActivitiesTab(props) {
   const onAfterChange = (newDate) => setAfter(newDate);
   const onBeforeChange = (newDate) => setBefore(newDate);
 
-  console.log(blackgroundActive);
+
+
+  function fetchActivities() {
+    getActivities(activityType, afterDate, beforeDate)
+      .then((result) => {
+        setActivities(result);
+      })
+      .catch((err) => {
+        console.error("Get Activites Error:", err);
+        //TODO - snackbar msg
+      });
+  }
 
   return (
     <div className={classes.root}>
+      <button onClick={() => apiTest()}>TEST</button>
       <div className={classes.datePicking}>
         <section className={classes.date}>
           <InputLabel>From:</InputLabel>
@@ -100,10 +117,16 @@ export default function ActivitiesTab(props) {
         </section>
         <section>
           <InputLabel>Hide Map</InputLabel>
-          <Switch value={blackgroundActive} onChange={() => {setBlackground(!blackgroundActive)}} />
+          <Switch
+            value={blackgroundActive}
+            onChange={() => {
+              setBlackground(!blackgroundActive);
+            }}
+          />
         </section>
       </div>
-      <LineOptions />
+      <LineOptions fetchActivities={fetchActivities} {...rest} />
+      <button onClick={() => fetchActivities()}>RABBLE</button>
     </div>
   );
 }
