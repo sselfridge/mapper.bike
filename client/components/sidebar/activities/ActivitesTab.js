@@ -3,9 +3,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import DatePicker from "react-date-picker";
 import { InputLabel } from "@material-ui/core";
 
+import ActivityTypeSelect from "./ActivityTypeSelect";
+
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "85vh",
+    height: "87.5vh",
+    backgroundColor: "#aadaff",
+    padding: 10
   },
   datePicker: {
     width: 20,
@@ -14,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
     width: 150,
   },
   datePicking: {
-    padding: 10,
     display: "flex",
   },
   calendarStyle: {
@@ -29,10 +32,13 @@ export default function ActivitiesTab(props) {
 
   const [oldDate, setDate] = useState(new Date());
 
+  const onTypeChange = (e) => {};
+
   const onChange = (newDate) => setDate(newDate);
 
   return (
     <div className={classes.root}>
+
       <div className={classes.datePicking}>
         <div className={classes.date}>
           <InputLabel>From:</InputLabel>
@@ -54,7 +60,10 @@ export default function ActivitiesTab(props) {
             calendarClassName={classes.calendarStyle}
           />
         </div>
-      </div>
+      </div> 
+      {/* datepicker */}
+      <InputLabel>Activity Type</InputLabel>
+      <ActivityTypeSelect />
     </div>
   );
 }

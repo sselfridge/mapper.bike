@@ -20,7 +20,7 @@ const DefaultSidebar = props => {
     <div className="sidebar marginTop">
       <div>
         <a
-          href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:write,activity:read`}
+          href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}
         >
           <img src="client/img/connectStrava.png" />
         </a>
@@ -40,7 +40,7 @@ const DefaultSidebar = props => {
 
 
 DefaultSidebar.propTypes ={
-  getDemoActivities: PropTypes.func.isRequired
+  // getDemoActivities: PropTypes.func.isRequired
 }
 
 export default DefaultSidebar;

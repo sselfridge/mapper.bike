@@ -2,7 +2,7 @@ import React from "react";
 import { GoogleApiWrapper, Map, Polyline, Polygon } from "google-maps-react";
 import { makeStyles } from "@material-ui/core";
 
-import { blackground } from "../constants/map";
+import { blackground,sidebarWidth } from "../constants/map";
 
 import config from "../../config/keys";
 
@@ -19,7 +19,7 @@ const MyMap = (props) => {
       <Map
         id="mapcomp"
         containerStyle={{
-          width: "calc(100% - 375px)",
+          width: `calc(100% - ${sidebarWidth}px)`,
           height: "calc(100% - 60px)",
         }}
         google={props.google}

@@ -2,6 +2,9 @@
 import React from 'react'
 import { Polyline, Polygon } from "google-maps-react";
 
+
+export const sidebarWidth = 360;
+
 //create blackground polygon:
 export const blackground = [
     <Polygon

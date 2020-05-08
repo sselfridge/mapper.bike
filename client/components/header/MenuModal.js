@@ -27,7 +27,6 @@ const MenuModal = (props) => {
   const classes = useStyles();
   const { stravaLogout, modalOpen, handleClose } = props;
   const [disabledDelete, setDisabledDelete] = useState(true);
-  console.log(props);
 
   return (
     <div>

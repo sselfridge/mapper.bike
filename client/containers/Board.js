@@ -37,7 +37,7 @@ const Board = (props) => {
 };
 
 Board.propTypes ={
-  currentUser: PropTypes.obj
+  // currentUser: PropTypes.obj
 }
 
 export default Board;
