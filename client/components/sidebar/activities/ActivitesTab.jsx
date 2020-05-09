@@ -1,39 +1,22 @@
 import React, { useState } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import DatePicker from "react-date-picker";
-import _ from "lodash";
-import { Switch, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+  Typography,
+} from "@material-ui/core";
+import { getActivities } from "../../../api/strava";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { getActivities, apiTest } from "../../../api/strava";
 
-import InputLabel from "../../styledMui/InputLabel";
-import ActivityTypeSelect from "./ActivityTypeSelect";
-import LineOptions from "./LineOptions";
+import ControlPanel from "./controlPanel";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "87.5vh",
     backgroundColor: "#aadaff",
     // padding: theme.spacing(1),
-  },
-  datePicker: {
-    width: 20,
-  },
-  date: {
-    width: 150,
-  },
-  datePicking: {
-    display: "flex",
-    // margin: theme.spacing(1, 0),
-  },
-  calendarStyle: {
-    "&  button": {
-      fontSize: "1.1em",
-    },
-  },
-  filterRow2: {
-    display: "flex",
-    // margin: theme.spacing(1, 0),
   },
 }));
 
@@ -50,10 +33,9 @@ export default function ActivitiesTab(props) {
   // console.log("props");
   // console.log(props);
 
-  const { blackgroundActive, setBlackground, setActivities, ...rest } = props;
+  const { setActivities } = props;
 
   const [beforeDate, setBefore] = useState(new Date());
-
   const [afterDate, setAfter] = useState(calcAfterDate());
   const [activityType, setActivityType] = useState({
     Ride: true,
@@ -62,16 +44,8 @@ export default function ActivitiesTab(props) {
     Other: false,
   });
 
-  const toggleActivityType = (type) => {
-    const newActTypes = _.cloneDeep(activityType);
-    newActTypes[type] = !newActTypes[type];
-    setActivityType(newActTypes);
-  };
-
   const onAfterChange = (newDate) => setAfter(newDate);
   const onBeforeChange = (newDate) => setBefore(newDate);
-
-
 
   function fetchActivities() {
     getActivities(activityType, afterDate, beforeDate)
@@ -86,47 +60,27 @@ export default function ActivitiesTab(props) {
 
   return (
     <div className={classes.root}>
-      <button onClick={() => apiTest()}>TEST</button>
-      <div className={classes.datePicking}>
-        <section className={classes.date}>
-          <InputLabel>From:</InputLabel>
-          <DatePicker
-            className={classes.datePicker}
-            onChange={onAfterChange}
-            value={afterDate}
-            calendarIcon={null}
-            calendarClassName={classes.calendarStyle}
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography className={classes.heading}>Map Filter / Controls</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <ControlPanel
+            fetchActivities={fetchActivities}
+            afterDate={afterDate}
+            beforeDate={beforeDate}
+            onAfterChange={onAfterChange}
+            onBeforeChange={onBeforeChange}
+            activityType={activityType}
+            setActivityType={setActivityType}
+            {...props}
           />
-        </section>
-        <section className={classes.date}>
-          <InputLabel>To:</InputLabel>
-          <DatePicker
-            className={classes.datePicker}
-            onChange={onBeforeChange}
-            value={beforeDate}
-            calendarIcon={null}
-            calendarClassName={classes.calendarStyle}
-          />
-        </section>
-      </div>
-      {/* datepicker */}
-      <div className={classes.filterRow2}>
-        <section>
-          <InputLabel>Activity Type</InputLabel>
-          <ActivityTypeSelect activityType={activityType} toggleActivityType={toggleActivityType} />
-        </section>
-        <section>
-          <InputLabel>Hide Map</InputLabel>
-          <Switch
-            value={blackgroundActive}
-            onChange={() => {
-              setBlackground(!blackgroundActive);
-            }}
-          />
-        </section>
-      </div>
-      <LineOptions fetchActivities={fetchActivities} {...rest} />
-      <button onClick={() => fetchActivities()}>RABBLE</button>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     </div>
   );
 }

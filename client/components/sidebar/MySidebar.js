@@ -17,9 +17,6 @@ const MySidebar = (props) => {
   const classes = useStyles();
   const { currentUser, getDemoActivities } = props;
 
-  console.log("y sidebar props");
-  console.log(props);
-
   const sidebar = currentUser.firstname ? (
     <TabbedSidebar {...props} />
   ) : (

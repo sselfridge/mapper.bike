@@ -32,18 +32,9 @@ async function getSummeries(req, res, next) {
   const after = parseInt(req.query.after);
   const before = parseInt(req.query.before);
 
-  console.log('req.query.type: ', req.query.type);
   const activityType = req.query.type ? JSON.parse(req.query.type) : undefined;
-  console.log('activityType: ', activityType);
   
-
-
-
   const strava = res.locals.strava;
-
-  console.log("getSummiers with:");
-  console.log('after : ', after);
-  console.log('before: ', before);
 
   try {
     const result = await fetchActivitiesFromStrava(strava, after, before);

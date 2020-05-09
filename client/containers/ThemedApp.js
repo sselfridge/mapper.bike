@@ -6,7 +6,6 @@ import green from "@material-ui/core/colors/green";
 
 import NewApp from "./NewApp";
 
-
 const theme = createMuiTheme({
   overrides: {
     MuiTab: {
@@ -15,6 +14,11 @@ const theme = createMuiTheme({
         "@media (min-width: 0px)": {
           minWidth: 100,
         },
+      },
+    },
+    MuiExpansionPanelDetails: {
+      root: {
+        padding: 0,
       },
     },
   },

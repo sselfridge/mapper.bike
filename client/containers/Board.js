@@ -23,6 +23,7 @@ const Board = (props) => {
   const [blackgroundActive, setBlackground] = useState(false);
   const [lineWeight, setLineWeight] = useState(3);
   const [lineColor, setLineColor] = useState("blue");
+  const [mapCenter,setMapCenter] = useState({center:null})
 
   return (
     <div className={classes.root}>
@@ -36,12 +37,14 @@ const Board = (props) => {
         setLineColor={setLineColor}
         lineWeight={lineWeight}
         setLineWeight={setLineWeight}
+        setMapCenter={setMapCenter}
       />
       <MyMap
         blackgroundActive={blackgroundActive}
         activities={activities}
         lineColor={lineColor}
         lineWeight={lineWeight}
+        mapCenter={mapCenter}
       />
     </div>
   );

@@ -12,7 +12,8 @@ const useStyles = makeStyles((theme) => ({
 
 const MyMap = (props) => {
   const classes = useStyles();
-  const { center, blackgroundActive } = props;
+  const { mapCenter, blackgroundActive } = props;
+
 
   return (
     <div>
@@ -25,7 +26,7 @@ const MyMap = (props) => {
         google={props.google}
         zoom={11} //higher number = closer zoom
         mapTypeId="satellite"
-        center={center}
+        center={mapCenter}
         initialCenter={{
           lat: 33.945602,
           lng: -118.483297,
