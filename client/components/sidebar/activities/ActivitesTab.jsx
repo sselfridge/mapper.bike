@@ -6,9 +6,9 @@ import {
   ExpansionPanelDetails,
   Typography,
 } from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { getActivities } from "../../../api/strava";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import List from "./List";
 
 import ControlPanel from "./controlPanel";
 
@@ -33,10 +33,11 @@ export default function ActivitiesTab(props) {
   // console.log("props");
   // console.log(props);
 
-  const { setActivities } = props;
+  const { setActivities, activities } = props;
 
   const [beforeDate, setBefore] = useState(new Date());
   const [afterDate, setAfter] = useState(calcAfterDate());
+  const [panelExpanded, setPanelExpanded] = useState(true);
   const [activityType, setActivityType] = useState({
     Ride: true,
     VirtualRide: true,
@@ -46,6 +47,7 @@ export default function ActivitiesTab(props) {
 
   const onAfterChange = (newDate) => setAfter(newDate);
   const onBeforeChange = (newDate) => setBefore(newDate);
+
 
   function fetchActivities() {
     getActivities(activityType, afterDate, beforeDate)
@@ -60,11 +62,12 @@ export default function ActivitiesTab(props) {
 
   return (
     <div className={classes.root}>
-      <ExpansionPanel>
+      <ExpansionPanel id="controlPanel" expanded={panelExpanded}>
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
+          onClick={() => setPanelExpanded(!panelExpanded)}
         >
           <Typography className={classes.heading}>Map Filter / Controls</Typography>
         </ExpansionPanelSummary>
@@ -81,6 +84,8 @@ export default function ActivitiesTab(props) {
           />
         </ExpansionPanelDetails>
       </ExpansionPanel>
+
+      <List activities={activities} panelExpanded={panelExpanded} />
     </div>
   );
 }

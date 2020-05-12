@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles, Button, ClickAwayListener, Slider } from "@material-ui/core";
-import { CirclePicker } from "react-color";
-
+import { TwitterPicker } from "react-color";
+import { lineColors } from "../../../constants/map";
 import InputLabel from "../../styledMui/InputLabel";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,20 +24,34 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
   },
   slider: {
-    width: 120,
+    width: 80,
   },
 }));
 
 const LineOptions = (props) => {
   const classes = useStyles();
 
-  const { lineWeight, setLineWeight, lineColor, setLineColor, fetchActivities } = props;
+  const {
+    lineWeight,
+    setLineWeight,
+    lineColor,
+    setLineColor,
+    fetchActivities,
+    setSelectedColor,
+    selectedColor,
+  } = props;
 
   const [showPicker, setShowPicker] = useState(false);
+  const [showSelectPicker, setSelectPicker] = useState(false);
 
-  const handleColorChange = (color) => {
-    setLineColor(color.hex);
-    setShowPicker(false);
+  const handleColorChange = (color, target) => {
+    if (target === "selected") {
+      setSelectedColor(color.hex);
+      setSelectPicker(false);
+    } else {
+      setLineColor(color.hex);
+      setShowPicker(false);
+    }
   };
 
   const sliderStyles = {
@@ -54,11 +68,19 @@ const LineOptions = (props) => {
   return (
     <div className={classes.root}>
       <section>
-        <InputLabel>Line Color</InputLabel>
+        <InputLabel>Color</InputLabel>
         <div
           className={classes.colorBox}
           style={{ backgroundColor: lineColor }}
           onClick={() => setShowPicker(true)}
+        />
+      </section>
+      <section>
+        <InputLabel>Selected</InputLabel>
+        <div
+          className={classes.colorBox}
+          style={{ backgroundColor: selectedColor }}
+          onClick={() => setSelectPicker(true)}
         />
       </section>
       <section className={classes.slider}>
@@ -68,7 +90,7 @@ const LineOptions = (props) => {
           valueLabelDisplay="auto"
           value={lineWeight}
           min={1}
-          max={30}
+          max={20}
           onChange={(e, val) => setLineWeight(val)}
         />
       </section>
@@ -86,7 +108,26 @@ const LineOptions = (props) => {
       {showPicker && (
         <ClickAwayListener onClickAway={() => setShowPicker(false)}>
           <div className={classes.picker}>
-            <CirclePicker color={lineColor} onChangeComplete={handleColorChange} />
+            <TwitterPicker
+              color={lineColor}
+              colors={lineColors}
+              onChangeComplete={(color) => {
+                handleColorChange(color, "line");
+              }}
+            />
+          </div>
+        </ClickAwayListener>
+      )}
+      {showSelectPicker && (
+        <ClickAwayListener onClickAway={() => setSelectPicker(false)}>
+          <div className={classes.picker}>
+            <TwitterPicker
+              color={selectedColor}
+              colors={lineColors}
+              onChangeComplete={(color) => {
+                handleColorChange(color, "selected");
+              }}
+            />
           </div>
         </ClickAwayListener>
       )}

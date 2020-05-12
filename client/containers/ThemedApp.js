@@ -1,8 +1,7 @@
 import React from "react";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
-import lightBlue from "@material-ui/core/colors/lightBlue";
-import green from "@material-ui/core/colors/green";
+import { lightBlue, green } from "@material-ui/core/colors/";
 
 import NewApp from "./NewApp";
 
@@ -16,6 +15,20 @@ const theme = createMuiTheme({
         },
       },
     },
+
+    MuiExpansionPanelSummary: {
+      root: {
+        "&$expanded": {
+          minHeight: 40,
+        },
+      },
+      content: {
+        "&$expanded": {
+          margin: 0,
+        },
+      },
+    },
+
     MuiExpansionPanelDetails: {
       root: {
         padding: 0,
@@ -29,6 +42,7 @@ const theme = createMuiTheme({
     primary: lightBlue,
     secondary: green,
     background: "#aadaff",
+    strava: "#FC4C02",
   },
   status: {
     danger: "orange",

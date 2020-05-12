@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core";
 
 import { getActivities } from "../api/strava";
-
+import demoData from "../constants/DemoActivities";
 import MyMap from "../components/MyMap";
 import MySidebar from "../components/sidebar/MySidebar";
 
@@ -19,11 +19,13 @@ const Board = (props) => {
 
   const { currentUser } = props;
 
-  const [activities, setActivities] = useState([]);
+  const [activities, setActivities] = useState(demoData);
   const [blackgroundActive, setBlackground] = useState(false);
   const [lineWeight, setLineWeight] = useState(3);
-  const [lineColor, setLineColor] = useState("blue");
-  const [mapCenter,setMapCenter] = useState({center:null})
+  const [lineColor, setLineColor] = useState("#0000ff"); //blue
+  const [selectedColor, setSelectedColor] = useState("#52eb0e"); //neon green
+  const [mapCenter, setMapCenter] = useState({ center: null });
+  const [selectedId, setSelectedId] = useState(-1);
 
   return (
     <div className={classes.root}>
@@ -38,6 +40,8 @@ const Board = (props) => {
         lineWeight={lineWeight}
         setLineWeight={setLineWeight}
         setMapCenter={setMapCenter}
+        setSelectedColor={setSelectedColor}
+        selectedColor={selectedColor}
       />
       <MyMap
         blackgroundActive={blackgroundActive}
