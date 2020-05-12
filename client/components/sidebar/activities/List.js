@@ -33,24 +33,16 @@ const getDynamicHeight = (setListHeight) => {
 
 export default function List(props) {
   const classes = useStyles();
-  const { activities } = props;
+  const { activities, selectedAct, handleSelectedAct } = props;
 
   let newHeight = 0;
   const [listHeight, setListHeight] = useState(newHeight);
   getDynamicHeight(setListHeight);
 
-  const [selected, setSelected] = useState(-1);
-
   return (
     <div style={{ height: listHeight }} className={classes.root}>
       {activities.map((activity, index) => (
-        <Row
-          key={index}
-          index={index}
-          activity={activity}
-          selected={selected}
-          setSelected={setSelected}
-        />
+        <Row key={index} index={index} activity={activity} {...props} />
       ))}
     </div>
   );

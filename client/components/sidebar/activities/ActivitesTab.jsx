@@ -30,10 +30,7 @@ const calcAfterDate = () => {
 export default function ActivitiesTab(props) {
   const classes = useStyles();
 
-  // console.log("props");
-  // console.log(props);
-
-  const { setActivities, activities } = props;
+  const { setActivities, activities, handleSelectedAct, selectedAct, setMapCenter } = props;
 
   const [beforeDate, setBefore] = useState(new Date());
   const [afterDate, setAfter] = useState(calcAfterDate());
@@ -47,7 +44,6 @@ export default function ActivitiesTab(props) {
 
   const onAfterChange = (newDate) => setAfter(newDate);
   const onBeforeChange = (newDate) => setBefore(newDate);
-
 
   function fetchActivities() {
     getActivities(activityType, afterDate, beforeDate)
@@ -85,7 +81,13 @@ export default function ActivitiesTab(props) {
         </ExpansionPanelDetails>
       </ExpansionPanel>
 
-      <List activities={activities} panelExpanded={panelExpanded} />
+      <List
+        activities={activities}
+        panelExpanded={panelExpanded}
+        handleSelectedAct={handleSelectedAct}
+        selectedAct={selectedAct}
+        setMapCenter={setMapCenter}
+      />
     </div>
   );
 }

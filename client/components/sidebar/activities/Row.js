@@ -18,7 +18,7 @@ const useRowStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-evenly",
     "& > *": {
-      margin: 15,
+      // margin: 15,
     },
   },
   itemNumber: {
@@ -53,12 +53,11 @@ const useRowStyles = makeStyles((theme) => ({
 function Row(props) {
   const classes = useRowStyles();
 
-  let { activity, index, selected, setSelected } = props;
+  let { activity, index, selectedAct, handleSelectedAct, setMapCenter } = props;
 
   const avatarStyles = {
     root: classes.itemNumber,
   };
-
 
   const distance = (activity.distance / 1609).toFixed(2);
   const date = moment.unix(activity.date);
@@ -69,15 +68,16 @@ function Row(props) {
 
   return (
     <div
+      id={`row${activity.id}`}
       className={clsx({
         [classes.listItem]: true,
-        [classes.selectedStyle]: index === selected,
+        [classes.selectedStyle]: activity.id === selectedAct.id,
       })}
     >
       <ListItem
         key={index}
         onClick={() => {
-          setSelected(index);
+          handleSelectedAct(activity);
         }}
       >
         <ListItemAvatar classes={avatarStyles}>
@@ -95,7 +95,7 @@ function Row(props) {
           }
         />
       </ListItem>
-      {selected === index && (
+      {selectedAct === activity.id && (
         <div className={classes.actions}>
           <Tooltip title="Remove from map" placement={"top"}>
             <IconButton aria-label="delete">
