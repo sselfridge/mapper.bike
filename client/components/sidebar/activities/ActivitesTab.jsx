@@ -6,6 +6,7 @@ import {
   ExpansionPanelDetails,
   Typography,
 } from "@material-ui/core";
+import ReactLoading from "react-loading";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { getActivities } from "../../../api/strava";
 import List from "./List";
@@ -30,7 +31,15 @@ const calcAfterDate = () => {
 export default function ActivitiesTab(props) {
   const classes = useStyles();
 
-  const { setActivities, activities, handleSelectedAct, selectedAct, setMapCenter } = props;
+  const {
+    setActivities,
+    activities,
+    handleSelectedAct,
+    selectedAct,
+    setMapCenter,
+    setLoading,
+    loading,
+  } = props;
 
   const [beforeDate, setBefore] = useState(new Date());
   const [afterDate, setAfter] = useState(calcAfterDate());
@@ -46,6 +55,7 @@ export default function ActivitiesTab(props) {
   const onBeforeChange = (newDate) => setBefore(newDate);
 
   function fetchActivities() {
+    setLoading(true);
     getActivities(activityType, afterDate, beforeDate)
       .then((result) => {
         setActivities(result);
@@ -53,7 +63,10 @@ export default function ActivitiesTab(props) {
       .catch((err) => {
         console.error("Get Activites Error:", err);
         //TODO - snackbar msg
-      });
+      })
+      .finally(()=>{
+        setLoading(false)
+      })
   }
 
   return (
@@ -80,7 +93,9 @@ export default function ActivitiesTab(props) {
           />
         </ExpansionPanelDetails>
       </ExpansionPanel>
-
+      {loading && (
+        <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"320px"} />
+      )}
       <List
         activities={activities}
         panelExpanded={panelExpanded}

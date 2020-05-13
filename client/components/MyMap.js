@@ -33,7 +33,7 @@ const MyMap = (props) => {
       strokeOpacity={0.75}
       zIndex={activity.selected ? 90 : 2}
       onClick={() => {
-        handleSelectedAct(activity);
+        handleSelectedAct(activity,'map');
       }}
     />
   ));

@@ -21,6 +21,7 @@ const Board = (props) => {
   const { currentUser } = props;
 
   const [activities, setActivities] = useState(demoData);
+  const [loading,setLoading] = useState(false);
   const [blackgroundActive, setBlackground] = useState(false);
   const [lineWeight, setLineWeight] = useState(3);
   const [lineColor, setLineColor] = useState("#0000ff"); //blue
@@ -29,7 +30,7 @@ const Board = (props) => {
   const [mapBounds, setMapBounds] = useState([]);
   const [selectedAct, setSelectedAct] = useState({});
 
-  const handleSelectedAct = (newSelection) => {
+  const handleSelectedAct = (newSelection, source) => {
     const prevSelect = _.find(activities, (activity) => activity.selected === true);
     if (prevSelect) prevSelect.selected = false;
 
@@ -38,13 +39,14 @@ const Board = (props) => {
       selected.selected = true;
     }
 
-    const rideEl = document.getElementById(`row${newSelection.id}`);
-    rideEl.scrollIntoView({
-      behavior: "auto",
-      block: "center",
-      inline: "center",
-    });
-
+    if (source === "map") {
+      const rideEl = document.getElementById(`row${newSelection.id}`);
+      rideEl.scrollIntoView({
+        behavior: "auto",
+        block: "center",
+        inline: "center",
+      });
+    }
 
     const bounds = calcBounds(newSelection.points);
 
@@ -69,6 +71,8 @@ const Board = (props) => {
         selectedColor={selectedColor}
         handleSelectedAct={handleSelectedAct}
         selectedAct={selectedAct}
+        loading={loading}
+        setLoading={setLoading}
       />
       <MyMap
         blackgroundActive={blackgroundActive}

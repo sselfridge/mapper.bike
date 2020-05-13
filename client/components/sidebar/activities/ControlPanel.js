@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import DatePicker from "react-date-picker";
 import _ from "lodash";
-import { Switch } from "@material-ui/core";
+import { Switch,Button } from "@material-ui/core";
 import CenterFocusWeakOutlinedIcon from "@material-ui/icons/CenterFocusWeakOutlined";
 
 import InputLabel from "../../styledMui/InputLabel";
@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme) => ({
   },
   date: {
     width: 150,
+    display: 'flex',
+    flexDirection: 'column'
   },
   datePicking: {
     display: "flex",
@@ -69,7 +71,6 @@ const ControlPanel = (props) => {
     <div className={classes.root}>
       <div className={classes.datePicking}>
         <section className={classes.date}>
-          <InputLabel>From:</InputLabel>
           <DatePicker
             className={classes.datePicker}
             onChange={onAfterChange}
@@ -77,9 +78,6 @@ const ControlPanel = (props) => {
             calendarIcon={null}
             calendarClassName={classes.calendarStyle}
           />
-        </section>
-        <section className={classes.date}>
-          <InputLabel>To:</InputLabel>
           <DatePicker
             className={classes.datePicker}
             onChange={onBeforeChange}
@@ -88,13 +86,22 @@ const ControlPanel = (props) => {
             calendarClassName={classes.calendarStyle}
           />
         </section>
+        <section>
+          <ActivityTypeSelect activityType={activityType} toggleActivityType={toggleActivityType} />
+        </section>
+        <section>
+        <Button
+          onClick={() => fetchActivities()}
+          className={classes.getBtn}
+          variant="contained"
+          color="primary"
+        >
+          Get Rides
+        </Button>
+      </section>
       </div>
       {/* datepicker */}
       <div className={classes.filterRow2}>
-        <section>
-          <InputLabel>Activity Type</InputLabel>
-          <ActivityTypeSelect activityType={activityType} toggleActivityType={toggleActivityType} />
-        </section>
         <section>
           <InputLabel>Hide Map</InputLabel>
           <Switch

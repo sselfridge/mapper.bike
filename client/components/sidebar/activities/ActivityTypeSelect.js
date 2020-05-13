@@ -8,6 +8,7 @@ import AllInclusiveRoundedIcon from "@material-ui/icons/AllInclusiveRounded";
 const useStyles = makeStyles((theme) => ({
   activityType: {
     display: "flex",
+    flexDirection: 'column',
     "& :first-child": {
       borderRadius: "15px 0px 0px 15px",
     },
@@ -20,14 +21,17 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "lightgray",
     padding: theme.spacing(0, 1),
   },
+  typeRow: {
+    display: 'flex'
+  },
   paper: {
     display: "flex",
     border: `1px solid ${theme.palette.divider}`,
     flexWrap: "wrap",
   },
   typeIcon: {
-    height: theme.spacing(1) * 4,
-    width: theme.spacing(1) * 4,
+    height: theme.spacing(1) * 3.5,
+    width: theme.spacing(1) * 3.5,
   },
   selectedIcon: {
     backgroundColor: "darkgray",
@@ -55,41 +59,46 @@ function ActivityTypeSelect(props) {
 
   return (
     <div className={classes.activityType}>
-      <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Ride })}>
-        <Tooltip title="Ride">
-          <img
-            className={classes.typeIcon}
-            src="./client/img/ride.png"
-            onClick={() => toggleActivityType("Ride")}
-          />
-        </Tooltip>
+
+      <div className={classes.typeRow}>
+        <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Ride })}>
+          <Tooltip title="Ride">
+            <img
+              className={classes.typeIcon}
+              src="./client/img/ride.png"
+              onClick={() => toggleActivityType("Ride")}
+            />
+          </Tooltip>
+        </div>
+        <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.VirtualRide })}>
+          <Tooltip title="Virtual Ride">
+            <img
+              className={classes.typeIcon}
+              src="./client/img/trainer.png"
+              onClick={() => toggleActivityType("VirtualRide")}
+            />
+          </Tooltip>
+        </div>
       </div>
-      <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.VirtualRide })}>
-        <Tooltip title="Virtual Ride">
-          <img
-            className={classes.typeIcon}
-            src="./client/img/trainer.png"
-            onClick={() => toggleActivityType("VirtualRide")}
-          />
-        </Tooltip>
-      </div>
-      <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Run })}>
-        <Tooltip title="Run">
-          <img
-            className={classes.typeIcon}
-            src="./client/img/shoe.png"
-            onClick={() => toggleActivityType("Run")}
-          />
-        </Tooltip>
-      </div>
-      <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Other })}>
-        <Tooltip title="All Other Types">
-          <AllInclusiveRoundedIcon
-            className={classes.typeIcon}
-            onClick={() => toggleActivityType("Other")}
-          />
-        </Tooltip>
-      </div>
+      <aside className={classes.typeRow}>
+        <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Run })}>
+          <Tooltip title="Run">
+            <img
+              className={classes.typeIcon}
+              src="./client/img/shoe.png"
+              onClick={() => toggleActivityType("Run")}
+            />
+          </Tooltip>
+        </div>
+        <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Other })}>
+          <Tooltip title="All Other Types">
+            <AllInclusiveRoundedIcon
+              className={classes.typeIcon}
+              onClick={() => toggleActivityType("Other")}
+            />
+          </Tooltip>
+        </div>
+      </aside>
     </div>
   );
 }

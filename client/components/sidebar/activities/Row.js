@@ -77,7 +77,7 @@ function Row(props) {
       <ListItem
         key={index}
         onClick={() => {
-          handleSelectedAct(activity);
+          handleSelectedAct(activity,'row');
         }}
       >
         <ListItemAvatar classes={avatarStyles}>

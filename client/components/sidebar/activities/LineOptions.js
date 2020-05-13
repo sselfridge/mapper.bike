@@ -94,17 +94,6 @@ const LineOptions = (props) => {
           onChange={(e, val) => setLineWeight(val)}
         />
       </section>
-      <section>
-        <InputLabel></InputLabel>
-        <Button
-          onClick={() => fetchActivities()}
-          className={classes.getBtn}
-          variant="contained"
-          color="primary"
-        >
-          Get Rides
-        </Button>
-      </section>
       {showPicker && (
         <ClickAwayListener onClickAway={() => setShowPicker(false)}>
           <div className={classes.picker}>

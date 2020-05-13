@@ -15,7 +15,16 @@ const theme = createMuiTheme({
         },
       },
     },
-
+    MuiListItem: {
+      root: {
+        paddingBottom: 0,
+      },
+    },
+    MuiListItemText: {
+      multiline: {
+        marginTop: 0,
+      },
+    },
     MuiExpansionPanelSummary: {
       root: {
         "&$expanded": {
