@@ -45,8 +45,6 @@ export function getActivities(type, after, before) {
 
     const activityType = `${JSON.stringify(type)}`;
 
-
-
     const quereyString = `/api/summaryActivities?after=${afterDate}&before=${beforeDate}&type=${activityType}`;
 
     axios

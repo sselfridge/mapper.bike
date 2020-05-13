@@ -33,7 +33,7 @@ async function getSummeries(req, res, next) {
   const before = parseInt(req.query.before);
 
   const activityType = req.query.type ? JSON.parse(req.query.type) : undefined;
-  
+
   const strava = res.locals.strava;
 
   try {
@@ -80,8 +80,8 @@ function getDemoData(req, res, next) {
 
 async function fetchActivitiesFromStrava(strava, after, before) {
   console.log("Fetching with:");
-  console.log('after : ', after);
-  console.log('before: ', before);
+  console.log("after : ", after);
+  console.log("before: ", before);
 
   const params = { after, before, page: 1, per_page: 200 };
   const r = { strava, activities: [] };
@@ -127,7 +127,11 @@ function mapAndFilterStravaData(stravaData, activityType) {
 
     //only grab activities with a polyline AKA non-trainer rides
     if (newActivity.line) {
-      if (activityType === undefined || activityType[element.type] === true) {
+      if (
+        activityType === undefined ||
+        activityType[element.type] === true ||
+        (activityType.Other && activityType[element.type] === undefined)
+      ) {
         activities.push(newActivity);
       }
     }
@@ -162,7 +166,7 @@ const decodePoly = (activities) => {
       console.log(`Error decoding activity: ${activity.name}`);
       console.log(error);
     }
-    utils.addMidPoint(activity);
+    // utils.addMidPoint(activity);
   });
 
   return activities;

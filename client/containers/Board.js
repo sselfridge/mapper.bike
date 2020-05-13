@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import { makeStyles } from "@material-ui/core";
 
-import { getActivities } from "../api/strava";
 import demoData from "../constants/DemoActivities";
 import MyMap from "../components/MyMap";
 import MySidebar from "../components/sidebar/MySidebar";
@@ -20,7 +19,7 @@ const Board = (props) => {
 
   const { currentUser } = props;
 
-  const [activities, setActivities] = useState(demoData);
+  const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [blackgroundActive, setBlackground] = useState(false);
   const [lineWeight, setLineWeight] = useState(3);
