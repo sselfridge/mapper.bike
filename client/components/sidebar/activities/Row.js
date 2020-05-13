@@ -53,7 +53,14 @@ const useRowStyles = makeStyles((theme) => ({
 function Row(props) {
   const classes = useRowStyles();
 
-  let { activity, index, selectedAct, handleSelectedAct, setMapCenter } = props;
+  let {
+    activity,
+    index,
+    selectedAct,
+    handleSelectedAct,
+    setMapCenter,
+    handleRemoveActivity,
+  } = props;
 
   const avatarStyles = {
     root: classes.itemNumber,
@@ -77,7 +84,7 @@ function Row(props) {
       <ListItem
         key={index}
         onClick={() => {
-          handleSelectedAct(activity,'row');
+          handleSelectedAct(activity, "row");
         }}
       >
         <ListItemAvatar classes={avatarStyles}>
@@ -95,23 +102,29 @@ function Row(props) {
           }
         />
       </ListItem>
-      {selectedAct === activity.id && (
+      {selectedAct.id === activity.id && (
         <div className={classes.actions}>
           <Tooltip title="Remove from map" placement={"top"}>
-            <IconButton aria-label="delete">
+            <IconButton
+              aria-label="delete"
+              onClick={() => {
+                handleRemoveActivity(index);
+              }}
+            >
               <DeleteIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="View on Strava" placement={"top"}>
             <IconButton>
-              <a href="http://www.strava.com" rel="noopener noreferrer" target="_blank">
+              <a
+                href={`http://www.strava.com/activities/${activity.id}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 <img className={classes.stravaIcon} src={"client/img/strava-icon.svg"} />
               </a>
             </IconButton>
           </Tooltip>
-          {/* <Button variant={"contained"} className={classes.stravaBtn}>
-            View On Strava
-          </Button> */}
         </div>
       )}
     </div>

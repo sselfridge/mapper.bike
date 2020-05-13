@@ -10,8 +10,12 @@ const useStyles = makeStyles((theme) => ({
   colorBox: {
     height: theme.spacing(4),
     width: theme.spacing(4),
-    marginLeft: "25%",
     border: "2px black solid",
+  },
+  colorPicker: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: 'center'
   },
   getBtn: {
     marginTop: theme.spacing(2),
@@ -67,7 +71,7 @@ const LineOptions = (props) => {
 
   return (
     <div className={classes.root}>
-      <section>
+      <section className={classes.colorPicker}>
         <InputLabel>Color</InputLabel>
         <div
           className={classes.colorBox}
@@ -75,7 +79,7 @@ const LineOptions = (props) => {
           onClick={() => setShowPicker(true)}
         />
       </section>
-      <section>
+      <section className={classes.colorPicker}>
         <InputLabel>Selected</InputLabel>
         <div
           className={classes.colorBox}
@@ -83,7 +87,7 @@ const LineOptions = (props) => {
           onClick={() => setSelectPicker(true)}
         />
       </section>
-      <section className={classes.slider}>
+      {/* <section className={classes.slider}>
         <InputLabel>Line Thickness</InputLabel>
         <Slider
           style={sliderStyles}
@@ -93,7 +97,7 @@ const LineOptions = (props) => {
           max={20}
           onChange={(e, val) => setLineWeight(val)}
         />
-      </section>
+      </section> */}
       {showPicker && (
         <ClickAwayListener onClickAway={() => setShowPicker(false)}>
           <div className={classes.picker}>

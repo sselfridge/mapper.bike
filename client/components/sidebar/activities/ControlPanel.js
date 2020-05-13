@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import DatePicker from "react-date-picker";
 import _ from "lodash";
-import { Switch,Button } from "@material-ui/core";
+import { Switch, Button } from "@material-ui/core";
 import CenterFocusWeakOutlinedIcon from "@material-ui/icons/CenterFocusWeakOutlined";
 
 import InputLabel from "../../styledMui/InputLabel";
@@ -17,13 +17,18 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "1.1em",
     },
   },
+  centerMap: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
   datePicker: {
     width: 20,
   },
   date: {
     width: 150,
-    display: 'flex',
-    flexDirection: 'column'
+    display: "flex",
+    flexDirection: "column",
   },
   datePicking: {
     display: "flex",
@@ -32,9 +37,10 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     height: theme.spacing(4),
     width: theme.spacing(4),
-    cursor: 'pointer',
+    cursor: "pointer",
+    margin: "auto",
   },
-  filterRow2: {
+  lineControls: {
     display: "flex",
     // margin: theme.spacing(1, 0),
   },
@@ -57,7 +63,6 @@ const ControlPanel = (props) => {
     ...rest
   } = props;
 
-
   const [showCenterModal, setShowCenterModal] = useState(false);
 
   const toggleActivityType = (type) => {
@@ -65,7 +70,6 @@ const ControlPanel = (props) => {
     newActTypes[type] = !newActTypes[type];
     setActivityType(newActTypes);
   };
-
 
   return (
     <div className={classes.root}>
@@ -90,18 +94,18 @@ const ControlPanel = (props) => {
           <ActivityTypeSelect activityType={activityType} toggleActivityType={toggleActivityType} />
         </section>
         <section>
-        <Button
-          onClick={() => fetchActivities()}
-          className={classes.getBtn}
-          variant="contained"
-          color="primary"
-        >
-          Get Rides
-        </Button>
-      </section>
+          <Button
+            onClick={() => fetchActivities()}
+            className={classes.getBtn}
+            variant="contained"
+            color="primary"
+          >
+            Get Rides
+          </Button>
+        </section>
       </div>
       {/* datepicker */}
-      <div className={classes.filterRow2}>
+      <div className={classes.lineControls}>
         <section>
           <InputLabel>Hide Map</InputLabel>
           <Switch
@@ -111,15 +115,15 @@ const ControlPanel = (props) => {
             }}
           />
         </section>
-        <section>
+        <section className={classes.centerMap}>
           <InputLabel>Center Map</InputLabel>
           <CenterFocusWeakOutlinedIcon
             onClick={() => setShowCenterModal(true)}
             className={classes.icon}
           />
         </section>
+        <LineOptions fetchActivities={fetchActivities} {...rest} />
       </div>
-      <LineOptions fetchActivities={fetchActivities} {...rest} />
 
       <CenterMapModal
         showCenterModal={showCenterModal}

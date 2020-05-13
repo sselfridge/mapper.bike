@@ -19,6 +19,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#aadaff",
     // padding: theme.spacing(1),
   },
+  loadingText: {
+    position: "relative",
+    textAlign: "center",
+    top: -150,
+  },
 }));
 
 const calcAfterDate = () => {
@@ -39,14 +44,16 @@ export default function ActivitiesTab(props) {
     setMapCenter,
     setLoading,
     loading,
+    handleRemoveActivity,
   } = props;
 
   const [beforeDate, setBefore] = useState(new Date());
   const [afterDate, setAfter] = useState(calcAfterDate());
   const [panelExpanded, setPanelExpanded] = useState(true);
+  const [loadingTimer, setLoadingTimer] = useState(0);
   const [activityType, setActivityType] = useState({
     Ride: true,
-    VirtualRide: true,
+    VirtualRide: false,
     Run: false,
     Other: false,
   });
@@ -55,7 +62,9 @@ export default function ActivitiesTab(props) {
   const onBeforeChange = (newDate) => setBefore(newDate);
 
   function fetchActivities() {
+    setLoadingTimer(0);
     setLoading(true);
+
     getActivities(activityType, afterDate, beforeDate)
       .then((result) => {
         setActivities(result);
@@ -64,9 +73,15 @@ export default function ActivitiesTab(props) {
         console.error("Get Activites Error:", err);
         //TODO - snackbar msg
       })
-      .finally(()=>{
+      .finally(() => {
         setLoading(false)
-      })
+      });
+  }
+
+  if (loading === true) {
+    setTimeout(() => {
+      setLoadingTimer(loadingTimer + 1);
+    }, 1000);
   }
 
   return (
@@ -94,7 +109,14 @@ export default function ActivitiesTab(props) {
         </ExpansionPanelDetails>
       </ExpansionPanel>
       {loading && (
-        <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"320px"} />
+        <div>
+          <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"300px"} />
+          <div className={classes.loadingText}>
+            <div>Loading....</div>
+            <div>Allow ~5 seconds for every 200 activities</div>
+            <div>{`${loadingTimer} secs elapsed`}</div>
+          </div>
+        </div>
       )}
       <List
         activities={activities}
@@ -102,6 +124,7 @@ export default function ActivitiesTab(props) {
         handleSelectedAct={handleSelectedAct}
         selectedAct={selectedAct}
         setMapCenter={setMapCenter}
+        handleRemoveActivity={handleRemoveActivity}
       />
     </div>
   );

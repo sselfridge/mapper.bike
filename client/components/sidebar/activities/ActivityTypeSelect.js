@@ -8,21 +8,30 @@ import AllInclusiveRoundedIcon from "@material-ui/icons/AllInclusiveRounded";
 const useStyles = makeStyles((theme) => ({
   activityType: {
     display: "flex",
-    flexDirection: 'column',
-    "& :first-child": {
-      borderRadius: "15px 0px 0px 15px",
-    },
-    "& :last-child": {
-      borderRadius: "0px 15px 15px 0px",
-    },
+    flexDirection: "column",
   },
   typeBtn: {
     border: "1px solid black",
     backgroundColor: "lightgray",
     padding: theme.spacing(0, 1),
   },
-  typeRow: {
-    display: 'flex'
+  bottomTypeRow: {
+    display: "flex",
+    "& :first-child": {
+      borderRadius: "0px 0px 0px 15px",
+    },
+    "& :last-child": {
+      borderRadius: "0px 0px 15px 0px",
+    },
+  },
+  topTypeRow: {
+    display: "flex",
+    "& :first-child": {
+      borderRadius: "15px 0px 0px 0px",
+    },
+    "& :last-child": {
+      borderRadius: "0px 15px 0px 0px",
+    },
   },
   paper: {
     display: "flex",
@@ -38,20 +47,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const StyledToggleButtonGroup = withStyles((theme) => ({
-//   grouped: {
-// margin: theme.spacing(0.5),
-// border: 'none',
-// padding: theme.spacing(0, 1),
-// '&:not(:first-child)': {
-//   borderRadius: theme.shape.borderRadius,
-// },
-// '&:first-child': {
-//   borderRadius: theme.shape.borderRadius,
-// },
-//   },
-// }))(ToggleButtonGroup);
-
 function ActivityTypeSelect(props) {
   const { toggleActivityType, activityType } = props;
 
@@ -59,8 +54,7 @@ function ActivityTypeSelect(props) {
 
   return (
     <div className={classes.activityType}>
-
-      <div className={classes.typeRow}>
+      <div className={classes.topTypeRow}>
         <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Ride })}>
           <Tooltip title="Ride">
             <img
@@ -70,7 +64,9 @@ function ActivityTypeSelect(props) {
             />
           </Tooltip>
         </div>
-        <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.VirtualRide })}>
+        <div
+          className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.VirtualRide })}
+        >
           <Tooltip title="Virtual Ride">
             <img
               className={classes.typeIcon}
@@ -80,7 +76,7 @@ function ActivityTypeSelect(props) {
           </Tooltip>
         </div>
       </div>
-      <aside className={classes.typeRow}>
+      <aside className={classes.bottomTypeRow}>
         <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Run })}>
           <Tooltip title="Run">
             <img

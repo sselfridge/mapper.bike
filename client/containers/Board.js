@@ -21,7 +21,7 @@ const Board = (props) => {
   const { currentUser } = props;
 
   const [activities, setActivities] = useState(demoData);
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [blackgroundActive, setBlackground] = useState(false);
   const [lineWeight, setLineWeight] = useState(3);
   const [lineColor, setLineColor] = useState("#0000ff"); //blue
@@ -33,6 +33,11 @@ const Board = (props) => {
   const handleSelectedAct = (newSelection, source) => {
     const prevSelect = _.find(activities, (activity) => activity.selected === true);
     if (prevSelect) prevSelect.selected = false;
+
+    if (newSelection.id === selectedAct.id) {
+      setSelectedAct({});
+      return;
+    }
 
     const selected = _.find(activities, (activity) => activity.id === newSelection.id);
     if (selected) {
@@ -51,7 +56,15 @@ const Board = (props) => {
     const bounds = calcBounds(newSelection.points);
 
     setMapBounds(bounds);
+    setTimeout(() => {
+      setMapBounds([]);
+    }, 0);
     setSelectedAct(newSelection);
+  };
+
+  const handleRemoveActivity = (index) => {
+    activities.splice(index, 1);
+    setActivities(activities.slice());
   };
 
   return (
@@ -73,6 +86,7 @@ const Board = (props) => {
         selectedAct={selectedAct}
         loading={loading}
         setLoading={setLoading}
+        handleRemoveActivity={handleRemoveActivity}
       />
       <MyMap
         blackgroundActive={blackgroundActive}
