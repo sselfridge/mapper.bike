@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     transition: "width 1s",
   },
+  rowSpacer:{
+    height: 50
+  }
 }));
 
 const getDynamicHeight = (setListHeight) => {
@@ -42,6 +45,7 @@ export default function List(props) {
       {activities.map((activity, index) => (
         <Row key={index} index={index} activity={activity} {...props} />
       ))}
+      <div className={classes.rowSpacer}/>
     </div>
   );
 }
