@@ -1,4 +1,6 @@
+/* eslint-disable react/prop-types */
 import React from "react";
+// eslint-disable-next-line no-unused-vars
 import PropTypes from "prop-types";
 import RideTitle from "../../RideTitle";
 import DatePicker from "react-date-picker";

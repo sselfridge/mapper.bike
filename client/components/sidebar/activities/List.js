@@ -5,8 +5,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { sidebarWidth } from "../../../constants/map";
 import Row from "./Row";
 
-import demoData from "../../../constants/DemoActivities";
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -33,7 +31,7 @@ const getDynamicHeight = (setListHeight) => {
 
 export default function List(props) {
   const classes = useStyles();
-  const { activities, selectedAct, handleSelectedAct } = props;
+  const { activities } = props;
 
   let newHeight = 0;
   const [listHeight, setListHeight] = useState(newHeight);
@@ -47,3 +45,7 @@ export default function List(props) {
     </div>
   );
 }
+
+List.propTypes = {
+  activities: PropTypes.array.isRequired,
+};

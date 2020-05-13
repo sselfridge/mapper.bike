@@ -6,7 +6,7 @@ import { Paper, makeStyles } from "@material-ui/core";
 import { NULL_USER, getCurrentUser, logout } from "../api/strava";
 
 const useStyles = makeStyles((theme) => {
-  console.log('App Theme');
+  console.log("App Theme");
   // console.log(theme.shape.borderRadius);
   // console.log(theme.spacing(1));
   // console.log(theme.spacing(1,1));
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const NewApp = (props) => {
+const NewApp = () => {
   const classes = useStyles();
 
   const [currentUser, setCurrentUser] = useState(NULL_USER);

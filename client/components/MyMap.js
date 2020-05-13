@@ -7,6 +7,7 @@ import { blackground, sidebarWidth } from "../constants/map";
 
 import config from "../../config/keys";
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {},
 }));

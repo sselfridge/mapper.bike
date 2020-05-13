@@ -4,7 +4,7 @@ import React from 'react'
 
 
 
-const EffortsTab = props =>{
+const EffortsTab = () =>{
 
     return (<div>Efforts Tab</div>)
 }

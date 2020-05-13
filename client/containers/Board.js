@@ -3,10 +3,11 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import { makeStyles } from "@material-ui/core";
 
-import demoData from "../constants/DemoActivities";
+// import demoData from "../constants/DemoActivities";
 import MyMap from "../components/MyMap";
 import MySidebar from "../components/sidebar/MySidebar";
 import { calcBounds } from "../utils";
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -102,7 +103,7 @@ const Board = (props) => {
 };
 
 Board.propTypes = {
-  // currentUser: PropTypes.obj
+  currentUser: PropTypes.object,
 };
 
 export default Board;

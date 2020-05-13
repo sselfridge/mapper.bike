@@ -1,5 +1,5 @@
 import React from "react";
-import { Polyline, Polygon } from "google-maps-react";
+import { Polygon } from "google-maps-react";
 
 export const sidebarWidth = 360;
 
@@ -37,11 +37,6 @@ export const blackground = [
   />,
 ];
 
-// export const lineColors = [
-//   "red",  "#e91e63",  "#9c27b0",  "#673ab7",  "blue",  "#2196f3",
-//   "#03a9f4",  "#00bcd4",  "#009688",  "#4caf50",  "#8bc34a",  "#52eb0e",
-//   "#ffeb3b",  "#ffc107",  "#ff9800",  "#ff5722",  "#795548",  "#607d8b",
-// ];
 
 // prettier-ignore
 export const lineColors = 

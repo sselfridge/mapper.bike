@@ -6,6 +6,7 @@ import MyDefaultSidebar from "./MyDefaultSidebar";
 import TabbedSidebar from "./TabbedSidebar";
 import { sidebarWidth } from "../../constants/map";
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
     width: sidebarWidth,

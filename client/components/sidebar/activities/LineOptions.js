@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { makeStyles, Button, ClickAwayListener, Slider } from "@material-ui/core";
+import { makeStyles, ClickAwayListener } from "@material-ui/core";
 import { TwitterPicker } from "react-color";
 import { lineColors } from "../../../constants/map";
 import InputLabel from "../../styledMui/InputLabel";
@@ -36,11 +36,10 @@ const LineOptions = (props) => {
   const classes = useStyles();
 
   const {
-    lineWeight,
-    setLineWeight,
+    // lineWeight,
+    // setLineWeight,
     lineColor,
     setLineColor,
-    fetchActivities,
     setSelectedColor,
     selectedColor,
   } = props;
@@ -58,16 +57,6 @@ const LineOptions = (props) => {
     }
   };
 
-  const sliderStyles = {
-    track: {
-      height: 8,
-      borderRadius: 4,
-    },
-    rail: {
-      height: 8,
-      borderRadius: 4,
-    },
-  };
 
   return (
     <div className={classes.root}>
@@ -133,7 +122,6 @@ LineOptions.propTypes = {
   setLineWeight: PropTypes.func.isRequired,
   lineColor: PropTypes.string.isRequired,
   setLineColor: PropTypes.func.isRequired,
-  fetchActivities: PropTypes.func.isRequired,
   setSelectedColor: PropTypes.func.isRequired,
   selectedColor: PropTypes.string.isRequired,
 };

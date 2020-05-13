@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import moment from "moment";
@@ -53,14 +53,7 @@ const useRowStyles = makeStyles((theme) => ({
 function Row(props) {
   const classes = useRowStyles();
 
-  let {
-    activity,
-    index,
-    selectedAct,
-    handleSelectedAct,
-    setMapCenter,
-    handleRemoveActivity,
-  } = props;
+  let { activity, index, selectedAct, handleSelectedAct, handleRemoveActivity } = props;
 
   const avatarStyles = {
     root: classes.itemNumber,
@@ -134,6 +127,11 @@ function Row(props) {
 Row.propTypes = {
   index: PropTypes.number.isRequired,
   activity: PropTypes.object.isRequired,
+  selectedAct: PropTypes.shape({
+    id: PropTypes.number,
+  }),
+  handleSelectedAct: PropTypes.func.isRequired,
+  handleRemoveActivity: PropTypes.func.isRequired,
 };
 
 export default Row;
