@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+
 import { makeStyles } from "@material-ui/core/styles";
 import DatePicker from "react-date-picker";
 import _ from "lodash";
@@ -132,6 +134,19 @@ const ControlPanel = (props) => {
       />
     </div>
   );
+};
+
+ControlPanel.propTypes = {
+  blackgroundActive: PropTypes.bool.isRequired,
+  setBlackground: PropTypes.func.isRequired,
+  fetchActivities: PropTypes.func.isRequired,
+  activityType: PropTypes.object.isRequired,
+  setActivityType: PropTypes.func.isRequired,
+  setMapCenter: PropTypes.func.isRequired,
+  onAfterChange: PropTypes.func.isRequired,
+  afterDate: PropTypes.instanceOf(Date).isRequired,
+  onBeforeChange: PropTypes.func.isRequired,
+  beforeDate: PropTypes.instanceOf(Date).isRequired,
 };
 
 export default ControlPanel;

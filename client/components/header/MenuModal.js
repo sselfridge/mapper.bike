@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+
 import { makeStyles, Button, Checkbox, Tooltip, Modal } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -83,5 +85,9 @@ const MenuModal = (props) => {
   //
   // );
 };
-
+MenuModal.propTypes = {
+  stravaLogout: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  modalOpen: PropTypes.bool.isRequired,
+};
 export default MenuModal;

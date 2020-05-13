@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { GoogleApiWrapper, Map, Polyline } from "google-maps-react";
 import { makeStyles } from "@material-ui/core";
 
@@ -14,7 +15,6 @@ const MyMap = (props) => {
   const classes = useStyles();
   const {
     mapCenter,
-    mapZoom,
     blackgroundActive,
     activities,
     lineColor,
@@ -33,7 +33,7 @@ const MyMap = (props) => {
       strokeOpacity={0.75}
       zIndex={activity.selected ? 90 : 2}
       onClick={() => {
-        handleSelectedAct(activity,'map');
+        handleSelectedAct(activity, "map");
       }}
     />
   ));
@@ -47,7 +47,7 @@ const MyMap = (props) => {
   }
 
   return (
-    <div>
+    <div className={classes.root}>
       <Map
         id="mapcomp"
         containerStyle={{
@@ -69,6 +69,18 @@ const MyMap = (props) => {
       </Map>
     </div>
   );
+};
+
+MyMap.propTypes = {
+  mapCenter: PropTypes.object.isRequired,
+  blackgroundActive: PropTypes.bool.isRequired,
+  activities: PropTypes.array.isRequired,
+  lineColor: PropTypes.string.isRequired,
+  lineWeight: PropTypes.number.isRequired,
+  selectedColor: PropTypes.string.isRequired,
+  mapBounds: PropTypes.array.isRequired,
+  handleSelectedAct: PropTypes.func.isRequired,
+  google: PropTypes.object.isRequired,
 };
 
 export default GoogleApiWrapper({

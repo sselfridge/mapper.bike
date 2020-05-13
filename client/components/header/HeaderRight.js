@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { makeStyles, Modal, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
 import MenuModal from "./MenuModal";
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "10px 0px",
   },
   username: {
-    padding: 10,
+    padding: theme.spacing(1),
     lineHeight: 2,
     textDecoration: "none",
     color: "black",
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "20px",
   },
   menuIcon: {
-    padding: 7,
+    padding: theme.spacing(1),
   },
 }));
 

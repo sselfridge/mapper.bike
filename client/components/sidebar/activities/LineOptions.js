@@ -128,4 +128,14 @@ const LineOptions = (props) => {
   );
 };
 
+LineOptions.propTypes = {
+  lineWeight: PropTypes.number.isRequired,
+  setLineWeight: PropTypes.func.isRequired,
+  lineColor: PropTypes.string.isRequired,
+  setLineColor: PropTypes.func.isRequired,
+  fetchActivities: PropTypes.func.isRequired,
+  setSelectedColor: PropTypes.func.isRequired,
+  selectedColor: PropTypes.string.isRequired,
+};
+
 export default LineOptions;
