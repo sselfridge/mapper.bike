@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CenterMapModal = (props) => {
   const classes = useStyles();
-  const { showCenterModal, setShowCenterModal, setMapCenter } = props;
+  const { showCenterModal, setShowCenterModal, setMapCenter, snackBar} = props;
 
   function handleChange(e) {
     if (e.key === "Enter") {
@@ -47,7 +47,7 @@ const CenterMapModal = (props) => {
           setShowCenterModal(false);
           setMapCenter(center);
         } else {
-          //TODO snackbar msg
+          snackBar("Location Not Found",'warning')
         }
       })
       .catch((err) => {
@@ -94,6 +94,7 @@ CenterMapModal.propTypes = {
   showCenterModal: PropTypes.bool.isRequired,
   setShowCenterModal: PropTypes.func.isRequired,
   setMapCenter: PropTypes.func.isRequired,
+  snackBar: PropTypes.func.isRequired,
 };
 
 export default CenterMapModal;

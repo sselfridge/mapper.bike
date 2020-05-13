@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from 'prop-types'
 import { makeStyles } from "@material-ui/core/styles";
 import {
   ExpansionPanel,
@@ -45,6 +46,7 @@ export default function ActivitiesTab(props) {
     setLoading,
     loading,
     handleRemoveActivity,
+    snackBar
   } = props;
 
   const [beforeDate, setBefore] = useState(new Date());
@@ -71,7 +73,7 @@ export default function ActivitiesTab(props) {
       })
       .catch((err) => {
         console.error("Get Activites Error:", err);
-        //TODO - snackbar msg
+        snackBar()
       })
       .finally(() => {
         setLoading(false)
@@ -129,3 +131,15 @@ export default function ActivitiesTab(props) {
     </div>
   );
 }
+
+ActivitiesTab.propTypes = {
+  activities: PropTypes.array.isRequired,
+  setActivities: PropTypes.func.isRequired,
+  handleSelectedAct: PropTypes.func.isRequired,
+  selectedAct: PropTypes.object.isRequired,
+  setMapCenter: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  handleRemoveActivity: PropTypes.func.isRequired,
+  snackBar: PropTypes.func.isRequired,
+};

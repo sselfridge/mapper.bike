@@ -126,12 +126,6 @@ class App extends Component {
     this.setState({ center });
   }
 
-
-  //TODO
-  //worker function to calculate the map extremes of each activity to find a mid point
-  //Also calculate distance and change zoom as needed
-  findCenterAndZoom() {}
-
   removeAct(e, id) {
     let activities = this.state.activities;
     let deleteIndex;
@@ -413,7 +407,6 @@ class App extends Component {
             />
           </div>
 
-          {/* TODO Add ability to center map on current location */}
           <Map
             id="mapcomp"
             containerStyle={this.state.mapStyles}

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 const Board = (props) => {
   const classes = useStyles();
 
-  const { currentUser } = props;
+  const { currentUser, snackBar } = props;
 
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -87,6 +87,7 @@ const Board = (props) => {
         loading={loading}
         setLoading={setLoading}
         handleRemoveActivity={handleRemoveActivity}
+        snackBar={snackBar}
       />
       <MyMap
         blackgroundActive={blackgroundActive}
@@ -97,6 +98,7 @@ const Board = (props) => {
         mapCenter={mapCenter}
         mapBounds={mapBounds}
         handleSelectedAct={handleSelectedAct}
+        snackBar={snackBar}
       />
     </div>
   );
@@ -104,6 +106,7 @@ const Board = (props) => {
 
 Board.propTypes = {
   currentUser: PropTypes.object,
+  snackBar: PropTypes.func,
 };
 
 export default Board;

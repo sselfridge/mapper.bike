@@ -62,6 +62,7 @@ const ControlPanel = (props) => {
     afterDate,
     onBeforeChange,
     beforeDate,
+    snackBar,
     ...rest
   } = props;
 
@@ -131,6 +132,7 @@ const ControlPanel = (props) => {
         showCenterModal={showCenterModal}
         setShowCenterModal={setShowCenterModal}
         setMapCenter={setMapCenter}
+        snackBar={snackBar}
       />
     </div>
   );
@@ -146,6 +148,7 @@ ControlPanel.propTypes = {
   onAfterChange: PropTypes.func.isRequired,
   afterDate: PropTypes.instanceOf(Date).isRequired,
   onBeforeChange: PropTypes.func.isRequired,
+  snackBar: PropTypes.func.isRequired,
   beforeDate: PropTypes.instanceOf(Date).isRequired,
 };
 
