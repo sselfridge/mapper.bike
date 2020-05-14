@@ -10,21 +10,24 @@ const fs = require("fs");
 // const mongoURI = "mongodb://localhost/meinmap";
 // mongoose.connect(mongoURI, { useNewUrlParser: true });
 
-const stravaController = require("./controllers/stravaController");
+const oAuthStrava = require("./controllers/oAuthStrava");
+const summaryController = require("./controllers/summaryStrava");
+const segmentController = require("./controllers/segmentsStrava");
 const analyticController = require("./controllers/analyticsController");
-// const squirrel = require("./controllers/squirrel");
-const zip = require("../config/zip_lat_lang");
 
+const stravaQ = require("./services/stravaQueue");
+const zip = require("../config/zip_lat_lang");
 const config = require("../config/keys");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(analyticController.getUserData);
-app.use(logReq)
+app.use(logReq);
 
+const timer = 900000; //15min 1000 * 60 * 15
+const interval = setInterval(stravaQ.processQueue, timer);
 
-app.get("/api/getStravaUser", stravaController.loadStravaProfile, (req, res) => {
+app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   if (res.locals.err) {
     res.status(444).send("Error during profile fetch");
     return;
@@ -54,13 +57,13 @@ app.get("/api/getLatLngZip/:zip", (req, res) => {
   }
   const center = {
     lat: latlng[0],
-    lng: latlng[1]
+    lng: latlng[1],
   };
   res.json(center);
 });
 
-app.get("/api/strava/callback", stravaController.setStravaOauth, (req, res) => {
-  console.log(`Strava CallBack Happening`);
+app.get("/api/strava/callback", oAuthStrava.setStravaOauth, (req, res) => {
+  console.log(`Strava Oauth CallBack Happening`);
   if (res.locals.err) {
     console.log(res.locals.err);
     res.status(523).send("Error with Oauth");
@@ -69,39 +72,96 @@ app.get("/api/strava/callback", stravaController.setStravaOauth, (req, res) => {
 });
 
 app.get(
-  "/api/getActivities",
-  stravaController.loadStravaProfile,
-  stravaController.getActivities,
+  "/api/summaryActivities",
+  oAuthStrava.loadStravaProfile,
+  summaryController.getSummeries,
+  (req, res) => {
+    console.log("back here");
+    if (res.locals.err) {
+      console.log(res.locals.err);
+      res.status(523).send("Error with get Activities");
+      return;
+    }
+    console.log(`Sending Back ${res.locals.activities.length} activities`);
+    // uncomment to save activites to file
+    // fs.writeFileSync("./savedActivities.json", JSON.stringify(res.locals.activities));
+    res.send(JSON.stringify(res.locals.activities));
+  }
+);
+
+app.get("/api/demoData", (req, res) => {
+  const demoData = fs.readFileSync("./server/utils/LGGroupRides.json");
+  res.send(demoData);
+});
+
+app.get(
+  "/api/test",
+  oAuthStrava.loadStravaProfile,
+  // segmentController.intializeUser,
+  // segmentController.updateUserDB,
+  segmentController.test,
+  (req, res) => {
+    if (res.locals.err) {
+      console.log("Error!!");
+      console.log(res.locals.err);
+      res.status(500).send("DOH!!");
+    } else {
+      console.log("fin");
+      res.send("OK");
+    }
+  }
+);
+
+app.post(
+  "/api/initialize",
+  oAuthStrava.loadStravaProfile,
+  segmentController.intializeUser,
   (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
-      res.status(523).send("Error with get Activites");
-      return; 
+      res.status(523).send("Error intializing user ");
+      return;
     }
-    console.log(`Sending Back ${res.locals.activities.length} activities`);
-    res.send(JSON.stringify(res.locals.activities));
+    const count = res.locals.data.activityCount;
+
+    res.send(count);
   }
 );
 
 app.get(
-  "/api/getDemoData",
-  stravaController.getDemoData,
+  "/api/segmentEfforts",
+  oAuthStrava.loadStravaProfile,
+  segmentController.segmentEfforts,
   (req, res) => {
-    console.log(`Sending Back ${res.locals.activities.length} activities`);
-    res.send(JSON.stringify(res.locals.activities));
+    if (res.locals.err) {
+      console.log(res.locals.err);
+      res.status(523).send("Error with get segments ");
+      return;
+    }
+    if (res.locals.pending) {
+      res.status(203).send("Data Pending, checkback soon");
+      return;
+    }
+
+    res.send(JSON.stringify(res.locals.segmentEfforts));
   }
 );
 
-app.get("/api/logout",stravaController.clearCookie, (req, res) => {
+app.get("/api/getDemoData", summaryController.getDemoData, (req, res) => {
+  console.log(`Sending Back ${res.locals.activities.length} activities`);
+  res.send(JSON.stringify(res.locals.activities));
+});
+
+app.post("/api/logout", oAuthStrava.clearCookie, (req, res) => {
   res.send("Ok");
 });
 
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
-  console.log(`Server in Production mode!`);
+  console.log(`Server in Production/Test mode!`);
   app.use("/build", express.static(path.join(__dirname, "../build")));
   // serve index.html on the route '/'
-  app.get("/", (req, res) => {
+  app.get("/", analyticController.getUserData, (req, res) => {
     console.log("Sending out the index");
     res.sendFile(path.join(__dirname, "../index.html"));
   });
@@ -109,7 +169,7 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
   // TODO: redo this to bundle image in webpack
   app.get("/client/img/:image", (req, res) => {
     const imagePath = path.join(__dirname, `../client/img/${req.params.image}`);
-    fs.exists(imagePath, function(exists) {
+    fs.exists(imagePath, function (exists) {
       if (exists) {
         res.sendFile(imagePath);
       } else {
@@ -129,12 +189,11 @@ app.use("*", (req, res) => {
 app.use((err, req, res, next) => {
   console.log(`Catch All Error:======================================`);
   if (err.code != 11000) console.log(err); //11000 is a mongoDB error
-  res.status(200).send("Something Broke, we're sorry");
+  res.status(500).send("Something Broke, we're sorry");
   next();
 });
 
-
-function logReq(req,res,next){
+function logReq(req, res, next) {
   console.log(req.url);
   next();
 }

@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ReactLoading from "react-loading";
-import config from "../../config/keys";
+import config from "../../../../config/keys";
 
 const DefaultSidebar = props => {
   return (
@@ -25,5 +24,12 @@ const DefaultSidebar = props => {
     </div>
   );
 };
+
+DefaultSidebar.propTypes = {
+  // letters: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getDemoActivities: PropTypes.func.isRequired,
+  // row: PropTypes.number.isRequired,
+};
+
 
 export default DefaultSidebar;
