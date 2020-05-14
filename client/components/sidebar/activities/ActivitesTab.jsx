@@ -14,11 +14,12 @@ import List from "./List";
 
 import ControlPanel from "./ControlPanel";
 
+
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "87.5vh",
     backgroundColor: "#aadaff",
-    // padding: theme.spacing(1),
   },
   fillerText: {
     textAlign: "center",

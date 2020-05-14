@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { apiTest } from "../../../api/strava";
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -9,26 +9,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const gifs = [
+  "http://clipartmag.com/images/website-under-construction-image-6.gif",
+  "https://clipartion.com/wp-content/uploads/2015/11/under-construction-clip-art-clipart-free-clipart.gif",
+  "http://images.clipartpanda.com/construction-site-clipart-under-construction-sign-animated.gif",
+  "http://orvex.org.p11.hostingprod.com/images/under_construction.gif",
+  "http://www.bestgraph.com/gifs/info/construc/construc-12.gif",
+  "http://animations.fg-a.com/under-construction/under-construction-flashing-lights.gif",
+  "https://media.giphy.com/media/EdBq6OQN7JUly/giphy.gif",
+];
+
 const EffortsTab = () => {
-  const [testText, setTestText] = useState("");
   const classes = useStyles();
 
-  const clicky = () => {
-    console.log("Allo!!");
-    apiTest().then((result) => {
-      console.log("result");
-      console.log(result);
-      setTestText(JSON.stringify(result));
-    });
-  };
+  const size = gifs.length;
+  const rand = Math.floor(Math.random() * size);
 
   return (
     <div>
       <div className={classes.root}>
-        <img src="http://clipartmag.com/images/website-under-construction-image-6.gif" />
+        <img src={gifs[rand]} />
       </div>
-      <div>{testText}</div>
-      <button onClick={clicky}>ASDF</button>
     </div>
   );
 };

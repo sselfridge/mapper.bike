@@ -53,4 +53,5 @@ export default function List(props) {
 
 List.propTypes = {
   activities: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired
 };
