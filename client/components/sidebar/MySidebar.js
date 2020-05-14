@@ -16,19 +16,18 @@ const useStyles = makeStyles((theme) => ({
 
 const MySidebar = (props) => {
   const classes = useStyles();
-  const { currentUser, getDemoActivities } = props;
+  const { currentUser } = props;
 
   const sidebar = currentUser.firstname ? (
     <TabbedSidebar {...props} />
   ) : (
-    <MyDefaultSidebar getDemoActivities={getDemoActivities} />
+    <MyDefaultSidebar {...props} />
   );
 
   return <div className={classes.root}>{sidebar}</div>;
 };
 
 MySidebar.propTypes = {
-  getDemoActivities: PropTypes.func,
   currentUser: PropTypes.shape({
     firstname: PropTypes.string,
   }),

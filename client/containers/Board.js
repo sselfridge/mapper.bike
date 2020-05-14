@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 const Board = (props) => {
   const classes = useStyles();
 
-  const { currentUser, snackBar } = props;
+  const { currentUser, setCurrentUser, snackBar } = props;
 
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -71,6 +71,7 @@ const Board = (props) => {
     <div className={classes.root}>
       <MySidebar
         currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
         blackgroundActive={blackgroundActive}
         setBlackground={setBlackground}
         activities={activities}
@@ -106,6 +107,7 @@ const Board = (props) => {
 
 Board.propTypes = {
   currentUser: PropTypes.object,
+  setCurrentUser: PropTypes.func,
   snackBar: PropTypes.func,
 };
 

@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { makeStyles, Button } from "@material-ui/core";
 import config from "../../../config/keys";
 
+import { getDemoData, DEMO_USER } from "../../api/strava";
+
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +26,24 @@ const useStyles = makeStyles((theme) => ({
 
 const DefaultSidebar = (props) => {
   const classes = useStyles();
-  const { getDemoActivities } = props;
+  const {  setLoading, setActivities, snackBar,setCurrentUser } = props;
+
+  function setDemo() {
+    setLoading(true);
+    
+    getDemoData()
+      .then((result) => {
+        setActivities(result);
+        setCurrentUser(DEMO_USER)
+      })
+      .catch((err) => {
+        console.error("Get Activites Error:", err);
+        snackBar();
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   return (
     <div className={classes.root}>
@@ -41,7 +60,7 @@ const DefaultSidebar = (props) => {
       </div>
       <div className={classes.demoBtn}>
         <section>Want to try it out without linking your Strava?</section>
-        <Button id="demoBtn" variant={"contained"} onClick={getDemoActivities}>
+        <Button id="demoBtn" variant={"contained"} onClick={setDemo}>
           Click Here To Load Demo data
         </Button>
       </div>
@@ -51,6 +70,11 @@ const DefaultSidebar = (props) => {
 
 DefaultSidebar.propTypes = {
   getDemoActivities: PropTypes.func,
+  setLoadingTimer: PropTypes.func,
+  setLoading: PropTypes.func,
+  setActivities: PropTypes.func,
+  snackBar: PropTypes.func,
+  setCurrentUser: PropTypes.func
 };
 
 export default DefaultSidebar;

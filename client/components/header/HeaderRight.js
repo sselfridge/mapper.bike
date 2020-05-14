@@ -62,7 +62,7 @@ const HeaderRight = (props) => {
         </span>
       )}
       <MenuRoundedIcon className={classes.menuIcon} fontSize="large" onClick={handleOpen} />
-      <MenuModal stravaLogout={stravaLogout} handleClose={handleClose} modalOpen={modalOpen} />
+      <MenuModal stravaLogout={stravaLogout} handleClose={handleClose} modalOpen={modalOpen} currentUser={currentUser} />
     </div>
   );
 };

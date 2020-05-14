@@ -15,7 +15,7 @@ const summaryController = require("./controllers/summaryStrava");
 const segmentController = require("./controllers/segmentsStrava");
 const analyticController = require("./controllers/analyticsController");
 
-const stravaQ = require('./services/stravaQueue');
+const stravaQ = require("./services/stravaQueue");
 const zip = require("../config/zip_lat_lang");
 const config = require("../config/keys");
 
@@ -24,9 +24,8 @@ app.use(cookieParser());
 
 app.use(logReq);
 
-const timer = 900000 //15min 1000 * 60 * 15
+const timer = 900000; //15min 1000 * 60 * 15
 const interval = setInterval(stravaQ.processQueue, timer);
-
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   if (res.locals.err) {
@@ -77,16 +76,22 @@ app.get(
   oAuthStrava.loadStravaProfile,
   summaryController.getSummeries,
   (req, res) => {
-  console.log('back here');
+    console.log("back here");
     if (res.locals.err) {
       console.log(res.locals.err);
       res.status(523).send("Error with get Activities");
       return;
     }
     console.log(`Sending Back ${res.locals.activities.length} activities`);
+    fs.writeFileSync("./savedActivities.json", JSON.stringify(res.locals.activities));
     res.send(JSON.stringify(res.locals.activities));
   }
 );
+
+app.get("/api/demoData",(req,res)=>{
+  const demoData = fs.readFileSync('./server/utils/LGGroupRides.json')
+  res.send(demoData);
+})
 
 app.get(
   "/api/test",

@@ -7,6 +7,15 @@ export const NULL_USER = {
   athleteId: null,
 };
 
+
+
+export const DEMO_USER = {
+  avatar: "https://dgalywyr863hv.cloudfront.net/pictures/athletes/58248365/14987542/1/large.jpg",
+  firstname: "LaGrange",
+  lastname: "Group Rides",
+  athleteId: 101,
+};
+
 export function getCurrentUser() {
   console.log("Get Current User");
   return new Promise((resolve, reject) => {
@@ -55,6 +64,21 @@ export function getActivities(type, after, before) {
       .catch((err) => reject(err));
   });
 }
+
+export function getDemoData() {
+  return new Promise((resolve, reject) => {
+    const quereyString = `/api/demoData`;
+
+    axios
+      .get(quereyString)
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => reject(err));
+  });
+}
+
+
 
 function dateToEpoch(date) {
   const number = Math.floor(date.getTime() / 1000);
