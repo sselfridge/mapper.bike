@@ -12,7 +12,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { getActivities } from "../../../api/strava";
 import List from "./List";
 
-import ControlPanel from "./controlPanel";
+import ControlPanel from "./ControlPanel";
 
 const useStyles = makeStyles((theme) => ({
   root: {
