@@ -83,15 +83,16 @@ app.get(
       return;
     }
     console.log(`Sending Back ${res.locals.activities.length} activities`);
-    fs.writeFileSync("./savedActivities.json", JSON.stringify(res.locals.activities));
+    // uncomment to save activites to file
+    // fs.writeFileSync("./savedActivities.json", JSON.stringify(res.locals.activities));
     res.send(JSON.stringify(res.locals.activities));
   }
 );
 
-app.get("/api/demoData",(req,res)=>{
-  const demoData = fs.readFileSync('./server/utils/LGGroupRides.json')
+app.get("/api/demoData", (req, res) => {
+  const demoData = fs.readFileSync("./server/utils/LGGroupRides.json");
   res.send(demoData);
-})
+});
 
 app.get(
   "/api/test",

@@ -14,12 +14,12 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     transition: "width 1s",
   },
-  rowSpacer:{
-    height: 50
-  }
+  rowSpacer: {
+    height: 50,
+  },
 }));
 
-const getDynamicHeight = (setListHeight) => {
+const getDynamicHeight = (setListHeight,loading) => {
   const panel = document.getElementById("controlPanel");
 
   if (panel) {
@@ -27,25 +27,26 @@ const getDynamicHeight = (setListHeight) => {
       const panelHeight = panel.offsetHeight;
       const windowHeight = window.innerHeight;
       const newHeight = windowHeight - (120 + panelHeight);
-      setListHeight(newHeight);
+      const heightWithLoading = loading ? newHeight - 380 : newHeight
+      setListHeight(heightWithLoading);
     }, 250);
   }
 };
 
 export default function List(props) {
   const classes = useStyles();
-  const { activities } = props;
+  const { activities,loading } = props;
 
   let newHeight = 0;
   const [listHeight, setListHeight] = useState(newHeight);
-  getDynamicHeight(setListHeight);
+  getDynamicHeight(setListHeight,loading);
 
   return (
     <div style={{ height: listHeight }} className={classes.root}>
       {activities.map((activity, index) => (
         <Row key={index} index={index} activity={activity} {...props} />
       ))}
-      <div className={classes.rowSpacer}/>
+      <div className={classes.rowSpacer} />
     </div>
   );
 }

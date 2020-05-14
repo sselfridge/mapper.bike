@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   ExpansionPanel,
@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
     height: "87.5vh",
     backgroundColor: "#aadaff",
     // padding: theme.spacing(1),
+  },
+  fillerText: {
+    textAlign: "center",
   },
   loadingText: {
     position: "relative",
@@ -46,7 +49,7 @@ export default function ActivitiesTab(props) {
     setLoading,
     loading,
     handleRemoveActivity,
-    snackBar
+    snackBar,
   } = props;
 
   const [beforeDate, setBefore] = useState(new Date());
@@ -73,10 +76,10 @@ export default function ActivitiesTab(props) {
       })
       .catch((err) => {
         console.error("Get Activites Error:", err);
-        snackBar()
+        snackBar("Error getting Rides, try again later",'error');
       })
       .finally(() => {
-        setLoading(false)
+        setLoading(false);
       });
   }
 
@@ -120,8 +123,12 @@ export default function ActivitiesTab(props) {
           </div>
         </div>
       )}
+      {!activities[0] && !loading && (
+        <div className={classes.fillerText}>{"Click 'GET RIDES' to populate map"}</div>
+      )}
       <List
         activities={activities}
+        loading={loading}
         panelExpanded={panelExpanded}
         handleSelectedAct={handleSelectedAct}
         selectedAct={selectedAct}
