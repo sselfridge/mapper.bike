@@ -96,7 +96,7 @@ app.get("/api/demoData", (req, res) => {
 
 app.get(
   "/api/test",
-  oAuthStrava.loadStravaProfile,
+  // oAuthStrava.loadStravaProfile,
   // segmentController.intializeUser,
   // segmentController.updateUserDB,
   segmentController.test,
@@ -107,7 +107,7 @@ app.get(
       res.status(500).send("DOH!!");
     } else {
       console.log("fin");
-      res.send("OK");
+      res.send(res.locals.effort);
     }
   }
 );

@@ -7,8 +7,6 @@ export const NULL_USER = {
   athleteId: null,
 };
 
-
-
 export const DEMO_USER = {
   avatar: "https://dgalywyr863hv.cloudfront.net/pictures/athletes/58248365/14987542/1/large.jpg",
   firstname: "LaGrange",
@@ -78,8 +76,6 @@ export function getDemoData() {
   });
 }
 
-
-
 function dateToEpoch(date) {
   const number = Math.floor(date.getTime() / 1000);
   return number;
@@ -93,6 +89,9 @@ export const apiTest = () => {
       .then((res) => {
         resolve(res.data);
       })
-      .catch((err) => reject(err));
+      .catch((err) => {
+        console.log(err);
+        reject(err);
+      });
   });
 };

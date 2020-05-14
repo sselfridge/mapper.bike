@@ -95,16 +95,14 @@ async function addToActivityQueue(strava) {
 
 async function test(req, res, next) {
   console.log("Start Test");
-  const strava = res.locals.strava;
-
-  const after = 1583694918;
-  const before = 1588965318;
-
-  const params = { before, after, page: 1, per_page: 200 };
+  // const strava = res.locals.strava;
 
   try {
-    const asdf = await strava.athlete.listActivities(params);
-    console.log(asdf.length);
+    const out = await db.getEfforts(1075670,1);
+
+    console.log('Rabble');
+    console.log(out);
+    res.locals.effort = out[0]
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);
