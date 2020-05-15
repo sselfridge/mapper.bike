@@ -61,10 +61,13 @@ async function checkSegmentSyncStatus(req, res, next) {}
 
 async function segmentEfforts(req, res, next) {
   const athleteId = res.locals.user.athleteId;
-  const rank = req.query.rank ? req.query.rank : 1;
-
+  const rank = parseInt(req.query.rank ? req.query.rank : 1);
   const efforts = await db.getEffortsWithPath(athleteId, rank);
   res.locals.segmentEfforts = efforts;
+  console.log('Done with segment controller work');
+  console.log(efforts);
+  console.log('End of Efforts');
+  next();
 }
 
 async function totalUserActivites(strava, id) {
@@ -98,11 +101,11 @@ async function test(req, res, next) {
   // const strava = res.locals.strava;
 
   try {
-    const out = await db.getEfforts(1075670,1);
+    const out = await db.getEfforts(1075670, 1);
 
-    console.log('Rabble');
+    console.log("Rabble");
     console.log(out);
-    res.locals.effort = out[0]
+    res.locals.effort = out[0];
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);

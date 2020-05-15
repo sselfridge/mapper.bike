@@ -142,6 +142,21 @@ app.get(
       res.status(203).send("Data Pending, checkback soon");
       return;
     }
+    const efforts = res.locals.segmentEfforts;
+    // efforts.forEach((e,i) => {
+    //   console.log(`${i}`,e.name);
+    //   JSON.stringify(e);
+    // });
+    efforts[11];
+
+    for (const key in efforts[11]) {
+      if (efforts[11].hasOwnProperty(key)) {
+        const element = efforts[11][key];
+        console.log(typeof element);
+        console.log(element);
+        console.log(element.toString());
+      }
+    }
 
     res.send(JSON.stringify(res.locals.segmentEfforts));
   }

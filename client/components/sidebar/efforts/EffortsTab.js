@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-
+import List from "../activities/List";
+import { getEfforts } from "../../../api/strava";
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -9,29 +11,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const gifs = [
-  "http://clipartmag.com/images/website-under-construction-image-6.gif",
-  "https://clipartion.com/wp-content/uploads/2015/11/under-construction-clip-art-clipart-free-clipart.gif",
-  "http://images.clipartpanda.com/construction-site-clipart-under-construction-sign-animated.gif",
-  "http://orvex.org.p11.hostingprod.com/images/under_construction.gif",
-  "http://www.bestgraph.com/gifs/info/construc/construc-12.gif",
-  "http://animations.fg-a.com/under-construction/under-construction-flashing-lights.gif",
-  "https://media.giphy.com/media/EdBq6OQN7JUly/giphy.gif",
-];
-
-const EffortsTab = () => {
+const EffortsTab = (props) => {
   const classes = useStyles();
 
-  const size = gifs.length;
-  const rand = Math.floor(Math.random() * size);
+  const {
+    activities,
+    setActivities,
+    loading,
+    handleSelectedAct,
+    selectedAct,
+    setMapCenter,
+    handleRemoveActivity,
+  } = props;
+
+  const [panelExpanded, setPanelExpanded] = useState(true);
+
+  useEffect(() => {
+    console.log("Effect Used");
+    getEfforts()
+      .then((result) => {
+        console.log("result");
+        console.log(result);
+        setActivities(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
-    <div>
-      <div className={classes.root}>
-        <img src={gifs[rand]} />
-      </div>
+    <div className={classes.root}>
+      <List
+        activities={activities}
+        loading={loading}
+        panelExpanded={panelExpanded}
+        handleSelectedAct={handleSelectedAct}
+        selectedAct={selectedAct}
+        setMapCenter={setMapCenter}
+        handleRemoveActivity={handleRemoveActivity}
+      />
+      Doing Stufg!
     </div>
   );
+};
+
+EffortsTab.propTypes = {
+  activities: PropTypes.array.isRequired,
+  setActivities: PropTypes.func.isRequired,
+  handleSelectedAct: PropTypes.func.isRequired,
+  selectedAct: PropTypes.object.isRequired,
+  setMapCenter: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  handleRemoveActivity: PropTypes.func.isRequired,
+  snackBar: PropTypes.func.isRequired,
 };
 
 export default EffortsTab;

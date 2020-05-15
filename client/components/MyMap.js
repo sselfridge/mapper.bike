@@ -25,19 +25,21 @@ const MyMap = (props) => {
     handleSelectedAct,
   } = props;
 
-  const lines = activities.map((activity) => (
-    <Polyline
-      key={activity.id}
-      path={activity.points}
-      strokeColor={activity.selected ? selectedColor : lineColor}
-      strokeWeight={activity.selected ? lineWeight + 2 : lineWeight}
-      strokeOpacity={0.75}
-      zIndex={activity.selected ? 90 : 2}
-      onClick={() => {
-        handleSelectedAct(activity, "map");
-      }}
-    />
-  ));
+  // const lines = activities.map((activity) => (
+  //   <Polyline
+  //     key={activity.id}
+  //     path={activity.points}
+  //     strokeColor={activity.selected ? selectedColor : lineColor}
+  //     strokeWeight={activity.selected ? lineWeight + 2 : lineWeight}
+  //     strokeOpacity={0.75}
+  //     zIndex={activity.selected ? 90 : 2}
+  //     onClick={() => {
+  //       handleSelectedAct(activity, "map");
+  //     }}
+  //   />
+  // ));
+
+  const lines = []
 
   let bounds;
   if (mapBounds.length > 0) {

@@ -95,3 +95,20 @@ export const apiTest = () => {
       });
   });
 };
+
+
+export function getEfforts(rank = 1){
+  return new Promise((resolve, reject) => {
+    console.log('Getting Efforts');
+    const quereyString = `/api/segmentEfforts?rank=${rank}`;
+    axios
+      .get(quereyString)
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(err);
+      });
+  });
+}

@@ -54,12 +54,19 @@ async function getEfforts(altheteId, rank = 10) {
 
 //TODO promise.all this for performace
 async function getEffortsWithPath(altheteId, rank = 10) {
-  const results = await getEfforts(altheteId, rank);
-  for (const effort of results) {
-    const effortDetail = await details.get(effort.segmentId);
-    if (effortDetail.line) effort.line = effortDetail.line;
+  try {
+    const results = await getEfforts(altheteId, rank);
+    for (const effort of results) {
+      const effortDetail = await details.get(effort.segmentId);
+      if (effortDetail && effortDetail.line) effort.line = effortDetail.line;
+      if(typeof effort.id === "bigint") effort.id = effort.id.toString()
+    }
+    return results;
+  } catch (error) {
+    console.log("Error:", error.message);
+    console.log(error);
+    return [];
   }
-  return results;
 }
 
 async function storeSegments(segments) {
@@ -102,7 +109,6 @@ async function deleteUser(altheteId) {
   console.log(ids);
   efforts.batchDelete(ids);
   users.remove(altheteId);
-
 }
 
 module.exports = dataLayer;

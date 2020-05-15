@@ -59,7 +59,7 @@ function a11yProps(index) {
 export default function TabbedSidebar(props) {
   const classes = useStyles();
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
