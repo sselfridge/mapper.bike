@@ -64,9 +64,6 @@ async function segmentEfforts(req, res, next) {
   const rank = parseInt(req.query.rank ? req.query.rank : 1);
   const efforts = await db.getEffortsWithPath(athleteId, rank);
   res.locals.segmentEfforts = efforts;
-  console.log('Done with segment controller work');
-  console.log(efforts);
-  console.log('End of Efforts');
   next();
 }
 

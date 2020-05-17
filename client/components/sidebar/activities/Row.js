@@ -54,17 +54,36 @@ function Row(props) {
   const classes = useRowStyles();
 
   let { activity, index, selectedAct, handleSelectedAct, handleRemoveActivity } = props;
-
+  
   const avatarStyles = {
     root: classes.itemNumber,
   };
+  const isEffort = activity.segmentId !== undefined;
 
+
+  let infoA,infoB,infoC,stravaLink;
+if(isEffort){
+  const date = moment(activity.date)
+
+
+  infoA = `Rank: ${activity.rank}`
+  infoB = ""
+  infoC = `Date: ${date.format('MMM DD YY')}`
+  stravaLink = `http://www.strava.com/segments/${activity.segmentId}`
+}else{
   const distance = (activity.distance / 1609).toFixed(2);
   const date = moment.unix(activity.date);
-
+  
   const totalHours = activity.elapsedTime / 3600;
   const hours = Math.floor(totalHours);
   const minutes = Math.floor((totalHours - hours) * 60);
+
+  infoA = `${distance}mi`
+  infoB = `${date.format("MMM DD")}`
+  infoC = `${hours}:${minutes} hrs`
+  stravaLink = `http://www.strava.com/activities/${activity.id}`
+}
+
 
   return (
     <div
@@ -85,12 +104,11 @@ function Row(props) {
         </ListItemAvatar>
         <ListItemText
           primary={activity.name}
-          // secondary={`${distance}mi ${date.format("MMM DD")} ${hours}:${minutes} hrs`}
           secondary={
             <span className={classes.secondaryText}>
-              <span>{`${distance}mi`}</span>
-              <span>{`${date.format("MMM DD")}`}</span>
-              <span>{`${hours}:${minutes} hrs`}</span>
+              <span>{infoA}</span>
+              <span>{infoB}</span>
+              <span>{infoC}</span>
             </span>
           }
         />
@@ -110,7 +128,7 @@ function Row(props) {
           <Tooltip title="View on Strava" placement={"top"}>
             <IconButton>
               <a
-                href={`http://www.strava.com/activities/${activity.id}`}
+                href={stravaLink}
                 rel="noopener noreferrer"
                 target="_blank"
               >

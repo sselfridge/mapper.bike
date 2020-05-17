@@ -56,11 +56,23 @@ async function getEfforts(altheteId, rank = 10) {
 async function getEffortsWithPath(altheteId, rank = 10) {
   try {
     const results = await getEfforts(altheteId, rank);
-    for (const effort of results) {
-      const effortDetail = await details.get(effort.segmentId);
-      if (effortDetail && effortDetail.line) effort.line = effortDetail.line;
-      if(typeof effort.id === "bigint") effort.id = effort.id.toString()
-    }
+    console.log("Getting PathGetting PathGetting PathGetting PathGetting PathGetting Path");
+    console.time("getPath");
+    // for (const effort of results) {
+    //   const effortDetail = await details.get(effort.segmentId);
+    //   if (effortDetail && effortDetail.line) effort.line = effortDetail.line;
+    //   if (typeof effort.id === "bigint") effort.id = effort.id.toString();
+    // }
+
+    const promArray = results.map((effort) => details.get(effort.segmentId));
+    const out = await Promise.all(promArray);
+
+    out.forEach((effortDetail, i) => {
+      if (effortDetail && effortDetail.line) results[i].line = effortDetail.line;
+      if (typeof results[i].id === "bigint") results[i].id = results[i].id.toString();
+    });
+
+    console.timeEnd("getPath");
     return results;
   } catch (error) {
     console.log("Error:", error.message);

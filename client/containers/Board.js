@@ -6,6 +6,8 @@ import { makeStyles } from "@material-ui/core";
 // import demoData from "../constants/DemoActivities";
 import MyMap from "../components/MyMap";
 import MySidebar from "../components/sidebar/MySidebar";
+import decodePolyline from "decode-google-map-polyline";
+
 import { calcBounds } from "../utils";
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -20,7 +22,9 @@ const Board = (props) => {
 
   const { currentUser, setCurrentUser, snackBar } = props;
 
+  const [mapLines, setMapLines] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [efforts, setEfforts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [blackgroundActive, setBlackground] = useState(false);
   const [lineWeight, setLineWeight] = useState(3);
@@ -52,7 +56,8 @@ const Board = (props) => {
         inline: "center",
       });
     }
-
+    if (newSelection.points === undefined && newSelection.line)
+      newSelection.points = decodePolyline(newSelection.line);
     const bounds = calcBounds(newSelection.points);
 
     setMapBounds(bounds);

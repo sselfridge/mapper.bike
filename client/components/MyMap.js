@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { GoogleApiWrapper, Map, Polyline } from "google-maps-react";
 import { makeStyles } from "@material-ui/core";
+import decodePolyline from "decode-google-map-polyline";
 
 import { blackground, sidebarWidth } from "../constants/map";
 
@@ -25,21 +26,25 @@ const MyMap = (props) => {
     handleSelectedAct,
   } = props;
 
-  // const lines = activities.map((activity) => (
-  //   <Polyline
-  //     key={activity.id}
-  //     path={activity.points}
-  //     strokeColor={activity.selected ? selectedColor : lineColor}
-  //     strokeWeight={activity.selected ? lineWeight + 2 : lineWeight}
-  //     strokeOpacity={0.75}
-  //     zIndex={activity.selected ? 90 : 2}
-  //     onClick={() => {
-  //       handleSelectedAct(activity, "map");
-  //     }}
-  //   />
-  // ));
+  const lines = [];
+  activities.forEach((activity) => {
+    if (!activity.line) return;
 
-  const lines = []
+    const newLine = (
+      <Polyline
+        key={activity.id}
+        path={decodePolyline(activity.line)}
+        strokeColor={activity.selected ? selectedColor : lineColor}
+        strokeWeight={activity.selected ? lineWeight + 2 : lineWeight}
+        strokeOpacity={0.75}
+        zIndex={activity.selected ? 90 : 2}
+        onClick={() => {
+          handleSelectedAct(activity, "map");
+        }}
+      />
+    );
+    lines.push(newLine);
+  });
 
   let bounds;
   if (mapBounds.length > 0) {

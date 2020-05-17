@@ -32,7 +32,7 @@ const EffortsTab = (props) => {
       .then((result) => {
         console.log("result");
         console.log(result);
-        setActivities(result);
+        setEfforts(result);
       })
       .catch((err) => {
         console.log(err);
@@ -42,7 +42,7 @@ const EffortsTab = (props) => {
   return (
     <div className={classes.root}>
       <List
-        activities={activities}
+        efforts={efforts}
         loading={loading}
         panelExpanded={panelExpanded}
         handleSelectedAct={handleSelectedAct}
@@ -50,7 +50,6 @@ const EffortsTab = (props) => {
         setMapCenter={setMapCenter}
         handleRemoveActivity={handleRemoveActivity}
       />
-      Doing Stufg!
     </div>
   );
 };
