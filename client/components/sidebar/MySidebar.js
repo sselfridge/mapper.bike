@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core";
 
-import MyDefaultSidebar from "./MyDefaultSidebar";
+import DefaultSidebar from "./DefaultSidebar";
 import TabbedSidebar from "./TabbedSidebar";
 import { sidebarWidth } from "../../constants/map";
 
@@ -21,7 +21,7 @@ const MySidebar = (props) => {
   const sidebar = currentUser.firstname ? (
     <TabbedSidebar {...props} />
   ) : (
-    <MyDefaultSidebar {...props} />
+    <DefaultSidebar {...props} />
   );
 
   return <div className={classes.root}>{sidebar}</div>;

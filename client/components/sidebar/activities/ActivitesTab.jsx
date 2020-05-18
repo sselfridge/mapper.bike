@@ -39,7 +39,7 @@ const calcAfterDate = () => {
 };
 
 const calcDateDiff = (after, before) => {
-  if(before === null) before = new Date()
+  if (before === null) before = new Date();
   const diff = before - after;
   const days = Math.floor(diff / 86400000);
   return days > 2000 ? "2000+" : days;

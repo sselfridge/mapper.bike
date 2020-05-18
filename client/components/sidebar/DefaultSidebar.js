@@ -26,15 +26,15 @@ const useStyles = makeStyles((theme) => ({
 
 const DefaultSidebar = (props) => {
   const classes = useStyles();
-  const {  setLoading, setActivities, snackBar,setCurrentUser } = props;
+  const { setLoading, setActivities, snackBar, setCurrentUser } = props;
 
   function setDemo() {
     setLoading(true);
-    
+
     getDemoData()
       .then((result) => {
         setActivities(result);
-        setCurrentUser(DEMO_USER)
+        setCurrentUser(DEMO_USER);
       })
       .catch((err) => {
         console.error("Get Activites Error:", err);
@@ -69,12 +69,11 @@ const DefaultSidebar = (props) => {
 };
 
 DefaultSidebar.propTypes = {
-  getDemoActivities: PropTypes.func,
-  setLoadingTimer: PropTypes.func,
-  setLoading: PropTypes.func,
-  setActivities: PropTypes.func,
-  snackBar: PropTypes.func,
-  setCurrentUser: PropTypes.func
+  setLoadingTimer: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
+  setActivities: PropTypes.func.isRequired,
+  snackBar: PropTypes.func.isRequired,
+  setCurrentUser: PropTypes.func.isRequired,
 };
 
 export default DefaultSidebar;

@@ -15,8 +15,8 @@ const EffortsTab = (props) => {
   const classes = useStyles();
 
   const {
-    activities,
-    setActivities,
+    efforts,
+    setEfforts,
     loading,
     handleSelectedAct,
     selectedAct,
@@ -26,7 +26,7 @@ const EffortsTab = (props) => {
 
   const [panelExpanded, setPanelExpanded] = useState(true);
 
-  useEffect(() => {
+  const fetchEfforts = () => {
     console.log("Effect Used");
     getEfforts()
       .then((result) => {
@@ -37,11 +37,12 @@ const EffortsTab = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  };
 
   return (
     <div className={classes.root}>
-      <List
+      <button onClick={fetchEfforts}>Get Efforts</button>
+      {/* <List
         efforts={efforts}
         loading={loading}
         panelExpanded={panelExpanded}
@@ -49,14 +50,12 @@ const EffortsTab = (props) => {
         selectedAct={selectedAct}
         setMapCenter={setMapCenter}
         handleRemoveActivity={handleRemoveActivity}
-      />
+      /> */}
     </div>
   );
 };
 
 EffortsTab.propTypes = {
-  activities: PropTypes.array.isRequired,
-  setActivities: PropTypes.func.isRequired,
   handleSelectedAct: PropTypes.func.isRequired,
   selectedAct: PropTypes.object.isRequired,
   setMapCenter: PropTypes.func.isRequired,

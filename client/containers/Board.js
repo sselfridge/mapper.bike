@@ -68,8 +68,8 @@ const Board = (props) => {
   };
 
   const handleRemoveActivity = (index) => {
-    activities.splice(index, 1);
-    setActivities(activities.slice());
+    mapLines.splice(index, 1);
+    setMapLines(activities.slice());
   };
 
   return (
@@ -81,6 +81,10 @@ const Board = (props) => {
         setBlackground={setBlackground}
         activities={activities}
         setActivities={setActivities}
+        efforts={efforts}
+        setEfforts={setEfforts}
+        mapLines={mapLines}
+        setMapLines={setMapLines}
         lineColor={lineColor}
         setLineColor={setLineColor}
         lineWeight={lineWeight}
@@ -97,7 +101,7 @@ const Board = (props) => {
       />
       <MyMap
         blackgroundActive={blackgroundActive}
-        activities={activities}
+        mapLines={mapLines}
         lineColor={lineColor}
         selectedColor={selectedColor}
         lineWeight={lineWeight}

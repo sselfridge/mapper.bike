@@ -18,7 +18,7 @@ const MyMap = (props) => {
   const {
     mapCenter,
     blackgroundActive,
-    activities,
+    mapLines,
     lineColor,
     lineWeight,
     selectedColor,
@@ -27,24 +27,25 @@ const MyMap = (props) => {
   } = props;
 
   const lines = [];
-  activities.forEach((activity) => {
-    if (!activity.line) return;
+  mapLines.forEach((mapLine) => {
+    if (!mapLine.line) return;
 
     const newLine = (
       <Polyline
-        key={activity.id}
-        path={decodePolyline(activity.line)}
-        strokeColor={activity.selected ? selectedColor : lineColor}
-        strokeWeight={activity.selected ? lineWeight + 2 : lineWeight}
+        key={mapLine.id}
+        path={decodePolyline(mapLine.line)}
+        strokeColor={mapLine.selected ? selectedColor : lineColor}
+        strokeWeight={mapLine.selected ? lineWeight + 2 : lineWeight}
         strokeOpacity={0.75}
-        zIndex={activity.selected ? 90 : 2}
+        zIndex={mapLine.selected ? 90 : 2}
         onClick={() => {
-          handleSelectedAct(activity, "map");
+          handleSelectedAct(mapLine, "map");
         }}
       />
     );
     lines.push(newLine);
   });
+
 
   let bounds;
   if (mapBounds.length > 0) {
@@ -82,7 +83,7 @@ const MyMap = (props) => {
 MyMap.propTypes = {
   mapCenter: PropTypes.object.isRequired,
   blackgroundActive: PropTypes.bool.isRequired,
-  activities: PropTypes.array.isRequired,
+  mapLines: PropTypes.array.isRequired,
   lineColor: PropTypes.string.isRequired,
   lineWeight: PropTypes.number.isRequired,
   selectedColor: PropTypes.string.isRequired,
