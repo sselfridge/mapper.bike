@@ -9,6 +9,8 @@ import Sidebar from "../components/sidebar/Sidebar";
 import decodePolyline from "decode-google-map-polyline";
 
 import { calcBounds } from "../utils";
+import demoEfforts from "../constants/DemoEfforts";
+
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +26,7 @@ const Board = (props) => {
 
   const [mapLines, setMapLines] = useState([]);
   const [activities, setActivities] = useState([]);
-  const [efforts, setEfforts] = useState([]);
+  const [efforts, setEfforts] = useState(demoEfforts);
   const [loading, setLoading] = useState(false);
   const [blackgroundActive, setBlackground] = useState(false);
   const [lineWeight, setLineWeight] = useState(3);
@@ -35,7 +37,7 @@ const Board = (props) => {
   const [selectedAct, setSelectedAct] = useState({});
 
   const handleSelected = (newSelection, source) => {
-    const prevSelect = _.find(activities, (activity) => activity.selected === true);
+    const prevSelect = _.find(mapLines, (line) => line.selected === true);
     if (prevSelect) prevSelect.selected = false;
 
     if (newSelection.id === selectedAct.id) {
@@ -43,7 +45,7 @@ const Board = (props) => {
       return;
     }
 
-    const selected = _.find(activities, (activity) => activity.id === newSelection.id);
+    const selected = _.find(mapLines, (line) => line.id === newSelection.id);
     if (selected) {
       selected.selected = true;
     }
@@ -69,7 +71,7 @@ const Board = (props) => {
 
   const handleRemoveLine = (index) => {
     mapLines.splice(index, 1);
-    setMapLines(activities.slice());
+    setMapLines(mapLines.slice());
   };
 
   return (

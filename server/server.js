@@ -142,6 +142,7 @@ app.get(
       res.status(203).send("Data Pending, checkback soon");
       return;
     }
+    // fs.writeFileSync("./savedEfforts.json", JSON.stringify(res.locals.segmentEfforts));
 
     res.send(JSON.stringify(res.locals.segmentEfforts));
   }

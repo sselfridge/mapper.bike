@@ -66,7 +66,6 @@ const EffortsTab = (props) => {
           <ControlPanel fetchEfforts={fetchEfforts} {...props} />
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      <button onClick={fetchEfforts}>Get Efforts</button>
       <List
         efforts={efforts}
         loading={loading}
