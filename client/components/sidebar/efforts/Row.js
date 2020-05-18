@@ -22,7 +22,7 @@ const localStyles = makeStyles((theme) => ({}));
 function Row(props) {
   const classes = mergeStyles(useRowStyles(), localStyles());
 
-  let { effort, index, selectedAct, handleSelected, handleRemoveActivity } = props;
+  let { effort, index, selectedAct, handleSelected, handleRemoveLine } = props;
   const avatarStyles = {
     root: classes.itemNumber,
   };
@@ -69,7 +69,7 @@ function Row(props) {
             <IconButton
               aria-label="delete"
               onClick={() => {
-                handleRemoveActivity(index);
+                handleRemoveLine(index);
               }}
             >
               <DeleteIcon />
@@ -95,7 +95,7 @@ Row.propTypes = {
     id: PropTypes.number,
   }),
   handleSelected: PropTypes.func.isRequired,
-  handleRemoveActivity: PropTypes.func.isRequired,
+  handleRemoveLine: PropTypes.func.isRequired,
 };
 
 export default Row;

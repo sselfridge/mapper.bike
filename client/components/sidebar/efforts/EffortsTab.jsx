@@ -1,7 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import List from "../efforts/List";
+import {
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+  Typography,
+  makeStyles,
+} from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+
+import ControlPanel from "./ControlPanel";
+import List from "./List";
 import { getEfforts } from "../../../api/strava";
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -9,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
+    height: "87.5vh",
+    backgroundColor: "#aadaff",
   },
 }));
 
@@ -22,7 +33,7 @@ const EffortsTab = (props) => {
     handleSelected,
     selectedAct,
     setMapCenter,
-    handleRemoveActivity,
+    handleRemoveLine,
   } = props;
 
   const [panelExpanded, setPanelExpanded] = useState(true);
@@ -42,6 +53,19 @@ const EffortsTab = (props) => {
 
   return (
     <div className={classes.root}>
+      <ExpansionPanel id="controlPanel" expanded={panelExpanded}>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+          onClick={() => setPanelExpanded(!panelExpanded)}
+        >
+          <Typography className={classes.heading}>Map Filter / Controls</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <ControlPanel fetchEfforts={fetchEfforts} {...props} />
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
       <button onClick={fetchEfforts}>Get Efforts</button>
       <List
         efforts={efforts}
@@ -50,7 +74,7 @@ const EffortsTab = (props) => {
         handleSelected={handleSelected}
         selectedAct={selectedAct}
         setMapCenter={setMapCenter}
-        handleRemoveActivity={handleRemoveActivity}
+        handleRemoveLine={handleRemoveLine}
       />
     </div>
   );
@@ -64,7 +88,7 @@ EffortsTab.propTypes = {
   setMapCenter: PropTypes.func.isRequired,
   setLoading: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  handleRemoveActivity: PropTypes.func.isRequired,
+  handleRemoveLine: PropTypes.func.isRequired,
   snackBar: PropTypes.func.isRequired,
 };
 

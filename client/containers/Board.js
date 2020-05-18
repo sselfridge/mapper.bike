@@ -67,7 +67,7 @@ const Board = (props) => {
     setSelectedAct(newSelection);
   };
 
-  const handleRemoveActivity = (index) => {
+  const handleRemoveLine = (index) => {
     mapLines.splice(index, 1);
     setMapLines(activities.slice());
   };
@@ -96,7 +96,7 @@ const Board = (props) => {
         selectedAct={selectedAct}
         loading={loading}
         setLoading={setLoading}
-        handleRemoveActivity={handleRemoveActivity}
+        handleRemoveLine={handleRemoveLine}
         snackBar={snackBar}
       />
       <MyMap

@@ -4,7 +4,8 @@ import { GoogleApiWrapper, Map, Polyline } from "google-maps-react";
 import { makeStyles } from "@material-ui/core";
 import decodePolyline from "decode-google-map-polyline";
 
-import { blackground, sidebarWidth } from "../constants/sidebar";
+import { sidebarWidth } from "../constants/sidebar";
+import { blackground } from "../constants/map";
 
 import config from "../../config/keys";
 

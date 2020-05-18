@@ -5,6 +5,9 @@ import { makeStyles } from "@material-ui/core";
 
 import HeaderRight from "./HeaderRight";
 
+// eslint-disable-next-line no-unused-vars
+import { apiTest } from "../../api/strava";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.primary.main,
@@ -14,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: "2em",
     fontWeight: 800,
-    marginLeft: '40%',
+    marginLeft: "40%",
   },
   betaText: {
     fontSize: ".6em",
@@ -33,6 +36,8 @@ const Header = (props) => {
 
   return (
     <div className={classes.root}>
+      <button onClick={apiTest}>TEST</button>
+
       <div className={classes.title}>
         Mapper.Bike <span className={classes.betaText}>beta {`v-${version}`}</span>
       </div>
@@ -42,8 +47,6 @@ const Header = (props) => {
     </div>
   );
 };
-
-
 
 Header.propTypes = {
   stravaLogout: PropTypes.func.isRequired,

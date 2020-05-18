@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   Typography,
+  makeStyles,
 } from "@material-ui/core";
 import ReactLoading from "react-loading";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { getActivities, apiTest } from "../../../api/strava";
+import { getActivities } from "../../../api/strava";
 import List from "./List";
 
 import ControlPanel from "./ControlPanel";
@@ -65,7 +65,7 @@ export default function ActivitiesTab(props) {
     setMapCenter,
     setLoading,
     loading,
-    handleRemoveActivity,
+    handleRemoveLine,
     snackBar,
   } = props;
 
@@ -132,7 +132,6 @@ export default function ActivitiesTab(props) {
           />
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      <button onClick={apiTest}>TEST</button>
       {loading && (
         <div>
           <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"300px"} />
@@ -155,7 +154,7 @@ export default function ActivitiesTab(props) {
         handleSelected={handleSelected}
         selectedAct={selectedAct}
         setMapCenter={setMapCenter}
-        handleRemoveActivity={handleRemoveActivity}
+        handleRemoveLine={handleRemoveLine}
       />
     </div>
   );
@@ -169,6 +168,6 @@ ActivitiesTab.propTypes = {
   setMapCenter: PropTypes.func.isRequired,
   setLoading: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  handleRemoveActivity: PropTypes.func.isRequired,
+  handleRemoveLine: PropTypes.func.isRequired,
   snackBar: PropTypes.func.isRequired,
 };
