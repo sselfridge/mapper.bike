@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   ExpansionPanel,
@@ -13,7 +14,6 @@ import { getActivities } from "../../../api/strava";
 import List from "./List";
 
 import ControlPanel from "./ControlPanel";
-
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -38,6 +38,22 @@ const calcAfterDate = () => {
   return afterDate;
 };
 
+const calcDateDiff = (after, before) => {
+  if(before === null) before = new Date()
+  const diff = before - after;
+  const days = Math.floor(diff / 86400000);
+  return days > 2000 ? "2000+" : days;
+};
+
+const secFromTimer = (timer) => {
+  const diff = moment() - timer;
+  return Math.floor(diff / 1000);
+};
+
+const showDots = (loadingDots) => {
+  return ".".repeat(loadingDots);
+};
+
 export default function ActivitiesTab(props) {
   const classes = useStyles();
 
@@ -56,7 +72,8 @@ export default function ActivitiesTab(props) {
   const [beforeDate, setBefore] = useState(new Date());
   const [afterDate, setAfter] = useState(calcAfterDate());
   const [panelExpanded, setPanelExpanded] = useState(true);
-  const [loadingTimer, setLoadingTimer] = useState(0);
+  const [loadingTimer, setLoadingTimer] = useState(moment());
+  const [loadingDots, setLoadingDots] = useState(3);
   const [activityType, setActivityType] = useState({
     Ride: true,
     VirtualRide: false,
@@ -68,7 +85,7 @@ export default function ActivitiesTab(props) {
   const onBeforeChange = (newDate) => setBefore(newDate);
 
   function fetchActivities() {
-    setLoadingTimer(0);
+    setLoadingTimer(moment());
     setLoading(true);
 
     getActivities(activityType, afterDate, beforeDate)
@@ -77,7 +94,7 @@ export default function ActivitiesTab(props) {
       })
       .catch((err) => {
         console.error("Get Activites Error:", err);
-        snackBar("Error getting Rides, try again later",'error');
+        snackBar("Error getting Rides, try again later", "error");
       })
       .finally(() => {
         setLoading(false);
@@ -86,7 +103,8 @@ export default function ActivitiesTab(props) {
 
   if (loading === true) {
     setTimeout(() => {
-      setLoadingTimer(loadingTimer + 1);
+      const dots = (loadingDots + 1) % 4;
+      setLoadingDots(dots);
     }, 1000);
   }
 
@@ -120,7 +138,9 @@ export default function ActivitiesTab(props) {
           <div className={classes.loadingText}>
             <div>Loading....</div>
             <div>Allow ~5 seconds for every 200 activities</div>
-            <div>{`${loadingTimer} secs elapsed`}</div>
+            <div>{`Your search covers ${calcDateDiff(afterDate, beforeDate)} days`}</div>
+            <div>{`${secFromTimer(loadingTimer)} secs elapsed`}</div>
+            <div>{`${showDots(loadingDots)}`}</div>
           </div>
         </div>
       )}
