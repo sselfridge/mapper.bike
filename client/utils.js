@@ -36,12 +36,14 @@ export const getDynamicHeight = (setListHeight, loading) => {
   }
 };
 
+export const mergeStyles = (classes1, classes2) => {
+  noKeyOverLap(classes1, classes2);
+  return { ...classes1, ...classes2 };
+};
+
 export const noKeyOverLap = (obj1, obj2) => {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
-
-  console.log(process.env);
-
   keys1.forEach((key) => {
     if (keys2.indexOf(key) !== -1) throw new Error(`Obj overlap! key:${key}`);
   });

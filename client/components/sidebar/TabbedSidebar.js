@@ -59,7 +59,7 @@ export default function TabbedSidebar(props) {
 
   const { setMapLines, activities, efforts } = props;
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
 
   const handleChange = (event, newValue) => {
     syncLines(newValue);

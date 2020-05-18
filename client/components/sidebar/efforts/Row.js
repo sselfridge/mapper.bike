@@ -11,50 +11,18 @@ import {
   IconButton,
   Tooltip,
 } from "@material-ui/core/";
+
 import DeleteIcon from "@material-ui/icons/Delete";
 
-const useRowStyles = makeStyles((theme) => ({
-  actions: {
-    display: "flex",
-    justifyContent: "space-evenly",
-    "& > *": {
-      // margin: 15,
-    },
-  },
-  itemNumber: {
-    minWidth: theme.spacing(3),
-    marginRight: theme.spacing(1),
-  },
-  listItem: {
-    "&:hover": {
-      backgroundColor: "rgba(0, 0, 0, .12)",
-    },
-  },
-  secondaryText: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  selectedStyle: {
-    backgroundColor: "rgba(0, 0, 0, .13)",
-  },
-  stravaIcon: {
-    height: theme.spacing(4),
-    width: theme.spacing(4),
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.strava,
-  },
-  stravaBtn: {
-    backgroundColor: theme.palette.strava,
-    color: "white",
-    maxHeight: 40,
-  },
-}));
+import { useRowStyles } from "../shared/styles";
+import { mergeStyles } from "../../../utils";
+
+const localStyles = makeStyles((theme) => ({}));
 
 function Row(props) {
-  const classes = useRowStyles();
+  const classes = mergeStyles(useRowStyles(), localStyles());
 
-  let { item, index, selectedAct, handleSelected, handleRemoveActivity } = props;
-  const effort = item;
+  let { effort, index, selectedAct, handleSelected, handleRemoveActivity } = props;
   const avatarStyles = {
     root: classes.itemNumber,
   };
@@ -65,7 +33,7 @@ function Row(props) {
   infoA = `Rank: ${effort.rank}`;
   infoB = "";
   infoC = `Date: ${date.format("MMM DD YY")}`;
-  stravaLink = `http://www.strava.com/segments/${activity.segmentId}`;
+  stravaLink = `http://www.strava.com/segments/${effort.segmentId}`;
 
   return (
     <div
@@ -122,7 +90,7 @@ function Row(props) {
 
 Row.propTypes = {
   index: PropTypes.number.isRequired,
-  item: PropTypes.object.isRequired,
+  effort: PropTypes.object.isRequired,
   selectedAct: PropTypes.shape({
     id: PropTypes.number,
   }),

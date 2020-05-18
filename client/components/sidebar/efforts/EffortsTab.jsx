@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import List from "../activities/List";
+import List from "../efforts/List";
 import { getEfforts } from "../../../api/strava";
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     justifyContent: "center",
+    flexDirection: "column",
   },
 }));
 
@@ -56,6 +57,8 @@ const EffortsTab = (props) => {
 };
 
 EffortsTab.propTypes = {
+  efforts: PropTypes.array,
+  setEfforts: PropTypes.func.isRequired,
   handleSelected: PropTypes.func.isRequired,
   selectedAct: PropTypes.object.isRequired,
   setMapCenter: PropTypes.func.isRequired,
