@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MySidebar = (props) => {
+const Sidebar = (props) => {
   const classes = useStyles();
   const { currentUser } = props;
 
@@ -27,10 +27,10 @@ const MySidebar = (props) => {
   return <div className={classes.root}>{sidebar}</div>;
 };
 
-MySidebar.propTypes = {
+Sidebar.propTypes = {
   currentUser: PropTypes.shape({
     firstname: PropTypes.string,
   }),
 };
 
-export default MySidebar;
+export default Sidebar;

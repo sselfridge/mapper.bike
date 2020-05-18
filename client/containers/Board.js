@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core";
 
 // import demoData from "../constants/DemoActivities";
 import MyMap from "../components/MyMap";
-import MySidebar from "../components/sidebar/MySidebar";
+import Sidebar from "../components/sidebar/Sidebar";
 import decodePolyline from "decode-google-map-polyline";
 
 import { calcBounds } from "../utils";
@@ -74,7 +74,7 @@ const Board = (props) => {
 
   return (
     <div className={classes.root}>
-      <MySidebar
+      <Sidebar
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}
         blackgroundActive={blackgroundActive}

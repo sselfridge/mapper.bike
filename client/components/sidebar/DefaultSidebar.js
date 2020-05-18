@@ -69,7 +69,6 @@ const DefaultSidebar = (props) => {
 };
 
 DefaultSidebar.propTypes = {
-  setLoadingTimer: PropTypes.func.isRequired,
   setLoading: PropTypes.func.isRequired,
   setActivities: PropTypes.func.isRequired,
   snackBar: PropTypes.func.isRequired,

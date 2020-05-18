@@ -26,3 +26,22 @@ export function centerOnLocation(value) {
       });
   });
 }
+
+// centerOnZip(e) {
+//   if (e.key === "Enter") {
+//     if (!/^\d{5}/.test(e.target.value)) {
+//       this.flashMessage("5 Digit US zipcodes only");
+//       return;
+//     } //only query if zip is 5 numbers
+//     axios
+//       .get(`/api/getLatLngZip/${e.target.value}`)
+//       .then(res => {
+//         if (res.data) {
+//           this.setState({ center: res.data });
+//         }
+//       })
+//       .catch(err => {
+//         this.flashMessage("5 Digit US zipcodes only");
+//       });
+//   }
+// }
