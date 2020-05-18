@@ -146,10 +146,10 @@ ControlPanel.propTypes = {
   setActivityType: PropTypes.func.isRequired,
   setMapCenter: PropTypes.func.isRequired,
   onAfterChange: PropTypes.func.isRequired,
-  afterDate: PropTypes.instanceOf(Date).isRequired,
+  afterDate: PropTypes.instanceOf(Date),
   onBeforeChange: PropTypes.func.isRequired,
   snackBar: PropTypes.func.isRequired,
-  beforeDate: PropTypes.instanceOf(Date).isRequired,
+  beforeDate: PropTypes.instanceOf(Date),
 };
 
 export default ControlPanel;
