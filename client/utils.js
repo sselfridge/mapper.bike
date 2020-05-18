@@ -1,3 +1,5 @@
+import { headerAndTabHeight, loadingSpinnerHeight } from "./constants/sidebar";
+
 export const calcBounds = (points) => {
   let maxLat = Number.MIN_SAFE_INTEGER;
   let maxLng = Number.MIN_SAFE_INTEGER;
@@ -18,4 +20,29 @@ export const calcBounds = (points) => {
   ];
 
   return bounds;
+};
+
+export const getDynamicHeight = (setListHeight, loading) => {
+  const panel = document.getElementById("controlPanel");
+
+  if (panel) {
+    setTimeout(() => {
+      const panelHeight = panel.offsetHeight;
+      const windowHeight = window.innerHeight;
+      const newHeight = windowHeight - (headerAndTabHeight + panelHeight);
+      const heightWithLoading = loading ? newHeight - loadingSpinnerHeight : newHeight;
+      setListHeight(heightWithLoading);
+    }, 250);
+  }
+};
+
+export const noKeyOverLap = (obj1, obj2) => {
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  console.log(process.env);
+
+  keys1.forEach((key) => {
+    if (keys2.indexOf(key) !== -1) throw new Error(`Obj overlap! key:${key}`);
+  });
 };

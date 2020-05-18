@@ -1,8 +1,6 @@
 import React from "react";
 import { Polygon } from "google-maps-react";
 
-export const sidebarWidth = 360;
-
 //create blackground polygon:
 export const blackground = [
   <Polygon
@@ -36,7 +34,6 @@ export const blackground = [
     visible={true}
   />,
 ];
-
 
 // prettier-ignore
 export const lineColors = 

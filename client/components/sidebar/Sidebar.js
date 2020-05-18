@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core";
 
 import DefaultSidebar from "./DefaultSidebar";
 import TabbedSidebar from "./TabbedSidebar";
-import { sidebarWidth } from "../../constants/map";
+import { sidebarWidth } from "../../constants/sidebar";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({

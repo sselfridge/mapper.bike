@@ -95,14 +95,13 @@ async function addToActivityQueue(strava) {
 
 async function test(req, res, next) {
   console.log("Start Test");
-  // const strava = res.locals.strava;
+  const strava = res.locals.strava;
 
   try {
-    const out = await db.getEfforts(1075670, 1);
+    // const fullActivity = await strava.athlete.get({});
+    const fullActivity = await strava.segments.get({ id: 6970946 });
 
-    console.log("Rabble");
-    console.log(out);
-    res.locals.effort = out[0];
+    console.log(fullActivity);
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);

@@ -34,7 +34,7 @@ const Board = (props) => {
   const [mapBounds, setMapBounds] = useState([]);
   const [selectedAct, setSelectedAct] = useState({});
 
-  const handleSelectedAct = (newSelection, source) => {
+  const handleSelected = (newSelection, source) => {
     const prevSelect = _.find(activities, (activity) => activity.selected === true);
     if (prevSelect) prevSelect.selected = false;
 
@@ -92,7 +92,7 @@ const Board = (props) => {
         setMapCenter={setMapCenter}
         setSelectedColor={setSelectedColor}
         selectedColor={selectedColor}
-        handleSelectedAct={handleSelectedAct}
+        handleSelected={handleSelected}
         selectedAct={selectedAct}
         loading={loading}
         setLoading={setLoading}
@@ -107,7 +107,7 @@ const Board = (props) => {
         lineWeight={lineWeight}
         mapCenter={mapCenter}
         mapBounds={mapBounds}
-        handleSelectedAct={handleSelectedAct}
+        handleSelected={handleSelected}
         snackBar={snackBar}
       />
     </div>

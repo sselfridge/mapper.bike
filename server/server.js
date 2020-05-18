@@ -96,7 +96,7 @@ app.get("/api/demoData", (req, res) => {
 
 app.get(
   "/api/test",
-  // oAuthStrava.loadStravaProfile,
+  oAuthStrava.loadStravaProfile,
   // segmentController.intializeUser,
   // segmentController.updateUserDB,
   segmentController.test,

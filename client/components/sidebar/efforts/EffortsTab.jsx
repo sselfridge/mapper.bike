@@ -18,7 +18,7 @@ const EffortsTab = (props) => {
     efforts,
     setEfforts,
     loading,
-    handleSelectedAct,
+    handleSelected,
     selectedAct,
     setMapCenter,
     handleRemoveActivity,
@@ -42,21 +42,21 @@ const EffortsTab = (props) => {
   return (
     <div className={classes.root}>
       <button onClick={fetchEfforts}>Get Efforts</button>
-      {/* <List
+      <List
         efforts={efforts}
         loading={loading}
         panelExpanded={panelExpanded}
-        handleSelectedAct={handleSelectedAct}
+        handleSelected={handleSelected}
         selectedAct={selectedAct}
         setMapCenter={setMapCenter}
         handleRemoveActivity={handleRemoveActivity}
-      /> */}
+      />
     </div>
   );
 };
 
 EffortsTab.propTypes = {
-  handleSelectedAct: PropTypes.func.isRequired,
+  handleSelected: PropTypes.func.isRequired,
   selectedAct: PropTypes.object.isRequired,
   setMapCenter: PropTypes.func.isRequired,
   setLoading: PropTypes.func.isRequired,

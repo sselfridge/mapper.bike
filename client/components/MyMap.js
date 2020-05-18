@@ -4,7 +4,7 @@ import { GoogleApiWrapper, Map, Polyline } from "google-maps-react";
 import { makeStyles } from "@material-ui/core";
 import decodePolyline from "decode-google-map-polyline";
 
-import { blackground, sidebarWidth } from "../constants/map";
+import { blackground, sidebarWidth } from "../constants/sidebar";
 
 import config from "../../config/keys";
 
@@ -23,7 +23,7 @@ const MyMap = (props) => {
     lineWeight,
     selectedColor,
     mapBounds,
-    handleSelectedAct,
+    handleSelected,
   } = props;
 
   const lines = [];
@@ -39,13 +39,12 @@ const MyMap = (props) => {
         strokeOpacity={0.75}
         zIndex={mapLine.selected ? 90 : 2}
         onClick={() => {
-          handleSelectedAct(mapLine, "map");
+          handleSelected(mapLine, "map");
         }}
       />
     );
     lines.push(newLine);
   });
-
 
   let bounds;
   if (mapBounds.length > 0) {
@@ -88,7 +87,7 @@ MyMap.propTypes = {
   lineWeight: PropTypes.number.isRequired,
   selectedColor: PropTypes.string.isRequired,
   mapBounds: PropTypes.array.isRequired,
-  handleSelectedAct: PropTypes.func.isRequired,
+  handleSelected: PropTypes.func.isRequired,
   google: PropTypes.object.isRequired,
 };
 

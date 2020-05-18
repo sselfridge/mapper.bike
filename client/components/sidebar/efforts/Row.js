@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 import moment from "moment";
 
-import { noKeyOverLap } from "../../../utils";
-
 import {
   makeStyles,
   ListItem,
@@ -13,13 +11,15 @@ import {
   IconButton,
   Tooltip,
 } from "@material-ui/core/";
-
 import DeleteIcon from "@material-ui/icons/Delete";
 
 const useRowStyles = makeStyles((theme) => ({
   actions: {
     display: "flex",
     justifyContent: "space-evenly",
+    "& > *": {
+      // margin: 15,
+    },
   },
   itemNumber: {
     minWidth: theme.spacing(3),
@@ -53,43 +53,39 @@ const useRowStyles = makeStyles((theme) => ({
 function Row(props) {
   const classes = useRowStyles();
 
-  let { activity, index, selectedAct, handleSelected, handleRemoveActivity } = props;
+  let { item, index, selectedAct, handleSelected, handleRemoveActivity } = props;
+  const effort = item;
   const avatarStyles = {
     root: classes.itemNumber,
   };
 
-  noKeyOverLap(classes, { ab: 1234 });
-  const distance = (activity.distance / 1609).toFixed(2);
-  const date = moment.unix(activity.date);
+  let infoA, infoB, infoC, stravaLink;
+  const date = moment(effort.date);
 
-  const totalHours = activity.elapsedTime / 3600;
-  const hours = Math.floor(totalHours);
-  const minutes = Math.floor((totalHours - hours) * 60);
-
-  const infoA = `${distance}mi`;
-  const infoB = `${date.format("MMM DD")}`;
-  const infoC = `${hours}:${minutes} hrs`;
-  const stravaLink = `http://www.strava.com/activities/${activity.id}`;
+  infoA = `Rank: ${effort.rank}`;
+  infoB = "";
+  infoC = `Date: ${date.format("MMM DD YY")}`;
+  stravaLink = `http://www.strava.com/segments/${activity.segmentId}`;
 
   return (
     <div
-      id={`row${activity.id}`}
+      id={`row${effort.id}`}
       className={clsx({
         [classes.listItem]: true,
-        [classes.selectedStyle]: activity.id === selectedAct.id,
+        [classes.selectedStyle]: effort.id === selectedAct.id,
       })}
     >
       <ListItem
         key={index}
         onClick={() => {
-          handleSelected(activity, "row");
+          handleSelected(effort, "row");
         }}
       >
         <ListItemAvatar classes={avatarStyles}>
           <div>{index + 1}</div>
         </ListItemAvatar>
         <ListItemText
-          primary={activity.name}
+          primary={effort.name}
           secondary={
             <span className={classes.secondaryText}>
               <span>{infoA}</span>
@@ -99,7 +95,7 @@ function Row(props) {
           }
         />
       </ListItem>
-      {selectedAct.id === activity.id && (
+      {selectedAct.id === effort.id && (
         <div className={classes.actions}>
           <Tooltip title="Remove from map" placement={"top"}>
             <IconButton
@@ -126,7 +122,7 @@ function Row(props) {
 
 Row.propTypes = {
   index: PropTypes.number.isRequired,
-  activity: PropTypes.object.isRequired,
+  item: PropTypes.object.isRequired,
   selectedAct: PropTypes.shape({
     id: PropTypes.number,
   }),

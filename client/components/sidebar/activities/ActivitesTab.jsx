@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import ReactLoading from "react-loading";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { getActivities } from "../../../api/strava";
+import { getActivities, apiTest } from "../../../api/strava";
 import List from "./List";
 
 import ControlPanel from "./ControlPanel";
@@ -60,7 +60,7 @@ export default function ActivitiesTab(props) {
   const {
     setActivities,
     activities,
-    handleSelectedAct,
+    handleSelected,
     selectedAct,
     setMapCenter,
     setLoading,
@@ -132,6 +132,7 @@ export default function ActivitiesTab(props) {
           />
         </ExpansionPanelDetails>
       </ExpansionPanel>
+      <button onClick={apiTest}>TEST</button>
       {loading && (
         <div>
           <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"300px"} />
@@ -151,7 +152,7 @@ export default function ActivitiesTab(props) {
         activities={activities}
         loading={loading}
         panelExpanded={panelExpanded}
-        handleSelectedAct={handleSelectedAct}
+        handleSelected={handleSelected}
         selectedAct={selectedAct}
         setMapCenter={setMapCenter}
         handleRemoveActivity={handleRemoveActivity}
@@ -163,7 +164,7 @@ export default function ActivitiesTab(props) {
 ActivitiesTab.propTypes = {
   activities: PropTypes.array.isRequired,
   setActivities: PropTypes.func.isRequired,
-  handleSelectedAct: PropTypes.func.isRequired,
+  handleSelected: PropTypes.func.isRequired,
   selectedAct: PropTypes.object.isRequired,
   setMapCenter: PropTypes.func.isRequired,
   setLoading: PropTypes.func.isRequired,
