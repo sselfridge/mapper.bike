@@ -38,4 +38,9 @@ export const blackground = [
 // prettier-ignore
 export const lineColors = 
 ['#FF6900', '#FCB900', '#7BDCB5', '#52eb0e', '#8ED1FC', '#0693E3', '#0000ff',
+'#EB144C', '#F78DA7', '#9900EF']
+
+// prettier-ignore
+export const effortColors = 
+['#FF6900', '#FCB900', '#7BDCB5', '#52eb0e', '#8ED1FC', '#0693E3', '#0000ff',
  '#EB144C', '#F78DA7', '#9900EF']

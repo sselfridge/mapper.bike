@@ -100,14 +100,14 @@ app.get(
   // segmentController.intializeUser,
   // segmentController.updateUserDB,
 
-  // segmentController.test,
+  segmentController.test,
   (req, res) => {
     if (res.locals.err) {
       console.log("Error!!");
       console.log(res.locals.err);
       res.status(500).send("DOH!!");
     } else {
-      stravaQ.processQueue();
+      // stravaQ.processQueue();
       console.log("fin");
       res.send(res.locals.effort);
     }
