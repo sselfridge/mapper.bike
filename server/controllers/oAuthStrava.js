@@ -6,7 +6,6 @@ const cryptr = new Cryptr(config.secretSuperKey);
 
 const utils = require("../utils/stravaUtils");
 
-
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
   // "access_token"  : "Your apps access token (Required for Quickstart)",
@@ -15,13 +14,11 @@ stravaAPI.config({
   redirect_uri: config.redirect_uri,
 });
 
-
 module.exports = {
-    setStravaOauth,
-    loadStravaProfile,
-    clearCookie
-}
-
+  setStravaOauth,
+  loadStravaProfile,
+  clearCookie,
+};
 
 // EXPORTED Functions
 function setStravaOauth(req, res, next) {
@@ -67,9 +64,10 @@ function loadStravaProfile(req, res, next) {
       next();
     })
     .catch((err) => {
-      console.log("Error while loading Strava Profile\n", err.message);
+      console.log("Error while loading Strava Profile\n", err);
       res.locals.err = "Error Loading Strava Profile";
-      clearCookie(req, res, next);     
+      // clearCookie(req, res, next);
+      next();
     });
 }
 
@@ -129,7 +127,10 @@ function setJWTCookie(res, payload) {
 const decodeCookie = (res, jwt) => {
   return new Promise((resolve, reject) => {
     jwtoken.verify(jwt, config.secretSuperKey, (err, payload) => {
-      if (err) return reject("JWT / Cookie Invalid");
+      if (err) {
+        console.log(err);
+        return reject("JWT / Cookie Invalid");
+      }
       console.log(`JWT Valid - allow to proceed. athleteID: ${payload.athleteID}`);
       res.locals.expiresAt = m.unix(payload.expiresAt);
       res.locals.strava = new stravaAPI.client(payload.accessToken);

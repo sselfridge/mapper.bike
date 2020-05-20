@@ -8,14 +8,12 @@ import CenterFocusWeakOutlinedIcon from "@material-ui/icons/CenterFocusWeakOutli
 
 import InputLabel from "../../styledMui/InputLabel";
 import CenterMapModal from "../shared/CenterMapModal";
+import RankFilter from "./RankFilter";
+import RankColor from "./RankColor";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
-  calendarStyle: {
-    "&  button": {
-      fontSize: "1.1em",
-    },
-  },
+
   centerMap: {
     display: "flex",
     flexDirection: "column",
@@ -32,27 +30,28 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     // margin: theme.spacing(1, 0),
   },
+  rankSwitch: {
+    display: "flex",
+  },
 }));
 
 const ControlPanel = (props) => {
   const classes = useStyles();
 
-  const {
-    blackgroundActive,
-    setBlackground,
-    fetchEfforts,
-
-    setMapCenter,
-
-    snackBar,
-    ...rest
-  } = props;
+  const { blackgroundActive, setBlackground, fetchEfforts, setMapCenter, snackBar } = props;
 
   const [showCenterModal, setShowCenterModal] = useState(false);
+  const [rankFilterOrColor, setRankFilterOrColor] = useState(false);
+  const [formats, setFormats] = React.useState(() => [1]);
+  const [colors, setColors] = useState({});
+
+  const handleFormat = (event, newFormats) => {
+    setFormats(newFormats);
+  };
 
   return (
     <div className={classes.root}>
-      <div className={classes.datePicking}>
+      <div>
         <section>
           <Button
             onClick={() => fetchEfforts()}
@@ -60,11 +59,26 @@ const ControlPanel = (props) => {
             variant="contained"
             color="primary"
           >
-            Get Efforts
+            Reset Efforts
           </Button>
         </section>
+        <section>
+          <div className={classes.toggleContainer}>
+            <div className={classes.rankSwitch}>
+              <InputLabel>Filter by Rank</InputLabel>
+              <Switch
+                checked={!rankFilterOrColor}
+                onChange={() => {
+                  setRankFilterOrColor(!rankFilterOrColor);
+                }}
+              />
+              <InputLabel>Set Color</InputLabel>
+            </div>
+            {rankFilterOrColor && <RankFilter formats={formats} handleFormat={handleFormat} />}
+            {!rankFilterOrColor && <RankColor />}
+          </div>
+        </section>
       </div>
-      {/* datepicker */}
       <div className={classes.mapControls}>
         <section>
           <InputLabel>Hide Map</InputLabel>
