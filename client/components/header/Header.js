@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core";
 import HeaderRight from "./HeaderRight";
 
 // eslint-disable-next-line no-unused-vars
-import { apiTest } from "../../api/strava";
+import { apiTest, getUser } from "../../api/strava";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,6 +33,16 @@ const version = VERSION;
 
 const Header = (props) => {
   const classes = useStyles();
+
+  const testClick = () => {
+    getUser(1075670)
+      .then((result) => {
+        console.log("getUser Result");
+        console.log(result === undefined);
+        console.log(result);
+      })
+      .catch((err) => console.error(err));
+  };
 
   return (
     <div className={classes.root}>

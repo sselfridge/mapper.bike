@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   ExpansionPanel,
@@ -11,12 +11,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import ControlPanel from "./ControlPanel";
 import List from "./List";
-import { getEfforts } from "../../../api/strava";
+import { getEfforts, getUser } from "../../../api/strava";
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    justifyContent: "center",
     flexDirection: "column",
     height: "87.5vh",
     backgroundColor: "#aadaff",

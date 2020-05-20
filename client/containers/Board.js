@@ -26,7 +26,7 @@ const Board = (props) => {
 
   const [mapLines, setMapLines] = useState([]);
   const [activities, setActivities] = useState([]);
-  const [efforts, setEfforts] = useState(demoEfforts);
+  const [efforts, setEfforts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [blackgroundActive, setBlackground] = useState(false);
   const [lineWeight, setLineWeight] = useState(3);

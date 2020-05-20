@@ -6,8 +6,9 @@ const utils = require("../utils/stravaUtils");
 const segmentController = {
   test,
   segmentEfforts,
-  intializeUser,
+  initializeUser,
   updateUserDB,
+  getUser,
 };
 
 async function updateUserDB(req, res, next) {
@@ -22,8 +23,8 @@ async function updateUserDB(req, res, next) {
   return next();
 }
 
-async function intializeUser(req, res, next) {
-  console.log("Initalize user");
+async function initializeUser(req, res, next) {
+  console.log("initialize User");
   try {
     const strava = res.locals.strava;
     const userData = getUserData(res);
@@ -35,6 +36,8 @@ async function intializeUser(req, res, next) {
     res.locals.data = { activityCount: count };
     return next();
   } catch (err) {
+    console.log("Initalize Error:");
+    console.log(err);
     res.locals.err = err;
     return next();
   }
@@ -50,6 +53,19 @@ function getUserData(res) {
     refreshToken,
   };
   return userData;
+}
+
+async function getUser(req, res, next) {
+  const id = parseInt(req.params.id);
+  try {
+    const user = await db.getUser(id);
+    res.locals.user = user;
+    next();
+  } catch (error) {
+    res.locals.err = "Error Fetching User";
+    console.error(error);
+    next();
+  }
 }
 
 async function checkInitStatus(req, res, next) {
@@ -98,10 +114,10 @@ async function test(req, res, next) {
   const strava = res.locals.strava;
 
   try {
-    // const fullActivity = await strava.athlete.get({});
-    const fullActivity = await strava.segments.get({ id: 6970946 });
-
-    console.log(fullActivity);
+    const result = await strava.segments.listLeaderboard({ id: 8058447 });
+    // const result = await strava.segments.get({ id: 9675572 });
+    console.log(result);
+    console.log("Done with DB");
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);

@@ -27,13 +27,13 @@ function Row(props) {
     root: classes.itemNumber,
   };
 
-  let infoA, infoB, infoC, stravaLink;
   const date = moment(effort.date);
 
-  infoA = `Rank: ${effort.rank}`;
-  infoB = "";
-  infoC = `Date: ${date.format("MMM DD YY")}`;
-  stravaLink = `http://www.strava.com/segments/${effort.segmentId}`;
+  const infoA = `#${effort.rank}`;
+  const infoB = `${"165"}mi`;
+  const infoC = `${"300"}ft`;
+  const infoD = `${date.format("MMM DD 'YY")}`;
+  const stravaLink = `http://www.strava.com/segments/${effort.segmentId}`;
 
   return (
     <div
@@ -59,6 +59,7 @@ function Row(props) {
               <span>{infoA}</span>
               <span>{infoB}</span>
               <span>{infoC}</span>
+              <span>{infoD}</span>
             </span>
           }
         />

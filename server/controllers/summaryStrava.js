@@ -121,9 +121,6 @@ function mapAndFilterStravaData(stravaData, activityType) {
     newActivity.date = utils.makeEpochSecondsTime(element.start_date_local);
     newActivity.distance = element.distance;
     newActivity.elapsedTime = element.elapsed_time;
-    newActivity.selected = false;
-    newActivity.weight = 2;
-    newActivity.color = "blue";
 
     //only grab activities with a polyline AKA non-trainer rides
     if (newActivity.line) {

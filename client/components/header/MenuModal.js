@@ -67,9 +67,9 @@ const MenuModal = (props) => {
               Logout
             </Button>
           </section>
-          {currentUser.optIn && (
+          {/* {currentUser.optIn && ( */}
+          {true && (
             <Tooltip title="Click Box to enable Delete. CANNOT BE UN-DONE!">
-              <hr />
               <div className={classes.deleteBox}>
                 <Checkbox
                   checked={!disabledDelete}

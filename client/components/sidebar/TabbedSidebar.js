@@ -10,6 +10,9 @@ import Box from "@material-ui/core/Box";
 import ActivitiesTab from "./activities/ActivitesTab.jsx";
 import EffortsTab from "./efforts/EffortsTab.jsx";
 
+import { getUser } from "../../api/strava";
+import UserAgreement from "./UserAgreement.js";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -57,9 +60,12 @@ function a11yProps(index) {
 export default function TabbedSidebar(props) {
   const classes = useStyles();
 
-  const { setMapLines, activities, efforts } = props;
+  const { setMapLines, activities, efforts, currentUser } = props;
 
   const [activeTab, setActiveTab] = useState(1);
+  const [userAgreed, setUserAgreed] = useState(false);
+
+  const [userInitialized, setUserInitalized] = useState(false);
 
   const handleChange = (event, newValue) => {
     syncLines(newValue);
@@ -85,6 +91,13 @@ export default function TabbedSidebar(props) {
     syncLines(activeTab);
   }, [activities, efforts]);
 
+  useEffect(() => {
+    const id = currentUser.athleteId;
+    getUser(id).then((user) => {
+      if (user) setUserInitalized(true);
+    });
+  }, []);
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -97,7 +110,11 @@ export default function TabbedSidebar(props) {
         <ActivitiesTab {...props} />
       </TabPanel>
       <TabPanel value={activeTab} index={1}>
-        <EffortsTab {...props} />
+        {userInitialized ? (
+          <EffortsTab {...props} />
+        ) : (
+          <UserAgreement userAgreed={userAgreed} setUserAgreed={setUserAgreed} />
+        )}
       </TabPanel>
     </div>
   );

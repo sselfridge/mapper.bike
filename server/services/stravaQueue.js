@@ -32,7 +32,7 @@ async function processQueue() {
     }
     stravaRatePercent = stravaRate();
     console.log(`Strava Rate currently at: ${stravaRatePercent}%`);
-    if(processed === 0) break;
+    if (processed === 0) break;
   } //while
 
   console.log("Process Done");
@@ -130,6 +130,10 @@ async function getSegmentDetails(id) {
     return {
       id: result.id,
       line: result.map.polyline,
+      effortCount: result.effort_count,
+      athleteCount: result.athlete_count,
+      distance: result.distance,
+      elevation: result.total_elevation_gain,
     };
   } catch (error) {
     console.log("Error:::::", error.message);

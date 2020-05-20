@@ -99,13 +99,15 @@ app.get(
   oAuthStrava.loadStravaProfile,
   // segmentController.intializeUser,
   // segmentController.updateUserDB,
-  segmentController.test,
+
+  // segmentController.test,
   (req, res) => {
     if (res.locals.err) {
       console.log("Error!!");
       console.log(res.locals.err);
       res.status(500).send("DOH!!");
     } else {
+      stravaQ.processQueue();
       console.log("fin");
       res.send(res.locals.effort);
     }
@@ -115,16 +117,16 @@ app.get(
 app.post(
   "/api/initialize",
   oAuthStrava.loadStravaProfile,
-  segmentController.intializeUser,
+  segmentController.initializeUser,
   (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
-      res.status(523).send("Error intializing user ");
+      res.status(501).send("Error intializing user ");
       return;
     }
     const count = res.locals.data.activityCount;
 
-    res.send(count);
+    res.send(JSON.stringify(count));
   }
 );
 
@@ -155,6 +157,19 @@ app.get("/api/getDemoData", summaryController.getDemoData, (req, res) => {
 
 app.post("/api/logout", oAuthStrava.clearCookie, (req, res) => {
   res.send("Ok");
+});
+
+app.get("/api/users/:id", segmentController.getUser, (req, res) => {
+  if (res.locals.err) {
+    res.status(512).send("Error Fetching User");
+    return;
+  }
+
+  if (res.locals.user) {
+    res.send(JSON.stringify(res.locals.user));
+  } else {
+    res.status(204).send();
+  }
 });
 
 // statically serve everything in the build folder on the route '/build'
