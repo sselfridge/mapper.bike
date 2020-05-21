@@ -39,6 +39,7 @@ const EffortsTab = (props) => {
 
   const [panelExpanded, setPanelExpanded] = useState(true);
   const [ranks, setRanks] = React.useState(() => [1]);
+  const [sortBy, setSortBy] = useState("");
 
   const fetchEfforts = () => {
     console.log("Effect Used");
@@ -59,8 +60,9 @@ const EffortsTab = (props) => {
       const rank = effort.rank;
       return ranks.indexOf(rank) !== -1;
     });
+
     setFilteredEfforts(newFiltered);
-  }, [ranks, efforts]);
+  }, [ranks, efforts, sortBy]);
 
   return (
     <div className={classes.root}>
@@ -76,7 +78,14 @@ const EffortsTab = (props) => {
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <ControlPanel fetchEfforts={fetchEfforts} ranks={ranks} setRanks={setRanks} {...props} />
+          <ControlPanel
+            fetchEfforts={fetchEfforts}
+            ranks={ranks}
+            setRanks={setRanks}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            {...props}
+          />
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <List

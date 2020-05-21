@@ -5,14 +5,7 @@ import moment from "moment";
 
 import { noKeyOverLap } from "../../../utils";
 
-import {
-  makeStyles,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  IconButton,
-  Tooltip,
-} from "@material-ui/core/";
+import { ListItem, ListItemText, ListItemAvatar, IconButton, Tooltip } from "@material-ui/core/";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 

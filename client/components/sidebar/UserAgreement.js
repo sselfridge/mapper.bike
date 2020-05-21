@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 import { makeStyles, Checkbox, Button, FormControlLabel } from "@material-ui/core";
 import { initializeUser } from "../../api/strava";
@@ -36,8 +37,8 @@ const UserAgreement = (props) => {
         <div>
           <h2>Thanks!</h2>
           <p>
-            Check back here soon! Processing time is dependant on how many rides and segments you've
-            done, but should be done in a few hours.
+            Check back here soon! Processing time is dependant on how many rides and segments
+            you&apos;ve done, but should be done in a few hours.
           </p>
           {totalActivities !== 0 && (
             <p>Currently Processing all {`${totalActivities}`} of your activities</p>
@@ -47,8 +48,8 @@ const UserAgreement = (props) => {
         <div>
           <h2>User Agreement</h2>
           <p>
-            In order to map your top 10 segments we will need to store some of your data. This won't
-            be share with anyone and you can delete it at anytime.
+            In order to map your top 10 segments we will need to store some of your data. This
+            won&apos;t be share with anyone and you can delete it at anytime.
           </p>
           <p>
             Because of Strava API rate limits, it can take a few hours to gather and sort through
@@ -81,6 +82,11 @@ const UserAgreement = (props) => {
       )}
     </div>
   );
+};
+
+UserAgreement.propTypes = {
+  userAgreed: PropTypes.bool.isRequired,
+  setUserAgreed: PropTypes.func.isRequired,
 };
 
 export default UserAgreement;

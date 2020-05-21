@@ -34,16 +34,6 @@ const version = VERSION;
 const Header = (props) => {
   const classes = useStyles();
 
-  const testClick = () => {
-    getUser(1075670)
-      .then((result) => {
-        console.log("getUser Result");
-        console.log(result === undefined);
-        console.log(result);
-      })
-      .catch((err) => console.error(err));
-  };
-
   return (
     <div className={classes.root}>
       <button onClick={apiTest}>TEST</button>

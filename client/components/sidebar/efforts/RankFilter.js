@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import Typography from "@material-ui/core/Typography";
 import ToggleButton from "@material-ui/lab/ToggleButton";
@@ -41,6 +42,11 @@ const RankFilter = (props) => {
       </ToggleButton>
     </ToggleButtonGroup>
   );
+};
+
+RankFilter.propTypes = {
+  ranks: PropTypes.array.isRequired,
+  handleToggleRank: PropTypes.func.isRequired,
 };
 
 export default RankFilter;

@@ -95,6 +95,7 @@ MyMap.propTypes = {
   mapBounds: PropTypes.array.isRequired,
   handleSelected: PropTypes.func.isRequired,
   google: PropTypes.object.isRequired,
+  rankColors: PropTypes.array.isRequired,
 };
 
 export default GoogleApiWrapper({

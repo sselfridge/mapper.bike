@@ -120,4 +120,13 @@ export default function TabbedSidebar(props) {
   );
 }
 
+TabbedSidebar.propTypes = {
+  setMapLines: PropTypes.func.isRequired,
+  activities: PropTypes.array.isRequired,
+  filteredEfforts: PropTypes.array.isRequired,
+  currentUser: PropTypes.shape({
+    athleteId: PropTypes.number,
+  }),
+};
+
 TabbedSidebar.propTypes = {};

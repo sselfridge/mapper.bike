@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import { makeStyles } from "@material-ui/core/styles";
-import _ from "lodash";
-import { Switch, Button } from "@material-ui/core";
+import { Switch, Button, Select, FormControl, MenuItem } from "@material-ui/core";
 import CenterFocusWeakOutlinedIcon from "@material-ui/icons/CenterFocusWeakOutlined";
 
 import InputLabel from "../../styledMui/InputLabel";
@@ -19,7 +18,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
-
+  formControl: {
+    width: 120,
+  },
   icon: {
     height: theme.spacing(4),
     width: theme.spacing(4),
@@ -48,14 +49,19 @@ const ControlPanel = (props) => {
     setRanks,
     rankColors,
     setRankColors,
+    sortBy,
+    setSortBy,
   } = props;
 
   const [showCenterModal, setShowCenterModal] = useState(false);
   const [rankFilterOrColor, setRankFilterOrColor] = useState(false);
-  const [colors, setColors] = useState({});
 
   const handleToggleRank = (event, newRank) => {
     setRanks(newRank);
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
   };
 
   return (
@@ -107,6 +113,24 @@ const ControlPanel = (props) => {
             className={classes.icon}
           />
         </section>
+        <section>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-helper-label">Sort By</InputLabel>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              value={sortBy}
+              onChange={handleSortChange}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={"rank"}>Rank</MenuItem>
+              <MenuItem value={"distance"}>Distance</MenuItem>
+              <MenuItem value={"elevation"}>Elevation</MenuItem>
+            </Select>
+          </FormControl>
+        </section>
       </div>
 
       <CenterMapModal
@@ -127,6 +151,12 @@ ControlPanel.propTypes = {
   setMapCenter: PropTypes.func.isRequired,
 
   snackBar: PropTypes.func.isRequired,
+  ranks: PropTypes.array.isRequired,
+  setRanks: PropTypes.func.isRequired,
+  rankColors: PropTypes.array.isRequired,
+  setRankColors: PropTypes.func.isRequired,
+  sortBy: PropTypes.string.isRequired,
+  setSortBy: PropTypes.func.isRequired,
 };
 
 export default ControlPanel;

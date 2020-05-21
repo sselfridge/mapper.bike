@@ -17,6 +17,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { useRowStyles } from "../shared/styles";
 import { mergeStyles } from "../../../utils";
 
+// eslint-disable-next-line no-unused-vars
 const localStyles = makeStyles((theme) => ({}));
 
 function Row(props) {

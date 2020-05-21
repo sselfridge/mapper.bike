@@ -15,6 +15,11 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiMenu: {
+      list: {
+        backgroundColor: "white",
+      },
+    },
     MuiListItem: {
       root: {
         paddingBottom: 0,

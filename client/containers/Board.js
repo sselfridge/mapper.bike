@@ -9,6 +9,7 @@ import Sidebar from "../components/sidebar/Sidebar";
 import decodePolyline from "decode-google-map-polyline";
 
 import { calcBounds } from "../utils";
+// eslint-disable-next-line no-unused-vars
 import demoEfforts from "../constants/DemoEfforts";
 import { effortColors } from "../constants/map";
 // eslint-disable-next-line no-unused-vars
