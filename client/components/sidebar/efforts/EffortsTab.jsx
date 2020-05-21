@@ -28,6 +28,8 @@ const EffortsTab = (props) => {
   const {
     efforts,
     setEfforts,
+    filteredEfforts,
+    setFilteredEfforts,
     loading,
     handleSelected,
     selectedAct,
@@ -36,6 +38,7 @@ const EffortsTab = (props) => {
   } = props;
 
   const [panelExpanded, setPanelExpanded] = useState(true);
+  const [ranks, setRanks] = React.useState(() => [1]);
 
   const fetchEfforts = () => {
     console.log("Effect Used");
@@ -50,6 +53,15 @@ const EffortsTab = (props) => {
       });
   };
 
+  useEffect(() => {
+    console.log("Using effect Filter");
+    const newFiltered = efforts.filter((effort) => {
+      const rank = effort.rank;
+      return ranks.indexOf(rank) !== -1;
+    });
+    setFilteredEfforts(newFiltered);
+  }, [ranks, efforts]);
+
   return (
     <div className={classes.root}>
       <ExpansionPanel id="controlPanel" expanded={panelExpanded}>
@@ -59,14 +71,16 @@ const EffortsTab = (props) => {
           id="panel1a-header"
           onClick={() => setPanelExpanded(!panelExpanded)}
         >
-          <Typography className={classes.heading}>Map Filter / Controls</Typography>
+          <Typography className={classes.heading}>
+            Control Panel - {filteredEfforts.length} efforts on map
+          </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <ControlPanel fetchEfforts={fetchEfforts} {...props} />
+          <ControlPanel fetchEfforts={fetchEfforts} ranks={ranks} setRanks={setRanks} {...props} />
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <List
-        efforts={efforts}
+        filteredEfforts={filteredEfforts}
         loading={loading}
         panelExpanded={panelExpanded}
         handleSelected={handleSelected}
@@ -81,6 +95,8 @@ const EffortsTab = (props) => {
 EffortsTab.propTypes = {
   efforts: PropTypes.array,
   setEfforts: PropTypes.func.isRequired,
+  filteredEfforts: PropTypes.array,
+  setFilteredEfforts: PropTypes.func.isRequired,
   handleSelected: PropTypes.func.isRequired,
   selectedAct: PropTypes.object.isRequired,
   setMapCenter: PropTypes.func.isRequired,

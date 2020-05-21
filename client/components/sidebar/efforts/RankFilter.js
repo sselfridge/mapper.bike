@@ -5,10 +5,10 @@ import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 
 const RankFilter = (props) => {
-  const { formats, handleFormat } = props;
+  const { ranks, handleToggleRank } = props;
 
   return (
-    <ToggleButtonGroup value={formats} onChange={handleFormat} aria-label="text formatting">
+    <ToggleButtonGroup value={ranks} onChange={handleToggleRank} aria-label="text formatting">
       <ToggleButton value={1} aria-label="1">
         <Typography>1</Typography>
       </ToggleButton>

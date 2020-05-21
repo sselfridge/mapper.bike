@@ -117,7 +117,9 @@ export default function ActivitiesTab(props) {
           id="panel1a-header"
           onClick={() => setPanelExpanded(!panelExpanded)}
         >
-          <Typography className={classes.heading}>Map Filter / Controls</Typography>
+          <Typography className={classes.heading}>
+            Control Panel - {activities.length} rides on map
+          </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <ControlPanel

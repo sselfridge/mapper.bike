@@ -25,17 +25,22 @@ const MyMap = (props) => {
     selectedColor,
     mapBounds,
     handleSelected,
+    rankColors,
   } = props;
 
   const lines = [];
   mapLines.forEach((mapLine) => {
     if (!mapLine.line) return;
 
+    const rank = mapLine.rank;
+    let color = rank !== undefined ? rankColors[mapLine.rank - 1] : lineColor;
+    color = mapLine.selected ? selectedColor : color;
+
     const newLine = (
       <Polyline
         key={mapLine.id}
         path={decodePolyline(mapLine.line)}
-        strokeColor={mapLine.selected ? selectedColor : lineColor}
+        strokeColor={color}
         strokeWeight={mapLine.selected ? lineWeight + 2 : lineWeight}
         strokeOpacity={0.75}
         zIndex={mapLine.selected ? 90 : 2}

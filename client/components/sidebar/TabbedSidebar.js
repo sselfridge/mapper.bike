@@ -60,7 +60,7 @@ function a11yProps(index) {
 export default function TabbedSidebar(props) {
   const classes = useStyles();
 
-  const { setMapLines, activities, efforts, currentUser } = props;
+  const { setMapLines, activities, filteredEfforts, currentUser } = props;
 
   const [activeTab, setActiveTab] = useState(1);
   const [userAgreed, setUserAgreed] = useState(false);
@@ -78,7 +78,7 @@ export default function TabbedSidebar(props) {
         setMapLines(activities);
         break;
       case 1:
-        setMapLines(efforts);
+        setMapLines(filteredEfforts);
         break;
 
       default:
@@ -89,7 +89,7 @@ export default function TabbedSidebar(props) {
   useEffect(() => {
     console.log("Effect Used", activeTab);
     syncLines(activeTab);
-  }, [activities, efforts]);
+  }, [activities, filteredEfforts]);
 
   useEffect(() => {
     const id = currentUser.athleteId;

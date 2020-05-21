@@ -38,15 +38,24 @@ const useStyles = makeStyles((theme) => ({
 const ControlPanel = (props) => {
   const classes = useStyles();
 
-  const { blackgroundActive, setBlackground, fetchEfforts, setMapCenter, snackBar } = props;
+  const {
+    blackgroundActive,
+    setBlackground,
+    fetchEfforts,
+    setMapCenter,
+    snackBar,
+    ranks,
+    setRanks,
+    rankColors,
+    setRankColors,
+  } = props;
 
   const [showCenterModal, setShowCenterModal] = useState(false);
   const [rankFilterOrColor, setRankFilterOrColor] = useState(false);
-  const [formats, setFormats] = React.useState(() => [1]);
   const [colors, setColors] = useState({});
 
-  const handleFormat = (event, newFormats) => {
-    setFormats(newFormats);
+  const handleToggleRank = (event, newRank) => {
+    setRanks(newRank);
   };
 
   return (
@@ -74,8 +83,10 @@ const ControlPanel = (props) => {
               />
               <InputLabel>Set Color</InputLabel>
             </div>
-            {rankFilterOrColor && <RankFilter formats={formats} handleFormat={handleFormat} />}
-            {!rankFilterOrColor && <RankColor />}
+            {rankFilterOrColor && <RankFilter ranks={ranks} handleToggleRank={handleToggleRank} />}
+            {!rankFilterOrColor && (
+              <RankColor rankColors={rankColors} setRankColors={setRankColors} />
+            )}
           </div>
         </section>
       </div>

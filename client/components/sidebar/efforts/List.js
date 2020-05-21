@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function List(props) {
   const classes = useStyles();
-  const { efforts, loading } = props;
+  const { filteredEfforts, loading } = props;
 
   let newHeight = 0;
   const [listHeight, setListHeight] = useState(newHeight);
@@ -30,7 +30,7 @@ export default function List(props) {
 
   return (
     <div style={{ height: listHeight }} className={classes.root}>
-      {efforts.map((effort, index) => (
+      {filteredEfforts.map((effort, index) => (
         <Row key={index} index={index} effort={effort} {...props} />
       ))}
       <div className={classes.rowSpacer} />
@@ -39,6 +39,6 @@ export default function List(props) {
 }
 
 List.propTypes = {
-  efforts: PropTypes.array.isRequired,
+  filteredEfforts: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
 };

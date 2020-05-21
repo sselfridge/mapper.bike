@@ -10,7 +10,7 @@ import decodePolyline from "decode-google-map-polyline";
 
 import { calcBounds } from "../utils";
 import demoEfforts from "../constants/DemoEfforts";
-
+import { effortColors } from "../constants/map";
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,11 +27,13 @@ const Board = (props) => {
   const [mapLines, setMapLines] = useState([]);
   const [activities, setActivities] = useState([]);
   const [efforts, setEfforts] = useState([]);
+  const [filteredEfforts, setFilteredEfforts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [blackgroundActive, setBlackground] = useState(false);
   const [lineWeight, setLineWeight] = useState(3);
   const [lineColor, setLineColor] = useState("#0000ff"); //blue
   const [selectedColor, setSelectedColor] = useState("#52eb0e"); //neon green
+  const [rankColors, setRankColors] = useState(effortColors.slice());
   const [mapCenter, setMapCenter] = useState({ center: null });
   const [mapBounds, setMapBounds] = useState([]);
   const [selectedAct, setSelectedAct] = useState({});
@@ -85,6 +87,8 @@ const Board = (props) => {
         setActivities={setActivities}
         efforts={efforts}
         setEfforts={setEfforts}
+        filteredEfforts={filteredEfforts}
+        setFilteredEfforts={setFilteredEfforts}
         mapLines={mapLines}
         setMapLines={setMapLines}
         lineColor={lineColor}
@@ -100,6 +104,8 @@ const Board = (props) => {
         setLoading={setLoading}
         handleRemoveLine={handleRemoveLine}
         snackBar={snackBar}
+        rankColors={rankColors}
+        setRankColors={setRankColors}
       />
       <MyMap
         blackgroundActive={blackgroundActive}
@@ -111,6 +117,7 @@ const Board = (props) => {
         mapBounds={mapBounds}
         handleSelected={handleSelected}
         snackBar={snackBar}
+        rankColors={rankColors}
       />
     </div>
   );
