@@ -44,6 +44,11 @@ const HeaderRight = (props) => {
 
   const profileLink = `https://www.strava.com/athletes/${currentUser.athleteId}`;
 
+  const avatar =
+    currentUser.avatar === "avatar/athlete/large.png"
+      ? "https://d3nn82uaxijpm6.cloudfront.net/assets/avatar/athlete/medium-bee27e393b8559be0995b6573bcfde897d6af934dac8f392a6229295290e16dd.png"
+      : currentUser.avatar;
+
   return (
     <div className={classes.root}>
       {currentUser.firstname && (
@@ -58,11 +63,16 @@ const HeaderRight = (props) => {
               {currentUser.firstname} {currentUser.lastname}
             </a>
           </div>
-          <img className={classes.userAvatar} src={currentUser.avatar} />
+          <img className={classes.userAvatar} src={avatar} />
         </span>
       )}
       <MenuRoundedIcon className={classes.menuIcon} fontSize="large" onClick={handleOpen} />
-      <MenuModal stravaLogout={stravaLogout} handleClose={handleClose} modalOpen={modalOpen} currentUser={currentUser} />
+      <MenuModal
+        stravaLogout={stravaLogout}
+        handleClose={handleClose}
+        modalOpen={modalOpen}
+        currentUser={currentUser}
+      />
     </div>
   );
 };

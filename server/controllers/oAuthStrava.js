@@ -58,6 +58,7 @@ function loadStravaProfile(req, res, next) {
         firstname: result.firstname,
         lastname: result.lastname,
         athleteId: result.id,
+        premium: result.premium,
       };
 
       utils.logUser(result.firstname, result.lastname);

@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core";
-
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
+import { makeStyles, Tooltip, Box, AppBar, Tabs, Tab } from "@material-ui/core";
 
 import ActivitiesTab from "./activities/ActivitesTab.jsx";
 import EffortsTab from "./efforts/EffortsTab.jsx";
 
 import { getUser } from "../../api/strava";
 import UserAgreement from "./UserAgreement.js";
+import PremiumOnly from "./PremiumOnly";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+  },
+  premiumIcon: {
+    height: theme.spacing(3),
+    width: theme.spacing(3),
+    float: "right",
+    marginRight: theme.spacing(3),
   },
 }));
 
@@ -67,6 +69,8 @@ export default function TabbedSidebar(props) {
 
   const [userInitialized, setUserInitalized] = useState(false);
 
+  const premium = currentUser.premium;
+
   const handleChange = (event, newValue) => {
     syncLines(newValue);
     setActiveTab(newValue);
@@ -102,14 +106,20 @@ export default function TabbedSidebar(props) {
       <AppBar position="static">
         <Tabs value={activeTab} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Activities" {...a11yProps(0)} />
-          <Tab label="KOM Mapper " {...a11yProps(1)} />
+          <Tab
+            label="KOM Mapper "
+            icon={<img className={classes.premiumIcon} src="./client/img/premium.png" />}
+            {...a11yProps(1)}
+          />
         </Tabs>
       </AppBar>
       <TabPanel value={activeTab} index={0}>
         <ActivitiesTab {...props} />
       </TabPanel>
       <TabPanel value={activeTab} index={1}>
-        {userInitialized ? (
+        {!premium ? (
+          <PremiumOnly />
+        ) : userInitialized ? (
           <EffortsTab {...props} />
         ) : (
           <UserAgreement userAgreed={userAgreed} setUserAgreed={setUserAgreed} />
@@ -125,6 +135,7 @@ TabbedSidebar.propTypes = {
   filteredEfforts: PropTypes.array.isRequired,
   currentUser: PropTypes.shape({
     athleteId: PropTypes.number,
+    premium: PropTypes.bool,
   }),
 };
 

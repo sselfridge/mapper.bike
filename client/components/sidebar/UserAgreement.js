@@ -85,8 +85,8 @@ const UserAgreement = (props) => {
 };
 
 UserAgreement.propTypes = {
-  userAgreed: PropTypes.bool.isRequired,
-  setUserAgreed: PropTypes.func.isRequired,
+  userAgreed: PropTypes.bool,
+  setUserAgreed: PropTypes.func,
 };
 
 export default UserAgreement;

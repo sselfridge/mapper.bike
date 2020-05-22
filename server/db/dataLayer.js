@@ -56,7 +56,6 @@ async function getEfforts(altheteId, rank = 10) {
 async function getEffortsWithPath(altheteId, rank = 10) {
   try {
     const results = await getEfforts(altheteId, rank);
-    console.log("Getting PathGetting PathGetting PathGetting PathGetting PathGetting Path");
     console.time("getPath");
     // for (const effort of results) {
     //   const effortDetail = await details.get(effort.segmentId);

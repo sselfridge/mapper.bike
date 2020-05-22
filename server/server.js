@@ -135,6 +135,7 @@ app.get(
   oAuthStrava.loadStravaProfile,
   segmentController.segmentEfforts,
   (req, res) => {
+    console.log("finalize Segment Efforts");
     if (res.locals.err) {
       console.log(res.locals.err);
       res.status(523).send("Error with get segments ");
@@ -144,7 +145,7 @@ app.get(
       res.status(203).send("Data Pending, checkback soon");
       return;
     }
-    fs.writeFileSync("./savedEfforts.json", JSON.stringify(res.locals.segmentEfforts));
+    // fs.writeFileSync("./savedEfforts.json", JSON.stringify(res.locals.segmentEfforts));
 
     res.send(JSON.stringify(res.locals.segmentEfforts));
   }

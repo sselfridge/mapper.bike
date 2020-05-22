@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   colorPicker: {
     display: "flex",
     flexDirection: "column",
-    alignItems: 'center'
+    alignItems: "center",
   },
   getBtn: {
     marginTop: theme.spacing(2),
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   picker: {
     position: "absolute",
     left: theme.spacing(5),
+    top: theme.spacing(9),
     padding: theme.spacing(2),
     backgroundColor: "white",
     borderRadius: theme.shape.borderRadius,
@@ -56,7 +57,6 @@ const LineOptions = (props) => {
       setShowPicker(false);
     }
   };
-
 
   return (
     <div className={classes.root}>

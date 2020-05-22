@@ -79,6 +79,8 @@ async function segmentEfforts(req, res, next) {
   const athleteId = res.locals.user.athleteId;
   const rank = parseInt(req.query.rank ? req.query.rank : 1);
   const efforts = await db.getEffortsWithPath(athleteId, rank);
+  console.log("got Efforts");
+  console.log(efforts);
   res.locals.segmentEfforts = efforts;
   next();
 }
@@ -114,8 +116,8 @@ async function test(req, res, next) {
   const strava = res.locals.strava;
 
   try {
-    const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    // const result = await strava.segments.get({ id: 9675572 });
+    // const result = await strava.segments.listLeaderboard({ id: 8058447 });
+    const result = await strava.athlete.get({});
     console.log(result);
     console.log("Done! Did this still work?");
   } catch (err) {

@@ -14,6 +14,9 @@ const theme = createMuiTheme({
           minWidth: 100,
         },
       },
+      wrapper: {
+        display: "inline",
+      },
     },
     MuiMenu: {
       list: {

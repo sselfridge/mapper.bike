@@ -17,9 +17,8 @@ const stravaQueue = {
 async function processQueue() {
   console.log("Process Queue");
   await getStravaClient();
-
   let stravaRatePercent = await stravaRate();
-  //if less than .75 proceed
+  //if less than 75% proceed
   while (stravaRatePercent < 75) {
     let processed = 0;
     try {
@@ -100,7 +99,9 @@ const parseRankedSegments = (activity) => {
 };
 
 function stravaRate() {
+  if (stravaAPI.rateLimiting.shortTermUsage + stravaAPI.rateLimiting.longTermUsage === 0) return 0;
   const stravaRate = stravaAPI.rateLimiting.fractionReached();
+
   const percent = (stravaRate * 100).toFixed(2);
   return percent;
 }
