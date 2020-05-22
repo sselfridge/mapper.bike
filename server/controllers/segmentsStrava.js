@@ -117,7 +117,7 @@ async function test(req, res, next) {
     const result = await strava.segments.listLeaderboard({ id: 8058447 });
     // const result = await strava.segments.get({ id: 9675572 });
     console.log(result);
-    console.log("Done with DB");
+    console.log("Done! Did this still work?");
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);

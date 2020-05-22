@@ -42,7 +42,6 @@ const EffortsTab = (props) => {
   const [sortBy, setSortBy] = useState("");
 
   const fetchEfforts = () => {
-    console.log("Effect Used");
     getEfforts()
       .then((result) => {
         console.log("result");
@@ -55,7 +54,7 @@ const EffortsTab = (props) => {
   };
 
   useEffect(() => {
-    console.log("Using effect Filter");
+    //Filter By Rank
     const newFiltered = efforts.filter((effort) => {
       const rank = effort.rank;
       return ranks.indexOf(rank) !== -1;

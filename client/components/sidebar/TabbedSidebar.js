@@ -87,7 +87,6 @@ export default function TabbedSidebar(props) {
   };
 
   useEffect(() => {
-    console.log("Effect Used", activeTab);
     syncLines(activeTab);
   }, [activities, filteredEfforts]);
 

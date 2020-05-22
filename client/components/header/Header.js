@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core";
 import HeaderRight from "./HeaderRight";
 
 // eslint-disable-next-line no-unused-vars
-import { apiTest, getUser } from "../../api/strava";
+import { apiTest, getUser, kickoffQ } from "../../api/strava";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,10 +34,15 @@ const version = VERSION;
 const Header = (props) => {
   const classes = useStyles();
 
+  const { currentUser } = props;
+
+  const kickoff =
+    currentUser.athleteId === 1075670 ? <button onClick={kickoffQ}>Start Q</button> : "";
+  console.log(currentUser);
   return (
     <div className={classes.root}>
       <button onClick={apiTest}>TEST</button>
-
+      {kickoff}
       <div className={classes.title}>
         Mapper.Bike <span className={classes.betaText}>beta {`v-${version}`}</span>
       </div>
@@ -49,7 +54,6 @@ const Header = (props) => {
 };
 
 Header.propTypes = {
-  stravaLogout: PropTypes.func.isRequired,
   currentUser: PropTypes.object.isRequired,
 };
 

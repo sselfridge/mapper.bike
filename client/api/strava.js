@@ -144,3 +144,17 @@ export function initializeUser() {
       });
   });
 }
+
+export function kickoffQ() {
+  console.log("Kickoff Queue!");
+  return new Promise((resolve, reject) => {
+    axios
+      .get("/api/kickoffQ")
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  });
+}

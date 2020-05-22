@@ -144,7 +144,7 @@ app.get(
       res.status(203).send("Data Pending, checkback soon");
       return;
     }
-    // fs.writeFileSync("./savedEfforts.json", JSON.stringify(res.locals.segmentEfforts));
+    fs.writeFileSync("./savedEfforts.json", JSON.stringify(res.locals.segmentEfforts));
 
     res.send(JSON.stringify(res.locals.segmentEfforts));
   }
@@ -170,6 +170,12 @@ app.get("/api/users/:id", segmentController.getUser, (req, res) => {
   } else {
     res.status(204).send();
   }
+});
+
+app.get("/api/kickoffQ", (req, res) => {
+  console.log("endPoint /api/kickoffQ hit, starting Q");
+  stravaQ.processQueue();
+  res.send("ok");
 });
 
 // statically serve everything in the build folder on the route '/build'
