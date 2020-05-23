@@ -1,7 +1,7 @@
 const utils = require("./utils");
 var client = require("./config");
 
-const TableName = "segmentRanks";
+const TableName = "segmentEfforts";
 
 module.exports = {
   add,
@@ -11,13 +11,13 @@ module.exports = {
 };
 
 function add(segment) {
-  const { id, segmentId, athleteId, name, rank, date } = segment;
-
+  const { segmentId, athleteId, name, rank, date } = segment;
+  console.log("DB: Adding effort on segment:", name);
   return new Promise((resolve, reject) => {
     var params = {
       TableName,
       Item: {
-        id,
+        id: `${segmentId}-${date}`, //effort ID's are not unique - using segmentID date combo
         segmentId,
         athleteId,
         name,
@@ -43,11 +43,9 @@ async function batchAdd(efforts) {
 
 function get(athleteId, rank) {
   return new Promise((resolve, reject) => {
-    console.log("get efforts.js");
-    console.log(athleteId);
-    console.log(typeof rank);
+    console.log("getting efforts for:", athleteId);
     const params = {
-      TableName: "segmentRanks",
+      TableName,
       IndexName: "athleteId-rank-index",
       KeyConditionExpression: "athleteId = :a AND #rank <= :r",
       ExpressionAttributeNames: { "#rank": "rank" },

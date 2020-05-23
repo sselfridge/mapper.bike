@@ -52,26 +52,26 @@ async function getEfforts(altheteId, rank = 10) {
   }
 }
 
-//TODO promise.all this for performace
 async function getEffortsWithPath(altheteId, rank = 10) {
   try {
     const results = await getEfforts(altheteId, rank);
-    console.time("getPath");
-    // for (const effort of results) {
-    //   const effortDetail = await details.get(effort.segmentId);
-    //   if (effortDetail && effortDetail.line) effort.line = effortDetail.line;
-    //   if (typeof effort.id === "bigint") effort.id = effort.id.toString();
-    // }
 
     const promArray = results.map((effort) => details.get(effort.segmentId));
-    const out = await Promise.all(promArray);
+    const segmentDetails = await Promise.all(promArray);
 
-    out.forEach((effortDetail, i) => {
-      if (effortDetail && effortDetail.line) results[i].line = effortDetail.line;
-      if (typeof results[i].id === "bigint") results[i].id = results[i].id.toString();
+    //TODO - this expects all the detail fetches to work, if this keeps erroring need to rework it.
+
+    segmentDetails.forEach((detail, i) => {
+      if (detail && results[i].segmentId === detail.id) {
+        results[i].athleteCount = detail.athleteCount;
+        results[i].distance = detail.distance;
+        results[i].effortCount = detail.effortCount;
+        results[i].elevation = detail.elevation;
+        results[i].line = detail.line;
+      } else {
+        console.error("Error Mapping segment details to effort", detail.id);
+      }
     });
-
-    console.timeEnd("getPath");
     return results;
   } catch (error) {
     console.log("Error:", error.message);
@@ -83,11 +83,12 @@ async function getEffortsWithPath(altheteId, rank = 10) {
 async function storeSegments(segments) {
   const rankedSegments = utils.parseRankedSegments(segments);
   const segmentDetails = utils.parseSegmentDetails(segments);
+
   await Promise.all([efforts.batchAdd(rankedSegments), details.batchAdd(segmentDetails)]);
 }
 
 async function addUser(data) {
-  console.log("Data: Add USer");
+  console.log("Data: Add User");
   const id = data.id;
   const userExists = await users.exists(id);
   console.log("User Exists:", userExists);
@@ -116,6 +117,7 @@ async function getUser(id) {
 async function deleteUser(altheteId) {
   //delete efforts
   const results = await efforts.get(altheteId, 10);
+  console.log(`Got ${results.length} to delete`);
   const ids = results.map((result) => result.id);
   console.log(ids);
   efforts.batchDelete(ids);

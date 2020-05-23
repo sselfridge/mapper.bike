@@ -116,8 +116,12 @@ async function test(req, res, next) {
   const strava = res.locals.strava;
 
   try {
-    // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    const result = await strava.athlete.get({});
+    const result = await strava.segments.listLeaderboard({ id: 8058447 });
+    // const result = await strava.athlete.get({});
+    // const result = await db.deleteUser(10645041);
+
+    // const result = await db.deleteUser(1075670);
+
     console.log(result);
     console.log("Done! Did this still work?");
   } catch (err) {

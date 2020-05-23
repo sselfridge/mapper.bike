@@ -13,15 +13,14 @@ module.exports = {
 function update(data) {
   const { id, line, effortCount, athleteCount, distance, elevation } = data;
   console.log("segment Detail Update");
-  console.log(data);
   return new Promise((resolve, reject) => {
     const params = {
       TableName: "segmentDetails",
       Key: { id },
     };
 
-    console.log("line");
-    console.log(line);
+    console.log("Does detail have line?");
+    console.log(!(line === undefined));
 
     if (line) {
       params.UpdateExpression = "set #p = :p, #h = :h, #ec = :ec, #ac = :ac, #d = :d, #e = :e";

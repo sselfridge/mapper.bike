@@ -4,17 +4,27 @@ const utils = {
 };
 
 function parseRankedSegments(efforts) {
-  return efforts.map((effort) => ({
-    id: effort.id,
-    name: effort.segment.name,
-    segmentId: effort.segment.id,
-    athleteId: effort.athlete.id,
-    activity: effort.activity.id,
-    date: effort.start_date,
-    rank: effort.kom_rank,
-  }));
+  const validEfforts = [];
+  efforts.forEach((effort) => {
+    if (validateEffort(effort) === false) {
+      console.log("Invalid effort data for:", effort);
+      return;
+    }
+    const validEffort = {
+      id: effort.id,
+      name: effort.segment.name,
+      segmentId: effort.segment.id,
+      athleteId: effort.athlete.id,
+      activity: effort.activity.id,
+      date: effort.start_date,
+      rank: effort.kom_rank,
+    };
+    validEfforts.push(validEffort);
+  });
+  return validEfforts;
 }
 
+//segment details added without a line will be marked and filled in later on
 function parseSegmentDetails(efforts) {
   return efforts.map((effort) => ({ id: effort.segment.id }));
 }
@@ -67,5 +77,26 @@ const segment_Effort = {
   kom_rank: 1,
   hidden: true,
 };
+
+function validateEffort(effort) {
+  const { kom_rank, start_date, id } = effort;
+
+  const segmentId = effort.segment.id;
+  const name = effort.segment.name;
+  const athleteId = effort.athlete.id;
+  const activity = effort.activity.id;
+
+  const retval =
+    true &&
+    !!kom_rank &&
+    !!segmentId &&
+    !!name &&
+    !!athleteId &&
+    !!activity &&
+    !!start_date &&
+    !!id;
+
+  return retval;
+}
 
 module.exports = utils;

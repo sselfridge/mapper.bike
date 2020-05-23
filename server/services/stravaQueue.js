@@ -48,7 +48,6 @@ async function getActivityDetails() {
   for (const activity of activities) {
     const athleteId = activity.athleteId;
     const strava = await getClient(athleteId, memo);
-
     const fullActivity = await strava.activities.get({
       id: activity.id,
       include_all_efforts: true,
@@ -57,7 +56,7 @@ async function getActivityDetails() {
     if (result) completedActivities.push(activity.id);
   }
 
-  await db.deleteActivities(completedActivities);
+  // await db.deleteActivities(completedActivities);
   return activities.length;
 }
 
@@ -76,7 +75,15 @@ async function getClient(athleteId, memo) {
   if (memo[athleteId]) return memo[athleteId];
 
   const user = await db.getUser(athleteId);
+
+  const refreshResult = await stravaAPI.oauth.refreshToken(user.refreshToken);
+  if (refreshResult.access_token !== user.accessToken) {
+    user.accessToken = refreshResult.access_token;
+    db.updateUser(user);
+  }
+
   const strava = new stravaAPI.client(user.accessToken);
+
   memo[athleteId] = strava;
   return strava;
 }
@@ -89,12 +96,12 @@ const parseRankedSegments = (activity) => {
   }
 
   activity.segment_efforts.forEach((effort) => {
-    if (effort.kom_rank !== null) {
-      console.log(effort.kom_rank);
+    if (effort.kom_rank <= 10 && effort.kom_rank > 0) {
+      console.log(`Saving Effort:${effort.name} with Rank:${effort.kom_rank}`);
       rankedSegments.push(effort);
     }
   });
-  console.log(`Found ${rankedSegments.length} segments to save`);
+
   return rankedSegments;
 };
 
