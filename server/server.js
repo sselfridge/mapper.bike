@@ -179,6 +179,15 @@ app.get("/api/kickoffQ", (req, res) => {
   res.send("ok");
 });
 
+app.delete("/api/users/:id", segmentController.deleteUser, (req, res) => {
+  if (res.locals.err) {
+    res.status(500).send();
+    return;
+  }
+
+  res.send("Done");
+});
+
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
   console.log(`Server in Production/Test mode!`);

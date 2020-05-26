@@ -27,8 +27,14 @@ const useStyles = makeStyles((theme) => ({
 
 const MenuModal = (props) => {
   const classes = useStyles();
-  const { stravaLogout, modalOpen, handleClose } = props;
-  const [disabledDelete, setDisabledDelete] = useState(true);
+  const {
+    stravaLogout,
+    modalOpen,
+    handleClose,
+    handleDelete,
+    setDisabledDelete,
+    disabledDelete,
+  } = props;
 
   return (
     <div className={classes.root}>
@@ -81,6 +87,7 @@ const MenuModal = (props) => {
                   variant={"contained"}
                   disabled={disabledDelete}
                   className={classes.deleteBtn}
+                  onClick={handleDelete}
                 >
                   Delete All My Data
                 </Button>
@@ -98,8 +105,11 @@ const MenuModal = (props) => {
 };
 MenuModal.propTypes = {
   stravaLogout: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
   modalOpen: PropTypes.bool.isRequired,
   currentUser: PropTypes.object.isRequired,
+  disabledDelete: PropTypes.bool.isRequired,
+  setDisabledDelete: PropTypes.func.isRequired,
 };
 export default MenuModal;

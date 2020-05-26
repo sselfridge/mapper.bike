@@ -18,7 +18,11 @@ import { useRowStyles } from "../shared/styles";
 import { mergeStyles } from "../../../utils";
 
 // eslint-disable-next-line no-unused-vars
-const localStyles = makeStyles((theme) => ({}));
+const localStyles = makeStyles((theme) => ({
+  detailText: {
+    textAlign: "center",
+  },
+}));
 
 function Row(props) {
   const classes = mergeStyles(useRowStyles(), localStyles());
@@ -29,11 +33,14 @@ function Row(props) {
   };
 
   const date = moment(effort.date);
+  const elevation = (effort.elevation * 3.3).toFixed(0);
+  const distance = (effort.distance / 1609).toFixed(2);
 
-  const infoA = `#${effort.rank}`;
-  const infoB = `${"165"}mi`;
-  const infoC = `${"300"}ft`;
-  const infoD = `${date.format("MMM DD 'YY")}`;
+  const rank = `#${effort.rank}`;
+  const distanceMi = `${distance}mi`;
+  const athleteCount = `~${effort.athleteCount}`;
+  const effortCount = `~${effort.effortCount} efforts`;
+  const effortDate = `${date.format("MMM DD 'YY")}`;
   const stravaLink = `http://www.strava.com/segments/${effort.segmentId}`;
 
   return (
@@ -57,33 +64,37 @@ function Row(props) {
           primary={effort.name}
           secondary={
             <span className={classes.secondaryText}>
-              <span>{infoA}</span>
-              <span>{infoB}</span>
-              <span>{infoC}</span>
-              <span>{infoD}</span>
+              <span>{rank}</span>
+              <span>{distanceMi}</span>
+
+              <span>{effortCount}</span>
+              <span>{effortDate}</span>
             </span>
           }
         />
       </ListItem>
       {selectedAct.id === effort.id && (
-        <div className={classes.actions}>
-          <Tooltip title="Remove from map" placement={"top"}>
-            <IconButton
-              aria-label="delete"
-              onClick={() => {
-                handleRemoveLine(index);
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="View on Strava" placement={"top"}>
-            <IconButton>
-              <a href={stravaLink} rel="noopener noreferrer" target="_blank">
-                <img className={classes.stravaIcon} src={"client/img/strava-icon.svg"} />
-              </a>
-            </IconButton>
-          </Tooltip>
+        <div>
+          <p className={classes.detailText}>{`${effortCount} by ${athleteCount} riders`}</p>
+          <div className={classes.actions}>
+            <Tooltip title="Remove from map" placement={"top"}>
+              <IconButton
+                aria-label="delete"
+                onClick={() => {
+                  handleRemoveLine(index);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="View on Strava" placement={"top"}>
+              <IconButton>
+                <a href={stravaLink} rel="noopener noreferrer" target="_blank">
+                  <img className={classes.stravaIcon} src={"client/img/strava-icon.svg"} />
+                </a>
+              </IconButton>
+            </Tooltip>
+          </div>
         </div>
       )}
     </div>
@@ -94,7 +105,7 @@ Row.propTypes = {
   index: PropTypes.number.isRequired,
   effort: PropTypes.object.isRequired,
   selectedAct: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.string,
   }),
   handleSelected: PropTypes.func.isRequired,
   handleRemoveLine: PropTypes.func.isRequired,

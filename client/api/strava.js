@@ -158,3 +158,18 @@ export function kickoffQ() {
       });
   });
 }
+
+export function deleteUser(id) {
+  return new Promise((resolve, reject) => {
+    axios
+      .delete(`/api/users/${id}`)
+      .then((result) => {
+        console.log("Deleted User:", id);
+        resolve();
+      })
+      .catch((err) => {
+        console.error(err);
+        reject(err);
+      });
+  });
+}

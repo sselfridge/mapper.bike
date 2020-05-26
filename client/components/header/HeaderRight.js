@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 
 import { makeStyles } from "@material-ui/core";
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
+import { deleteUser } from "../../api/strava";
+
 import MenuModal from "./MenuModal";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,13 +36,28 @@ const HeaderRight = (props) => {
   const classes = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [disabledDelete, setDisabledDelete] = useState(true);
 
   function handleOpen() {
     setModalOpen(true);
   }
   function handleClose() {
     setModalOpen(false);
+    setDisabledDelete(true);
   }
+
+  const handleDelete = () => {
+    const id = currentUser.athleteId;
+    deleteUser(id)
+      .then((result) => {
+        console.log("User Deleted");
+        handleClose();
+      })
+      .catch((err) => {
+        console.error("Error Deleting User");
+        //TODO add snackbar
+      });
+  };
 
   const profileLink = `https://www.strava.com/athletes/${currentUser.athleteId}`;
 
@@ -72,6 +89,9 @@ const HeaderRight = (props) => {
         handleClose={handleClose}
         modalOpen={modalOpen}
         currentUser={currentUser}
+        handleDelete={handleDelete}
+        setDisabledDelete={setDisabledDelete}
+        disabledDelete={disabledDelete}
       />
     </div>
   );

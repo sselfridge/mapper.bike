@@ -1,4 +1,3 @@
-const utils = require("./utils");
 var client = require("./config");
 
 const TableName = "segmentDetails";
@@ -11,38 +10,38 @@ module.exports = {
 };
 
 function update(data) {
-  const { id, line, effortCount, athleteCount, distance, elevation } = data;
-  console.log("segment Detail Update");
+  const { id, line, effortCount, athleteCount, distance, elevation, updated } = data;
   return new Promise((resolve, reject) => {
     const params = {
-      TableName: "segmentDetails",
+      TableName,
       Key: { id },
     };
 
-    console.log("Does detail have line?");
-    console.log(!(line === undefined));
-
     if (line) {
-      params.UpdateExpression = "set #p = :p, #h = :h, #ec = :ec, #ac = :ac, #d = :d, #e = :e";
-      params.ExpressionAttributeNames = {
-        "#p": "line",
-        "#h": "hasLine",
-        "#ec": "effortCount",
-        "#ac": "athleteCount",
-        "#d": "distance",
-        "#e": "elevation",
-      };
-
       if (line === "error") {
+        console.log("Logging Error detail");
+        params.UpdateExpression = "set #p = :p, #h = :h";
+        params.ExpressionAttributeNames = {
+          "#p": "line",
+          "#h": "hasLine",
+        };
+
         params.ExpressionAttributeValues = {
           ":p": line,
           ":h": "error",
-          ":ec": effortCount,
-          ":ac": athleteCount,
-          ":d": distance,
-          ":e": elevation,
         };
       } else {
+        params.UpdateExpression =
+          "set #p = :p, #h = :h, #ec = :ec, #ac = :ac, #d = :d, #e = :e, #u = :u";
+        params.ExpressionAttributeNames = {
+          "#p": "line",
+          "#h": "hasLine",
+          "#ec": "effortCount",
+          "#ac": "athleteCount",
+          "#d": "distance",
+          "#e": "elevation",
+          "#u": "updated",
+        };
         params.ExpressionAttributeValues = {
           ":p": line,
           ":h": "true",
@@ -50,6 +49,7 @@ function update(data) {
           ":ac": athleteCount,
           ":d": distance,
           ":e": elevation,
+          ":u": updated,
         };
       }
     } else {
@@ -64,11 +64,13 @@ function update(data) {
     client.update(params, (err) => {
       if (err) {
         if (err.code === "ConditionalCheckFailedException") {
-          console.log("Condition Check Failed");
+          console.log("Segment already in DB:", id);
           return resolve();
         } else {
           //reject all other errors
           console.log("Segment Details Err");
+          console.log("Error On Data:");
+          console.log(data);
           console.log(err.message);
           return reject(err);
         }

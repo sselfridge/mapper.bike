@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { Switch, Button, Select, FormControl, MenuItem } from "@material-ui/core";
 import CenterFocusWeakOutlinedIcon from "@material-ui/icons/CenterFocusWeakOutlined";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 
 import InputLabel from "../../styledMui/InputLabel";
 import CenterMapModal from "../shared/CenterMapModal";
@@ -51,6 +53,8 @@ const ControlPanel = (props) => {
     setRankColors,
     sortBy,
     setSortBy,
+    sortDir,
+    setSortDir,
   } = props;
 
   const [showCenterModal, setShowCenterModal] = useState(false);
@@ -63,6 +67,16 @@ const ControlPanel = (props) => {
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
   };
+
+  const switchSortDir = (e) => {
+    if (sortDir === "asc") {
+      setSortDir("dsc");
+    } else {
+      if (sortDir === "dsc") setSortDir("asc");
+    }
+  };
+
+  const sortIcon = sortDir === "asc" ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />;
 
   return (
     <div className={classes.root}>
@@ -127,10 +141,16 @@ const ControlPanel = (props) => {
               </MenuItem>
               <MenuItem value={"rank"}>Rank</MenuItem>
               <MenuItem value={"distance"}>Distance</MenuItem>
-              <MenuItem value={"elevation"}>Elevation</MenuItem>
+              <MenuItem value={"effortCount"}>Effort Count</MenuItem>
             </Select>
           </FormControl>
         </section>
+        {sortBy !== "" && (
+          <section onClick={switchSortDir}>
+            <InputLabel>SortDir</InputLabel>
+            {sortIcon}
+          </section>
+        )}
       </div>
 
       <CenterMapModal

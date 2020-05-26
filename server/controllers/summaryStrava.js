@@ -71,15 +71,10 @@ function getDemoData(req, res, next) {
 // Utility Functions
 // Not middleware for requests, but more complex than basic untility
 
-// let payload = {
-//   expiresAt,
-//   refreshToken,
-//   accessToken,
-//   athleteID
-// };
-
 async function fetchActivitiesFromStrava(strava, after, before) {
   console.log("Fetching with:");
+  // after = 1571036400;
+  // before = 1590505696;
   console.log("after : ", after);
   console.log("before: ", before);
 

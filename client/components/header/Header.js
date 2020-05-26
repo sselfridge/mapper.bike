@@ -38,7 +38,6 @@ const Header = (props) => {
 
   const kickoff =
     currentUser.athleteId === 1075670 ? <button onClick={kickoffQ}>Start Q</button> : "";
-  console.log(currentUser);
   return (
     <div className={classes.root}>
       <button onClick={apiTest}>TEST</button>

@@ -9,6 +9,7 @@ const segmentController = {
   initializeUser,
   updateUserDB,
   getUser,
+  deleteUser,
 };
 
 async function updateUserDB(req, res, next) {
@@ -68,19 +69,11 @@ async function getUser(req, res, next) {
   }
 }
 
-async function checkInitStatus(req, res, next) {
-  //get user stats
-  //get # of user actvities in Queue
-}
-
-async function checkSegmentSyncStatus(req, res, next) {}
-
 async function segmentEfforts(req, res, next) {
   const athleteId = res.locals.user.athleteId;
   const rank = parseInt(req.query.rank ? req.query.rank : 1);
   const efforts = await db.getEffortsWithPath(athleteId, rank);
-  console.log("got Efforts");
-  console.log(efforts);
+  console.log(`Got ${efforts.length} efforts with details`);
   res.locals.segmentEfforts = efforts;
   next();
 }
@@ -111,17 +104,32 @@ async function addToActivityQueue(strava) {
   }
 }
 
+async function deleteUser(req, res, next) {
+  const id = parseInt(req.params.id);
+
+  try {
+    db.deleteUser(id);
+    next();
+  } catch (error) {
+    console.error("Delete User Error");
+    console.error(error);
+    res.locals.err = "Delete User Error";
+    next();
+  }
+}
+
 async function test(req, res, next) {
   console.log("Start Test");
   const strava = res.locals.strava;
 
   try {
-    const result = await strava.segments.listLeaderboard({ id: 8058447 });
+    const result = await strava.segments.get({ id: 14834811 });
+    // const result = await strava.segments.listLeaderboard({ id: 8058447 });
     // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
 
     // const result = await db.deleteUser(1075670);
-
+    // const result = await strava.activities.get({ id: 3462588758 });
     console.log(result);
     console.log("Done! Did this still work?");
   } catch (err) {

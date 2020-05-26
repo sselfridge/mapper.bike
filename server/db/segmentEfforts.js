@@ -12,7 +12,7 @@ module.exports = {
 
 function add(segment) {
   const { segmentId, athleteId, name, rank, date } = segment;
-  console.log("DB: Adding effort on segment:", name);
+  // console.log("DB: Adding effort on segment:", name);
   return new Promise((resolve, reject) => {
     var params = {
       TableName,
@@ -28,7 +28,7 @@ function add(segment) {
 
     client.put(params, (err, data) => {
       if (err) {
-        console.log("DB Error", err);
+        console.log(`DB Error on segment:${segmentId}`, err);
         return reject(err);
       }
       resolve(data);

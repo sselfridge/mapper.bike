@@ -68,6 +68,7 @@ async function getEffortsWithPath(altheteId, rank = 10) {
         results[i].effortCount = detail.effortCount;
         results[i].elevation = detail.elevation;
         results[i].line = detail.line;
+        results[i].updated = detail.updated;
       } else {
         console.error("Error Mapping segment details to effort", detail.id);
       }
@@ -119,9 +120,25 @@ async function deleteUser(altheteId) {
   const results = await efforts.get(altheteId, 10);
   console.log(`Got ${results.length} to delete`);
   const ids = results.map((result) => result.id);
+
   console.log(ids);
-  efforts.batchDelete(ids);
-  users.remove(altheteId);
+  await batchDelete(ids);
+  await users.remove(altheteId);
+}
+
+async function batchDelete(ids) {
+  const promArr = [];
+  let count = 0;
+  while (ids.length > 0) {
+    console.log("Delete Count:", count);
+    const batch = ids.slice(0, 20);
+
+    promArr.push(efforts.batchDelete(batch));
+
+    ids.splice(0, 20);
+    count++;
+  }
+  await Promise.all(promArr);
 }
 
 module.exports = dataLayer;

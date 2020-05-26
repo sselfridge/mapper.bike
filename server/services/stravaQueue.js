@@ -16,6 +16,7 @@ const stravaQueue = {
 
 async function processQueue() {
   console.log("Process Queue");
+
   await getStravaClient();
   let stravaRatePercent = await stravaRate();
   //if less than 75% proceed
@@ -23,6 +24,7 @@ async function processQueue() {
     let processed = 0;
     try {
       processed += await getActivityDetails();
+
       processed += await processPathlessSegments();
     } catch (error) {
       console.log("Queue Error:", error.message);
@@ -41,22 +43,28 @@ async function getActivityDetails() {
   console.log("Get Activity Details");
   const memo = {};
   const completedActivities = [];
+
   const activities = await db.popActivities();
+
   console.log(`Geting details for ${activities.length} activities`);
   if (activities.length === 0) return 0;
 
   for (const activity of activities) {
     const athleteId = activity.athleteId;
+
     const strava = await getClient(athleteId, memo);
+
     const fullActivity = await strava.activities.get({
       id: activity.id,
       include_all_efforts: true,
     });
+
     const result = await parseActivity(fullActivity);
     if (result) completedActivities.push(activity.id);
   }
 
-  // await db.deleteActivities(completedActivities);
+  await db.deleteActivities(completedActivities);
+
   return activities.length;
 }
 
@@ -97,7 +105,7 @@ const parseRankedSegments = (activity) => {
 
   activity.segment_efforts.forEach((effort) => {
     if (effort.kom_rank <= 10 && effort.kom_rank > 0) {
-      console.log(`Saving Effort:${effort.name} with Rank:${effort.kom_rank}`);
+      // console.log(`Saving Effort:${effort.name} with Rank:${effort.kom_rank}`);
       rankedSegments.push(effort);
     }
   });
@@ -124,7 +132,10 @@ async function processPathlessSegments() {
   for (const id of ids) {
     let data = await getSegmentDetails(id);
     if (!data) {
+      console.log("Error Fetching Data for Segment Id:", id);
       data = { id, line: "error" };
+    } else {
+      data.updated = m().format();
     }
     await db.addDetails(data);
   }
@@ -144,7 +155,7 @@ async function getSegmentDetails(id) {
       elevation: result.total_elevation_gain,
     };
   } catch (error) {
-    console.log("Error:::::", error.message);
+    console.log(`Error on id:${id}::`, error.message);
   }
 }
 
