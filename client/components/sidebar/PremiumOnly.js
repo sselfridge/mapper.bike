@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
-import { makeStyles, Checkbox, Button, FormControlLabel } from "@material-ui/core";
-import { initializeUser } from "../../api/strava";
+import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserAgreement = (props) => {
+const UserAgreement = () => {
   const classes = useStyles();
 
   return (

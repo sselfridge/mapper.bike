@@ -1,7 +1,5 @@
 const summaryStrava = require("./summaryStrava");
 const db = require("../db/dataLayer");
-const config = require("../../config/keys");
-const utils = require("../utils/stravaUtils");
 
 const segmentController = {
   test,

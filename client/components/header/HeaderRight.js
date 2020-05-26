@@ -49,12 +49,13 @@ const HeaderRight = (props) => {
   const handleDelete = () => {
     const id = currentUser.athleteId;
     deleteUser(id)
-      .then((result) => {
+      .then(() => {
         console.log("User Deleted");
         handleClose();
       })
       .catch((err) => {
         console.error("Error Deleting User");
+        console.log(err);
         //TODO add snackbar
       });
   };

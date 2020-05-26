@@ -25,7 +25,8 @@ app.use(cookieParser());
 app.use(logReq);
 
 const timer = 900000; //15min 1000 * 60 * 15
-const interval = setInterval(stravaQ.processQueue, timer);
+
+setInterval(stravaQ.processQueue, timer);
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   if (res.locals.err) {

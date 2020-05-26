@@ -68,7 +68,7 @@ const ControlPanel = (props) => {
     setSortBy(e.target.value);
   };
 
-  const switchSortDir = (e) => {
+  const switchSortDir = () => {
     if (sortDir === "asc") {
       setSortDir("dsc");
     } else {
@@ -177,6 +177,8 @@ ControlPanel.propTypes = {
   setRankColors: PropTypes.func.isRequired,
   sortBy: PropTypes.string.isRequired,
   setSortBy: PropTypes.func.isRequired,
+  sortDir: PropTypes.string.isRequired,
+  setSortDir: PropTypes.func.isRequired,
 };
 
 export default ControlPanel;

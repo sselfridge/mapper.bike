@@ -131,22 +131,6 @@ function mapAndFilterStravaData(stravaData, activityType) {
   return activities;
 }
 
-const fetchActivityDetails = (activitiesFromDB, res) => {
-  const strava = res.locals.strava;
-  const activityIds = activitiesFromDB.Items.map((act) => parseInt(act.id.N));
-  return new Promise((resolve, reject) => {
-    let rate = strava.rateLimiting.fractionReached();
-    while (rate < 0.75) {
-      const result = strava.activities.get({ id: 3189689567 }).then((result) => {
-        console.log("result");
-        console.log(Object.keys(result));
-        console.log("Strave Rate Limits");
-        console.log(strava.rateLimiting.fractionReached());
-      });
-    }
-  });
-};
-
 const decodePoly = (activities) => {
   // take polyline and decode into GPS points to be placed on map in polyline component
   // ya I know its weird but here we are

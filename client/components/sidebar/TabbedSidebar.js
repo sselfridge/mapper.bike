@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { makeStyles, Tooltip, Box, AppBar, Tabs, Tab } from "@material-ui/core";
+import { makeStyles, Box, AppBar, Tabs, Tab } from "@material-ui/core";
 
 import ActivitiesTab from "./activities/ActivitesTab.jsx";
 import EffortsTab from "./efforts/EffortsTab.jsx";

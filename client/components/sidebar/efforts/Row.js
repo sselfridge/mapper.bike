@@ -33,6 +33,8 @@ function Row(props) {
   };
 
   const date = moment(effort.date);
+
+  // eslint-disable-next-line no-unused-vars
   const elevation = (effort.elevation * 3.3).toFixed(0);
   const distance = (effort.distance / 1609).toFixed(2);
 

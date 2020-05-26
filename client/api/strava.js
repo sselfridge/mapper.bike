@@ -152,9 +152,11 @@ export function kickoffQ() {
       .get("/api/kickoffQ")
       .then((result) => {
         console.log(result);
+        resolve();
       })
       .catch((err) => {
         console.error(err);
+        reject(err);
       });
   });
 }
@@ -163,7 +165,7 @@ export function deleteUser(id) {
   return new Promise((resolve, reject) => {
     axios
       .delete(`/api/users/${id}`)
-      .then((result) => {
+      .then(() => {
         console.log("Deleted User:", id);
         resolve();
       })

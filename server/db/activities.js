@@ -5,9 +5,7 @@ const TableName = "activities";
 module.exports = {
   add,
   pop,
-  remove,
   batchDelete,
-  batchAdd,
   countByAthelete,
 };
 
@@ -52,76 +50,25 @@ function batchDelete(ids) {
   return new Promise((resolve, reject) => {
     const params = makeBatchDeleteParams(ids);
 
-    client.batchWrite(params, (err)=>{
-      if(err){
-        reject(err);
-      }else{
-        resolve();
-      }
-    })
-
-  });
-}
-
-function batchAdd(activities){
-  return new Promise((resolve,reject)=>{
-    reject("Not implmented")
-  })
-}
-
-
-function getAllEmptyActivities() {
-  return new Promise((resolve, reject) => {
-    const params = {
-      TableName: "TestActivities",
-      IndexName: "kind-index",
-      KeyConditionExpression: "kind = :kind",
-      ExpressionAttributeValues: {
-        ":kind": { S: "summary" },
-      },
-      ProjectionExpression: "id",
-    };
-
-    client.query(params, (err, data) => {
+    client.batchWrite(params, (err) => {
       if (err) {
-        return reject(err);
+        reject(err);
       } else {
-        return resolve(data);
+        resolve();
       }
     });
   });
 }
 
-async function remove(id) {}
-
+// eslint-disable-next-line no-unused-vars
 async function countByAthelete(id) {}
-
-const queryIndex = (field, equals) => {
-  const params = {
-    TableName: "TestActivities",
-    IndexName: "kind-index",
-    KeyConditionExpression: "kind = :kind",
-    ExpressionAttributeValues: {
-      ":kind": { S: "full" },
-    },
-    // ProjectionExpression: "ALL",
-  };
-
-  client.query(params, (err, data) => {
-    if (err) {
-      console.log(err);
-    } else console.log(data);
-  });
-};
 
 const makeBatchDeleteParams = (ids) => {
   var params = { RequestItems: {} };
-  params.RequestItems[TableName] = []
-  ids.forEach(id => {
-    const newItem =  { DeleteRequest: {Key: { id },}};
-    params.RequestItems[TableName].push(newItem)
+  params.RequestItems[TableName] = [];
+  ids.forEach((id) => {
+    const newItem = { DeleteRequest: { Key: { id } } };
+    params.RequestItems[TableName].push(newItem);
   });
   return params;
 };
-
-

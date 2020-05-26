@@ -1,4 +1,3 @@
-const utils = require("./utils");
 var client = require("./config");
 
 const TableName = "segmentEfforts";
