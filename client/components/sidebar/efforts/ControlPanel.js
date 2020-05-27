@@ -113,7 +113,7 @@ const ControlPanel = (props) => {
   return (
     <div className={classes.root}>
       <div>
-        <section>
+        {/* <section>
           <Button
             onClick={() => fetchEfforts()}
             className={classes.getBtn}
@@ -122,7 +122,7 @@ const ControlPanel = (props) => {
           >
             Reset Efforts
           </Button>
-        </section>
+        </section> */}
         <section>
           <div>
             <div className={classes.rankControls}>
