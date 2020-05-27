@@ -34,6 +34,7 @@ const MenuModal = (props) => {
     handleDelete,
     setDisabledDelete,
     disabledDelete,
+    currentUser,
   } = props;
 
   return (
@@ -62,19 +63,20 @@ const MenuModal = (props) => {
             </Button>
           </section>
           <hr />
-          <section>
-            <Button
-              href=""
-              onClick={() => {
-                stravaLogout();
-                handleClose();
-              }}
-            >
-              Logout
-            </Button>
-          </section>
-          {/* {currentUser.optIn && ( */}
-          {true && (
+          {currentUser.athleteId !== null && (
+            <section>
+              <Button
+                href=""
+                onClick={() => {
+                  stravaLogout();
+                  handleClose();
+                }}
+              >
+                Logout
+              </Button>
+            </section>
+          )}
+          {currentUser.athleteId !== null && (
             <Tooltip title="Click Box to enable Delete. CANNOT BE UN-DONE!">
               <div className={classes.deleteBox}>
                 <Checkbox

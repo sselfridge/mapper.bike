@@ -20,7 +20,7 @@ const UserAgreement = () => {
         <h2>Premium Paywall</h2>
         <p>
           Due to the way Strava&apos;s API is now, I can only get segment rank information for
-          Premium Strava users.
+          Premium users or subscription, or whatever they&apos;re calling it this month.
         </p>
         <p>You&apos;ll need to upgrade your strava account in order to take advantage of this.</p>
       </div>

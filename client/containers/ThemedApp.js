@@ -3,7 +3,7 @@ import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 import { lightBlue, green } from "@material-ui/core/colors/";
 
-import NewApp from "./NewApp";
+import App from "./App";
 
 const theme = createMuiTheme({
   overrides: {
@@ -71,7 +71,7 @@ theme.shape.borderRadius = theme.spacing(1.2);
 const ThemedApp = () => {
   return (
     <ThemeProvider theme={theme}>
-      <NewApp />
+      <App />
     </ThemeProvider>
   );
 };

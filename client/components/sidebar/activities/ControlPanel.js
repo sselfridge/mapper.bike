@@ -63,6 +63,7 @@ const ControlPanel = (props) => {
     onBeforeChange,
     beforeDate,
     snackBar,
+    currentUser,
     ...rest
   } = props;
 
@@ -102,6 +103,7 @@ const ControlPanel = (props) => {
             className={classes.getBtn}
             variant="contained"
             color="primary"
+            disabled={currentUser.athleteId === 101}
           >
             Get Rides
           </Button>
@@ -143,6 +145,7 @@ ControlPanel.propTypes = {
   setBlackground: PropTypes.func.isRequired,
   fetchActivities: PropTypes.func.isRequired,
   activityType: PropTypes.object.isRequired,
+  currentUser: PropTypes.object.isRequired,
   setActivityType: PropTypes.func.isRequired,
   setMapCenter: PropTypes.func.isRequired,
   onAfterChange: PropTypes.func.isRequired,

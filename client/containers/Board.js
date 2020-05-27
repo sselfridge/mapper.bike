@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
 import { makeStyles } from "@material-ui/core";
@@ -12,6 +12,7 @@ import { calcBounds } from "../utils";
 // eslint-disable-next-line no-unused-vars
 import demoEfforts from "../constants/DemoEfforts";
 import { effortColors } from "../constants/map";
+import { NULL_USER } from "../api/strava";
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +77,14 @@ const Board = (props) => {
     mapLines.splice(index, 1);
     setMapLines(mapLines.slice());
   };
+
+  useEffect(() => {
+    if (currentUser === NULL_USER) {
+      setActivities([]);
+      setEfforts([]);
+      setMapLines([]);
+    }
+  }, [currentUser]);
 
   return (
     <div className={classes.root}>

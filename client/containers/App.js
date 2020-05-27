@@ -45,11 +45,10 @@ const NewApp = () => {
     });
   }, []);
 
-
   return (
     <Paper className={classes.root}>
       <Header currentUser={currentUser} stravaLogout={stravaLogout} />
-      <Board currentUser={currentUser} snackBar={snackBar} setCurrentUser={setCurrentUser}/>
+      <Board currentUser={currentUser} snackBar={snackBar} setCurrentUser={setCurrentUser} />
       <SnackBar
         snackBarMsg={snackBarMsg}
         snackBarType={snackBarType}

@@ -30,7 +30,6 @@ export const DEMO_USER = {
 };
 
 export function getCurrentUser() {
-  console.log("Get Current User");
   return new Promise((resolve, reject) => {
     axios
       .get(`/api/getStravaUser`)

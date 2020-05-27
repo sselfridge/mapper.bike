@@ -64,7 +64,7 @@ export default function TabbedSidebar(props) {
 
   const { setMapLines, activities, filteredEfforts, currentUser } = props;
 
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(0);
   const [userAgreed, setUserAgreed] = useState(false);
 
   const [userInitialized, setUserInitalized] = useState(false);
