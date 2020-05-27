@@ -7,7 +7,8 @@ import { Paper, makeStyles } from "@material-ui/core";
 import { NULL_USER, getCurrentUser, logout } from "../api/strava";
 
 const useStyles = makeStyles((theme) => {
-  console.log("App Theme");
+  // leaving these here in case the theme needs to be inspeced
+
   // console.log(theme.shape.borderRadius);
   // console.log(theme.spacing(1));
   // console.log(theme.spacing(1,1));
@@ -40,9 +41,13 @@ const NewApp = () => {
 
   //Fetch Data
   useEffect(() => {
-    getCurrentUser().then((data) => {
-      setCurrentUser(data);
-    });
+    getCurrentUser()
+      .then((response) => {
+        if (response.status === 200) setCurrentUser(response.data);
+      })
+      .catch(() => {
+        //TODO - server doesn't throw errors just returns 201
+      });
   }, []);
 
   return (

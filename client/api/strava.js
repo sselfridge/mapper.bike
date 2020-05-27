@@ -34,7 +34,7 @@ export function getCurrentUser() {
     axios
       .get(`/api/getStravaUser`)
       .then((result) => {
-        return resolve(result.data);
+        return resolve(result);
       })
       .catch((err) => {
         console.log("API:Get User Error");

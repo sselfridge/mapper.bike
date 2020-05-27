@@ -29,10 +29,12 @@ const timer = 900000; //15min 1000 * 60 * 15
 setInterval(stravaQ.processQueue, timer);
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
-  if (res.locals.err) {
-    res.status(444).send("Error during profile fetch");
-    return;
-  }
+  //TODO - rework error handling
+  // Currently no difference between actual errors and no cookie found.
+  // if (res.locals.err) {
+  //   res.status(444).send("Error during profile fetch");
+  //   return;
+  // }
   if (res.locals.user) {
     //user profile exists send infoback
     console.log(`User logged in to strava`);
