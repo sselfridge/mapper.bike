@@ -7,6 +7,8 @@ module.exports = {
   batchAdd,
   pop,
   get,
+  getAll,
+  batchDelete,
 };
 
 function update(data) {
@@ -129,3 +131,51 @@ function get(id) {
     });
   });
 }
+
+function getAll() {
+  return new Promise((resolve, reject) => {
+    const params = {
+      TableName,
+      Select: "SPECIFIC_ATTRIBUTES",
+      AttributesToGet: ["id"],
+    };
+
+    client.scan(params, (err, data) => {
+      if (err) {
+        console.log("get Segment Details Error", err);
+        reject(err);
+      } else {
+        resolve(data.Items);
+      }
+    });
+  });
+}
+
+function batchDelete(ids) {
+  console.log("Batch detail delete", ids.length);
+
+  return new Promise((resolve, reject) => {
+    if (ids.length === 0) resolve();
+
+    const params = makeBatchDeleteParams(ids);
+
+    client.batchWrite(params, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log("Deleted Success");
+        resolve();
+      }
+    });
+  });
+}
+
+const makeBatchDeleteParams = (ids) => {
+  var params = { RequestItems: {} };
+  params.RequestItems[TableName] = [];
+  ids.forEach((id) => {
+    const newItem = { DeleteRequest: { Key: { id } } };
+    params.RequestItems[TableName].push(newItem);
+  });
+  return params;
+};

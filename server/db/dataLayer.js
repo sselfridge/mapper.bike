@@ -17,6 +17,7 @@ const dataLayer = {
 
   popDetails,
   addDetails,
+  batchDeleteAllDetails,
 
   addUser,
   updateUser,
@@ -122,11 +123,11 @@ async function deleteUser(altheteId) {
   const ids = results.map((result) => result.id);
 
   console.log(ids);
-  await batchDelete(ids);
+  await batchDeleteEfforts(ids);
   await users.remove(altheteId);
 }
 
-async function batchDelete(ids) {
+async function batchDeleteEfforts(ids) {
   const promArr = [];
   let count = 0;
   while (ids.length > 0) {
@@ -139,6 +140,19 @@ async function batchDelete(ids) {
     count++;
   }
   await Promise.all(promArr);
+}
+
+async function batchDeleteAllDetails() {
+  const results = await details.getAll();
+  console.log("batchDeleteAllDetails");
+  const ids = results.map((result) => result.id);
+
+  while (ids.length > 0) {
+    const batch = ids.slice(0, 20);
+    await details.batchDelete(batch);
+    ids.splice(0, 20);
+    console.log("Batch Delete: Remaining:", ids.length);
+  }
 }
 
 module.exports = dataLayer;

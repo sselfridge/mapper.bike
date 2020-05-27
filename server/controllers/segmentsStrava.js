@@ -121,7 +121,7 @@ async function test(req, res, next) {
   const strava = res.locals.strava;
 
   try {
-    const result = await strava.segments.get({ id: 14834811 });
+    const result = await db.batchDeleteAllDetails();
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
     // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
