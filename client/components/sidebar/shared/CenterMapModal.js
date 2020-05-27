@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CenterMapModal = (props) => {
   const classes = useStyles();
-  const { showCenterModal, setShowCenterModal, setMapCenter, snackBar} = props;
+  const { showCenterModal, setShowCenterModal, setMapCenter, snackBar } = props;
 
   function handleChange(e) {
     if (e.key === "Enter") {
@@ -47,7 +47,7 @@ const CenterMapModal = (props) => {
           setShowCenterModal(false);
           setMapCenter(center);
         } else {
-          snackBar("Location Not Found",'warning')
+          snackBar("Location Not Found", "warning");
         }
       })
       .catch((err) => {
@@ -68,7 +68,6 @@ const CenterMapModal = (props) => {
       <Modal
         open={showCenterModal}
         onClose={() => {
-          console.log("Allo!");
           setShowCenterModal(false);
         }}
         aria-labelledby="simple-modal-title"

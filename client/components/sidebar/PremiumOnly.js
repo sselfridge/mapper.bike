@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserAgreement = () => {
+const PremiumOnly = () => {
   const classes = useStyles();
 
   return (
@@ -28,9 +28,4 @@ const UserAgreement = () => {
   );
 };
 
-UserAgreement.propTypes = {
-  userAgreed: PropTypes.bool.isRequired,
-  setUserAgreed: PropTypes.func.isRequired,
-};
-
-export default UserAgreement;
+export default PremiumOnly;

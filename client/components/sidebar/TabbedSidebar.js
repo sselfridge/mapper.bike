@@ -138,5 +138,3 @@ TabbedSidebar.propTypes = {
     premium: PropTypes.bool,
   }),
 };
-
-TabbedSidebar.propTypes = {};
