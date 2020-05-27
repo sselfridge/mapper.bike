@@ -38,15 +38,13 @@ const EffortsTab = (props) => {
   } = props;
 
   const [panelExpanded, setPanelExpanded] = useState(true);
-  const [ranks, setRanks] = React.useState(() => [1]);
+  const [ranks, setRanks] = useState(() => [1]);
   const [sortBy, setSortBy] = useState("");
   const [sortDir, setSortDir] = useState("asc");
 
   const fetchEfforts = () => {
     getEfforts()
       .then((result) => {
-        console.log("result");
-        console.log(result);
         setEfforts(result);
       })
       .catch((err) => {
@@ -60,7 +58,6 @@ const EffortsTab = (props) => {
     let sorted = efforts.slice();
 
     sorted = sorted.sort((a, b) => {
-      console.log("Sort Dir:", sortDir);
       if (sortDir === "asc") {
         return a[sortBy] - b[sortBy];
       } else {
@@ -82,6 +79,12 @@ const EffortsTab = (props) => {
 
     setFilteredEfforts(sorted);
   }, [ranks, efforts, sortBy, sortDir]);
+
+  useEffect(() => {
+    if (efforts.length === 0) {
+      fetchEfforts();
+    }
+  }, []);
 
   return (
     <div className={classes.root}>

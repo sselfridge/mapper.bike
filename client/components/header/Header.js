@@ -40,7 +40,7 @@ const Header = (props) => {
     currentUser.athleteId === 1075670 ? <button onClick={kickoffQ}>Start Q</button> : "";
   return (
     <div className={classes.root}>
-      <button onClick={apiTest}>TEST</button>
+      {/* <button onClick={apiTest}>TEST</button> */}
       {kickoff}
       <div className={classes.title}>
         Mapper.Bike <span className={classes.betaText}>beta {`v-${version}`}</span>
