@@ -73,8 +73,8 @@ function getDemoData(req, res, next) {
 
 async function fetchActivitiesFromStrava(strava, after, before) {
   console.log("Fetching with:");
-  after = 1571036400;
-  before = 1590505696;
+  // after = 1571036400;
+  // before = 1590505696;
   console.log("after : ", after);
   console.log("before: ", before);
 

@@ -34,8 +34,6 @@ const UserAgreement = (props) => {
   };
 
   const inviteCodeChange = (e) => {
-    console.log("Code Change");
-    console.log(e.target.value);
     //Ya! you found the super secret code!
     if (e.target.value === "bikesbikesbikes") {
       setBetaInvited(true);
