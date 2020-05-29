@@ -103,7 +103,7 @@ const EffortsTab = (props) => {
           <div className={classes.panelSummary}>
             <Typography variant="h6">Control Panel</Typography>
             <Typography className={classes.headingInfo}>
-              {filteredEfforts.length} of {efforts.length} efforts on map
+              {filteredEfforts.length} of {efforts.length} efforts
             </Typography>
           </div>
         </ExpansionPanelSummary>

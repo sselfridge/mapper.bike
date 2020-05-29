@@ -1,5 +1,6 @@
 const summaryStrava = require("./summaryStrava");
 const db = require("../db/dataLayer");
+const m = require("moment");
 
 const segmentController = {
   test,
@@ -13,6 +14,7 @@ const segmentController = {
 async function updateUserDB(req, res, next) {
   console.log("updating user in DB");
   const userData = getUserData(res);
+
   try {
     await db.updateUser(userData);
   } catch (err) {
@@ -27,6 +29,8 @@ async function initializeUser(req, res, next) {
   try {
     const strava = res.locals.strava;
     const userData = getUserData(res);
+    userData.startDate = m().format();
+    userData.lastUpdate = m().format();
     await db.addUser(userData);
 
     //kick_off get activities
@@ -118,7 +122,7 @@ async function deleteUser(req, res, next) {
 
 async function test(req, res, next) {
   console.log("Start Test");
-  const strava = res.locals.strava;
+  // const strava = res.locals.strava;
 
   try {
     const result = await db.batchDeleteAllDetails();

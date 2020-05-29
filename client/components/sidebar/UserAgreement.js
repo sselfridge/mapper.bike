@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { makeStyles, Checkbox, Button, FormControlLabel } from "@material-ui/core";
+import { makeStyles, Checkbox, Button, FormControlLabel, TextField } from "@material-ui/core";
 import { initializeUser } from "../../api/strava";
 import { sideBarHeight } from "../../constants/sidebar";
 
@@ -24,12 +24,22 @@ const UserAgreement = (props) => {
 
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [totalActivities, setTotalActivites] = useState(0);
+  const [betaInvited, setBetaInvited] = useState(false);
 
   const handleAgreeClick = () => {
     setUserAgreed(true);
     initializeUser().then((response) => {
       setTotalActivites(response.data);
     });
+  };
+
+  const inviteCodeChange = (e) => {
+    console.log("Code Change");
+    console.log(e.target.value);
+    //Ya! you found the super secret code!
+    if (e.target.value === "bikesbikesbikes") {
+      setBetaInvited(true);
+    }
   };
 
   return (
@@ -58,28 +68,28 @@ const UserAgreement = (props) => {
             all your ride data.
           </p>
           <p>
-            This feature is still in development, currently segments are shown as your scored them
-            when riding, not current standing.
+            This feature is still in development, currently invite only. Enter invite code below to
+            proceed.
           </p>
-          <p>In progress, but not implmemented yet:</p>
-          <ul>
-            <li>Update score to current standing</li>
-            <li>Show Segments that were created after you rode them</li>
-          </ul>
-          <div className={classes.checkbox}>
-            <FormControlLabel
-              control={<Checkbox color="primary" onChange={() => setBtnDisabled(!btnDisabled)} />}
-              label="I Agree"
-            />
-            <Button
-              onClick={handleAgreeClick}
-              variant={"contained"}
-              color="primary"
-              disabled={btnDisabled}
-            >
-              Start my Segment Search
-            </Button>
-          </div>
+
+          <TextField label="Invite Code" variant="outlined" onChange={inviteCodeChange} />
+
+          {betaInvited && (
+            <div className={classes.checkbox}>
+              {/* <FormControlLabel
+                control={<Checkbox color="primary" onChange={() => setBtnDisabled(!btnDisabled)} />}
+                label="I Agree"
+              /> */}
+              <Button
+                onClick={handleAgreeClick}
+                variant={"contained"}
+                color="primary"
+                // disabled={btnDisabled}
+              >
+                Start my Segment Search
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

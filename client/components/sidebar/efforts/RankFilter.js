@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   colorRank: {
     height: " 5px",

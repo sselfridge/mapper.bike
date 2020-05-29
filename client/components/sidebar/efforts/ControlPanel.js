@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Switch, Button, Select, FormControl, MenuItem, Tooltip } from "@material-ui/core";
+import { Switch, Select, FormControl, MenuItem, Tooltip } from "@material-ui/core";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import CenterFocusWeakOutlinedIcon from "@material-ui/icons/CenterFocusWeakOutlined";
@@ -55,7 +55,6 @@ const ControlPanel = (props) => {
   const {
     blackgroundActive,
     setBlackground,
-    fetchEfforts,
     setMapCenter,
     snackBar,
     ranks,

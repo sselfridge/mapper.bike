@@ -22,14 +22,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const TabbedSidebar = (props) => {
-//   const { getDemoActivities } = props;
-
-//   return <div className="sidebar marginTop">SideVAR!!</div>;
-// };
-
-// export default TabbedSidebar;
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 

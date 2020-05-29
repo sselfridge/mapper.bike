@@ -24,7 +24,6 @@ async function processQueue() {
     let processed = 0;
     try {
       processed += await getActivityDetails();
-
       processed += await processPathlessSegments();
     } catch (error) {
       console.log("Queue Error:", error.message);
