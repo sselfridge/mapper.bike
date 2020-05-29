@@ -51,6 +51,7 @@ const HeaderRight = (props) => {
     deleteUser(id)
       .then(() => {
         console.log("User Deleted");
+        stravaLogout();
         handleClose();
       })
       .catch((err) => {

@@ -11,14 +11,19 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import ControlPanel from "./ControlPanel";
 import List from "./List";
-import { getEfforts, getUser } from "../../../api/strava";
+import { getEfforts } from "../../../api/strava";
+import { sideBarHeight } from "../../../constants/sidebar";
+
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
+    height: sideBarHeight,
+    backgroundColor: theme.palette.background,
+  },
+  panelSummary: {
     display: "flex",
-    flexDirection: "column",
-    height: "87.5vh",
-    backgroundColor: "#aadaff",
+    justifyContent: "space-between",
+    flexGrow: 1,
   },
 }));
 
@@ -95,9 +100,12 @@ const EffortsTab = (props) => {
           id="panel1a-header"
           onClick={() => setPanelExpanded(!panelExpanded)}
         >
-          <Typography className={classes.heading}>
-            Control Panel - {filteredEfforts.length} efforts on map
-          </Typography>
+          <div className={classes.panelSummary}>
+            <Typography variant="h6">Control Panel</Typography>
+            <Typography className={classes.headingInfo}>
+              {filteredEfforts.length} of {efforts.length} efforts on map
+            </Typography>
+          </div>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <ControlPanel

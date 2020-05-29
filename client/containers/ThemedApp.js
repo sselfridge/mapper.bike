@@ -51,6 +51,11 @@ const theme = createMuiTheme({
         padding: 0,
       },
     },
+    MuiTypography: {
+      h6: {
+        fontSize: "1.1em",
+      },
+    },
   },
   // typography:{
   //   fontFamily: ['Arial', 'Helvetica', 'sans-serif']

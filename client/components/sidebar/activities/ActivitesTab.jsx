@@ -12,14 +12,15 @@ import ReactLoading from "react-loading";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { getActivities } from "../../../api/strava";
 import List from "./List";
+import { sideBarHeight } from "../../../constants/sidebar";
 
 import ControlPanel from "./ControlPanel";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "87.5vh",
-    backgroundColor: "#aadaff",
+    height: sideBarHeight,
+    backgroundColor: theme.palette.background,
   },
   fillerText: {
     textAlign: "center",
@@ -28,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     textAlign: "center",
     top: -150,
+  },
+  panelSummary: {
+    display: "flex",
+    justifyContent: "space-between",
+    flexGrow: 1,
   },
 }));
 
@@ -117,9 +123,12 @@ export default function ActivitiesTab(props) {
           id="panel1a-header"
           onClick={() => setPanelExpanded(!panelExpanded)}
         >
-          <Typography className={classes.heading}>
-            Control Panel - {activities.length} rides on map
-          </Typography>
+          <div className={classes.panelSummary}>
+            <Typography variant="h6">Control Panel</Typography>
+            <Typography className={classes.headingInfo}>
+              {activities.length} rides on map
+            </Typography>
+          </div>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <ControlPanel

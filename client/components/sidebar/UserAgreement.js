@@ -3,10 +3,11 @@ import PropTypes from "prop-types";
 
 import { makeStyles, Checkbox, Button, FormControlLabel } from "@material-ui/core";
 import { initializeUser } from "../../api/strava";
+import { sideBarHeight } from "../../constants/sidebar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "87.5vh",
+    height: sideBarHeight,
     backgroundColor: theme.palette.background,
     padding: theme.spacing(1),
   },
@@ -40,6 +41,7 @@ const UserAgreement = (props) => {
             Check back here soon! Processing time is dependant on how many rides and segments
             you&apos;ve done, but should be done in a few hours.
           </p>
+          <p>This is a one time inital data grab, you won&apos;t need to do it in the future.</p>
           {totalActivities !== 0 && (
             <p>Currently Processing all {`${totalActivities}`} of your activities</p>
           )}

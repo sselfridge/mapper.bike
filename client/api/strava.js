@@ -149,8 +149,7 @@ export function kickoffQ() {
   return new Promise((resolve, reject) => {
     axios
       .get("/api/kickoffQ")
-      .then((result) => {
-        console.log(result);
+      .then(() => {
         resolve();
       })
       .catch((err) => {

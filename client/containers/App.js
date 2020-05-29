@@ -39,7 +39,7 @@ const NewApp = () => {
     });
   };
 
-  //Fetch Data
+  //Fetch User Data
   useEffect(() => {
     getCurrentUser()
       .then((response) => {

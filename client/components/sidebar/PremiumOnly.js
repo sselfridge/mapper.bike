@@ -2,10 +2,10 @@ import React from "react";
 // import PropTypes from "prop-types";
 
 import { makeStyles } from "@material-ui/core";
-
+import { sideBarHeight } from "../../constants/sidebar";
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "87.5vh",
+    height: sideBarHeight,
     backgroundColor: theme.palette.background,
     padding: theme.spacing(1),
   },
