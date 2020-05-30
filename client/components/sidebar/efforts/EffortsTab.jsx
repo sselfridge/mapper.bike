@@ -77,7 +77,8 @@ const EffortsTab = (props) => {
     //Filter By Rank
     const newFiltered = efforts.filter((effort) => {
       const rank = effort.rank;
-      return ranks.indexOf(rank) !== -1;
+
+      return ranks.indexOf(rank) !== -1 && effort.line && effort.line !== "error";
     });
 
     const sorted = sortEfforts(newFiltered);
