@@ -122,11 +122,10 @@ async function deleteUser(req, res, next) {
 
 async function test(req, res, next) {
   console.log("Start Test");
-  // const strava = res.locals.strava;
+  const strava = res.locals.strava;
 
   try {
-    const result = await db.batchDeleteAllDetails();
-    // const result = await strava.segments.listLeaderboard({ id: 8058447 });
+    const result = await strava.segments.listLeaderboard({ id: 8058447 });
     // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
 

@@ -116,28 +116,35 @@ async function getUser(id) {
   return user;
 }
 
-async function deleteUser(altheteId) {
+async function deleteUser(athleteId) {
+  console.log("Deleting User ID", athleteId);
+
+  //delete activities if any in progress
+  const actvitiesQ = await activities.pop(5000);
+  const actIds = actvitiesQ
+    .filter((result) => result.athleteId === athleteId)
+    .map((result) => result.id);
+  console.log(`Deleting ${actIds.length} activities`);
+  await batchDelete(activities, actIds);
+
   //delete efforts
-  const results = await efforts.get(altheteId, 10);
+  const results = await efforts.get(athleteId, 10);
   console.log(`Got ${results.length} to delete`);
   const ids = results.map((result) => result.id);
 
-  console.log(ids);
+  console.log(`Deleting ${ids.length} efforts`);
   await batchDeleteEfforts(ids);
-  await users.remove(altheteId);
+  await users.remove(athleteId);
 }
 
 async function batchDeleteEfforts(ids) {
   const promArr = [];
-  let count = 0;
   while (ids.length > 0) {
-    console.log("Delete Count:", count);
     const batch = ids.slice(0, 20);
 
     promArr.push(efforts.batchDelete(batch));
 
     ids.splice(0, 20);
-    count++;
   }
   await Promise.all(promArr);
 }
@@ -147,11 +154,15 @@ async function batchDeleteAllDetails() {
   console.log("batchDeleteAllDetails");
   const ids = results.map((result) => result.id);
 
+  await batchDelete(details, ids);
+}
+
+async function batchDelete(table, ids) {
   while (ids.length > 0) {
     const batch = ids.slice(0, 20);
-    await details.batchDelete(batch);
+    await table.batchDelete(batch);
     ids.splice(0, 20);
-    console.log("Batch Delete: Remaining:", ids.length);
+    console.log("Batch Delete. Remaining:", ids.length);
   }
 }
 

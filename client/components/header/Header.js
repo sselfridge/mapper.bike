@@ -37,10 +37,15 @@ const Header = (props) => {
   const { currentUser } = props;
 
   const kickoff =
-    currentUser.athleteId === 1075670 ? <button onClick={kickoffQ}>Start Q</button> : "";
+    currentUser.athleteId === 1075670 ? (
+      <div>
+        <button onClick={kickoffQ}>Start Q</button> <button onClick={apiTest}>TEST</button>
+      </div>
+    ) : (
+      ""
+    );
   return (
     <div className={classes.root}>
-      {/* <button onClick={apiTest}>TEST</button> */}
       {kickoff}
       <div className={classes.title}>
         Mapper.Bike <span className={classes.betaText}>beta {`v-${version}`}</span>
