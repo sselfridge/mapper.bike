@@ -82,7 +82,9 @@ async function getClient(athleteId, memo) {
   if (memo[athleteId]) return memo[athleteId];
 
   const user = await db.getUser(athleteId);
-
+  console.log(`AtheleteID:${athleteId}`);
+  console.log("User Object:");
+  console.log(user);
   const refreshResult = await stravaAPI.oauth.refreshToken(user.refreshToken);
   if (refreshResult.access_token !== user.accessToken) {
     user.accessToken = refreshResult.access_token;
