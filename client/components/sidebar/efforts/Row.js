@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core/";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import StarRoundedIcon from "@material-ui/icons/StarRounded";
 
 import { useRowStyles } from "../shared/styles";
 import { mergeStyles } from "../../../utils";
@@ -21,6 +22,11 @@ import { mergeStyles } from "../../../utils";
 const localStyles = makeStyles((theme) => ({
   detailText: {
     textAlign: "center",
+  },
+  starIcon: {
+    color: "#FC4C02",
+    padding: "12px",
+    fontSize: "32px",
   },
 }));
 
@@ -88,6 +94,9 @@ function Row(props) {
               >
                 <DeleteIcon />
               </IconButton>
+            </Tooltip>
+            <Tooltip title="Star Segment">
+              <StarRoundedIcon className={classes.starIcon} onClick={() => {}} />
             </Tooltip>
             <Tooltip title="View on Strava" placement={"top"}>
               <IconButton>

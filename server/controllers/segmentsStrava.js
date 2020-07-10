@@ -1,6 +1,7 @@
 const summaryStrava = require("./summaryStrava");
 const db = require("../db/dataLayer");
 const m = require("moment");
+const axios = require("axios");
 
 const segmentController = {
   test,
@@ -9,6 +10,7 @@ const segmentController = {
   updateUserDB,
   getUser,
   deleteUser,
+  starSegment,
 };
 
 async function updateUserDB(req, res, next) {
@@ -80,6 +82,16 @@ async function segmentEfforts(req, res, next) {
   next();
 }
 
+async function starSegment(req, res, next) {
+  const segmentId = req.params.id;
+  const url = `https://www.strava.com/segments/${segmentId}/starred?starred=true`;
+  // const url = `https://www.strava.com/segments/22704434/starred`;
+
+  axios.put();
+
+  next();
+}
+
 async function totalUserActivites(strava, id) {
   const result = await strava.athletes.stats({ id });
   const count = result.all_ride_totals.count + result.all_run_totals.count;
@@ -125,7 +137,9 @@ async function test(req, res, next) {
   const strava = res.locals.strava;
 
   try {
-    const result = await strava.segments.listLeaderboard({ id: 8058447 });
+    // const result = await strava.segments.get({ id: 18633181 });
+    const result = await strava.segments.listLeaderboard({ id: 18633181 });
+    // const result = await strava.segments.listLeaderboard({ id: 8058447 });
     // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
 

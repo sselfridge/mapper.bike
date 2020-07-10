@@ -2,9 +2,9 @@ import axios from "axios";
 
 export const apiTest = () => {
   return new Promise((resolve, reject) => {
-    const quereyString = `/api/test`;
+    const queryString = `/api/test`;
     axios
-      .get(quereyString)
+      .get(queryString)
       .then((res) => {
         resolve(res.data);
       })
@@ -66,10 +66,10 @@ export function getActivities(type, after, before) {
 
     const activityType = `${JSON.stringify(type)}`;
 
-    const quereyString = `/api/summaryActivities?after=${afterDate}&before=${beforeDate}&type=${activityType}`;
+    const queryString = `/api/summaryActivities?after=${afterDate}&before=${beforeDate}&type=${activityType}`;
 
     axios
-      .get(quereyString)
+      .get(queryString)
       .then((res) => {
         resolve(res.data);
       })
@@ -79,10 +79,10 @@ export function getActivities(type, after, before) {
 
 export function getDemoData() {
   return new Promise((resolve, reject) => {
-    const quereyString = `/api/demoData`;
+    const queryString = `/api/demoData`;
 
     axios
-      .get(quereyString)
+      .get(queryString)
       .then((res) => {
         resolve(res.data);
       })
@@ -98,9 +98,9 @@ function dateToEpoch(date) {
 export function getEfforts(rank = 10) {
   return new Promise((resolve, reject) => {
     console.log("Getting Efforts");
-    const quereyString = `/api/segmentEfforts?rank=${rank}`;
+    const queryString = `/api/segmentEfforts?rank=${rank}`;
     axios
-      .get(quereyString)
+      .get(queryString)
       .then((res) => {
         resolve(res.data);
       })
@@ -111,12 +111,28 @@ export function getEfforts(rank = 10) {
   });
 }
 
+// export function starSegment(id) {
+//   return new Promise((resolve, reject) => {
+//     const queryString = `/api/segments/${id}/star`;
+//     axios
+//       .post(queryString)
+//       .then((response) => {
+//         const data = response.status === 200 ? response.data : undefined;
+//         resolve(data);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//         reject(err);
+//       });
+//   });
+// }
+
 export function getUser(id) {
   return new Promise((resolve, reject) => {
     console.log("Getting User:", id);
-    const quereyString = `/api/users/${id}`;
+    const queryString = `/api/users/${id}`;
     axios
-      .get(quereyString)
+      .get(queryString)
       .then((response) => {
         const data = response.status === 200 ? response.data : undefined;
         resolve(data);

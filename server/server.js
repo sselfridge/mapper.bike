@@ -154,6 +154,15 @@ app.get(
   }
 );
 
+app.post(
+  "/api/segments/:id/star",
+  oAuthStrava.loadStravaProfile,
+  segmentController.starSegment,
+  (req, res) => {
+    return;
+  }
+);
+
 app.get("/api/getDemoData", summaryController.getDemoData, (req, res) => {
   console.log(`Sending Back ${res.locals.activities.length} activities`);
   res.send(JSON.stringify(res.locals.activities));
