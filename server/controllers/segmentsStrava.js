@@ -85,11 +85,27 @@ async function segmentEfforts(req, res, next) {
 async function starSegment(req, res, next) {
   const segmentId = req.params.id;
   const url = `https://www.strava.com/segments/${segmentId}/starred?starred=true`;
-  // const url = `https://www.strava.com/segments/22704434/starred`;
+  const config = {
+    headers: { Authorization: `Bearer ${res.locals.accessToken}` },
+  };
 
-  axios.put();
+  const bodyParameters = {
+    starred: true,
+  };
 
-  next();
+  console.log("axios GO!!");
+  axios
+    .put(url, bodyParameters, config)
+    .then((res) => {
+      // console.log(res.data);
+      console.log("success");
+      next();
+    })
+    .catch((err) => {
+      // console.log(err);
+      console.log("faiilure");
+      next();
+    });
 }
 
 async function totalUserActivites(strava, id) {

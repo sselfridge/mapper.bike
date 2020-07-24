@@ -111,21 +111,21 @@ export function getEfforts(rank = 10) {
   });
 }
 
-// export function starSegment(id) {
-//   return new Promise((resolve, reject) => {
-//     const queryString = `/api/segments/${id}/star`;
-//     axios
-//       .post(queryString)
-//       .then((response) => {
-//         const data = response.status === 200 ? response.data : undefined;
-//         resolve(data);
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//         reject(err);
-//       });
-//   });
-// }
+export function starSegment(id) {
+  return new Promise((resolve, reject) => {
+    const queryString = `/api/segments/${id}/star`;
+    axios
+      .post(queryString)
+      .then((response) => {
+        const data = response.status === 200 ? response.data : undefined;
+        resolve(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(err);
+      });
+  });
+}
 
 export function getUser(id) {
   return new Promise((resolve, reject) => {

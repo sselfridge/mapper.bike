@@ -18,6 +18,8 @@ import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import { useRowStyles } from "../shared/styles";
 import { mergeStyles } from "../../../utils";
 
+import { starSegment } from "../../../api/strava";
+
 // eslint-disable-next-line no-unused-vars
 const localStyles = makeStyles((theme) => ({
   detailText: {
@@ -96,7 +98,13 @@ function Row(props) {
               </IconButton>
             </Tooltip>
             <Tooltip title="Star Segment">
-              <StarRoundedIcon className={classes.starIcon} onClick={() => {}} />
+              <IconButton
+                onClick={() => {
+                  starSegment(selectedAct.segmentId);
+                }}
+              >
+                <StarRoundedIcon className={classes.starIcon} />
+              </IconButton>
             </Tooltip>
             <Tooltip title="View on Strava" placement={"top"}>
               <IconButton>
@@ -117,6 +125,7 @@ Row.propTypes = {
   effort: PropTypes.object.isRequired,
   selectedAct: PropTypes.shape({
     id: PropTypes.string,
+    segmentId: PropTypes.number,
   }),
   handleSelected: PropTypes.func.isRequired,
   handleRemoveLine: PropTypes.func.isRequired,
