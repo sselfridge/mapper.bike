@@ -147,8 +147,8 @@ export default function ActivitiesTab(props) {
         <div>
           <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"300px"} />
           <div className={classes.loadingText}>
-            <div>Loading....</div>
-            <div>Allow ~5 seconds for every 200 activities</div>
+            <div>Fetching from Strava...</div>
+            <div>Allow ~10-15 seconds for every 200 activities</div>
             <div>{`Your search covers ${calcDateDiff(afterDate, beforeDate)} days`}</div>
             <div>{`${secFromTimer(loadingTimer)} secs elapsed`}</div>
             <div>{`${showDots(loadingDots)}`}</div>
