@@ -68,8 +68,8 @@ const EffortsTab = (props) => {
         aVal = new Date(a.date).valueOf();
         bVal = new Date(b.date).valueOf();
       } else {
-        aVal = a[sortBy];
-        bVal = b[sortBy];
+        aVal = a[sortBy] ? a[sortBy] : 1;
+        bVal = b[sortBy] ? b[sortBy] : 1;
       }
 
       if (sortDir === "asc") {
@@ -78,7 +78,6 @@ const EffortsTab = (props) => {
         return bVal - aVal;
       }
     });
-
     return sorted;
   }
 

@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
   },
+  sortArrow: {
+    cursor: "pointer",
+  },
   toggleAll: {
     alignSelf: "flex-end",
   },
@@ -199,7 +202,7 @@ const ControlPanel = (props) => {
           </FormControl>
         </section>
         {sortBy !== "" && (
-          <section onClick={switchSortDir}>
+          <section className={classes.sortArrow} onClick={switchSortDir}>
             <InputLabel>SortDir</InputLabel>
             {sortIcon}
           </section>
