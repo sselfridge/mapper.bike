@@ -194,6 +194,7 @@ const ControlPanel = (props) => {
               <MenuItem value={"rank"}>Rank</MenuItem>
               <MenuItem value={"distance"}>Distance</MenuItem>
               <MenuItem value={"effortCount"}>Effort Count</MenuItem>
+              <MenuItem value={"date"}>Date</MenuItem>
             </Select>
           </FormControl>
         </section>

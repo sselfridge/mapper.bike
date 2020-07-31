@@ -63,10 +63,19 @@ const EffortsTab = (props) => {
     let sorted = efforts.slice();
 
     sorted = sorted.sort((a, b) => {
-      if (sortDir === "asc") {
-        return a[sortBy] - b[sortBy];
+      let aVal, bVal;
+      if (sortBy === "date") {
+        aVal = new Date(a.date).valueOf();
+        bVal = new Date(b.date).valueOf();
       } else {
-        return b[sortBy] - a[sortBy];
+        aVal = a[sortBy];
+        bVal = b[sortBy];
+      }
+
+      if (sortDir === "asc") {
+        return aVal - bVal;
+      } else {
+        return bVal - aVal;
       }
     });
 
