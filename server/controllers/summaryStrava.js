@@ -113,7 +113,7 @@ function mapAndFilterStravaData(stravaData, activityType) {
     newActivity.id = element.id;
     newActivity.name = element.name;
     newActivity.line = element.map.summary_polyline;
-    newActivity.date = utils.makeEpochSecondsTime(element.start_date_local);
+    newActivity.date = utils.makeEpochSecondsTime(element.start_date);
     newActivity.distance = element.distance;
     newActivity.elapsedTime = element.elapsed_time;
 

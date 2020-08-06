@@ -62,7 +62,7 @@ export function logout() {
 export function getActivities(type, after, before) {
   return new Promise((resolve, reject) => {
     const afterDate = after ? `${dateToEpoch(after)}` : "0";
-    const beforeDate = before ? `${dateToEpoch(before)}` : "9999999999";
+    const beforeDate = before ? `${dateToEpoch(before) + 86300}` : "9999999999";
 
     const activityType = `${JSON.stringify(type)}`;
 
