@@ -6,7 +6,7 @@ const utils = require("../utils/stravaUtils");
 const segmentController = {
   test,
   segmentEfforts,
-  intializeUser,
+  initializeUser: initializeUser,
   updateUserDB,
 };
 
@@ -22,8 +22,8 @@ async function updateUserDB(req, res, next) {
   return next();
 }
 
-async function intializeUser(req, res, next) {
-  console.log("Initalize user");
+async function initializeUser(req, res, next) {
+  console.log("Initialize user");
   try {
     const strava = res.locals.strava;
     const userData = getUserData(res);
@@ -31,7 +31,7 @@ async function intializeUser(req, res, next) {
 
     //kick_off get activities
     addToActivityQueue(strava);
-    const count = await totalUserActivites(strava, res.locals.user.athleteId);
+    const count = await totalUserActivities(strava, res.locals.user.athleteId);
     res.locals.data = { activityCount: count };
     return next();
   } catch (err) {
@@ -67,7 +67,7 @@ async function segmentEfforts(req, res, next) {
   res.locals.segmentEfforts = efforts;
 }
 
-async function totalUserActivites(strava, id) {
+async function totalUserActivities(strava, id) {
   const result = await strava.athletes.stats({ id });
   const count = result.all_ride_totals.count + result.all_run_totals.count;
   return count;
@@ -98,11 +98,11 @@ async function test(req, res, next) {
   // const strava = res.locals.strava;
 
   try {
-    const out = await db.getEfforts(1075670,1);
+    const out = await db.getEfforts(1075670, 1);
 
-    console.log('Rabble');
+    console.log("Rabble");
     console.log(out);
-    res.locals.effort = out[0]
+    res.locals.effort = out[0];
   } catch (err) {
     console.log("CRAP!!!");
     console.log(err.message);

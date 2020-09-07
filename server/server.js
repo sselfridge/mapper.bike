@@ -115,11 +115,11 @@ app.get(
 app.post(
   "/api/initialize",
   oAuthStrava.loadStravaProfile,
-  segmentController.intializeUser,
+  segmentController.initializeUser,
   (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
-      res.status(523).send("Error intializing user ");
+      res.status(523).send("Error initalizing user ");
       return;
     }
     const count = res.locals.data.activityCount;
