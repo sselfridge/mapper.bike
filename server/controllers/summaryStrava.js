@@ -13,12 +13,12 @@ stravaAPI.config({
   redirect_uri: config.redirect_uri,
 });
 
-// DB requirments, not being used but keeping around for the future
+// DB requirements, not being used but keeping around for the future
 // const Activity = require("./../models/activityModel");
 // const mongoose = require("mongoose");
 
 const summaryController = {
-  getSummeries,
+  getSummaries,
   getDemoData,
   fetchActivitiesFromStrava,
 };
@@ -27,7 +27,7 @@ const summaryController = {
 // activities stored in res.locals.activities in polyline format
 // need to turn into points to be placed on map
 // done by getPointsFromActivities
-async function getSummeries(req, res, next) {
+async function getSummaries(req, res, next) {
   console.log("Get Summaries");
   const after = parseInt(req.query.after);
   const before = parseInt(req.query.before);
@@ -69,7 +69,7 @@ function getDemoData(req, res, next) {
 }
 
 // Utility Functions
-// Not middleware for requests, but more complex than basic untility
+// Not middleware for requests, but more complex than basic utility
 
 async function fetchActivitiesFromStrava(strava, after, before) {
   console.log("Fetching with:");
@@ -80,11 +80,11 @@ async function fetchActivitiesFromStrava(strava, after, before) {
 
   const params = { after, before, page: 1, per_page: 200 };
   const r = { strava, activities: [] };
-  const activities = await fetchActivitiesRecursivly(params, r);
+  const activities = await fetchActivitiesRecursively(params, r);
   return activities;
 }
 
-async function fetchActivitiesRecursivly(params, r) {
+async function fetchActivitiesRecursively(params, r) {
   const page = params.page;
   console.log(`Recursive Call:${params.page}`);
   const resultActivities = await r.strava.athlete.listActivities(params);
@@ -95,7 +95,7 @@ async function fetchActivitiesRecursivly(params, r) {
   } else {
     console.log("We have go to deeper", page);
     params.page++;
-    await fetchActivitiesRecursivly(params, r);
+    await fetchActivitiesRecursively(params, r);
   }
 
   console.log("End of this Func", page);

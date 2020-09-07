@@ -36,7 +36,7 @@ app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   //   return;
   // }
   if (res.locals.user) {
-    //user profile exists send infoback
+    //user profile exists send info back
     console.log(`User logged in to strava`);
     res.send(JSON.stringify(res.locals.user));
     return;
@@ -50,12 +50,12 @@ app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
 // new issue has bugs popup
 app.get("/api/getLatLngZip/:zip", (req, res) => {
   if (!/^\d{5}/.test(req.params.zip)) {
-    res.status(400).send("Only 5 digit zipcodes allowed");
+    res.status(400).send("Only 5 digit zip codes allowed");
     return;
   } //only query if zip is 5 numbers
   const latlng = zip(req.params.zip);
   if (latlng === null) {
-    res.status(400).send(`Invalid zipcode: ${req.params.zip}`);
+    res.status(400).send(`Invalid zip code: ${req.params.zip}`);
     return;
   }
   const center = {
@@ -77,7 +77,7 @@ app.get("/api/strava/callback", oAuthStrava.setStravaOauth, (req, res) => {
 app.get(
   "/api/summaryActivities",
   oAuthStrava.loadStravaProfile,
-  summaryController.getSummeries,
+  summaryController.getSummaries,
   (req, res) => {
     console.log("back here");
     if (res.locals.err) {
@@ -86,7 +86,7 @@ app.get(
       return;
     }
     console.log(`Sending Back ${res.locals.activities.length} activities`);
-    // uncomment to save activites to file
+    // uncomment to save activities to file
     // fs.writeFileSync("./savedActivities.json", JSON.stringify(res.locals.activities));
     res.send(JSON.stringify(res.locals.activities));
   }
@@ -100,7 +100,7 @@ app.get("/api/demoData", (req, res) => {
 app.get(
   "/api/test",
   oAuthStrava.loadStravaProfile,
-  // segmentController.intializeUser,
+  // segmentController.initializeUser,
   // segmentController.updateUserDB,
 
   segmentController.test,
@@ -124,7 +124,7 @@ app.post(
   (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
-      res.status(501).send("Error intializing user ");
+      res.status(501).send("Error initalizing user ");
       return;
     }
     const count = res.locals.data.activityCount;
@@ -145,7 +145,7 @@ app.get(
       return;
     }
     if (res.locals.pending) {
-      res.status(203).send("Data Pending, checkback soon");
+      res.status(203).send("Data Pending, check back soon");
       return;
     }
     // fs.writeFileSync("./savedEfforts.json", JSON.stringify(res.locals.segmentEfforts));

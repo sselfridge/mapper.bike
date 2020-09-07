@@ -35,7 +35,7 @@ async function initializeUser(req, res, next) {
 
     //kick_off get activities
     addToActivityQueue(strava);
-    const count = await totalUserActivites(strava, res.locals.user.athleteId);
+    const count = await totalUserActivities(strava, res.locals.user.athleteId);
     res.locals.data = { activityCount: count };
     return next();
   } catch (err) {
@@ -80,15 +80,15 @@ async function segmentEfforts(req, res, next) {
   next();
 }
 
-async function totalUserActivites(strava, id) {
+async function totalUserActivities(strava, id) {
   const result = await strava.athletes.stats({ id });
   const count = result.all_ride_totals.count + result.all_run_totals.count;
   return count;
 }
 
-async function addToActivityQueue(strava) {
+async function addToActivityQueue(strava, afterDate = 0) {
   try {
-    const result = await summaryStrava.fetchActivitiesFromStrava(strava, 0, 2550000000);
+    const result = await summaryStrava.fetchActivitiesFromStrava(strava, afterDate, 2550000000);
     //March + April Rides
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1585724400, 1588220022);
     //2020 Rides
@@ -96,12 +96,12 @@ async function addToActivityQueue(strava) {
     // 1 result
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1588057200, 1588220022);
     result.forEach((activity) => {
-      if (!activity.map.summary_polyline) return; //skip activites with no line
+      if (!activity.map.summary_polyline) return; //skip activities with no line
       db.addActivity(activity.id, activity.athlete.id);
     });
     console.log("Done Adding to DB");
   } catch (error) {
-    console.error("Error while Adding to activtity table:", error.message);
+    console.error("Error while Adding to activity table:", error.message);
     //Do nothing for now, add event emitter here if this starts to become a problem
   }
 }
