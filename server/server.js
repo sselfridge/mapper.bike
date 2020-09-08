@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
 
+const m = require("moment");
+
 // DB code, might use in the future
 // const mongoose = require("mongoose");
 // const mongoURI = "mongodb://localhost/meinmap";
@@ -24,9 +26,19 @@ app.use(cookieParser());
 
 app.use(logReq);
 
-const timer = 900000; //15min 1000 * 60 * 15
+var cron = require("node-cron");
 
-setInterval(stravaQ.processQueue, timer);
+cron.schedule("* 06 * * *", () => {
+  const time = m().format();
+  console.log("Cron Test:", time);
+  console.log("segmentController.cronUpdateSegments()");
+});
+
+cron.schedule("*/15 * * * *", () => {
+  console.log("---- 15 min Cron----");
+  stravaQ.processQueue();
+});
+// setInterval(, timer);
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   //TODO - rework error handling
@@ -182,14 +194,19 @@ app.get("/api/kickoffQ", (req, res) => {
   res.send("ok");
 });
 
-app.delete("/api/users/:id", segmentController.deleteUser, (req, res) => {
-  if (res.locals.err) {
-    res.status(500).send();
-    return;
-  }
+app.delete(
+  "/api/users/:id",
+  oAuthStrava.loadStravaProfile,
+  segmentController.deleteUser,
+  (req, res) => {
+    if (res.locals.err) {
+      res.status(500).send();
+      return;
+    }
 
-  res.send("Done");
-});
+    res.send("Done");
+  }
+);
 
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {

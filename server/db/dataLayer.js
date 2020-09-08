@@ -22,6 +22,7 @@ const dataLayer = {
   addUser,
   updateUser,
   getUser,
+  getAllUsers,
   deleteUser,
 };
 
@@ -114,6 +115,11 @@ async function updateUser(data) {
 async function getUser(id) {
   const user = await users.get(id);
   return user;
+}
+
+async function getAllUsers() {
+  const allUsers = await users.getAll();
+  return allUsers;
 }
 
 async function deleteUser(athleteId) {

@@ -5,6 +5,7 @@ const TableName = "users";
 const users = {
   update,
   get,
+  getAll,
   exists,
   remove,
 };
@@ -57,6 +58,25 @@ function get(id) {
         reject(err);
       } else {
         resolve(data.Item);
+      }
+    });
+  });
+}
+
+function getAll() {
+  return new Promise((resolve, reject) => {
+    const params = {
+      TableName,
+      Select: "SPECIFIC_ATTRIBUTES",
+      AttributesToGet: ["id", "lastUpdate", "accessToken", "refreshToken", "startDate"],
+    };
+
+    client.scan(params, (err, data) => {
+      if (err) {
+        console.log("get all users error", err);
+        reject(err);
+      } else {
+        resolve(data.Items);
       }
     });
   });

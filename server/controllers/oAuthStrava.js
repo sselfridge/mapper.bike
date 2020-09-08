@@ -72,7 +72,7 @@ function loadStravaProfile(req, res, next) {
     });
 }
 
-//check if the accesstoken is expired, if so request a new one
+//check if the access token is expired, if so request a new one
 const checkRefreshToken = (res) => {
   return new Promise((resolve, reject) => {
     const expiresAt = res.locals.expiresAt;

@@ -1,15 +1,66 @@
 const summaryStrava = require("./summaryStrava");
 const db = require("../db/dataLayer");
 const m = require("moment");
+const config = require("../../config/keys");
+
+var stravaAPI = require("strava-v3");
+stravaAPI.config({
+  client_id: config.client_id,
+  client_secret: config.client_secret,
+  redirect_uri: config.redirect_uri,
+});
 
 const segmentController = {
   test,
+  cronUpdateSegments,
   segmentEfforts,
   initializeUser,
   updateUserDB,
   getUser,
   deleteUser,
 };
+
+async function cronUpdateSegments() {
+  const users = await db.getAllUsers();
+
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    await updateUserSegments(user);
+  }
+}
+
+async function updateUserSegments(user) {
+  try {
+    const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
+    user.accessToken = result.access_token;
+  } catch (error) {
+    console.error("Error refreshing token");
+    console.error(error.message);
+    return;
+  }
+
+  const update = m(user.lastUpdate);
+  const unixTime = update.unix();
+  const strava = new stravaAPI.client(user.accessToken);
+
+  try {
+    await addToActivityQueue(strava, unixTime);
+  } catch (error) {
+    console.error("Error Adding to activity");
+    console.error(error.message);
+    return;
+  }
+
+  user.lastUpdate = m().format();
+
+  try {
+    await db.updateUser(user);
+  } catch (err) {
+    console.error("Update user Error");
+    console.error(err.message);
+    return;
+  }
+}
 
 async function updateUserDB(req, res, next) {
   console.log("updating user in DB");
@@ -39,7 +90,7 @@ async function initializeUser(req, res, next) {
     res.locals.data = { activityCount: count };
     return next();
   } catch (err) {
-    console.log("Initalize Error:");
+    console.log("Initialize Error:");
     console.log(err);
     res.locals.err = err;
     return next();
@@ -110,8 +161,10 @@ async function deleteUser(req, res, next) {
   const id = parseInt(req.params.id);
 
   try {
-    db.deleteUser(id);
-    next();
+    if (res.locals.user.athleteId === id) {
+      db.deleteUser(id);
+      next();
+    }
   } catch (error) {
     console.error("Delete User Error");
     console.error(error);
@@ -125,10 +178,12 @@ async function test(req, res, next) {
   const strava = res.locals.strava;
 
   try {
-    const result = await strava.segments.listLeaderboard({ id: 8058447 });
+    // const result = await strava.segments.listLeaderboard({ id: 8058447 });
     // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
+    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);
 
+    const result = await cronUpdateSegments();
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
     console.log(result);
