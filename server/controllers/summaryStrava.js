@@ -13,10 +13,6 @@ stravaAPI.config({
   redirect_uri: config.redirect_uri,
 });
 
-// DB requirements, not being used but keeping around for the future
-// const Activity = require("./../models/activityModel");
-// const mongoose = require("mongoose");
-
 const summaryController = {
   getSummaries,
   getDemoData,

@@ -7,11 +7,6 @@ const fs = require("fs");
 
 const m = require("moment");
 
-// DB code, might use in the future
-// const mongoose = require("mongoose");
-// const mongoURI = "mongodb://localhost/meinmap";
-// mongoose.connect(mongoURI, { useNewUrlParser: true });
-
 const oAuthStrava = require("./controllers/oAuthStrava");
 const summaryController = require("./controllers/summaryStrava");
 const segmentController = require("./controllers/segmentsStrava");
