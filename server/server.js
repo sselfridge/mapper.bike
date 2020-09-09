@@ -23,12 +23,14 @@ app.use(logReq);
 
 var cron = require("node-cron");
 
-cron.schedule("* 06 * * *", () => {
+//Every morning at 04:01 am
+cron.schedule("01 04 * * *", () => {
   const time = m().format();
   console.log("Cron Test:", time);
-  console.log("segmentController.cronUpdateSegments()");
+  segmentController.cronUpdateSegments();
 });
 
+//Every 15min
 cron.schedule("*/15 * * * *", () => {
   console.log("---- 15 min Cron----");
   stravaQ.processQueue();

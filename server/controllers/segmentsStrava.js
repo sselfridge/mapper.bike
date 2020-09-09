@@ -21,6 +21,7 @@ const segmentController = {
 };
 
 async function cronUpdateSegments() {
+  console.log("---------------------Doing Cron Stuff----------------");
   const users = await db.getAllUsers();
 
   for (let i = 0; i < users.length; i++) {
@@ -182,11 +183,12 @@ async function test(req, res, next) {
     // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);
-
-    const result = await cronUpdateSegments();
+    // const result = await strava.activities.get({ id: 3593303190, include_all_efforts: true });
+    const result = await strava.segmentEfforts.get({ id: 2705823683220719673 });
+    // const result = await cronUpdateSegments();
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
-    console.log(result);
+    console.log(result.segment_efforts);
     console.log("Done! Did this still work?");
   } catch (err) {
     console.log("CRAP!!!");
