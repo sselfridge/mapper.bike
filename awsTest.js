@@ -69,18 +69,18 @@ var params;
 //   }
 // });
 
-// params = {
-//   TableName: 'activities',
-//   Limit: 10
-// }
+params = {
+  TableName: "activities",
+  Limit: 10,
+};
 
-// client.scan(params,(err,data)=>{
-//   if (err) {
-//     console.log("Error", err);
-//   } else {
-//     console.log("Success", data);
-//   }
-// // })
+client.scan(params, (err, data) => {
+  if (err) {
+    console.log("Error", err);
+  } else {
+    console.log("Success", data);
+  }
+});
 // params = {
 //   Key: {
 //     id: 3244434795,
@@ -226,7 +226,6 @@ var params;
 //   },
 // };
 
-
 // client.query(params, (err, data) => {
 //   if (err) {
 //     console.log("DB Error", err);
@@ -236,18 +235,18 @@ var params;
 //   }
 // });
 
- params = {
-  Key: {
-    id: ,
-  },
-  TableName,
-};
+//  params = {
+//   Key: {
+//     id: ,
+//   },
+//   TableName,
+// };
 
-client.get(params, (err, data) => {
-  if (err) {
-    console.log("get Segment Details Error", err);
-    reject(err);
-  } else {
-    resolve(data.Item);
-  }
-});
+// client.get(params, (err, data) => {
+//   if (err) {
+//     console.log("get Segment Details Error", err);
+//     reject(err);
+//   } else {
+//     resolve(data.Item);
+//   }
+// });
