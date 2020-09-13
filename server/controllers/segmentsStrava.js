@@ -10,8 +10,7 @@ stravaAPI.config({
   redirect_uri: config.redirect_uri,
 });
 
-console.log("********************config********************");
-console.log(config);
+console.log("config: ", config);
 
 const segmentController = {
   test,
@@ -27,9 +26,6 @@ async function cronUpdateSegments() {
   console.log("---------------------Doing Cron Stuff----------------");
   const users = await db.getAllUsers();
 
-  console.log("------All Users: ------------------");
-  console.log(users);
-
   for (let i = 0; i < users.length; i++) {
     const user = users[i];
     await updateUserSegments(user);
@@ -37,43 +33,36 @@ async function cronUpdateSegments() {
 }
 
 async function updateUserSegments(user) {
-  console.log("UpdatingUserSegment");
-  console.log(user);
   try {
-    console.log(user.refreshToken);
-    stravaAPI.oauth.refreshToken(user.refreshToken).then(async (result) => {
-      console.log(
-        '=====================================");Super Result =====================================");'
-      );
-      console.log(result);
-      console.log("Refresh Token result =====================================");
-      console.log(result);
-      user.accessToken = result.access_token;
-      const update = m(user.lastUpdate);
-      const unixTime = update.unix();
-      const strava = new stravaAPI.client(user.accessToken);
-
-      try {
-        await addToActivityQueue(strava, unixTime);
-      } catch (error) {
-        console.error("Error Adding to activity");
-        console.error(error.message);
-        return;
-      }
-
-      user.lastUpdate = m().format();
-
-      try {
-        await db.updateUser(user);
-      } catch (err) {
-        console.error("Update user Error");
-        console.error(err.message);
-        return;
-      }
-    });
+    const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
+    console.log("Refresh Token result =====================================");
+    console.log(result);
+    user.accessToken = result.access_token;
   } catch (error) {
     console.error("Error refreshing token");
     console.error(error.message);
+    return;
+  }
+
+  const update = m(user.lastUpdate);
+  const unixTime = update.unix();
+  const strava = new stravaAPI.client(user.accessToken);
+
+  try {
+    await addToActivityQueue(strava, unixTime);
+  } catch (error) {
+    console.error("Error Adding to activity");
+    console.error(error.message);
+    return;
+  }
+
+  user.lastUpdate = m().format();
+
+  try {
+    await db.updateUser(user);
+  } catch (err) {
+    console.error("Update user Error");
+    console.error(err.message);
     return;
   }
 }
