@@ -37,6 +37,7 @@ async function updateUserSegments(user) {
   console.log("UpdatingUserSegment");
   console.log(user);
   try {
+    console.log(user.refreshToken);
     const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
     console.log("Refresh Token result =====================================");
     console.log(result);
