@@ -24,7 +24,7 @@ app.use(logReq);
 var cron = require("node-cron");
 
 //Every morning at 04:01 am
-cron.schedule("46 11 * * *", () => {
+cron.schedule("01 04 * * *", () => {
   const time = m().format();
   console.log("Cron Test:", time);
   segmentController.cronUpdateSegments();
