@@ -5,7 +5,7 @@ var credentials = new AWS.SharedIniFileCredentials({ profile: "dbuser" });
 AWS.config.credentials = credentials;
 AWS.config.update({ region: "us-west-2" });
 
-var db = new AWS.DynamoDB();
+// var db = new AWS.DynamoDB();
 var client = new AWS.DynamoDB.DocumentClient();
 var params;
 
