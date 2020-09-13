@@ -24,6 +24,9 @@ async function cronUpdateSegments() {
   console.log("---------------------Doing Cron Stuff----------------");
   const users = await db.getAllUsers();
 
+  console.log("------All Users: ------------------");
+  console.log(users);
+
   for (let i = 0; i < users.length; i++) {
     const user = users[i];
     await updateUserSegments(user);
@@ -31,8 +34,12 @@ async function cronUpdateSegments() {
 }
 
 async function updateUserSegments(user) {
+  console.log("UpdatingUserSegment");
+  console.log(user);
   try {
     const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
+    console.log("Refresh Token result =====================================");
+    console.log(result);
     user.accessToken = result.access_token;
   } catch (error) {
     console.error("Error refreshing token");
