@@ -6,7 +6,7 @@ module.exports = {
   add,
   pop,
   batchDelete,
-  countByAthelete,
+  countByAthlete: countByAthlete,
 };
 
 function add(id, athleteId) {
@@ -61,7 +61,7 @@ function batchDelete(ids) {
 }
 
 // eslint-disable-next-line no-unused-vars
-async function countByAthelete(id) {}
+async function countByAthlete(id) {}
 
 const makeBatchDeleteParams = (ids) => {
   var params = { RequestItems: {} };
