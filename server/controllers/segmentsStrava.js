@@ -10,8 +10,6 @@ stravaAPI.config({
   redirect_uri: config.redirect_uri,
 });
 
-console.log("config: ", config);
-
 const segmentController = {
   test,
   cronUpdateSegments,
