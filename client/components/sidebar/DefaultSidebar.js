@@ -44,8 +44,6 @@ const DefaultSidebar = (props) => {
         setLoading(false);
       });
   }
-  console.log("=-=-=-=-=-=-=-=-config=-=-=-=-=-=-=-=-");
-  console.log(config);
 
   return (
     <div className={classes.root}>
