@@ -73,9 +73,9 @@ const Board = (props) => {
     setSelectedAct(newSelection);
   };
 
-  const handleRemoveLine = (index) => {
-    mapLines.splice(index, 1);
-    setMapLines(mapLines.slice());
+  const handleRemoveLine = (id) => {
+    const newMapLines = mapLines.filter((act) => act.id !== id);
+    setMapLines(newMapLines);
   };
 
   useEffect(() => {

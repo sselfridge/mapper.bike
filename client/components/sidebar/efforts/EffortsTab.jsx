@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Typography,
   makeStyles,
 } from "@material-ui/core";
@@ -102,8 +102,8 @@ const EffortsTab = (props) => {
 
   return (
     <div className={classes.root}>
-      <ExpansionPanel id="controlPanel" expanded={panelExpanded}>
-        <ExpansionPanelSummary
+      <Accordion id="controlPanel" expanded={panelExpanded}>
+        <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
@@ -115,8 +115,8 @@ const EffortsTab = (props) => {
               {filteredEfforts.length} of {efforts.length} efforts
             </Typography>
           </div>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <ControlPanel
             fetchEfforts={fetchEfforts}
             ranks={ranks}
@@ -127,8 +127,8 @@ const EffortsTab = (props) => {
             setSortDir={setSortDir}
             {...props}
           />
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
       <List
         filteredEfforts={filteredEfforts}
         loading={loading}

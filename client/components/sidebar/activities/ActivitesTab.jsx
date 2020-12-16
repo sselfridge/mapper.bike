@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Typography,
   makeStyles,
 } from "@material-ui/core";
@@ -116,8 +116,8 @@ export default function ActivitiesTab(props) {
 
   return (
     <div className={classes.root}>
-      <ExpansionPanel id="controlPanel" expanded={panelExpanded}>
-        <ExpansionPanelSummary
+      <Accordion id="controlPanel" expanded={panelExpanded}>
+        <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
@@ -129,8 +129,8 @@ export default function ActivitiesTab(props) {
               {activities.length} rides on map
             </Typography>
           </div>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <ControlPanel
             fetchActivities={fetchActivities}
             afterDate={afterDate}
@@ -141,8 +141,8 @@ export default function ActivitiesTab(props) {
             setActivityType={setActivityType}
             {...props}
           />
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
       {loading && (
         <div>
           <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"300px"} />

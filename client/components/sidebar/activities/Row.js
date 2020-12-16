@@ -66,7 +66,7 @@ function Row(props) {
             <IconButton
               aria-label="delete"
               onClick={() => {
-                handleRemoveLine(index);
+                handleRemoveLine(activity.id);
               }}
             >
               <DeleteIcon />
