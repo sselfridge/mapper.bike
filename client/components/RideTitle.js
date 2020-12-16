@@ -3,7 +3,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const RideTitle = props => {
+const RideTitle = (props) => {
   const {
     name,
     id,
@@ -14,7 +14,7 @@ const RideTitle = props => {
     removeAct,
     num,
     midLatLng,
-    highlightTitle
+    highlightTitle,
   } = props;
   let removeLink, rideLink, lineBreak, rideInfo;
   let selectedTitle = "";
@@ -28,7 +28,7 @@ const RideTitle = props => {
       </a>
     );
     removeLink = (
-      <a className="removeLink" onClick={e => removeAct(e, id)}>
+      <a className="removeLink" onClick={(e) => removeAct(e, id)}>
         Remove
       </a>
     );
@@ -36,7 +36,7 @@ const RideTitle = props => {
 
     const dateObj = new Date(dateInt * 1000);
     const readableDate = `${dateObj.toLocaleString("default", {
-      month: "long"
+      month: "long",
     })} ${dateObj.getDate()}`;
 
     const distanceMiles = distance / 1609;
@@ -50,7 +50,7 @@ const RideTitle = props => {
         <br></br>
         <span> </span>
         <span className="rideInfoElapsedTime">
-          {hours}:{minutes} hrs
+          {hours}:{minutes} hrsasdf
         </span>
       </div>
     );
@@ -58,8 +58,8 @@ const RideTitle = props => {
 
   return (
     <div className={`activityTitle ${selectedTitle}`} id={`ride${id}`}>
-      <span target="_blank" onClick={e => highlightTitle(e, id, midLatLng)}>
-        {selected ? "" : `${num} :` } {name}
+      <span target="_blank" onClick={(e) => highlightTitle(e, id, midLatLng)}>
+        {selected ? "" : `${num} :`} {name}
       </span>
       {lineBreak}
       {rideInfo}
