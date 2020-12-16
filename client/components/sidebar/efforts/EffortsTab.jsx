@@ -25,6 +25,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     flexGrow: 1,
   },
+  panelDetails: {
+    padding: 0,
+  },
 }));
 
 const EffortsTab = (props) => {
@@ -116,7 +119,7 @@ const EffortsTab = (props) => {
             </Typography>
           </div>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails classes={{ root: classes.panelDetails }}>
           <ControlPanel
             fetchEfforts={fetchEfforts}
             ranks={ranks}

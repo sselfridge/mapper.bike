@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
     height: sideBarHeight,
     backgroundColor: theme.palette.background,
   },
+  panelDetails: {
+    padding: 0,
+  },
   fillerText: {
     textAlign: "center",
   },
@@ -130,7 +133,7 @@ export default function ActivitiesTab(props) {
             </Typography>
           </div>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails classes={{ root: classes.panelDetails }}>
           <ControlPanel
             fetchActivities={fetchActivities}
             afterDate={afterDate}
