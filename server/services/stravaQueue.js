@@ -45,7 +45,7 @@ async function getActivityDetails() {
 
   const activities = await db.popActivities();
 
-  console.log(`Geting details for ${activities.length} activities`);
+  console.log(`Getting details for ${activities.length} activities`);
   if (activities.length === 0) return 0;
 
   for (const activity of activities) {
@@ -61,9 +61,8 @@ async function getActivityDetails() {
     const result = await parseActivity(fullActivity);
     if (result) completedActivities.push(activity.id);
   }
-
+  //problem here is if the others error out, completed ones don't get cleared
   await db.deleteActivities(completedActivities);
-
   return activities.length;
 }
 
@@ -82,9 +81,10 @@ async function getClient(athleteId, memo) {
   if (memo[athleteId]) return memo[athleteId];
 
   const user = await db.getUser(athleteId);
-
   if (!user) throw new Error("User not defined in DB:", athleteId);
 
+  //TODO - Add validation so accessToken matches up with user ID.
+  //got this crossed for nigel in debugging and now I can't access any of his data
   const refreshResult = await stravaAPI.oauth.refreshToken(user.refreshToken);
   if (refreshResult.access_token !== user.accessToken) {
     user.accessToken = refreshResult.access_token;
