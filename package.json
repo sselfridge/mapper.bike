@@ -50,9 +50,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "devserver": "cross-env NODE_ENV=development nodemon server/start.js",
-    "dev": "set PORT=8081 && react-scripts start"
+    "dev": "set PORT=8080 && react-scripts start"
   },
-  "proxy": "http://localhost:3001",
+  "proxy": "http://localhost:3000",
   "eslintConfig": {
     "extends": [
       "react-app",

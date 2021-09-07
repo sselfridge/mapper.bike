@@ -61,6 +61,7 @@ function ActivityTypeSelect(props) {
               className={classes.typeIcon}
               src="img/ride.png"
               onClick={() => toggleActivityType("Ride")}
+              alt="Ride"
             />
           </Tooltip>
         </div>
@@ -72,6 +73,7 @@ function ActivityTypeSelect(props) {
               className={classes.typeIcon}
               src="img/trainer.png"
               onClick={() => toggleActivityType("VirtualRide")}
+              alt="Virtual Ride"
             />
           </Tooltip>
         </div>
@@ -83,6 +85,7 @@ function ActivityTypeSelect(props) {
               className={classes.typeIcon}
               src="img/shoe.png"
               onClick={() => toggleActivityType("Run")}
+              alt="Run"
             />
           </Tooltip>
         </div>

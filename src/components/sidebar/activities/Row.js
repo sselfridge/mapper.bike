@@ -75,7 +75,11 @@ function Row(props) {
           <Tooltip title="View on Strava" placement={"top"}>
             <IconButton>
               <a href={stravaLink} rel="noopener noreferrer" target="_blank">
-                <img className={classes.stravaIcon} src={"img/strava-icon.svg"} />
+                <img
+                  className={classes.stravaIcon}
+                  src={"img/strava-icon.svg"}
+                  alt="View on Strava"
+                />
               </a>
             </IconButton>
           </Tooltip>

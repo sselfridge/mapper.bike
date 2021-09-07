@@ -51,7 +51,11 @@ const DefaultSidebar = (props) => {
         <a
           href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}
         >
-          <img className={classes.stravaImg} src="img/connectStrava.png" />
+          <img
+            className={classes.stravaImg}
+            src="img/connectStrava.png"
+            alt="connect with Strava"
+          />
         </a>
         <section className={classes.demoText}>
           We will not share your data with anyone, delete yourself anytime from our{" "}

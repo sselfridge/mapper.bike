@@ -23,13 +23,13 @@ const UserAgreement = (props) => {
   const { userAgreed, setUserAgreed } = props;
 
   const [btnDisabled, setBtnDisabled] = useState(true);
-  const [totalActivities, setTotalActivites] = useState(0);
+  const [totalActivities, setTotalActivities] = useState(0);
   const [betaInvited, setBetaInvited] = useState(false);
 
   const handleAgreeClick = () => {
     setUserAgreed(true);
     initializeUser().then((response) => {
-      setTotalActivites(response.data);
+      setTotalActivities(response.data);
     });
   };
 
@@ -49,7 +49,7 @@ const UserAgreement = (props) => {
             Check back here soon! Processing time is dependant on how many rides and segments
             you&apos;ve done, but should be done in a few hours.
           </p>
-          <p>This is a one time inital data grab, you won&apos;t need to do it in the future.</p>
+          <p>This is a one time initial data grab, you won&apos;t need to do it in the future.</p>
           {totalActivities !== 0 && (
             <p>Currently Processing all {`${totalActivities}`} of your activities</p>
           )}
@@ -74,15 +74,15 @@ const UserAgreement = (props) => {
 
           {betaInvited && (
             <div className={classes.checkbox}>
-              {/* <FormControlLabel
+              <FormControlLabel
                 control={<Checkbox color="primary" onChange={() => setBtnDisabled(!btnDisabled)} />}
                 label="I Agree"
-              /> */}
+              />
               <Button
                 onClick={handleAgreeClick}
                 variant={"contained"}
                 color="primary"
-                // disabled={btnDisabled}
+                disabled={btnDisabled}
               >
                 Start my Segment Search
               </Button>

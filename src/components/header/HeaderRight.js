@@ -82,7 +82,7 @@ const HeaderRight = (props) => {
               {currentUser.firstname} {currentUser.lastname}
             </a>
           </div>
-          <img className={classes.userAvatar} src={avatar} />
+          <img className={classes.userAvatar} src={avatar} alt="avatar" />
         </span>
       )}
       <MenuRoundedIcon className={classes.menuIcon} fontSize="large" onClick={handleOpen} />

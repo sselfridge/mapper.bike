@@ -13,6 +13,7 @@ import ControlPanel from "./ControlPanel";
 import List from "./List";
 import { getEfforts } from "../../../api/strava";
 import { sideBarHeight } from "../../../constants/sidebar";
+import { useCallback } from "react";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +51,7 @@ const EffortsTab = (props) => {
   const [sortBy, setSortBy] = useState("");
   const [sortDir, setSortDir] = useState("asc");
 
-  const fetchEfforts = () => {
+  const fetchEfforts = useCallback(() => {
     getEfforts()
       .then((result) => {
         setEfforts(result);
@@ -58,31 +59,34 @@ const EffortsTab = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, [setEfforts]);
 
-  function sortEfforts(efforts) {
-    if (!sortBy) return efforts;
+  const sortEfforts = useCallback(
+    (efforts) => {
+      if (!sortBy) return efforts;
 
-    let sorted = efforts.slice();
+      let sorted = efforts.slice();
 
-    sorted = sorted.sort((a, b) => {
-      let aVal, bVal;
-      if (sortBy === "date") {
-        aVal = new Date(a.date).valueOf();
-        bVal = new Date(b.date).valueOf();
-      } else {
-        aVal = a[sortBy] ? a[sortBy] : 1;
-        bVal = b[sortBy] ? b[sortBy] : 1;
-      }
+      sorted = sorted.sort((a, b) => {
+        let aVal, bVal;
+        if (sortBy === "date") {
+          aVal = new Date(a.date).valueOf();
+          bVal = new Date(b.date).valueOf();
+        } else {
+          aVal = a[sortBy] ? a[sortBy] : 1;
+          bVal = b[sortBy] ? b[sortBy] : 1;
+        }
 
-      if (sortDir === "asc") {
-        return aVal - bVal;
-      } else {
-        return bVal - aVal;
-      }
-    });
-    return sorted;
-  }
+        if (sortDir === "asc") {
+          return aVal - bVal;
+        } else {
+          return bVal - aVal;
+        }
+      });
+      return sorted;
+    },
+    [sortBy, sortDir]
+  );
 
   useEffect(() => {
     //Filter By Rank
@@ -95,13 +99,13 @@ const EffortsTab = (props) => {
     const sorted = sortEfforts(newFiltered);
 
     setFilteredEfforts(sorted);
-  }, [ranks, efforts, sortBy, sortDir]);
+  }, [ranks, efforts, sortBy, sortDir, setFilteredEfforts, sortEfforts]);
 
   useEffect(() => {
     if (efforts.length === 0) {
       fetchEfforts();
     }
-  }, []);
+  }, [efforts.length, fetchEfforts]);
 
   return (
     <div className={classes.root}>

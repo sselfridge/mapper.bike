@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { makeStyles, Box, AppBar, Tabs, Tab } from "@material-ui/core";
 
@@ -59,7 +59,7 @@ export default function TabbedSidebar(props) {
   const [activeTab, setActiveTab] = useState(0);
   const [userAgreed, setUserAgreed] = useState(false);
 
-  const [userInitialized, setUserInitalized] = useState(false);
+  const [userInitialized, setUserInitialized] = useState(false);
 
   const premium = currentUser.premium;
 
@@ -68,30 +68,33 @@ export default function TabbedSidebar(props) {
     setActiveTab(newValue);
   };
 
-  const syncLines = (tabIndex) => {
-    switch (tabIndex) {
-      case 0:
-        setMapLines(activities);
-        break;
-      case 1:
-        setMapLines(filteredEfforts);
-        break;
+  const syncLines = useCallback(
+    (tabIndex) => {
+      switch (tabIndex) {
+        case 0:
+          setMapLines(activities);
+          break;
+        case 1:
+          setMapLines(filteredEfforts);
+          break;
 
-      default:
-        throw new Error("Invalid Tab Recieved: ", tabIndex);
-    }
-  };
+        default:
+          throw new Error("Invalid Tab Recieved: ", tabIndex);
+      }
+    },
+    [activities, filteredEfforts, setMapLines]
+  );
 
   useEffect(() => {
     syncLines(activeTab);
-  }, [activities, filteredEfforts]);
+  }, [activities, filteredEfforts, syncLines, activeTab]);
 
   useEffect(() => {
     const id = currentUser.athleteId;
     getUser(id).then((user) => {
-      if (user) setUserInitalized(true);
+      if (user) setUserInitialized(true);
     });
-  }, []);
+  }, [currentUser]);
 
   return (
     <div className={classes.root}>
@@ -100,7 +103,9 @@ export default function TabbedSidebar(props) {
           <Tab label="Activities" {...a11yProps(0)} />
           <Tab
             label="KOM Mapper "
-            icon={<img className={classes.premiumIcon} src="img/premium.png" />}
+            icon={
+              <img className={classes.premiumIcon} src="img/premium.png" alt="Strava Premium" />
+            }
             {...a11yProps(1)}
           />
         </Tabs>

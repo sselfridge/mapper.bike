@@ -5,7 +5,7 @@ export function centerOnLocation(value) {
   return new Promise((resolve, reject) => {
     const address = encodeURIComponent(value);
     const GOOGLE_API = "https://maps.google.com/maps/api/geocode/json";
-    let url = GOOGLE_API + `?key=${config.mapsApi}` + `&address=${address}`;
+    let url = GOOGLE_API + `?key=${config.mapsApi}&address=${address}`;
     axios
       .get(url)
       .then((response) => {
