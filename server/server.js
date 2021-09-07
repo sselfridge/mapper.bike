@@ -13,8 +13,8 @@ const segmentController = require("./controllers/segmentsStrava");
 const analyticController = require("./controllers/analyticsController");
 
 const stravaQ = require("./services/stravaQueue");
-const zip = require("../config/zip_lat_lang");
-const config = require("../config/keys");
+const zip = require("../src/config/zip_lat_lang");
+const config = require("../src/config/keys");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -216,7 +216,7 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
   });
 
   // TODO: redo this to bundle image in webpack
-  app.get("/client/img/:image", (req, res) => {
+  app.get("/public/img/:image", (req, res) => {
     const imagePath = path.join(__dirname, `../client/img/${req.params.image}`);
     fs.exists(imagePath, function (exists) {
       if (exists) {

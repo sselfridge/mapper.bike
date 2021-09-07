@@ -1,7 +1,7 @@
 const summaryStrava = require("./summaryStrava");
 const db = require("../db/dataLayer");
 const m = require("moment");
-const config = require("../../config/keys");
+const config = require("../../src/config/keys");
 
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
@@ -182,12 +182,12 @@ async function test(req, res, next) {
 
   try {
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    const result = await strava.athlete.get({});
+    // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);
-    // const result = await strava.activities.get({ id: 5766891391, include_all_efforts: true });
+    // const result = await strava.activities.get({ id: 3593303190, include_all_efforts: true });
     // const result = await strava.segments.get({ id: 16616440 });
-    // const result = await cronUpdateSegments();
+    const result = await cronUpdateSegments();
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
     console.log(result);

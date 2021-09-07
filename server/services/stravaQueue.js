@@ -1,4 +1,4 @@
-const config = require("../../config/keys");
+const config = require("../../src/config/keys");
 const db = require("../db/dataLayer");
 const m = require("moment");
 
@@ -45,7 +45,7 @@ async function getActivityDetails() {
 
   const activities = await db.popActivities();
 
-  console.log(`Getting details for ${activities.length} activities`);
+  console.log(`Geting details for ${activities.length} activities`);
   if (activities.length === 0) return 0;
 
   for (const activity of activities) {
@@ -63,6 +63,7 @@ async function getActivityDetails() {
   }
   //problem here is if the others error out, completed ones don't get cleared
   await db.deleteActivities(completedActivities);
+
   return activities.length;
 }
 
@@ -81,6 +82,7 @@ async function getClient(athleteId, memo) {
   if (memo[athleteId]) return memo[athleteId];
 
   const user = await db.getUser(athleteId);
+
   if (!user) throw new Error("User not defined in DB:", athleteId);
 
   //TODO - Add validation so accessToken matches up with user ID.

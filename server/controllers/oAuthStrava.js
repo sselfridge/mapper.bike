@@ -1,7 +1,7 @@
 const jwtoken = require("jsonwebtoken");
 const m = require("moment");
 const Cryptr = require("cryptr");
-const config = require("../../config/keys");
+const config = require("../../src/config/keys");
 const cryptr = new Cryptr(config.secretSuperKey);
 
 const utils = require("../utils/stravaUtils");

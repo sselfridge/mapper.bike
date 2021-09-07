@@ -2,7 +2,7 @@ const fs = require("fs");
 
 const decodePolyline = require("decode-google-map-polyline");
 
-const config = require("../../config/keys");
+const config = require("../../src/config/keys");
 const utils = require("../utils/stravaUtils");
 
 var stravaAPI = require("strava-v3");
