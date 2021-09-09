@@ -36,7 +36,6 @@
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
     "isomorphic-fetch": "^2.2.1",
-    "node-sass": "^4.13.1",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "react-test-renderer": "^16.9.0",

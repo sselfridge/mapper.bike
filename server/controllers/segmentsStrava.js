@@ -149,9 +149,9 @@ async function addToActivityQueue(strava, afterDate = 0) {
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1577865600, 1588539708);
     // 1 result
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1588057200, 1588220022);
-    result.forEach((activity) => {
+    result.forEach(async (activity) => {
       if (!activity.map.summary_polyline) return; //skip activities with no line
-      db.addActivity(activity.id, activity.athlete.id);
+      await db.addActivity(activity.id, activity.athlete.id);
     });
     console.log("Done Adding to DB");
   } catch (error) {

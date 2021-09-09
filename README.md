@@ -14,6 +14,15 @@ aws_access_key_id =
 aws_secret_access_key =
 ...
 
+DB setup Dynamo:
+4 tables:
+activities - list of activities to be scanned
+segmentDetails - detail of a segment
+hasLine-index
+segmentEfforts - a top 10 effort on a segment for an athlete
+athleteId-rank-index
+users
+
 setup port forwarding:
 iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
 
