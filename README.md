@@ -18,9 +18,9 @@ DB setup Dynamo:
 4 tables:
 activities - list of activities to be scanned
 segmentDetails - detail of a segment
-hasLine-index
+hasLine-index (string)
 segmentEfforts - a top 10 effort on a segment for an athlete
-athleteId-rank-index
+athleteId-rank-index (string)
 users
 
 setup port forwarding:
