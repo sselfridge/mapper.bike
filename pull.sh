@@ -7,6 +7,9 @@ arr+=("npm run build")
 arr+=("pm2 restart map")
 arr+=("git log -1")
 
+# pm2 command for map:
+# NODE_ENV=production pm2 start --name map node server/server.js
+
 for i in "${arr[@]}"
 do
     eval $i
