@@ -7,6 +7,9 @@ Dev Setup:
 3. Create root/config/keys.js for strava communication (See keys_DUMMY.js for format.
 4. Ensure AWS credentials file is setup for DynamoDB access.
    https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html
+5. 
+
+
 
 '''
 [dbuser]
@@ -22,6 +25,13 @@ hasLine-index (string)
 segmentEfforts - a top 10 effort on a segment for an athlete
 athleteId-rank-index (string)
 users
+
+Deploy to ec2:
+* cd to repo
+* run pull.sh
+
+pm2 start command:
+NODE_ENV=production pm2 start --name map node server/server.js
 
 setup port forwarding:
 iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
