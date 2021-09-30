@@ -8,6 +8,8 @@ import HeaderRight from "./HeaderRight";
 // eslint-disable-next-line no-unused-vars
 import { apiTest, getUser, kickoffQ } from "../../api/strava";
 
+console.log("ENV:", process.env);
+
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.primary.main,
