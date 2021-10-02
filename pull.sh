@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # create command array
 arr=( "git pull")
 arr+=("npm install")
@@ -21,3 +22,4 @@ do
         exit 1
     fi
 done
+
