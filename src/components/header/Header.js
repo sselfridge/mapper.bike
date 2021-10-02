@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-undef
-const version = "";
+const version = process.env.REACT_APP_GIT_HASH;
 
 const Header = (props) => {
   const classes = useStyles();
