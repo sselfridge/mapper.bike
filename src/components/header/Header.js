@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core";
 import HeaderRight from "./HeaderRight";
 
 // eslint-disable-next-line no-unused-vars
-import { apiTest, getUser, kickoffQ } from "../../api/strava";
+import { apiTest, kickoffQ } from "../../api/strava";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,21 +32,20 @@ const useStyles = makeStyles((theme) => ({
 const version = process.env.REACT_APP_GIT_HASH;
 
 const Header = (props) => {
+  const { currentUser } = props;
   const classes = useStyles();
 
-  const { currentUser } = props;
+  const isMe = currentUser.athleteId === 1075670;
 
-  const kickoff =
-    currentUser.athleteId === 1075670 ? (
-      <div>
-        <button onClick={kickoffQ}>Start Q</button> <button onClick={apiTest}>TEST</button>
-      </div>
-    ) : (
-      ""
-    );
+  const kickoff = (
+    <div>
+      <button onClick={kickoffQ}>Start Q</button> <button onClick={apiTest}>TEST</button>
+    </div>
+  );
+
   return (
     <div className={classes.root}>
-      {kickoff}
+      {isMe && kickoff}
       <div className={classes.title}>
         Mapper.Bike <span className={classes.betaText}>beta {`v-${version}`}</span>
       </div>
