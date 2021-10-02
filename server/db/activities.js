@@ -1,6 +1,6 @@
 const client = require("./config");
 
-const TableName = "activities-dev";
+const TableName = "activities";
 
 module.exports = {
   add,

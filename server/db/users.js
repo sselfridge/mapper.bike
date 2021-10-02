@@ -1,6 +1,6 @@
 const client = require("./config");
 
-const TableName = "users-dev";
+const TableName = "users";
 
 const users = {
   update,

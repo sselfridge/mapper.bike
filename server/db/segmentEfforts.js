@@ -1,6 +1,6 @@
 var client = require("./config");
 
-const TableName = "segmentEfforts-dev";
+const TableName = "segmentEfforts";
 
 module.exports = {
   add,
