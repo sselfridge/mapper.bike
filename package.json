@@ -46,9 +46,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test-rs": "react-scripts test",
+    "dev": "PORT=8080 react-scripts start",
+    "server": "NODE_ENV=development nodemon server/start.js",
     "test": "cross-env NODE_ENV=test npx nodemon server/start.js",
-    "devserver": "cross-env NODE_ENV=dev nodemon server/start.js",
-    "dev": "set PORT=8080 && react-scripts start"
+    "windev": "set PORT=8080 && react-scripts start",
+    "winserver": "cross-env NODE_ENV=development nodemon server/start.js",
+    "wintest": "cross-env NODE_ENV=test npx nodemon server/start.js"
   },
   "proxy": "http://localhost:3000",
   "eslintConfig": {
