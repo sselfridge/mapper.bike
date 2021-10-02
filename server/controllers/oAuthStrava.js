@@ -61,7 +61,7 @@ function loadStravaProfile(req, res, next) {
         premium: result.premium,
       };
 
-      utils.logUser(result.firstname, result.lastname);
+      utils.logUser(result.firstname, result.lastname, result.id);
       next();
     })
     .catch((err) => {

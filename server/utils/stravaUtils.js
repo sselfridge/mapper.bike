@@ -8,8 +8,8 @@ const utils = {
   makeEpochSecondsTime,
 };
 
-function logUser(firstname, lastname) {
-  let str = firstname + " " + lastname;
+function logUser(firstname, lastname, id) {
+  let str = firstname + " " + lastname + " " + id;
   if (str.length > 30) {
     str = str.substring(0, 30);
   } else {
