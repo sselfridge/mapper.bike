@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-undef
-const version = 123;
+const version = "";
 
 const Header = (props) => {
   const classes = useStyles();
