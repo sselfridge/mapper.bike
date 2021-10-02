@@ -1,6 +1,6 @@
 const client = require("./config");
 
-const TableName = "activities";
+const TableName = "activities-dev";
 
 module.exports = {
   add,
@@ -37,7 +37,7 @@ function pop(Limit) {
 
     client.scan(params, (err, data) => {
       if (err) {
-        console.log("Activty Pop Error", err);
+        console.log("Activity Pop Error", err);
         reject(err);
       } else {
         resolve(data.Items);

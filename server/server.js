@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const axios = require("axios");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
@@ -13,13 +14,17 @@ const segmentController = require("./controllers/segmentsStrava");
 const analyticController = require("./controllers/analyticsController");
 
 const stravaQ = require("./services/stravaQueue");
-const zip = require("../config/zip_lat_lang");
-const config = require("../config/keys");
+const zip = require("../src/config/zip_lat_lang");
+const config = require("../src/config/keys");
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
 app.use(cookieParser());
 
 app.use(logReq);
+
+//   REMINDER: Nodemon doesn't pickup new routes, need to kill and restart everything when changing routes
 
 var cron = require("node-cron");
 
@@ -31,10 +36,10 @@ cron.schedule("01 04 * * *", () => {
 });
 
 //Every 15min
-cron.schedule("*/15 * * * *", () => {
-  console.log("---- 15 min Cron----");
-  stravaQ.processQueue();
-});
+// cron.schedule("*/15 * * * *", () => {
+//   console.log("---- 15 min Cron----");
+//   stravaQ.processQueue();
+// });
 // setInterval(, timer);
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
@@ -126,6 +131,46 @@ app.get(
   }
 );
 
+app.get("/api/testhook", (req, res) => {
+  console.log("  client_id: config.client_id,: ", config.client_id);
+  console.log(" config.client_secret,: ", config.client_secret);
+
+  const URL = "https://www.strava.com/api/v3/push_subscriptions";
+  console.log("Make req");
+  axios
+    .post(URL, {
+      client_id: config.client_id,
+      client_secret: config.client_secret,
+      callback_url: "http://9d6b-184-187-181-40.ngrok.io/api/gethook",
+      verify_token: "1243567ui7tkuyjrrg34e5rut65",
+    })
+    .then((result) => {
+      console.log("result: ", result);
+      return res.send("GOGO").status(200);
+    })
+    .catch((err) => {
+      console.log("API: Error");
+      console.log(err.toJSON().message);
+      return res.send("no good...").status(500);
+    });
+
+  res.status(200);
+});
+
+app.get("/api/gethook", (req, res) => {
+  const challenge = req.query["hub.challenge"];
+  console.log("req  ", challenge);
+
+  res.send({ "hub.challenge": challenge });
+});
+
+app.post("/api/gethook", (req, res) => {
+  console.log("Holy crap it worked");
+  console.log(req.body);
+  console.log(req.data);
+  res.sendStatus(200);
+});
+
 app.post(
   "/api/initialize",
   oAuthStrava.loadStravaProfile,
@@ -207,17 +252,18 @@ app.delete(
 
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
-  console.log(`Server in Production/Test mode!`);
+  console.log(`Server in Production/Test mode!`, path.join(__dirname, "../build"));
   app.use("/build", express.static(path.join(__dirname, "../build")));
+  app.use("/static", express.static(path.join(__dirname, "../build/static")));
   // serve index.html on the route '/'
   app.get("/", analyticController.getUserData, (req, res) => {
     console.log("Sending out the index");
-    res.sendFile(path.join(__dirname, "../index.html"));
+    res.sendFile(path.join(__dirname, "../build/index.html"));
   });
 
   // TODO: redo this to bundle image in webpack
-  app.get("/client/img/:image", (req, res) => {
-    const imagePath = path.join(__dirname, `../client/img/${req.params.image}`);
+  app.get("/img/:image", (req, res) => {
+    const imagePath = path.join(__dirname, `../build/img/${req.params.image}`);
     fs.exists(imagePath, function (exists) {
       if (exists) {
         res.sendFile(imagePath);

@@ -1,7 +1,7 @@
 const jwtoken = require("jsonwebtoken");
 const m = require("moment");
 const Cryptr = require("cryptr");
-const config = require("../../config/keys");
+const config = require("../../src/config/keys");
 const cryptr = new Cryptr(config.secretSuperKey);
 
 const utils = require("../utils/stravaUtils");
@@ -32,7 +32,7 @@ function setStravaOauth(req, res, next) {
         expiresAt: result.expires_at,
         refreshToken: result.refresh_token,
         accessToken: result.access_token,
-        athleteID: result.athlete.id,
+        athleteId: result.athlete.id,
       };
 
       setJWTCookie(res, payload);
@@ -61,7 +61,7 @@ function loadStravaProfile(req, res, next) {
         premium: result.premium,
       };
 
-      utils.logUser(result.firstname, result.lastname);
+      utils.logUser(result.firstname, result.lastname, result.id);
       next();
     })
     .catch((err) => {
@@ -91,7 +91,7 @@ const checkRefreshToken = (res) => {
             expiresAt: result.expires_at,
             refreshToken: result.refresh_token,
             accessToken: result.access_token,
-            athleteID: res.locals.athleteID,
+            athleteId: res.locals.athleteId,
           };
           setJWTCookie(res, payload);
           res.locals.expiresAt = result.expires_at;
@@ -132,12 +132,12 @@ const decodeCookie = (res, jwt) => {
         console.log(err);
         return reject("JWT / Cookie Invalid");
       }
-      console.log(`JWT Valid - allow to proceed. athleteID: ${payload.athleteID}`);
+      console.log(`JWT Valid - allow to proceed. athleteId: ${payload.athleteId}`);
       res.locals.expiresAt = m.unix(payload.expiresAt);
       res.locals.strava = new stravaAPI.client(payload.accessToken);
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
-      res.locals.athleteID = payload.athleteID;
+      res.locals.athleteId = payload.athleteId;
       console.log("Access Token: ", res.locals.accessToken);
       return resolve(res);
     });

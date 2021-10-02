@@ -1,7 +1,7 @@
 const summaryStrava = require("./summaryStrava");
 const db = require("../db/dataLayer");
 const m = require("moment");
-const config = require("../../config/keys");
+const config = require("../../src/config/keys");
 
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
@@ -149,9 +149,9 @@ async function addToActivityQueue(strava, afterDate = 0) {
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1577865600, 1588539708);
     // 1 result
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1588057200, 1588220022);
-    result.forEach((activity) => {
+    result.forEach(async (activity) => {
       if (!activity.map.summary_polyline) return; //skip activities with no line
-      db.addActivity(activity.id, activity.athlete.id);
+      await db.addActivity(activity.id, activity.athlete.id);
     });
     console.log("Done Adding to DB");
   } catch (error) {
@@ -177,20 +177,57 @@ async function deleteUser(req, res, next) {
 }
 
 async function test(req, res, next) {
+  if (process.env.NODE_ENV === "production") {
+    // keep those not me from hitting the test endpoint in prod
+    const athleteId = res.locals && res.locals.user && res.locals.user.athleteId;
+    if (athleteId !== 1075670) {
+      res.locals.err = "Not authorized for testing";
+      return next();
+    }
+  }
   console.log("Start Test");
   const strava = res.locals.strava;
 
+  const stravaSub = require("strava-v3");
+
+  stravaSub.config({
+    client_id: config.client_id,
+    client_secret: config.client_secret,
+  });
+
   try {
+    stravaSub.pushSubscriptions
+      .list()
+      // .create({
+      //   callback_url: "http://9d6b-184-187-181-40.ngrok.io/api/gethook",
+      //   verify_token: "1243567ui7tkuyjrrg34e5rut65",
+      // })
+      // .delete({
+      //   id: 200199,
+      // })
+      .then((res) => {
+        console.log("res: ", res);
+
+        console.log("prom Done");
+        next();
+      })
+      .catch((err) => {
+        console.log(err.error.message);
+        console.log(err.error.errors);
+        console.log("sub Error");
+        next();
+      });
+    return;
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    const result = await strava.athlete.get({});
+    // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
+
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);
-    // const result = await strava.activities.get({ id: 5766891391, include_all_efforts: true });
+    // const result = await strava.activities.get({ id: 3593303190, include_all_efforts: true });
     // const result = await strava.segments.get({ id: 16616440 });
     // const result = await cronUpdateSegments();
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
-    console.log(result);
     console.log("Done! Did this still work?");
   } catch (err) {
     console.log("CRAP!!!");
@@ -199,7 +236,7 @@ async function test(req, res, next) {
   }
 
   console.log("Test Done");
-  next();
+  // next();
 }
 
 module.exports = segmentController;
