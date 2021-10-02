@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # create command array
 arr=( "git pull")
