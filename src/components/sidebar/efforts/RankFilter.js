@@ -27,14 +27,21 @@ const RankFilter = (props) => {
     return (
       <ToggleButton key={index} value={index + 1} aria-label={`${index + 1}`}>
         <Typography>{index + 1}</Typography>
-        <div style={{ backgroundColor: rankColors[index] }} className={classes.colorRank}></div>
+        <div
+          style={{ backgroundColor: rankColors[index] }}
+          className={classes.colorRank}
+        ></div>
       </ToggleButton>
     );
   });
 
   return (
     <div>
-      <ToggleButtonGroup value={ranks} onChange={handleToggleRank} aria-label="text formatting">
+      <ToggleButtonGroup
+        value={ranks}
+        onChange={handleToggleRank}
+        aria-label="text formatting"
+      >
         {buttons}
       </ToggleButtonGroup>
     </div>

@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Switch, Select, FormControl, MenuItem, Tooltip } from "@material-ui/core";
+import {
+  Switch,
+  Select,
+  FormControl,
+  MenuItem,
+  Tooltip,
+} from "@material-ui/core";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import CenterFocusWeakOutlinedIcon from "@material-ui/icons/CenterFocusWeakOutlined";
@@ -110,7 +116,8 @@ const ControlPanel = (props) => {
     }
   };
 
-  const sortIcon = sortDir === "asc" ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />;
+  const sortIcon =
+    sortDir === "asc" ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />;
 
   return (
     <div className={classes.root}>
@@ -160,7 +167,10 @@ const ControlPanel = (props) => {
               />
             )}
             {!rankFilterOrColor && (
-              <RankColor rankColors={rankColors} setRankColors={setRankColors} />
+              <RankColor
+                rankColors={rankColors}
+                setRankColors={setRankColors}
+              />
             )}
           </div>
         </section>
@@ -184,7 +194,9 @@ const ControlPanel = (props) => {
         </section>
         <section>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-helper-label">Sort By</InputLabel>
+            <InputLabel id="demo-simple-select-helper-label">
+              Sort By
+            </InputLabel>
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"

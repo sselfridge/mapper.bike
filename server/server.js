@@ -165,7 +165,6 @@ app.get("/api/gethook", (req, res) => {
 });
 
 app.post("/api/gethook", (req, res) => {
-  console.log("Holy crap it worked");
   console.log(req.body);
   console.log(req.data);
   res.sendStatus(200);

@@ -85,7 +85,11 @@ const HeaderRight = (props) => {
           <img className={classes.userAvatar} src={avatar} alt="avatar" />
         </span>
       )}
-      <MenuRoundedIcon className={classes.menuIcon} fontSize="large" onClick={handleOpen} />
+      <MenuRoundedIcon
+        className={classes.menuIcon}
+        fontSize="large"
+        onClick={handleOpen}
+      />
       <MenuModal
         stravaLogout={stravaLogout}
         handleClose={handleClose}

@@ -39,7 +39,8 @@ const Header = (props) => {
 
   const kickoff = (
     <div>
-      <button onClick={kickoffQ}>Start Q</button> <button onClick={apiTest}>TEST</button>
+      <button onClick={kickoffQ}>Start Q</button>{" "}
+      <button onClick={apiTest}>TEST</button>
     </div>
   );
 
@@ -47,7 +48,8 @@ const Header = (props) => {
     <div className={classes.root}>
       {isMe && kickoff}
       <div className={classes.title}>
-        Mapper.Bike <span className={classes.betaText}>beta {`v-${version}`}</span>
+        Mapper.Bike{" "}
+        <span className={classes.betaText}>beta {`v-${version}`}</span>
       </div>
       <div className={classes.headerRight}>
         <HeaderRight {...props} />

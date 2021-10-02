@@ -23,7 +23,8 @@ export const NULL_USER = {
 };
 
 export const DEMO_USER = {
-  avatar: "https://dgalywyr863hv.cloudfront.net/pictures/athletes/58248365/14987542/1/large.jpg",
+  avatar:
+    "https://dgalywyr863hv.cloudfront.net/pictures/athletes/58248365/14987542/1/large.jpg",
   firstname: "LaGrange",
   lastname: "Group Rides",
   athleteId: 101,

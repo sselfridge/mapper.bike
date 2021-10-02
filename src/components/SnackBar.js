@@ -31,7 +31,11 @@ export default function SnackBar(props) {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={snackBarMsg !== ""} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar
+        open={snackBarMsg !== ""}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity={snackBarType}>
           {snackBarMsg}
         </Alert>

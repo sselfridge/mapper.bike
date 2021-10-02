@@ -77,7 +77,9 @@ function Row(props) {
       </ListItem>
       {selectedAct.id === effort.id && (
         <div>
-          <p className={classes.detailText}>{`${effortCount} by ${athleteCount} riders`}</p>
+          <p
+            className={classes.detailText}
+          >{`${effortCount} by ${athleteCount} riders`}</p>
           <div className={classes.actions}>
             <Tooltip title="Remove from map" placement={"top"}>
               <IconButton

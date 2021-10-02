@@ -58,8 +58,11 @@ const DefaultSidebar = (props) => {
           />
         </a>
         <section className={classes.demoText}>
-          We will not share your data with anyone, delete yourself anytime from our{" "}
-          <span title="As if there were more than one...there is not">servers</span>
+          We will not share your data with anyone, delete yourself anytime from
+          our{" "}
+          <span title="As if there were more than one...there is not">
+            servers
+          </span>
         </section>
       </div>
       <div className={classes.demoBtn}>

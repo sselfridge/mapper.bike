@@ -23,7 +23,12 @@ const RideTitle = (props) => {
   if (selected === true) {
     selectedTitle = "selectedTitle";
     rideLink = (
-      <a className="rideLink button" href={stravaLink} rel="noopener noreferrer" target="_blank">
+      <a
+        className="rideLink button"
+        href={stravaLink}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         View On Strava
       </a>
     );

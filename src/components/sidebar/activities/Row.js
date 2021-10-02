@@ -5,7 +5,13 @@ import moment from "moment";
 
 import { noKeyOverLap } from "../../../utils";
 
-import { ListItem, ListItemText, ListItemAvatar, IconButton, Tooltip } from "@material-ui/core/";
+import {
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  IconButton,
+  Tooltip,
+} from "@material-ui/core/";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -14,7 +20,8 @@ import { useRowStyles } from "../shared/styles";
 function Row(props) {
   const classes = useRowStyles();
 
-  let { activity, index, selectedAct, handleSelected, handleRemoveLine } = props;
+  let { activity, index, selectedAct, handleSelected, handleRemoveLine } =
+    props;
   const avatarStyles = {
     root: classes.itemNumber,
   };

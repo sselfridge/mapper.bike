@@ -95,7 +95,10 @@ const ControlPanel = (props) => {
           />
         </section>
         <section>
-          <ActivityTypeSelect activityType={activityType} toggleActivityType={toggleActivityType} />
+          <ActivityTypeSelect
+            activityType={activityType}
+            toggleActivityType={toggleActivityType}
+          />
         </section>
         <section>
           <Button

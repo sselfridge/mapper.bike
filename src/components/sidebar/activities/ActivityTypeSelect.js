@@ -55,7 +55,11 @@ function ActivityTypeSelect(props) {
   return (
     <div className={classes.activityType}>
       <div className={classes.topTypeRow}>
-        <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Ride })}>
+        <div
+          className={clsx(classes.typeBtn, {
+            [classes.selectedIcon]: activityType.Ride,
+          })}
+        >
           <Tooltip title="Ride">
             <img
               className={classes.typeIcon}
@@ -66,7 +70,9 @@ function ActivityTypeSelect(props) {
           </Tooltip>
         </div>
         <div
-          className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.VirtualRide })}
+          className={clsx(classes.typeBtn, {
+            [classes.selectedIcon]: activityType.VirtualRide,
+          })}
         >
           <Tooltip title="Virtual Ride">
             <img
@@ -79,7 +85,11 @@ function ActivityTypeSelect(props) {
         </div>
       </div>
       <aside className={classes.bottomTypeRow}>
-        <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Run })}>
+        <div
+          className={clsx(classes.typeBtn, {
+            [classes.selectedIcon]: activityType.Run,
+          })}
+        >
           <Tooltip title="Run">
             <img
               className={classes.typeIcon}
@@ -89,7 +99,11 @@ function ActivityTypeSelect(props) {
             />
           </Tooltip>
         </div>
-        <div className={clsx(classes.typeBtn, { [classes.selectedIcon]: activityType.Other })}>
+        <div
+          className={clsx(classes.typeBtn, {
+            [classes.selectedIcon]: activityType.Other,
+          })}
+        >
           <Tooltip title="All Other Types">
             <AllInclusiveRoundedIcon
               className={classes.typeIcon}
