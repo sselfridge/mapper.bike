@@ -179,7 +179,8 @@ async function deleteUser(req, res, next) {
 async function test(req, res, next) {
   if (process.env.NODE_ENV === "production") {
     // keep those not me from hitting the test endpoint in prod
-    if (!res.locals.user?.athleteId || res.locals.user.athleteId !== 1075670) {
+    const athleteId = res.locals && res.locals.user && res.locals.user.athleteId;
+    if (athleteId !== 1075670) {
       res.locals.err = "Not authorized for testing";
       return next();
     }
