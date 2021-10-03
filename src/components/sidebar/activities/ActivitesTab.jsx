@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import {
@@ -90,10 +90,24 @@ export default function ActivitiesTab(props) {
     Other: false,
   });
 
-  const onAfterChange = (newDate) => setAfter(newDate);
-  const onBeforeChange = (newDate) => setBefore(newDate);
+  const onAfterChange = (newDate) => {
+    setAfter(newDate);
+    const after = moment(newDate);
+    const before = moment(beforeDate);
+    if (after.isAfter(before)) {
+      setBefore(newDate);
+    }
+  };
+  const onBeforeChange = (newDate) => {
+    setBefore(newDate);
+    const after = moment(afterDate);
+    const before = moment(newDate);
+    if (before.isBefore(after)) {
+      setAfter(newDate);
+    }
+  };
 
-  function fetchActivities() {
+  const fetchActivities = useCallback(() => {
     setLoadingTimer(moment());
     setLoading(true);
 
@@ -102,13 +116,18 @@ export default function ActivitiesTab(props) {
         setActivities(result);
       })
       .catch((err) => {
-        console.error("Get Activites Error:", err);
+        console.error("Get Activities Error:", err);
         snackBar("Error getting Rides, try again later", "error");
       })
       .finally(() => {
         setLoading(false);
       });
-  }
+  }, [activityType, afterDate, beforeDate, setActivities, setLoading, snackBar]);
+
+  useEffect(() => {
+    fetchActivities();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading === true) {
     setTimeout(() => {
@@ -148,28 +167,18 @@ export default function ActivitiesTab(props) {
       </Accordion>
       {loading && (
         <div>
-          <ReactLoading
-            type="spinningBubbles"
-            color="#FC4C02"
-            width="100%"
-            height={"300px"}
-          />
+          <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"300px"} />
           <div className={classes.loadingText}>
             <div>Fetching from Strava...</div>
             <div>Allow ~10-15 seconds for every 200 activities</div>
-            <div>{`Your search covers ${calcDateDiff(
-              afterDate,
-              beforeDate
-            )} days`}</div>
+            <div>{`Your search covers ${calcDateDiff(afterDate, beforeDate)} days`}</div>
             <div>{`${secFromTimer(loadingTimer)} secs elapsed`}</div>
             <div>{`${showDots(loadingDots)}`}</div>
           </div>
         </div>
       )}
       {!activities[0] && !loading && (
-        <div className={classes.fillerText}>
-          {"Click 'GET RIDES' to populate map"}
-        </div>
+        <div className={classes.fillerText}>{"Click 'GET RIDES' to populate map"}</div>
       )}
       <List
         activities={activities}
