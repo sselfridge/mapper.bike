@@ -18,6 +18,7 @@ const MyMap = (props) => {
   const classes = useStyles();
   const {
     mapCenter,
+    mapZoom,
     blackgroundActive,
     mapLines,
     lineColor,
@@ -69,13 +70,13 @@ const MyMap = (props) => {
           height: "calc(100% - 60px)",
         }}
         google={props.google}
-        zoom={11} //higher number = closer zoom
+        zoom={mapZoom} //higher number = closer zoom
         mapTypeId="satellite"
         center={mapCenter}
         bounds={bounds}
         initialCenter={{
-          lat: 33.945602,
-          lng: -118.483297,
+          lat: 39.65421,
+          lng: -101.409545,
         }}
       >
         {blackgroundActive && blackground}
@@ -87,6 +88,7 @@ const MyMap = (props) => {
 
 MyMap.propTypes = {
   mapCenter: PropTypes.object.isRequired,
+  mapZoom: PropTypes.number.isRequired,
   blackgroundActive: PropTypes.bool.isRequired,
   mapLines: PropTypes.array.isRequired,
   lineColor: PropTypes.string.isRequired,

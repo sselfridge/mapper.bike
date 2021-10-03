@@ -79,7 +79,7 @@ export default function TabbedSidebar(props) {
           break;
 
         default:
-          throw new Error("Invalid Tab Recieved: ", tabIndex);
+          throw new Error("Invalid Tab Received: ", tabIndex);
       }
     },
     [activities, filteredEfforts, setMapLines]
@@ -99,20 +99,12 @@ export default function TabbedSidebar(props) {
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Tabs
-          value={activeTab}
-          onChange={handleChange}
-          aria-label="simple tabs example"
-        >
+        <Tabs value={activeTab} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Activities" {...a11yProps(0)} />
           <Tab
             label="KOM Mapper "
             icon={
-              <img
-                className={classes.premiumIcon}
-                src="img/premium.png"
-                alt="Strava Premium"
-              />
+              <img className={classes.premiumIcon} src="img/premium.png" alt="Strava Premium" />
             }
             {...a11yProps(1)}
           />
@@ -127,10 +119,7 @@ export default function TabbedSidebar(props) {
         ) : userInitialized ? (
           <EffortsTab {...props} />
         ) : (
-          <UserAgreement
-            userAgreed={userAgreed}
-            setUserAgreed={setUserAgreed}
-          />
+          <UserAgreement userAgreed={userAgreed} setUserAgreed={setUserAgreed} />
         )}
       </TabPanel>
     </div>

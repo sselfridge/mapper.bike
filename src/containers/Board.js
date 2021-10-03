@@ -13,6 +13,9 @@ import { calcBounds } from "../utils";
 import demoEfforts from "../constants/DemoEfforts";
 import { effortColors } from "../constants/map";
 import { NULL_USER } from "../api/strava";
+
+import { centerOnLocation } from "../api/google.js";
+
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +40,7 @@ const Board = (props) => {
   const [selectedColor, setSelectedColor] = useState("#52eb0e"); //neon green
   const [rankColors, setRankColors] = useState(effortColors.slice());
   const [mapCenter, setMapCenter] = useState({ center: null });
+  const [mapZoom, setMapZoom] = useState(4);
   const [mapBounds, setMapBounds] = useState([]);
   const [selectedAct, setSelectedAct] = useState({});
 
@@ -84,6 +88,14 @@ const Board = (props) => {
       setEfforts([]);
       setMapLines([]);
     }
+    if (currentUser !== NULL_USER) {
+      centerOnLocation(`${currentUser.city}, ${currentUser.state}`).then((result) => {
+        if (result.center.lat) {
+          setMapCenter(result.center);
+          setMapZoom(12);
+        }
+      });
+    }
   }, [currentUser]);
 
   return (
@@ -124,6 +136,7 @@ const Board = (props) => {
         selectedColor={selectedColor}
         lineWeight={lineWeight}
         mapCenter={mapCenter}
+        mapZoom={mapZoom}
         mapBounds={mapBounds}
         handleSelected={handleSelected}
         snackBar={snackBar}
