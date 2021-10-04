@@ -66,20 +66,27 @@ const Board = (props) => {
         inline: "center",
       });
     }
-    if (newSelection.points === undefined && newSelection.line)
-      newSelection.points = decodePolyline(newSelection.line);
-    const bounds = calcBounds(newSelection.points);
 
+    setSelectedAct(newSelection);
+  };
+
+  const centerMapOnActivity = (activity) => {
+    if (activity.points === undefined && activity.line)
+      activity.points = decodePolyline(activity.line);
+
+    const bounds = calcBounds(activity.points);
     setMapBounds(bounds);
     setTimeout(() => {
       setMapBounds([]);
     }, 0);
-    setSelectedAct(newSelection);
   };
 
   const handleRemoveLine = (id) => {
-    const newMapLines = mapLines.filter((act) => act.id !== id);
-    setMapLines(newMapLines);
+    const newActivities = activities.filter((act) => act.id !== id);
+    setActivities(newActivities);
+
+    //TODO this isn't removing the ride from the list
+    // setMapLines(newMapLines);
   };
 
   useEffect(() => {
@@ -89,12 +96,14 @@ const Board = (props) => {
       setMapLines([]);
     }
     if (currentUser !== NULL_USER) {
-      centerOnLocation(`${currentUser.city}, ${currentUser.state}`).then((result) => {
-        if (result.center.lat) {
-          setMapCenter(result.center);
-          setMapZoom(12);
+      centerOnLocation(`${currentUser.city}, ${currentUser.state}`).then(
+        (result) => {
+          if (result.center.lat) {
+            setMapCenter(result.center);
+            setMapZoom(12);
+          }
         }
-      });
+      );
     }
   }, [currentUser]);
 
@@ -128,6 +137,7 @@ const Board = (props) => {
         snackBar={snackBar}
         rankColors={rankColors}
         setRankColors={setRankColors}
+        centerMapOnActivity={centerMapOnActivity}
       />
       <MyMap
         blackgroundActive={blackgroundActive}

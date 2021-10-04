@@ -14,14 +14,22 @@ import {
 } from "@material-ui/core/";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import Map from "@material-ui/icons/Map";
 
 import { useRowStyles } from "../shared/styles";
 
 function Row(props) {
   const classes = useRowStyles();
 
-  let { activity, index, selectedAct, handleSelected, handleRemoveLine } =
-    props;
+  let {
+    activity,
+    index,
+    selectedAct,
+    handleSelected,
+    handleRemoveLine,
+    centerMapOnActivity,
+  } = props;
+
   const avatarStyles = {
     root: classes.itemNumber,
   };
@@ -69,16 +77,6 @@ function Row(props) {
       </ListItem>
       {selectedAct.id === activity.id && (
         <div className={classes.actions}>
-          <Tooltip title="Remove from map" placement={"top"}>
-            <IconButton
-              aria-label="delete"
-              onClick={() => {
-                handleRemoveLine(activity.id);
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
           <Tooltip title="View on Strava" placement={"top"}>
             <IconButton>
               <a href={stravaLink} rel="noopener noreferrer" target="_blank">
@@ -88,6 +86,26 @@ function Row(props) {
                   alt="View on Strava"
                 />
               </a>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Zoom to Ride" placement={"top"}>
+            <IconButton
+              aria-label="zoomToRide"
+              onClick={() => {
+                centerMapOnActivity(activity);
+              }}
+            >
+              <Map />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Remove from map" placement={"top"}>
+            <IconButton
+              aria-label="delete"
+              onClick={() => {
+                handleRemoveLine(activity.id);
+              }}
+            >
+              <DeleteIcon />
             </IconButton>
           </Tooltip>
         </div>

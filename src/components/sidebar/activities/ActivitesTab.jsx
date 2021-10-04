@@ -75,6 +75,7 @@ export default function ActivitiesTab(props) {
     setLoading,
     loading,
     handleRemoveLine,
+    centerMapOnActivity,
     snackBar,
   } = props;
 
@@ -188,6 +189,7 @@ export default function ActivitiesTab(props) {
         selectedAct={selectedAct}
         setMapCenter={setMapCenter}
         handleRemoveLine={handleRemoveLine}
+        centerMapOnActivity={centerMapOnActivity}
       />
     </div>
   );

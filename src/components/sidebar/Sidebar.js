@@ -57,6 +57,7 @@ Sidebar.propTypes = {
   snackBar: PropTypes.func.isRequired,
   rankColors: PropTypes.array.isRequired,
   setRankColors: PropTypes.func.isRequired,
+  centerMapOnActivity: PropTypes.func.isRequired,
 };
 
 export default Sidebar;
