@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core/";
 
 import DeleteIcon from "@material-ui/icons/Delete";
-import Map from "@material-ui/icons/Map";
+import MapIcon from "@material-ui/icons/Map";
 
 import { useRowStyles } from "../shared/styles";
 
@@ -47,19 +47,22 @@ function Row(props) {
   const infoC = `${hours}:${minutes} hrs`;
   const stravaLink = `http://www.strava.com/activities/${activity.id}`;
 
+  const isSelected = activity.id === selectedAct.id;
+
   return (
     <div
       id={`row${activity.id}`}
       className={clsx({
         [classes.listItem]: true,
-        [classes.selectedStyle]: activity.id === selectedAct.id,
+        [classes.selectedStyle]: isSelected,
       })}
     >
       <ListItem
         key={index}
         onClick={() => {
-          handleSelected(activity, "row");
+          if (!isSelected) handleSelected(activity, "row");
         }}
+        onDoubleClick={() => centerMapOnActivity(activity)}
       >
         <ListItemAvatar classes={avatarStyles}>
           <div>{index + 1}</div>
@@ -75,7 +78,7 @@ function Row(props) {
           }
         />
       </ListItem>
-      {selectedAct.id === activity.id && (
+      {isSelected && (
         <div className={classes.actions}>
           <Tooltip title="View on Strava" placement={"top"}>
             <IconButton>
@@ -95,14 +98,14 @@ function Row(props) {
                 centerMapOnActivity(activity);
               }}
             >
-              <Map />
+              <MapIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Remove from map" placement={"top"}>
             <IconButton
               aria-label="delete"
               onClick={() => {
-                handleRemoveLine(activity.id);
+                handleRemoveLine(activity.id, "activity");
               }}
             >
               <DeleteIcon />

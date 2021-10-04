@@ -81,9 +81,14 @@ const Board = (props) => {
     }, 0);
   };
 
-  const handleRemoveLine = (id) => {
-    const newActivities = activities.filter((act) => act.id !== id);
-    setActivities(newActivities);
+  const handleRemoveLine = (id, variant) => {
+    if (variant === "activity") {
+      const newActivities = activities.filter((act) => act.id !== id);
+      setActivities(newActivities);
+    } else {
+      const newEfforts = efforts.filter((effort) => effort.id !== id);
+      setEfforts(newEfforts);
+    }
 
     //TODO this isn't removing the ride from the list
     // setMapLines(newMapLines);

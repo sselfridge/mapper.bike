@@ -44,6 +44,7 @@ const EffortsTab = (props) => {
     selectedAct,
     setMapCenter,
     handleRemoveLine,
+    centerMapOnActivity,
   } = props;
 
   const [panelExpanded, setPanelExpanded] = useState(true);
@@ -146,6 +147,7 @@ const EffortsTab = (props) => {
         selectedAct={selectedAct}
         setMapCenter={setMapCenter}
         handleRemoveLine={handleRemoveLine}
+        centerMapOnActivity={centerMapOnActivity}
       />
     </div>
   );
