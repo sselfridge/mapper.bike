@@ -9,10 +9,11 @@ import HeaderRight from "./HeaderRight";
 import { apiTest, kickoffQ } from "../../api/strava";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  Header: {
     backgroundColor: theme.palette.primary.main,
     display: "flex",
     justifyContent: "space-between",
+    maxHeight: 50,
   },
   title: {
     fontSize: "2em",
@@ -45,7 +46,7 @@ const Header = (props) => {
   );
 
   return (
-    <div className={classes.root}>
+    <div className={classes.Header}>
       {isMe && kickoff}
       <div className={classes.title}>
         Mapper.Bike{" "}

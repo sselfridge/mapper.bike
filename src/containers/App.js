@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => {
   // console.log(theme.spacing(1,1,1,1));
 
   return {
-    root: {
+    AppRoot: {
       fontFamily: theme.typography.fontFamily,
     },
   };
@@ -51,7 +51,7 @@ const NewApp = () => {
   }, []);
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.AppRoot}>
       <Header currentUser={currentUser} stravaLogout={stravaLogout} />
       <Board
         currentUser={currentUser}

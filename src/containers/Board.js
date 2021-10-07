@@ -18,7 +18,7 @@ import { centerOnLocation } from "../api/google.js";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
-  root: {
+  BoardRoot: {
     display: "flex",
     flexDirection: "row",
   },
@@ -113,7 +113,7 @@ const Board = (props) => {
   }, [currentUser]);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.BoardRoot}>
       <Sidebar
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}
