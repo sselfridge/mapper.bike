@@ -1,6 +1,7 @@
 const client = require("./config");
+const keys = require("../../src/config/keys");
 
-const TableName = "users";
+const TableName = keys.dbTables["users"];
 
 const users = {
   update,
@@ -68,7 +69,13 @@ function getAll() {
     const params = {
       TableName,
       Select: "SPECIFIC_ATTRIBUTES",
-      AttributesToGet: ["id", "lastUpdate", "accessToken", "refreshToken", "startDate"],
+      AttributesToGet: [
+        "id",
+        "lastUpdate",
+        "accessToken",
+        "refreshToken",
+        "startDate",
+      ],
     };
 
     client.scan(params, (err, data) => {
