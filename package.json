@@ -48,7 +48,7 @@
     "test-rs": "react-scripts test",
     "dev": "PORT=8080 react-scripts start",
     "server": "NODE_ENV=development nodemon server/start.js",
-    "test": "cross-env NODE_ENV=test npx nodemon server/start.js",
+    "test": "NODE_ENV=test npx nodemon server/start.js",
     "windev": "set PORT=8080 && react-scripts start",
     "winserver": "cross-env NODE_ENV=development nodemon server/start.js",
     "wintest": "cross-env NODE_ENV=test npx nodemon server/start.js"
