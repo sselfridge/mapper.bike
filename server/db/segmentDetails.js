@@ -1,6 +1,7 @@
 var client = require("./config");
+const keys = require("../../src/config/keys");
 
-const TableName = "segmentDetails";
+const TableName = keys.dbTables["segmentDetails"];
 
 module.exports = {
   update,
@@ -12,7 +13,8 @@ module.exports = {
 };
 
 function update(data) {
-  const { id, line, effortCount, athleteCount, distance, elevation, updated } = data;
+  const { id, line, effortCount, athleteCount, distance, elevation, updated } =
+    data;
   return new Promise((resolve, reject) => {
     const params = {
       TableName,

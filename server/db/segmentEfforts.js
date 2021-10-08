@@ -1,6 +1,7 @@
 var client = require("./config");
+const keys = require("../../src/config/keys");
 
-const TableName = "segmentEfforts";
+const TableName = keys.dbTables["segmentEfforts"];
 
 module.exports = {
   add,

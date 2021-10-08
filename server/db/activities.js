@@ -1,6 +1,7 @@
 const client = require("./config");
+const keys = require("../../src/config/keys");
 
-const TableName = "activities";
+const TableName = keys.dbTables["activities"];
 
 module.exports = {
   add,
