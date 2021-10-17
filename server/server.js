@@ -178,7 +178,7 @@ app.post("/api/gethook", (req, res) => {
   // updates: {} }
   const SUB_LOG = "logs/subs.txt";
 
-  fs.appendFileSync(SUB_LOG, JSON.stringify(req.body));
+  fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}\n`);
 
   res.sendStatus(200);
 });
