@@ -142,7 +142,11 @@ async function totalUserActivities(strava, id) {
 
 async function addToActivityQueue(strava, afterDate = 0) {
   try {
-    const result = await summaryStrava.fetchActivitiesFromStrava(strava, afterDate, 2550000000);
+    const result = await summaryStrava.fetchActivitiesFromStrava(
+      strava,
+      afterDate,
+      2550000000
+    );
     //March + April Rides
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1585724400, 1588220022);
     //2020 Rides
@@ -179,7 +183,8 @@ async function deleteUser(req, res, next) {
 async function test(req, res, next) {
   if (process.env.NODE_ENV === "production") {
     // keep those not me from hitting the test endpoint in prod
-    const athleteId = res.locals && res.locals.user && res.locals.user.athleteId;
+    const athleteId =
+      res.locals && res.locals.user && res.locals.user.athleteId;
     if (athleteId !== 1075670) {
       res.locals.err = "Not authorized for testing";
       return next();
@@ -203,7 +208,7 @@ async function test(req, res, next) {
       //   verify_token: "1243567ui7tkuyjrrg34e5rut65",
       // })
       // .delete({
-      //   id: 200199,
+      //   id: 203074,
       // })
       .then((res) => {
         console.log("res: ", res);

@@ -136,16 +136,15 @@ app.get("/api/testhook", (req, res) => {
   console.log(" config.client_secret,: ", config.client_secret);
 
   const URL = "https://www.strava.com/api/v3/push_subscriptions";
-  console.log("Make req");
+  console.log("Make test-hook req");
   axios
     .post(URL, {
       client_id: config.client_id,
       client_secret: config.client_secret,
-      callback_url: "http://9d6b-184-187-181-40.ngrok.io/api/gethook",
-      verify_token: "1243567ui7tkuyjrrg34e5rut65",
+      callback_url: "http://www.mapper.bike/api/gethook",
+      verify_token: config.secretSuperKey,
     })
     .then((result) => {
-      console.log("result: ", result);
       return res.send("GOGO").status(200);
     })
     .catch((err) => {
@@ -154,7 +153,7 @@ app.get("/api/testhook", (req, res) => {
       return res.send("no good...").status(500);
     });
 
-  res.status(200);
+  // res.status(200);
 });
 
 app.get("/api/gethook", (req, res) => {
@@ -165,8 +164,22 @@ app.get("/api/gethook", (req, res) => {
 });
 
 app.post("/api/gethook", (req, res) => {
+  console.info("=======================");
   console.log(req.body);
+  console.info("=======================");
   console.log(req.data);
+  console.info("=======================");
+  // { aspect_type: 'create',
+  // event_time: 1634501165,
+  // object_id: 6128714606,
+  // object_type: 'activity',
+  // owner_id: 1075670,
+  // subscription_id: 203074,
+  // updates: {} }
+  const SUB_LOG = "logs/subs.txt";
+
+  fs.appendFileSync(SUB_LOG, JSON.stringify(req.body));
+
   res.sendStatus(200);
 });
 
@@ -251,7 +264,10 @@ app.delete(
 
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
-  console.log(`Server in Production/Test mode!`, path.join(__dirname, "../build"));
+  console.log(
+    `Server in Production/Test mode!`,
+    path.join(__dirname, "../build")
+  );
   app.use("/build", express.static(path.join(__dirname, "../build")));
   app.use("/static", express.static(path.join(__dirname, "../build/static")));
   // serve index.html on the route '/'
