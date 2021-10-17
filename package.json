@@ -45,6 +45,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "buildtest": "REACT_APP_ENVIRONMENT=test react-scripts build",
     "test-rs": "react-scripts test",
     "dev": "PORT=8080 react-scripts start",
     "server": "NODE_ENV=development nodemon server/start.js",
