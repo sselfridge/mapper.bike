@@ -181,6 +181,10 @@ app.post("/api/getHook", (req, res) => {
   console.info("host: ", host);
   var origin = req.get("origin");
   console.info("origin: ", origin);
+  var ip = req.header("x-forwarded-for");
+  console.log("ip: ", ip);
+  var headers = Object.keys(req.headers);
+  console.log("headers: ", headers);
 
   fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}\n`);
 
