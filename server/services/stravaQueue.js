@@ -12,6 +12,8 @@ let APP_STRAVA = null;
 
 const stravaQueue = {
   processQueue,
+  updateUserRefreshToken,
+  deleteAllActivities,
 };
 
 async function processQueue() {
@@ -41,11 +43,11 @@ async function processQueue() {
 async function getActivityDetails() {
   console.log("Get Activity Details");
   const memo = {};
-  const completedActivities = [];
+  const completedActivityIds = [];
 
   const activities = await db.popActivities();
 
-  console.log(`Geting details for ${activities.length} activities`);
+  console.log(`Getting details for ${activities.length} activities`);
   if (activities.length === 0) return 0;
 
   for (const activity of activities) {
@@ -59,10 +61,10 @@ async function getActivityDetails() {
     });
 
     const result = await parseActivity(fullActivity);
-    if (result) completedActivities.push(activity.id);
+    if (result) completedActivityIds.push(activity.id);
   }
   //problem here is if the others error out, completed ones don't get cleared
-  await db.deleteActivities(completedActivities);
+  await db.deleteActivities(completedActivityIds);
 
   return activities.length;
 }
@@ -117,8 +119,9 @@ const parseRankedSegments = (activity) => {
 };
 
 function stravaRate() {
-  if (stravaAPI.rateLimiting.shortTermUsage + stravaAPI.rateLimiting.longTermUsage === 0) return 0;
-  const stravaRate = stravaAPI.rateLimiting.fractionReached();
+  const rateLimits = stravaAPI.rateLimiting;
+  if (rateLimits.shortTermUsage + rateLimits.longTermUsage === 0) return 0;
+  const stravaRate = rateLimits.fractionReached();
 
   const percent = (stravaRate * 100).toFixed(2);
   return percent;
@@ -171,6 +174,26 @@ async function getStravaClient() {
   console.log(expires.fromNow());
 
   APP_STRAVA = new stravaAPI.client(result.access_token);
+}
+
+async function deleteAllActivities() {
+  let count = 1;
+  let round = 0;
+  while (count > 0) {
+    const activities = await db.popActivities(25);
+    count = activities.length;
+    await db.deleteActivities(activities.map((a) => a.id));
+    round++;
+    console.info("round: ", round);
+  }
+}
+
+async function updateUserRefreshToken(athleteId, refreshToken) {
+  const user = await db.getUser(athleteId);
+  if (user && user.refreshToken !== refreshToken) {
+    user.refreshToken = refreshToken;
+    db.updateUser(user);
+  }
 }
 
 module.exports = stravaQueue;

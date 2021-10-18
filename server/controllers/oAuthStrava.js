@@ -3,7 +3,8 @@ const m = require("moment");
 const Cryptr = require("cryptr");
 const config = require("../../src/config/keys");
 const cryptr = new Cryptr(config.secretSuperKey);
-
+const db = require("../db/dataLayer");
+const stravaQ = require("../services/stravaQueue.js");
 const utils = require("../utils/stravaUtils");
 
 var stravaAPI = require("strava-v3");
@@ -18,6 +19,7 @@ module.exports = {
   setStravaOauth,
   loadStravaProfile,
   clearCookie,
+  adminOnly,
 };
 
 // EXPORTED Functions
@@ -78,7 +80,10 @@ function loadStravaProfile(req, res, next) {
 const checkRefreshToken = (res) => {
   return new Promise((resolve, reject) => {
     const expiresAt = res.locals.expiresAt;
-    console.log(`Token Expires at ${expiresAt.format("hh:mm A")},`, expiresAt.fromNow());
+    console.log(
+      `Token Expires at ${expiresAt.format("hh:mm A")},`,
+      expiresAt.fromNow()
+    );
     console.log("Refresh Token:", res.locals.refreshToken);
     if (m().isBefore(expiresAt)) {
       console.log("Token Not Expired");
@@ -88,6 +93,12 @@ const checkRefreshToken = (res) => {
 
       stravaAPI.oauth
         .refreshToken(res.locals.refreshToken)
+        .then(async (result) => {
+          //update user refresh token in DB
+          const athleteId = res.locals.athleteId;
+          stravaQ.updateUserRefreshToken(athleteId, result.refresh_token);
+          return result;
+        })
         .then((result) => {
           let payload = {
             expiresAt: result.expires_at,
@@ -95,6 +106,7 @@ const checkRefreshToken = (res) => {
             accessToken: result.access_token,
             athleteId: res.locals.athleteId,
           };
+
           setJWTCookie(res, payload);
           res.locals.expiresAt = result.expires_at;
           res.locals.accessToken = result.access_token;
@@ -134,7 +146,7 @@ const decodeCookie = (res, jwt) => {
         console.log(err);
         return reject("JWT / Cookie Invalid");
       }
-      console.log(`JWT Valid - allow to proceed. athleteId: ${payload.athleteId}`);
+      console.log(`JWT Valid - athleteId: ${payload.athleteId}`);
       res.locals.expiresAt = m.unix(payload.expiresAt);
       res.locals.strava = new stravaAPI.client(payload.accessToken);
       res.locals.accessToken = payload.accessToken;
@@ -149,5 +161,20 @@ const decodeCookie = (res, jwt) => {
 function clearCookie(req, res, next) {
   console.log("clear cookie: mapperjwt");
   res.clearCookie("mapperjwt", { httpOnly: true });
+  next();
+}
+
+function adminOnly(req, res, next) {
+  console.info(Object.keys(res.locals));
+  // keep those not me from hitting admin functions
+  const userAthleteId =
+    res.locals && res.locals.user && res.locals.user.athleteId;
+
+  const athleteId = res.locals.athleteId;
+
+  if (userAthleteId !== athleteId || athleteId !== 1075670) {
+    res.locals.err = "Not authorized for testing";
+    return next();
+  }
   next();
 }
