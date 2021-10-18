@@ -1,9 +1,8 @@
-const jwtoken = require("jsonwebtoken");
+const jwToken = require("jsonwebtoken");
 const m = require("moment");
 const Cryptr = require("cryptr");
 const config = require("../../src/config/keys");
 const cryptr = new Cryptr(config.secretSuperKey);
-const db = require("../db/dataLayer");
 const stravaQ = require("../services/stravaQueue.js");
 const utils = require("../utils/stravaUtils");
 
@@ -134,14 +133,14 @@ function decryptJwt(jwt) {
 
 function setJWTCookie(res, payload) {
   console.log("Set JWT", payload);
-  const jwt = jwtoken.sign(payload, config.secretSuperKey);
-  const crypted = cryptr.encrypt(jwt);
-  res.cookie("mapperjwt", crypted, { httpOnly: true });
+  const jwt = jwToken.sign(payload, config.secretSuperKey);
+  const encrypted = cryptr.encrypt(jwt);
+  res.cookie("mapperjwt", encrypted, { httpOnly: true });
 }
 
 const decodeCookie = (res, jwt) => {
   return new Promise((resolve, reject) => {
-    jwtoken.verify(jwt, config.secretSuperKey, (err, payload) => {
+    jwToken.verify(jwt, config.secretSuperKey, (err, payload) => {
       if (err) {
         console.log(err);
         return reject("JWT / Cookie Invalid");

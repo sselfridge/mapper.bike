@@ -2,20 +2,22 @@
   "eslint.enable": true,
   "cSpell.words": [
     "blackground",
-    "describedby",
-    "firstname",
-    "lastname",
-    "noopener",
-    "noreferrer",
-    "windev",
-    "winserver",
-    "wintest",
     "clsx",
     "cryptr",
+    "describedby",
+    "firstname",
     "Imgur",
     "labelledby",
+    "lastname",
+    "latlng",
     "Leaderboard",
+    "mapperjwt",
+    "noopener",
+    "noreferrer",
     "strava",
-    "velociraptor"
+    "velociraptor",
+    "windev",
+    "winserver",
+    "wintest"
   ]
 }
