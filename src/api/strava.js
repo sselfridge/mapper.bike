@@ -28,6 +28,8 @@ export const DEMO_USER = {
   firstname: "LaGrange",
   lastname: "Group Rides",
   athleteId: 101,
+  city: "Santa Monica",
+  state: "California",
 };
 
 export function getCurrentUser() {
