@@ -177,7 +177,7 @@ app.post("/api/getHook", (req, res) => {
   // subscription_id: 203074,
   // updates: {} }
 
-  console.log(req);
+  console.log(res);
 
   const address = req.socket.remoteAddress;
   console.log("address: ", address);
