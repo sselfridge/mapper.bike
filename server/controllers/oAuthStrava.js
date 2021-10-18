@@ -165,7 +165,6 @@ function clearCookie(req, res, next) {
 }
 
 function adminOnly(req, res, next) {
-  console.info(Object.keys(res.locals));
   // keep those not me from hitting admin functions
   const userAthleteId =
     res.locals && res.locals.user && res.locals.user.athleteId;
