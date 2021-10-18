@@ -58,8 +58,8 @@ const CenterMapModal = (props) => {
 
   useEffect(() => {
     setTimeout(() => {
-      const textfield = document.getElementById("centerModalText");
-      if (textfield) textfield.focus();
+      const textField = document.getElementById("centerModalText");
+      if (textField) textField.focus();
     }, 600);
   });
 

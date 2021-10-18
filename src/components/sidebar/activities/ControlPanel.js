@@ -63,7 +63,7 @@ const ControlPanel = (props) => {
     onBeforeChange,
     beforeDate,
     snackBar,
-    currentUser,
+    currentUser: { athleteId },
     ...rest
   } = props;
 
@@ -106,7 +106,7 @@ const ControlPanel = (props) => {
             className={classes.getBtn}
             variant="contained"
             color="primary"
-            disabled={currentUser.athleteId === 101}
+            disabled={athleteId === 101}
           >
             Get Rides
           </Button>

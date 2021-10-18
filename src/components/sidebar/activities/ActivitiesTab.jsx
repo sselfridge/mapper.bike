@@ -77,6 +77,7 @@ export default function ActivitiesTab(props) {
     handleRemoveLine,
     centerMapOnActivity,
     snackBar,
+    currentUser: { athleteId },
   } = props;
 
   const [beforeDate, setBefore] = useState(new Date());
@@ -112,6 +113,10 @@ export default function ActivitiesTab(props) {
     setLoadingTimer(moment());
     setLoading(true);
 
+    //dont' fetch if using demo user
+    if (athleteId === 101) return;
+    console.log("athleteId: ", athleteId);
+
     getActivities(activityType, afterDate, beforeDate)
       .then((result) => {
         setActivities(result);
@@ -123,7 +128,15 @@ export default function ActivitiesTab(props) {
       .finally(() => {
         setLoading(false);
       });
-  }, [activityType, afterDate, beforeDate, setActivities, setLoading, snackBar]);
+  }, [
+    activityType,
+    afterDate,
+    beforeDate,
+    setActivities,
+    setLoading,
+    snackBar,
+    athleteId,
+  ]);
 
   useEffect(() => {
     fetchActivities();
@@ -168,18 +181,28 @@ export default function ActivitiesTab(props) {
       </Accordion>
       {loading && (
         <div>
-          <ReactLoading type="spinningBubbles" color="#FC4C02" width="100%" height={"300px"} />
+          <ReactLoading
+            type="spinningBubbles"
+            color="#FC4C02"
+            width="100%"
+            height={"300px"}
+          />
           <div className={classes.loadingText}>
             <div>Fetching from Strava...</div>
             <div>Allow ~10-15 seconds for every 200 activities</div>
-            <div>{`Your search covers ${calcDateDiff(afterDate, beforeDate)} days`}</div>
+            <div>{`Your search covers ${calcDateDiff(
+              afterDate,
+              beforeDate
+            )} days`}</div>
             <div>{`${secFromTimer(loadingTimer)} secs elapsed`}</div>
             <div>{`${showDots(loadingDots)}`}</div>
           </div>
         </div>
       )}
       {!activities[0] && !loading && (
-        <div className={classes.fillerText}>{"Click 'GET RIDES' to populate map"}</div>
+        <div className={classes.fillerText}>
+          {"Click 'GET RIDES' to populate map"}
+        </div>
       )}
       <List
         activities={activities}

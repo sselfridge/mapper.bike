@@ -37,7 +37,7 @@ const DefaultSidebar = (props) => {
         setCurrentUser(DEMO_USER);
       })
       .catch((err) => {
-        console.error("Get Activites Error:", err);
+        console.error("Get Activities Error:", err);
         snackBar();
       })
       .finally(() => {
