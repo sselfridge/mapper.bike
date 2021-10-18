@@ -118,7 +118,7 @@ app.get(
   // segmentController.initializeUser,
   // segmentController.updateUserDB,
 
-  // segmentController.test,
+  segmentController.test,
   (req, res) => {
     if (res.locals.err) {
       console.log("Error!!");
