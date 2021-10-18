@@ -45,12 +45,18 @@ const DefaultSidebar = (props) => {
       });
   }
 
+  let connectToStravaLink = "";
+  connectToStravaLink += `https://www.strava.com/oauth/authorize`;
+  connectToStravaLink += `?client_id=${config.client_id}`;
+  connectToStravaLink += `&redirect_uri=${config.callback_uri}/api/strava/callback`;
+  connectToStravaLink += `&response_type=code`;
+  connectToStravaLink += `&approval_prompt=auto`;
+  connectToStravaLink += `&scope=read_all,activity:read_all`;
+
   return (
     <div className={classes.root}>
       <div>
-        <a
-          href={`https://www.strava.com/oauth/authorize?client_id=${config.client_id}&redirect_uri=${config.callback_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=activity:read`}
-        >
+        <a href={connectToStravaLink}>
           <img
             className={classes.stravaImg}
             src="img/connectStrava.png"
