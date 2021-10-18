@@ -4,6 +4,11 @@ const m = require("moment");
 const config = require("../../src/config/keys");
 
 const stravaQ = require("../services/stravaQueue");
+const got = require("got");
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
+// const awsTest = require("../../awsTest");
 
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
@@ -136,6 +141,15 @@ async function segmentEfforts(req, res, next) {
   next();
 }
 
+async function updateEffort(req, res, next) {
+  //pull effort from DB
+  //get current ranks
+  //if different
+  /*  update rank
+   */
+  //  update updated
+}
+
 async function totalUserActivities(strava, id) {
   const result = await strava.athletes.stats({ id });
   const count = result.all_ride_totals.count + result.all_run_totals.count;
@@ -184,14 +198,14 @@ async function deleteUser(req, res, next) {
 
 async function test(req, res, next) {
   console.log("Start Test");
-  const strava = res.locals.strava;
+  // const strava = res.locals.strava;
 
-  const stravaSub = require("strava-v3");
+  // const stravaSub = require("strava-v3");
 
-  stravaSub.config({
-    client_id: config.client_id,
-    client_secret: config.client_secret,
-  });
+  // stravaSub.config({
+  //   client_id: config.client_id,
+  //   client_secret: config.client_secret,
+  // });
 
   try {
     stravaSub.pushSubscriptions
@@ -236,5 +250,63 @@ async function test(req, res, next) {
   console.log("Test Done");
   // next();
 }
+
+async function getRanks(segmentId) {
+  const response = await got(`https://www.strava.com/segments/${segmentId}`);
+
+  const rspArr = Object.keys(response);
+  console.log("response: ", response.statusCode);
+
+  if (response.statusCode !== 200) {
+    throw new Error("HTML req error - found code:", response.statusCode);
+  }
+
+  const dom = new JSDOM(response.body);
+
+  // Create an Array out of the HTML Elements for filtering using spread syntax.
+  const nodeList = [
+    ...dom.window.document.querySelectorAll("table.table-leaderboard"),
+  ];
+
+  //TODO - verify leaderboard
+  const table = nodeList[0];
+
+  const rows = table.querySelectorAll("tbody > tr");
+
+  const ranks = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const rowObj = {};
+
+    for (const key in ROW_MAP) {
+      if (Object.hasOwnProperty.call(ROW_MAP, key)) {
+        const selArr = ROW_MAP[key];
+        rowObj[key] = getFromRow(row, selArr);
+        rowObj.row = i + 1;
+      }
+    }
+    rowObj.segmentId = rowObj.link.replace(/\D/g, "");
+    ranks.push(rowObj);
+  }
+
+  return ranks;
+}
+
+const ROW_MAP = {
+  place: ["td:nth-child(1)"],
+  name: ["td:nth-child(2)"],
+  time: ["td > a"],
+  link: ["td > a", "href"],
+};
+
+const getFromRow = (row, selArr) => {
+  const selector = selArr[0];
+  const attribute = selArr[1] ? selArr[1] : "innerHTML";
+
+  const elm = row.querySelector(selector);
+  const value = elm[attribute];
+
+  return value;
+};
 
 module.exports = segmentController;
