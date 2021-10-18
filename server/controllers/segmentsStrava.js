@@ -3,6 +3,8 @@ const db = require("../db/dataLayer");
 const m = require("moment");
 const config = require("../../src/config/keys");
 
+const stravaQ = require("../services/stravaQueue");
+
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
   client_id: config.client_id,
@@ -32,9 +34,9 @@ async function cronUpdateSegments() {
 
 async function updateUserSegments(user) {
   try {
+    console.info("Checking user refreshToken for user:", user.id);
     const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
-    console.log("Refresh Token result =====================================");
-    console.log(result);
+    stravaQ.updateUserRefreshToken(user.id, result.refresh_token);
     user.accessToken = result.access_token;
   } catch (error) {
     console.error("Error refreshing token");
@@ -181,15 +183,6 @@ async function deleteUser(req, res, next) {
 }
 
 async function test(req, res, next) {
-  if (process.env.NODE_ENV === "production") {
-    // keep those not me from hitting the test endpoint in prod
-    const athleteId =
-      res.locals && res.locals.user && res.locals.user.athleteId;
-    if (athleteId !== 1075670) {
-      res.locals.err = "Not authorized for testing";
-      return next();
-    }
-  }
   console.log("Start Test");
   const strava = res.locals.strava;
 

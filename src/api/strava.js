@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const apiTest = () => {
   return new Promise((resolve, reject) => {
-    const quereyString = `/api/testhook`;
+    const quereyString = `/api/test`;
     axios
       .get(quereyString)
       .then((res) => {

@@ -114,22 +114,26 @@ app.get("/api/demoData", (req, res) => {
 app.get(
   "/api/test",
   oAuthStrava.loadStravaProfile,
+  oAuthStrava.adminOnly,
   // segmentController.initializeUser,
   // segmentController.updateUserDB,
 
-  segmentController.test,
+  // segmentController.test,
   (req, res) => {
     if (res.locals.err) {
       console.log("Error!!");
       console.log(res.locals.err);
       res.status(500).send("DOH!!");
     } else {
-      // stravaQ.processQueue();
+      segmentController.cronUpdateSegments();
       console.log("fin");
-      res.send(res.locals.effort);
+      res.send("OK");
     }
   }
 );
+/*
+
+end points for setting up strava push notifications
 
 app.get("/api/testhook", (req, res) => {
   console.log("  client_id: config.client_id,: ", config.client_id);
@@ -141,7 +145,7 @@ app.get("/api/testhook", (req, res) => {
     .post(URL, {
       client_id: config.client_id,
       client_secret: config.client_secret,
-      callback_url: "http://www.mapper.bike/api/gethook",
+      callback_url: "http://www.mapper.bike/api/getHook",
       verify_token: config.secretSuperKey,
     })
     .then((result) => {
@@ -156,19 +160,15 @@ app.get("/api/testhook", (req, res) => {
   // res.status(200);
 });
 
-app.get("/api/gethook", (req, res) => {
+app.get("/api/getHook", (req, res) => {
   const challenge = req.query["hub.challenge"];
   console.log("req  ", challenge);
 
   res.send({ "hub.challenge": challenge });
 });
+*/
 
-app.post("/api/gethook", (req, res) => {
-  console.info("=======================");
-  console.log(req.body);
-  console.info("=======================");
-  console.log(req.data);
-  console.info("=======================");
+app.post("/api/getHook", (req, res) => {
   // { aspect_type: 'create',
   // event_time: 1634501165,
   // object_id: 6128714606,
@@ -177,6 +177,10 @@ app.post("/api/gethook", (req, res) => {
   // subscription_id: 203074,
   // updates: {} }
   const SUB_LOG = "logs/subs.txt";
+  var host = req.get("host");
+  console.info("host: ", host);
+  var origin = req.get("origin");
+  console.info("origin: ", origin);
 
   fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}\n`);
 
