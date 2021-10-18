@@ -174,16 +174,14 @@ app.post("/api/getHook", (req, res) => {
   // object_id: 6128714606,
   // object_type: 'activity',
   // owner_id: 1075670,
-  // subscription_id: 203074,
+  // subscription_id: 123456,
   // updates: {} }
 
-  console.log(res);
-
+  //curious to see if this is always constant
   const address = req.socket.remoteAddress;
-  console.log("address: ", address);
 
   const SUB_LOG = "logs/subs.txt";
-  fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}\n`);
+  fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}-- ${address}\n`);
 
   res.sendStatus(200);
 });
