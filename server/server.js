@@ -125,7 +125,7 @@ app.get(
       console.log(res.locals.err);
       res.status(500).send("DOH!!");
     } else {
-      segmentController.cronUpdateSegments();
+      // segmentController.cronUpdateSegments();
       console.log("fin");
       res.send("OK");
     }
@@ -176,16 +176,13 @@ app.post("/api/getHook", (req, res) => {
   // owner_id: 1075670,
   // subscription_id: 203074,
   // updates: {} }
-  const SUB_LOG = "logs/subs.txt";
-  var host = req.get("host");
-  console.info("host: ", host);
-  var origin = req.get("origin");
-  console.info("origin: ", origin);
-  var ip = req.header("x-forwarded-for");
-  console.log("ip: ", ip);
-  var headers = Object.keys(req.headers);
-  console.log("headers: ", headers);
 
+  console.log(req);
+
+  const address = req.socket.remoteAddress;
+  console.log("address: ", address);
+
+  const SUB_LOG = "logs/subs.txt";
   fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}\n`);
 
   res.sendStatus(200);
