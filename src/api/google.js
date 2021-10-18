@@ -30,7 +30,7 @@ export function centerOnLocation(value) {
 // centerOnZip(e) {
 //   if (e.key === "Enter") {
 //     if (!/^\d{5}/.test(e.target.value)) {
-//       this.flashMessage("5 Digit US zipcodes only");
+//       this.flashMessage("5 Digit US zip codes only");
 //       return;
 //     } //only query if zip is 5 numbers
 //     axios
@@ -41,7 +41,7 @@ export function centerOnLocation(value) {
 //         }
 //       })
 //       .catch(err => {
-//         this.flashMessage("5 Digit US zipcodes only");
+//         this.flashMessage("5 Digit US zip codes only");
 //       });
 //   }
 // }

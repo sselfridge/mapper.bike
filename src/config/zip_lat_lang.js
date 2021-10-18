@@ -1,7 +1,7 @@
 //Not needed anymore, was used to get location from zip code
 // currently using google geocoding api - keeping this file incase that gets expensive
 
-const zipobj = {
+const zipObj = {
   "00601": [18.180555, -66.749961],
   "00602": [18.361945, -67.175597],
   "00603": [18.455183, -67.119887],
@@ -33149,7 +33149,7 @@ const zipobj = {
 };
 
 function getLatLngFromZip(zip) {
-  if (zipobj[zip]) return zipobj[zip];
+  if (zipObj[zip]) return zipObj[zip];
   return null;
 }
 

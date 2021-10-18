@@ -64,7 +64,7 @@ const MyMap = (props) => {
   return (
     <div className={classes.root}>
       <Map
-        id="mapcomp"
+        id="mapComp"
         containerStyle={{
           width: `calc(100% - ${sidebarWidth}px)`,
           height: "calc(100% - 60px)",

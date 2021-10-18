@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const axios = require("axios");
+
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
@@ -118,14 +118,14 @@ app.get(
   // segmentController.initializeUser,
   // segmentController.updateUserDB,
 
-  // segmentController.test,
+  segmentController.test,
   (req, res) => {
     if (res.locals.err) {
       console.log("Error!!");
       console.log(res.locals.err);
       res.status(500).send("DOH!!");
     } else {
-      segmentController.cronUpdateSegments();
+      // segmentController.cronUpdateSegments();
       console.log("fin");
       res.send("OK");
     }
@@ -135,7 +135,7 @@ app.get(
 
 end points for setting up strava push notifications
 
-app.get("/api/testhook", (req, res) => {
+app.get("/api/testHook", (req, res) => {
   console.log("  client_id: config.client_id,: ", config.client_id);
   console.log(" config.client_secret,: ", config.client_secret);
 
@@ -174,15 +174,14 @@ app.post("/api/getHook", (req, res) => {
   // object_id: 6128714606,
   // object_type: 'activity',
   // owner_id: 1075670,
-  // subscription_id: 203074,
+  // subscription_id: 123456,
   // updates: {} }
-  const SUB_LOG = "logs/subs.txt";
-  var host = req.get("host");
-  console.info("host: ", host);
-  var origin = req.get("origin");
-  console.info("origin: ", origin);
 
-  fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}\n`);
+  //curious to see if this is always constant
+  const address = req.socket.remoteAddress;
+
+  const SUB_LOG = "logs/subs.txt";
+  fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}-- ${address}\n`);
 
   res.sendStatus(200);
 });
@@ -194,7 +193,7 @@ app.post(
   (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
-      res.status(501).send("Error initalizing user ");
+      res.status(501).send("Error initializing user ");
       return;
     }
     const count = res.locals.data.activityCount;
@@ -302,7 +301,7 @@ app.use("*", (req, res) => {
 
 app.use((err, req, res, next) => {
   console.log(`Catch All Error:======================================`);
-  if (err.code != 11000) console.log(err); //11000 is a mongoDB error
+  if (err.code !== 11000) console.log(err); //11000 is a mongoDB error
   res.status(500).send("Something Broke, we're sorry");
   next();
 });

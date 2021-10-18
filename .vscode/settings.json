@@ -1,4 +1,23 @@
 {
   "eslint.enable": true,
-  "cSpell.words": ["blackground", "windev", "winserver", "wintest"]
+  "cSpell.words": [
+    "blackground",
+    "clsx",
+    "cryptr",
+    "describedby",
+    "firstname",
+    "Imgur",
+    "labelledby",
+    "lastname",
+    "latlng",
+    "Leaderboard",
+    "mapperjwt",
+    "noopener",
+    "noreferrer",
+    "strava",
+    "velociraptor",
+    "windev",
+    "winserver",
+    "wintest"
+  ]
 }

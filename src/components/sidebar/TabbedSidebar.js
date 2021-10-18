@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { makeStyles, Box, AppBar, Tabs, Tab } from "@material-ui/core";
 
-import ActivitiesTab from "./activities/ActivitesTab.jsx";
+import ActivitiesTab from "./activities/ActivitiesTab.jsx";
 import EffortsTab from "./efforts/EffortsTab.jsx";
 
 import { getUser } from "../../api/strava";
@@ -99,12 +99,20 @@ export default function TabbedSidebar(props) {
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Tabs value={activeTab} onChange={handleChange} aria-label="simple tabs example">
+        <Tabs
+          value={activeTab}
+          onChange={handleChange}
+          aria-label="simple tabs example"
+        >
           <Tab label="Activities" {...a11yProps(0)} />
           <Tab
             label="KOM Mapper "
             icon={
-              <img className={classes.premiumIcon} src="img/premium.png" alt="Strava Premium" />
+              <img
+                className={classes.premiumIcon}
+                src="img/premium.png"
+                alt="Strava Premium"
+              />
             }
             {...a11yProps(1)}
           />
@@ -119,7 +127,10 @@ export default function TabbedSidebar(props) {
         ) : userInitialized ? (
           <EffortsTab {...props} />
         ) : (
-          <UserAgreement userAgreed={userAgreed} setUserAgreed={setUserAgreed} />
+          <UserAgreement
+            userAgreed={userAgreed}
+            setUserAgreed={setUserAgreed}
+          />
         )}
       </TabPanel>
     </div>
