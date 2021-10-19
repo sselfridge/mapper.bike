@@ -119,14 +119,14 @@ app.get(
   // segmentController.initializeUser,
   // segmentController.updateUserDB,
 
-  segmentController.test,
+  // segmentController.test,
   (req, res) => {
     if (res.locals.err) {
       console.log("Error!!");
       console.log(res.locals.err);
       res.status(500).send("DOH!!");
     } else {
-      // segmentController.cronUpdateSegments();
+      segmentController.cronUpdateSegments();
       console.log("fin");
       res.send("OK");
     }
