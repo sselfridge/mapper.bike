@@ -25,6 +25,7 @@ const segmentController = {
   updateUserDB,
   getUser,
   deleteUser,
+  parsePushNotification,
 };
 
 async function cronUpdateSegments() {
@@ -141,7 +142,9 @@ async function segmentEfforts(req, res, next) {
   next();
 }
 
+//TODO - update db structure to combine efforts?
 async function updateEffort(req, res, next) {
+  // params: activityId, segmentId
   //pull effort from DB
   //get current ranks
   //if different
@@ -180,6 +183,54 @@ async function addToActivityQueue(strava, afterDate = 0) {
   }
 }
 
+async function parsePushNotification(req, res, next) {
+  console.log("parsePush");
+  const userIds = await getUserIds();
+  const update = req.body;
+
+  const {
+    owner_id: athleteId,
+    aspect_type: aspectType,
+    object_id: activityId,
+    subscription_id: subscriptionId,
+  } = update;
+
+  //Validate Request
+  if (
+    !athleteId ||
+    !aspectType ||
+    !subscriptionId ||
+    !activityId ||
+    !userIds.includes(update.owner_id) || //user sign up for KOM mapper
+    aspectType !== "create" || //grab initial creation
+    subscriptionId !== config.subscriptionId //weak validation
+  ) {
+    console.log("push validation failed");
+    next();
+    return;
+  }
+
+  console.log("Add to Q:", activityId, athleteId);
+  await db.addActivity(activityId, athleteId);
+
+  next();
+}
+
+let lastFetchTime = null;
+let userList = [];
+
+async function getUserIds() {
+  const now = m();
+
+  if (!lastFetchTime || now.diff(lastFetchTime, "seconds") > 30) {
+    const dbUsers = await db.getAllUsers();
+    lastFetchTime = now;
+    userList = dbUsers.map((u) => u.id);
+  }
+
+  return userList;
+}
+
 async function deleteUser(req, res, next) {
   const id = parseInt(req.params.id);
 
@@ -198,7 +249,7 @@ async function deleteUser(req, res, next) {
 
 async function test(req, res, next) {
   console.log("Start Test");
-  // const strava = res.locals.strava;
+  const strava = res.locals.strava;
 
   // const stravaSub = require("strava-v3");
 
@@ -233,21 +284,22 @@ async function test(req, res, next) {
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
     // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
-    // north 30179250
-    // south 30179277
-    const args = { id: 30179277, per_page: 200 };
-    const result = await strava.segments.listEfforts(args);
+    // const result = await db.getEffort("19676752-2019-08-17T16:13:29Z");
+    console.log("get Ranks");
+    const result = await getRanks(8205438);
+    // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);
     // const result = await strava.activities.get({ id: 3593303190, include_all_efforts: true });
     // const result = await strava.segments.get({ id: 16616440 });
     // const result = await cronUpdateSegments();
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
-    result.forEach((effort) => {
-      console.log(effort.moving_time);
-      console.log(effort.elapsed_time);
-      console.log("------------------");
-    });
+    console.log(result);
+    // result.forEach((effort) => {
+    //   console.log(effort.moving_time);
+    //   console.log(effort.elapsed_time);
+    //   console.log("------------------");
+    // });
     console.log("Done! Did this still work?");
   } catch (err) {
     console.log("CRAP!!!");

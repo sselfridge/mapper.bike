@@ -115,6 +115,7 @@ app.get(
   "/api/test",
   oAuthStrava.loadStravaProfile,
   oAuthStrava.adminOnly,
+  // segmentController.parsePushNotification,
   // segmentController.initializeUser,
   // segmentController.updateUserDB,
 
@@ -131,6 +132,7 @@ app.get(
     }
   }
 );
+
 /*
 
 end points for setting up strava push notifications
