@@ -14,6 +14,7 @@ const dataLayer = {
   getEfforts,
   getEffortsWithPath,
   storeSegments,
+  getEffort,
 
   popDetails,
   addDetails,
@@ -26,8 +27,8 @@ const dataLayer = {
   deleteUser,
 };
 
-async function addActivity(id, altheteId) {
-  await activities.add(id, altheteId);
+async function addActivity(id, athleteId) {
+  await activities.add(id, athleteId);
 }
 
 async function popActivities(limit = LIMIT_SIZE) {
@@ -46,17 +47,20 @@ async function addDetails(data) {
   await details.update(data);
 }
 
-async function getEfforts(altheteId, rank = 10) {
+async function getEfforts(athleteId, rank = 10) {
   if (rank === "error") {
-    return await efforts.getErrors(altheteId);
+    return await efforts.getErrors(athleteId);
   } else {
-    return await efforts.get(altheteId, rank);
+    return await efforts.getByRank(athleteId, rank);
   }
 }
+async function getEffort(effortId) {
+  return await efforts.get(effortId);
+}
 
-async function getEffortsWithPath(altheteId, rank = 10) {
+async function getEffortsWithPath(athleteId, rank = 10) {
   try {
-    const results = await getEfforts(altheteId, rank);
+    const results = await getEfforts(athleteId, rank);
 
     const promArray = results.map((effort) => details.get(effort.segmentId));
     const segmentDetails = await Promise.all(promArray);
@@ -87,7 +91,10 @@ async function storeSegments(segments) {
   const rankedSegments = utils.parseRankedSegments(segments);
   const segmentDetails = utils.parseSegmentDetails(segments);
 
-  await Promise.all([efforts.batchAdd(rankedSegments), details.batchAdd(segmentDetails)]);
+  await Promise.all([
+    efforts.batchAdd(rankedSegments),
+    details.batchAdd(segmentDetails),
+  ]);
 }
 
 async function addUser(data) {

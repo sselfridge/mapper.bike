@@ -1,4 +1,5 @@
 var AWS = require("aws-sdk");
+const moment = require("./node_modules/moment/moment");
 
 //aws creds stored in ~/.aws/credentials
 var credentials = new AWS.SharedIniFileCredentials({ profile: "dbuser" });
@@ -69,18 +70,18 @@ var params;
 //   }
 // });
 
-params = {
-  TableName: "activities",
-  Limit: 10,
-};
+// params = {
+//   TableName: "activities",
+//   Limit: 10,
+// };
 
-client.scan(params, (err, data) => {
-  if (err) {
-    console.log("Error", err);
-  } else {
-    console.log("Success", data);
-  }
-});
+// client.scan(params, (err, data) => {
+//   if (err) {
+//     console.log("Error", err);
+//   } else {
+//     console.log("Success", data);
+//   }
+// });
 // params = {
 //   Key: {
 //     id: 3244434795,
@@ -235,18 +236,49 @@ client.scan(params, (err, data) => {
 //   }
 // });
 
-//  params = {
-//   Key: {
-//     id: ,
-//   },
-//   TableName,
-// };
+params = {
+  Key: {
+    id: "19676752-2019-08-17T16:13:29Z",
+  },
+  TableName: "segmentEfforts-dev",
+};
 
-// client.get(params, (err, data) => {
-//   if (err) {
-//     console.log("get Segment Details Error", err);
-//     reject(err);
-//   } else {
-//     resolve(data.Item);
-//   }
-// });
+client.get(params, (err, data) => {
+  if (err) {
+    console.log("get Segment Details Error", err);
+    // reject(err);
+  } else {
+    console.log("output");
+    console.log(data);
+    console.log(1234567);
+  }
+});
+
+params = {
+  Key: {
+    id: "19676752-2019-08-17T16:13:29Z",
+  },
+  TableName: "segmentEfforts-dev",
+  // AttributeUpdates: {
+  //   initialrank: {
+  //     Action: "DELETE",
+  //   },
+  // },
+  ReturnValues: "ALL_OLD",
+  UpdateExpression: "set #r = :r",
+  ExpressionAttributeNames: { "#r": "updated" },
+  ExpressionAttributeValues: {
+    ":r": "987654987",
+  },
+};
+
+client.update(params, (err, data) => {
+  if (err) {
+    console.log("get Segment Details Error", err);
+    // reject(err);
+  } else {
+    console.log("456654");
+    console.log(data);
+ 
+  }
+});

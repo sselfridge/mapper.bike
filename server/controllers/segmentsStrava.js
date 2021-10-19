@@ -4,6 +4,11 @@ const m = require("moment");
 const config = require("../../src/config/keys");
 
 const stravaQ = require("../services/stravaQueue");
+const got = require("got");
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
+// const awsTest = require("../../awsTest");
 
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
@@ -20,6 +25,7 @@ const segmentController = {
   updateUserDB,
   getUser,
   deleteUser,
+  parsePushNotification,
 };
 
 async function cronUpdateSegments() {
@@ -136,6 +142,17 @@ async function segmentEfforts(req, res, next) {
   next();
 }
 
+//TODO - update db structure to combine efforts?
+async function updateEffort(req, res, next) {
+  // params: activityId, segmentId
+  //pull effort from DB
+  //get current ranks
+  //if different
+  /*  update rank
+   */
+  //  update updated
+}
+
 async function totalUserActivities(strava, id) {
   const result = await strava.athletes.stats({ id });
   const count = result.all_ride_totals.count + result.all_run_totals.count;
@@ -164,6 +181,54 @@ async function addToActivityQueue(strava, afterDate = 0) {
     console.error("Error while Adding to activity table:", error.message);
     //Do nothing for now, add event emitter here if this starts to become a problem
   }
+}
+
+async function parsePushNotification(req, res, next) {
+  console.log("parsePush");
+  const userIds = await getUserIds();
+  const update = req.body;
+
+  const {
+    owner_id: athleteId,
+    aspect_type: aspectType,
+    object_id: activityId,
+    subscription_id: subscriptionId,
+  } = update;
+
+  //Validate Request
+  if (
+    !athleteId ||
+    !aspectType ||
+    !subscriptionId ||
+    !activityId ||
+    !userIds.includes(update.owner_id) || //user sign up for KOM mapper
+    aspectType !== "create" || //grab initial creation
+    subscriptionId !== config.subscriptionId //weak validation
+  ) {
+    console.log("push validation failed");
+    next();
+    return;
+  }
+
+  console.log("Add to Q:", activityId, athleteId);
+  await db.addActivity(activityId, athleteId);
+
+  next();
+}
+
+let lastFetchTime = null;
+let userList = [];
+
+async function getUserIds() {
+  const now = m();
+
+  if (!lastFetchTime || now.diff(lastFetchTime, "seconds") > 30) {
+    const dbUsers = await db.getAllUsers();
+    lastFetchTime = now;
+    userList = dbUsers.map((u) => u.id);
+  }
+
+  return userList;
 }
 
 async function deleteUser(req, res, next) {
@@ -219,21 +284,22 @@ async function test(req, res, next) {
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
     // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
-    // north 30179250
-    // south 30179277
-    const args = { id: 30179277, per_page: 200 };
-    const result = await strava.segments.listEfforts(args);
+    // const result = await db.getEffort("19676752-2019-08-17T16:13:29Z");
+    console.log("get Ranks");
+    const result = await getRanks(8205438);
+    // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);
     // const result = await strava.activities.get({ id: 3593303190, include_all_efforts: true });
     // const result = await strava.segments.get({ id: 16616440 });
     // const result = await cronUpdateSegments();
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
-    result.forEach((effort) => {
-      console.log(effort.moving_time);
-      console.log(effort.elapsed_time);
-      console.log("------------------");
-    });
+    console.log(result);
+    // result.forEach((effort) => {
+    //   console.log(effort.moving_time);
+    //   console.log(effort.elapsed_time);
+    //   console.log("------------------");
+    // });
     console.log("Done! Did this still work?");
   } catch (err) {
     console.log("CRAP!!!");
@@ -244,5 +310,63 @@ async function test(req, res, next) {
   console.log("Test Done");
   // next();
 }
+
+async function getRanks(segmentId) {
+  const response = await got(`https://www.strava.com/segments/${segmentId}`);
+
+  const rspArr = Object.keys(response);
+  console.log("response: ", response.statusCode);
+
+  if (response.statusCode !== 200) {
+    throw new Error("HTML req error - found code:", response.statusCode);
+  }
+
+  const dom = new JSDOM(response.body);
+
+  // Create an Array out of the HTML Elements for filtering using spread syntax.
+  const nodeList = [
+    ...dom.window.document.querySelectorAll("table.table-leaderboard"),
+  ];
+
+  //TODO - verify leaderboard
+  const table = nodeList[0];
+
+  const rows = table.querySelectorAll("tbody > tr");
+
+  const ranks = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const rowObj = {};
+
+    for (const key in ROW_MAP) {
+      if (Object.hasOwnProperty.call(ROW_MAP, key)) {
+        const selArr = ROW_MAP[key];
+        rowObj[key] = getFromRow(row, selArr);
+        rowObj.row = i + 1;
+      }
+    }
+    rowObj.segmentId = rowObj.link.replace(/\D/g, "");
+    ranks.push(rowObj);
+  }
+
+  return ranks;
+}
+
+const ROW_MAP = {
+  place: ["td:nth-child(1)"],
+  name: ["td:nth-child(2)"],
+  time: ["td > a"],
+  link: ["td > a", "href"],
+};
+
+const getFromRow = (row, selArr) => {
+  const selector = selArr[0];
+  const attribute = selArr[1] ? selArr[1] : "innerHTML";
+
+  const elm = row.querySelector(selector);
+  const value = elm[attribute];
+
+  return value;
+};
 
 module.exports = segmentController;

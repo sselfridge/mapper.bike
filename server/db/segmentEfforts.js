@@ -6,8 +6,9 @@ const TableName = keys.dbTables["segmentEfforts"];
 module.exports = {
   add,
   batchAdd,
-  get,
+  getByRank,
   batchDelete,
+  get,
 };
 
 function add(segment) {
@@ -41,7 +42,7 @@ async function batchAdd(efforts) {
   await Promise.all(promiseArr);
 }
 
-function get(athleteId, rank) {
+function getByRank(athleteId, rank) {
   return new Promise((resolve, reject) => {
     console.log("getting efforts for:", athleteId);
     const params = {
@@ -60,6 +61,26 @@ function get(athleteId, rank) {
         reject(err);
       } else {
         resolve(data.Items);
+      }
+    });
+  });
+}
+
+function get(id) {
+  return new Promise((resolve, reject) => {
+    const params = {
+      Key: {
+        id,
+      },
+      TableName,
+    };
+
+    client.get(params, (err, data) => {
+      if (err) {
+        console.log("get Segment Details Error", err);
+        reject(err);
+      } else {
+        resolve(data.Item);
       }
     });
   });
