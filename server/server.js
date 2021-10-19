@@ -32,7 +32,7 @@ var cron = require("node-cron");
 cron.schedule("01 04 * * *", () => {
   const time = m().format();
   console.log("Cron Test:", time);
-  segmentController.cronUpdateSegments();
+  // segmentController.cronUpdateSegments();
 });
 
 //Every 15min
@@ -170,23 +170,27 @@ app.get("/api/getHook", (req, res) => {
 });
 */
 
-app.post("/api/getHook", (req, res) => {
-  // { aspect_type: 'create',
-  // event_time: 1634501165,
-  // object_id: 6128714606,
-  // object_type: 'activity',
-  // owner_id: 1075670,
-  // subscription_id: 123456,
-  // updates: {} }
+app.post(
+  "/api/getHook",
+  segmentController.parsePushNotification,
+  (req, res) => {
+    // { aspect_type: 'create',
+    // event_time: 1634501165,
+    // object_id: 6128714606,
+    // object_type: 'activity',
+    // owner_id: 1075670,
+    // subscription_id: 123456,
+    // updates: {} }
 
-  //curious to see if this is always constant
-  const address = req.socket.remoteAddress;
+    //curious to see if this is always constant
+    const address = req.socket.remoteAddress;
 
-  const SUB_LOG = "logs/subs.txt";
-  fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}-- ${address}\n`);
+    const SUB_LOG = "logs/subs.txt";
+    fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}-- ${address}\n`);
 
-  res.sendStatus(200);
-});
+    res.sendStatus(200);
+  }
+);
 
 app.post(
   "/api/initialize",
