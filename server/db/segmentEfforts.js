@@ -70,17 +70,17 @@ function get(id) {
   return new Promise((resolve, reject) => {
     const params = {
       Key: {
-        id: "19676752-2019-08-17T16:13:29Z",
+        id,
       },
-      TableName: "segmentEfforts-dev",
+      TableName,
     };
 
     client.get(params, (err, data) => {
       if (err) {
         console.log("get Segment Details Error", err);
-        // reject(err);
+        reject(err);
       } else {
-        console.log("FIN");
+        resolve(data.Item);
       }
     });
   });

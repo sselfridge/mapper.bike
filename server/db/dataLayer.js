@@ -14,6 +14,7 @@ const dataLayer = {
   getEfforts,
   getEffortsWithPath,
   storeSegments,
+  getEffort,
 
   popDetails,
   addDetails,
@@ -52,6 +53,9 @@ async function getEfforts(athleteId, rank = 10) {
   } else {
     return await efforts.getByRank(athleteId, rank);
   }
+}
+async function getEffort(effortId) {
+  return await efforts.get(effortId);
 }
 
 async function getEffortsWithPath(athleteId, rank = 10) {
