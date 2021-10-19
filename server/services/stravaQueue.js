@@ -49,27 +49,37 @@ async function getActivityDetails() {
 
   console.log(`Getting details for ${activities.length} activities`);
   if (activities.length === 0) return 0;
-
   for (const activity of activities) {
-    const athleteId = activity.athleteId;
+    try {
+      const athleteId = activity.athleteId;
 
-    const strava = await getClient(athleteId, memo);
+      const strava = await getClient(athleteId, memo);
 
-    const fullActivity = await strava.activities.get({
-      id: activity.id,
-      include_all_efforts: true,
-    });
+      const fullActivity = await strava.activities.get({
+        id: activity.id,
+        include_all_efforts: true,
+      });
 
-    const result = await parseActivity(fullActivity);
-    if (result) completedActivityIds.push(activity.id);
+      const result = await parseActivity(fullActivity);
+      if (result) completedActivityIds.push(activity.id);
+    } catch (error) {
+      console.log("Activity Detail Fetch Error:", activity.id, error.message);
+      // TODO - add error field to activities so they can be skipped later
+      // or maybe just log and delete them?
+    }
   }
   //problem here is if the others error out, completed ones don't get cleared
-  await db.deleteActivities(completedActivityIds);
+  if (completedActivityIds.length > 0)
+    await db.deleteActivities(completedActivityIds);
 
-  return activities.length;
+  return completedActivityIds.length;
 }
 
 async function parseActivity(activity) {
+  if (!activity.map.summary_polyline) {
+    console.log(`No poly line on activity ${activity.id} - skipping`);
+    return true;
+  }
   const rankedSegments = parseRankedSegments(activity);
   try {
     await db.storeSegments(rankedSegments);
