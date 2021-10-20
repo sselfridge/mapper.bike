@@ -182,11 +182,8 @@ app.post(
     // subscription_id: 123456,
     // updates: {} }
 
-    //curious to see if this is always constant
-    const address = req.socket.remoteAddress;
-
     const SUB_LOG = "logs/subs.txt";
-    fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}-- ${address}\n`);
+    fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}\n`);
 
     res.sendStatus(200);
   }
