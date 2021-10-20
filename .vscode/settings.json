@@ -2,6 +2,8 @@
   "eslint.enable": true,
   "cSpell.words": [
     "blackground",
+    "browserslist",
+    "buildtest",
     "clsx",
     "cryptr",
     "describedby",
@@ -14,8 +16,10 @@
     "mapperjwt",
     "noopener",
     "noreferrer",
+    "polyline",
     "strava",
     "velociraptor",
+    "winbuildtest",
     "windev",
     "winserver",
     "wintest"
