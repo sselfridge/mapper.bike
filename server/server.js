@@ -32,15 +32,14 @@ var cron = require("node-cron");
 cron.schedule("01 04 * * *", () => {
   const time = m().format();
   console.log("Cron Test:", time);
-  // segmentController.cronUpdateSegments();
+  segmentController.cronUpdateSegments();
 });
 
-//Every 15min
-// cron.schedule("*/15 * * * *", () => {
-//   console.log("---- 15 min Cron----");
-//   stravaQ.processQueue();
-// });
-// setInterval(, timer);
+// Every 15min
+cron.schedule("*/15 * * * *", () => {
+  console.log("---- 15 min Cron----");
+  stravaQ.processQueue();
+});
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   //TODO - rework error handling

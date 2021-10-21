@@ -28,6 +28,7 @@ const segmentController = {
   parsePushNotification,
 };
 
+//Won't need this once the push sub is working properly
 async function cronUpdateSegments() {
   console.log("---------------------Doing Cron Stuff----------------");
   const users = await db.getAllUsers();
