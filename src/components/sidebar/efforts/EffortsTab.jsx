@@ -6,6 +6,7 @@ import {
   AccordionDetails,
   Typography,
   makeStyles,
+  CircularProgress,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
@@ -29,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
   panelDetails: {
     padding: 0,
   },
+  loadingEfforts: {
+    margin: "0px 10px",
+  },
 }));
 
 const EffortsTab = (props) => {
@@ -51,14 +55,19 @@ const EffortsTab = (props) => {
   const [ranks, setRanks] = useState(() => [1]);
   const [sortBy, setSortBy] = useState("");
   const [sortDir, setSortDir] = useState("asc");
+  const [loadingEfforts, setLoadingEfforts] = useState(false);
 
   const fetchEfforts = useCallback(() => {
+    setLoadingEfforts(true);
     getEfforts()
       .then((result) => {
         setEfforts(result);
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoadingEfforts(false);
       });
   }, [setEfforts]);
 
@@ -122,7 +131,14 @@ const EffortsTab = (props) => {
           <div className={classes.panelSummary}>
             <Typography variant="h6">Control Panel</Typography>
             <Typography className={classes.headingInfo}>
-              {filteredEfforts.length} of {efforts.length} efforts
+              {loadingEfforts ? (
+                <CircularProgress
+                  size={24}
+                  className={classes.loadingEfforts}
+                />
+              ) : (
+                `${filteredEfforts.length} of ${efforts.length} efforts`
+              )}
             </Typography>
           </div>
         </AccordionSummary>
