@@ -286,8 +286,9 @@ async function test(req, res, next) {
     // const result = await strava.athlete.get({});
     // const result = await db.deleteUser(10645041);
     // const result = await db.getEffort("19676752-2019-08-17T16:13:29Z");
-    console.log("get Ranks");
-    const result = await getRanks(8205438);
+    // console.log("get Ranks");
+    const result = await getLeaderboard(651706);
+    // const result await db.
     // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);
     // const result = await strava.activities.get({ id: 3593303190, include_all_efforts: true });
@@ -295,7 +296,9 @@ async function test(req, res, next) {
     // const result = await cronUpdateSegments();
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
+    console.info("----");
     console.log(result);
+    console.info("----");
     // result.forEach((effort) => {
     //   console.log(effort.moving_time);
     //   console.log(effort.elapsed_time);
@@ -312,11 +315,8 @@ async function test(req, res, next) {
   // next();
 }
 
-async function getRanks(segmentId) {
+async function getLeaderboard(segmentId) {
   const response = await got(`https://www.strava.com/segments/${segmentId}`);
-
-  const rspArr = Object.keys(response);
-  console.log("response: ", response.statusCode);
 
   if (response.statusCode !== 200) {
     throw new Error("HTML req error - found code:", response.statusCode);
