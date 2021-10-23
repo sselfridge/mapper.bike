@@ -236,49 +236,95 @@ var params;
 //   }
 // });
 
-params = {
-  Key: {
-    id: "19676752-2019-08-17T16:13:29Z",
-  },
-  TableName: "segmentEfforts-dev",
-};
+// params = {
+//   Key: {
+//     id: "19676752-2019-08-17T16:13:29Z",
+//   },
+//   TableName: "segmentEfforts-dev",
+// };
 
-client.get(params, (err, data) => {
-  if (err) {
-    console.log("get Segment Details Error", err);
-    // reject(err);
-  } else {
-    console.log("output");
-    console.log(data);
-    console.log(1234567);
-  }
-});
+// client.get(params, (err, data) => {
+//   if (err) {
+//     console.log("get Segment Details Error", err);
+//     // reject(err);
+//   } else {
+//     console.log("output");
+//     console.log(data);
+//     console.log(1234567);
+//   }
+// });
 
-params = {
-  Key: {
-    id: "19676752-2019-08-17T16:13:29Z",
-  },
-  TableName: "segmentEfforts-dev",
-  // AttributeUpdates: {
-  //   initialrank: {
-  //     Action: "DELETE",
-  //   },
-  // },
-  ReturnValues: "ALL_OLD",
-  UpdateExpression: "set #r = :r",
-  ExpressionAttributeNames: { "#r": "updated" },
-  ExpressionAttributeValues: {
-    ":r": "987654987",
-  },
-};
+// params = {
+//   Key: {
+//     id: "19676752-2019-08-17T16:13:29Z",
+//   },
+//   TableName: "segmentEfforts-dev",
+//   // AttributeUpdates: {
+//   //   initialrank: {
+//   //     Action: "DELETE",
+//   //   },
+//   // },
+//   ReturnValues: "ALL_OLD",
+//   UpdateExpression: "set #r = :r",
+//   ExpressionAttributeNames: { "#r": "updated" },
+//   ExpressionAttributeValues: {
+//     ":r": "987654987",
+//   },
+// };
 
-client.update(params, (err, data) => {
-  if (err) {
-    console.log("get Segment Details Error", err);
-    // reject(err);
-  } else {
-    console.log("456654");
-    console.log(data);
- 
-  }
-});
+// client.update(params, (err, data) => {
+//   if (err) {
+//     console.log("get Segment Details Error", err);
+//     // reject(err);
+//   } else {
+//     console.log("456654");
+//     console.log(data);
+
+//   }
+// });
+
+// params = {
+//   Key: {
+//     id: 5947418,
+//   },
+//   TableName: "segmentDetails-dev",
+// };
+
+// client.get(params, (err, data) => {
+//   if (err) {
+//     console.log("get Segment Details Error", err);
+//     // reject(err);
+//   } else {
+//     console.log("output");
+//     console.log(data);
+//     console.log(1234567);
+//   }
+// });
+
+// params = {
+//   Key: {
+//     id: 5947418,
+//   },
+//   TableName: "segmentDetails-dev",
+//   // AttributeUpdates: {
+//   //   initialrank: {
+//   //     Action: "DELETE",
+//   //   },
+//   // },
+//   ReturnValues: "ALL_OLD",
+//   UpdateExpression: "set #l = :l",
+//   ExpressionAttributeNames: { "#l": "leaderboard" },
+//   ExpressionAttributeValues: {
+//     ":l": "9872309485702938475029834750298347502983475029384750293487502398475029384750293847502983475654987",
+//   },
+// };
+
+// client.update(params, (err, data) => {
+//   if (err) {
+//     console.log("get Segment Details Error", err);
+//     // reject(err);
+//   } else {
+//     console.log("456654");
+//     console.log(data);
+//   }
+// });
