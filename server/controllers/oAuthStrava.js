@@ -3,8 +3,8 @@ const m = require("moment");
 const Cryptr = require("cryptr");
 const config = require("../../src/config/keys");
 const cryptr = new Cryptr(config.secretSuperKey);
-const stravaQ = require("../services/stravaQueue.js");
-const utils = require("../utils/stravaUtils");
+const stravaQ = require("../services/stravaQueue");
+const { logUser } = require("../services/systemServices");
 
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
@@ -13,13 +13,6 @@ stravaAPI.config({
   client_secret: config.client_secret,
   redirect_uri: config.redirect_uri,
 });
-
-module.exports = {
-  setStravaOauth,
-  loadStravaProfile,
-  clearCookie,
-  adminOnly,
-};
 
 // EXPORTED Functions
 function setStravaOauth(req, res, next) {
@@ -64,7 +57,7 @@ function loadStravaProfile(req, res, next) {
         state: result.state,
       };
 
-      utils.logUser(result.firstname, result.lastname, result.id);
+      logUser(result.firstname, result.lastname, result.id);
       next();
     })
     .catch((err) => {
@@ -176,3 +169,10 @@ function adminOnly(req, res, next) {
   }
   next();
 }
+
+module.exports = {
+  setStravaOauth,
+  loadStravaProfile,
+  clearCookie,
+  adminOnly,
+};
