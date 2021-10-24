@@ -1,8 +1,28 @@
+const fs = require("fs");
+
 const decodePolyline = require("decode-google-map-polyline");
 const { makeEpochSecondsTime } = require("./utilityServices");
 
 // Utility Functions
 // Not middleware for requests, but more complex than basic utility
+
+async function fetchActivities(res, after, before, activityType) {
+  const strava = res.locals.strava;
+
+  const result = await fetchActivitiesFromStrava(strava, after, before);
+
+  const activities = mapAndFilterStravaData(result);
+
+  return activities;
+}
+async function fetchDemo() {
+  const demoData = fs.readFileSync(__dirname + `/../../config/demoData.json`);
+  let stravaData = JSON.parse(demoData);
+  console.log(`Cleaning up from demoData`);
+  const demoActivities = mapAndFilterStravaData(stravaData);
+
+  return demoActivities;
+}
 
 async function fetchActivitiesFromStrava(strava, after, before) {
   console.log("Fetching with:");
@@ -38,50 +58,46 @@ async function fetchActivitiesRecursively(params, r) {
 
 function mapAndFilterStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
-  let activities = [];
-  // console.log(stravaData[0]); //uncomment to view stravaData format
-  stravaData.forEach((element) => {
-    //see config/dataNotes.js for element data types
-    const newActivity = {};
-    newActivity.id = element.id;
-    newActivity.name = element.name;
-    newActivity.line = element.map.summary_polyline;
-    newActivity.date = makeEpochSecondsTime(element.start_date);
-    newActivity.distance = element.distance;
-    newActivity.elapsedTime = element.elapsed_time;
-
-    //only grab activities with a polyline AKA non-trainer rides
-    if (newActivity.line) {
-      if (
-        activityType === undefined ||
-        activityType[element.type] === true ||
-        (activityType.Other && activityType[element.type] === undefined)
-      ) {
-        activities.push(newActivity);
+  const activities = stravaData
+    .filter((activity) => {
+      if (activity.map.summary_polyline) {
+        if (
+          activityType === undefined ||
+          activityType[activity.type] === true ||
+          (activityType.Other && activityType[activity.type] === undefined)
+        ) {
+          return true;
+        }
       }
-    }
-  });
+
+      return false;
+    })
+    .map((activity) => {
+      let points;
+      try {
+        const decodedPath = decodePolyline(activity.map.summary_polyline);
+        points = decodedPath;
+      } catch (error) {
+        console.log(`Error decoding activity: ${activity.name}`);
+        console.log(error);
+      }
+
+      return {
+        id: activity.id,
+        name: activity.name,
+        line: activity.map.summary_polyline,
+        date: makeEpochSecondsTime(activity.start_date),
+        distance: activity.distance,
+        elapsedTime: activity.elapsed_time,
+        type: activity.type,
+        points,
+      };
+    });
+
   return activities;
 }
 
-const decodePoly = (activities) => {
-  // take polyline and decode into GPS points to be placed on map in polyline component
-  // ya I know its weird but here we are
-  activities.forEach((activity) => {
-    try {
-      const decodedPath = decodePolyline(activity.line);
-      activity.points = decodedPath;
-    } catch (error) {
-      console.log(`Error decoding activity: ${activity.name}`);
-      console.log(error);
-    }
-  });
-
-  return activities;
-};
-
 module.exports = {
-  fetchActivitiesFromStrava,
-  decodePoly,
-  mapAndFilterStravaData,
+  fetchActivities,
+  fetchDemo,
 };

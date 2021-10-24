@@ -95,7 +95,6 @@ app.get(
   oAuthStrava.loadStravaProfile,
   summaryController.getSummaries,
   (req, res) => {
-    console.log("back here");
     if (res.locals.err) {
       console.log(res.locals.err);
       res.status(523).send("Error with get Activities");
