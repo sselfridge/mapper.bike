@@ -2,14 +2,16 @@ const { fetchActivities, fetchDemo } = require("../services/summaryServices");
 
 async function getSummaries(req, res, next) {
   console.log("Get Summaries");
-  const after = parseInt(req.query.after);
-  const before = parseInt(req.query.before);
+  const after = parseInt(req.query.after, 10);
+  const before = parseInt(req.query.before, 10);
 
   const activityType = req.query.type ? JSON.parse(req.query.type) : undefined;
 
+  const strava = res.locals.strava;
+
   try {
     res.locals.activities = await fetchActivities(
-      res,
+      strava,
       after,
       before,
       activityType
@@ -21,6 +23,7 @@ async function getSummaries(req, res, next) {
   }
 }
 
+//recreate demo data from base activities
 function getDemoData(req, res, next) {
   res.locals.activities = fetchDemo();
 

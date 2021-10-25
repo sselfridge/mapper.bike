@@ -6,9 +6,7 @@ const { makeEpochSecondsTime } = require("./utilityServices");
 // Utility Functions
 // Not middleware for requests, but more complex than basic utility
 
-async function fetchActivities(res, after, before, activityType) {
-  const strava = res.locals.strava;
-
+async function fetchActivities(strava, after, before, activityType) {
   const result = await fetchActivitiesFromStrava(strava, after, before);
 
   const activities = mapAndFilterStravaData(result);
