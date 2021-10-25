@@ -68,7 +68,6 @@ async function getActivityDetails() {
       // or maybe just log and delete them?
     }
   }
-  //problem here is if the others error out, completed ones don't get cleared
   if (completedActivityIds.length > 0)
     await db.deleteActivities(completedActivityIds);
 
