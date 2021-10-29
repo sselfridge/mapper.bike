@@ -135,6 +135,22 @@ app.get(
     }
   }
 );
+app.get(
+  "/api/test/reset",
+  oAuthStrava.loadStravaProfile,
+  oAuthStrava.adminOnly,
+  segmentController.testReset,
+  (req, res) => {
+    if (res.locals.err) {
+      console.log("Reset Error!!");
+      console.log(res.locals.err);
+      res.status(500).send("DOH!!");
+    } else {
+      console.log("Reset Complete");
+      res.send("OK");
+    }
+  }
+);
 
 /*
 

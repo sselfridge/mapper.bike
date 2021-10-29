@@ -11,6 +11,7 @@ const {
   getUserData,
   addToActivityQueue,
 } = require("../services/effortsServices");
+const { locals } = require("../server");
 
 async function updateUserDB(req, res, next) {
   console.log("updating user in DB");
@@ -235,6 +236,37 @@ async function test(req, res, next) {
   // next();
 }
 
+async function testReset(req, res, next) {
+  if(process.env.NODE_ENV === 'production'){
+    console.error("Cannot run this in production.  If you really want to, do a special push for it");
+            res.locals.err = "Not allowed on Prod"
+      res.status(403)
+    return next()
+  }
+  console.log("Start Test");
+  const strava = res.locals.strava;
+  const stravaAPI = require("strava-v3");
+
+  let result;
+try {
+  let result = db.deleteAllEfforts()
+  console.log('result: ', result);
+  let result = db.deleteAllSegments();
+  console.log('result: ', result);
+  
+  let result = db.deleteActivities();
+  console.log('result: ', result);
+
+} catch (error) {
+  console.log("Reset error");
+  console.log(err.message);
+  res.locals.err = "AAAAAAAAA";
+}
+
+
+
+}
+
 async function getLeaderboard(segmentId) {
   const response = await got(`https://www.strava.com/segments/${segmentId}`);
 
@@ -292,6 +324,7 @@ const getFromRow = (row, selArr) => {
 
 module.exports = {
   test,
+  testReset,
   segmentEfforts,
   initializeUser,
   updateUserDB,
