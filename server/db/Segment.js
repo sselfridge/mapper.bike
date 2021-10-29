@@ -7,6 +7,7 @@ module.exports = {
   update,
   batchAdd,
   pop,
+  getAllPathless,
   get,
   getAll,
   batchDelete,
@@ -109,6 +110,26 @@ function pop(Limit, value = "false") {
         return reject(err);
       } else {
         return resolve(data.Items);
+      }
+    });
+  });
+}
+
+function getAllPathless() {
+  return new Promise((resolve, reject) => {
+    const params = {
+      TableName: "segmentDetails-dev",
+      ConditionExpression: "attribute_not_exists(line)",
+      Select: "SPECIFIC_ATTRIBUTES",
+      AttributesToGet: ["id"],
+      // ProjectionExpression: "ALL",
+    };
+
+    client.scan(params, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data.Items);
       }
     });
   });

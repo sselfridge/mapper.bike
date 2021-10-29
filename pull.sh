@@ -8,6 +8,13 @@
 # arr+=("pm2 restart ecosystem.config.js")
 # arr+=("git log -1")
 
+cp public/maintenance-page.html public/maintenance.html
+if [ $? != 0 ]
+then
+    echo 'Error - exiting script'
+    exit 1
+fi
+
 git pull
 if [ $? != 0 ]
 then
@@ -32,6 +39,14 @@ then
     echo 'Error - exiting script'
     exit 1
 fi
+
+rm  public/maintenance.html
+if [ $? != 0 ]
+then
+    echo 'Error - exiting script'
+    exit 1
+fi
+
 git log -1
 
 

@@ -114,32 +114,37 @@ var params;
 //   }
 // });
 
-//  params = {
-//     // ExpressionAttributeNames: {
-//     //  "#ID": "id",
-//     //  "#AI": "athleteId",
-//     //  "#PA": "path"
-//     // },
-//     // ExpressionAttributeValues: {
-//     //  ":a": {
-//     //    S: "No One You Know"
-//     //   }
-//     // },
-//     // FilterExpression: "Artist = :a",
-//     TableName: "TestActivities",
-//     ScanFilter: {
-//         'name': {
-//           ComparisonOperator: 'NULL'
-//         }
-//     },
-//     Select: 'ALL_ATTRIBUTES'
-//    }
+// params = {
+//   // ExpressionAttributeNames: {
+//   //  "#ID": "id",
+//   //  "#AI": "athleteId",
+//   //  "#PA": "path"
+//   // },
+//   // ExpressionAttributeValues: {
+//   //  ":a": {
+//   //    S: "No One You Know"
+//   //   }
+//   // },
+//   // FilterExpression: "Artist = :a",
+//   TableName: "segmentEfforts-dev",
+//   FilterExpression: "#rank = :rank",
+//   ExpressionAttributeNames: {
+//     "#rank": "rank",
+//   },
+//   ExpressionAttributeValues: {
+//     ":rank": 6,
+//   },
+//   Select: "ALL_ATTRIBUTES",
+// };
 
-//    db.scan(params, function(err, data) {
-//      if (err) console.log(err, err.stack); // an error occurred
-//      else    { console.log(data); console.log(data.Items);}
-
-//    });
+// client.scan(params, function (err, data) {
+//   if (err) console.log(err, err.stack);
+//   // an error occurred
+//   else {
+//     console.log(data);
+//     console.log(data.Items.length);
+//   }
+// });
 
 // params = {
 //   TableName: "TestActivities",
@@ -326,5 +331,38 @@ var params;
 //   } else {
 //     console.log("456654");
 //     console.log(data);
+//   }
+// });
+
+// params = {
+//   TableName: "segmentDetails-dev",
+
+//   ConditionExpression: "attribute_not_exists(line)",
+//   Select: "SPECIFIC_ATTRIBUTES",
+//   AttributesToGet: ["id"],
+//   // ProjectionExpression: "ALL",
+// };
+
+// client.scan(params, (err, data) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     return console.info(data.Items);
+//   }
+// });
+
+// params = {
+//   Key: {
+//     id: 123412341234,
+//   },
+//   TableName: "segmentDetails-dev",
+// };
+
+// client.get(params, (err, data) => {
+//   if (err) {
+//     console.log("get Segment Details Error", err);
+//     console.info(err);
+//   } else {
+//     console.info("(data);: ", data);
 //   }
 // });

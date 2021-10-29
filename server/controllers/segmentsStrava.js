@@ -1,78 +1,16 @@
-const summaryStrava = require("./summaryStrava");
 const db = require("../db/dataLayer");
 const m = require("moment");
 const config = require("../../src/config/keys");
 
-const stravaQ = require("../services/stravaQueue");
 const got = require("got");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
-// const awsTest = require("../../awsTest");
-
-var stravaAPI = require("strava-v3");
-stravaAPI.config({
-  client_id: config.client_id,
-  client_secret: config.client_secret,
-  redirect_uri: config.redirect_uri,
-});
-
-const segmentController = {
-  test,
-  cronUpdateSegments,
-  segmentEfforts,
-  initializeUser,
-  updateUserDB,
-  getUser,
-  deleteUser,
-  parsePushNotification,
-};
-
-//Won't need this once the push sub is working properly
-async function cronUpdateSegments() {
-  console.log("---------------------Doing Cron Stuff----------------");
-  const users = await db.getAllUsers();
-
-  for (let i = 0; i < users.length; i++) {
-    const user = users[i];
-    await updateUserSegments(user);
-  }
-}
-
-async function updateUserSegments(user) {
-  try {
-    console.info("Checking user refreshToken for user:", user.id);
-    const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
-    stravaQ.updateUserRefreshToken(user.id, result.refresh_token);
-    user.accessToken = result.access_token;
-  } catch (error) {
-    console.error("Error refreshing token");
-    console.error(error.message);
-    return;
-  }
-
-  const update = m(user.lastUpdate);
-  const unixTime = update.unix();
-  const strava = new stravaAPI.client(user.accessToken);
-
-  try {
-    await addToActivityQueue(strava, unixTime);
-  } catch (error) {
-    console.error("Error Adding to activity");
-    console.error(error.message);
-    return;
-  }
-
-  user.lastUpdate = m().format();
-
-  try {
-    await db.updateUser(user);
-  } catch (err) {
-    console.error("Update user Error");
-    console.error(err.message);
-    return;
-  }
-}
+//services
+const {
+  getUserData,
+  addToActivityQueue,
+} = require("../services/effortsServices");
 
 async function updateUserDB(req, res, next) {
   console.log("updating user in DB");
@@ -109,18 +47,6 @@ async function initializeUser(req, res, next) {
   }
 }
 
-function getUserData(res) {
-  const user = res.locals.user;
-  const accessToken = res.locals.accessToken;
-  const refreshToken = res.locals.refreshToken;
-  const userData = {
-    id: user.athleteId,
-    accessToken,
-    refreshToken,
-  };
-  return userData;
-}
-
 async function getUser(req, res, next) {
   const id = parseInt(req.params.id);
   try {
@@ -137,10 +63,17 @@ async function getUser(req, res, next) {
 async function segmentEfforts(req, res, next) {
   const athleteId = res.locals.user.athleteId;
   const rank = parseInt(req.query.rank ? req.query.rank : 1);
-  const efforts = await db.getEffortsWithPath(athleteId, rank);
-  console.log(`Got ${efforts.length} efforts with details`);
-  res.locals.segmentEfforts = efforts;
-  next();
+
+  db.getEffortsWithPath(athleteId, rank)
+    .then((efforts) => {
+      console.log(`Got ${efforts.length} efforts with details`);
+      res.locals.segmentEfforts = efforts;
+      next();
+    })
+    .catch((err) => {
+      res.locals.err = err;
+      next();
+    });
 }
 
 //TODO - update db structure to combine efforts?
@@ -158,30 +91,6 @@ async function totalUserActivities(strava, id) {
   const result = await strava.athletes.stats({ id });
   const count = result.all_ride_totals.count + result.all_run_totals.count;
   return count;
-}
-
-async function addToActivityQueue(strava, afterDate = 0) {
-  try {
-    const result = await summaryStrava.fetchActivitiesFromStrava(
-      strava,
-      afterDate,
-      2550000000
-    );
-    //March + April Rides
-    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1585724400, 1588220022);
-    //2020 Rides
-    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1577865600, 1588539708);
-    // 1 result
-    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1588057200, 1588220022);
-    result.forEach(async (activity) => {
-      if (!activity.map.summary_polyline) return; //skip activities with no line
-      await db.addActivity(activity.id, activity.athlete.id);
-    });
-    console.log("Done Adding to DB");
-  } catch (error) {
-    console.error("Error while Adding to activity table:", error.message);
-    //Do nothing for now, add event emitter here if this starts to become a problem
-  }
 }
 
 async function parsePushNotification(req, res, next) {
@@ -235,6 +144,10 @@ async function getUserIds() {
 async function deleteUser(req, res, next) {
   const id = parseInt(req.params.id);
 
+  if (res.locals.err) {
+    return next();
+  }
+
   try {
     if (res.locals.user.athleteId === id) {
       db.deleteUser(id);
@@ -283,17 +196,16 @@ async function test(req, res, next) {
     //     });
     //   return;
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    // const result = await strava.athlete.get({});
-    // const result = await db.deleteUser(10645041);
+    const result = await strava.athlete.get({});
+    // const result = await db.batchDeleteAllDetails();
     // const result = await db.getEffort("19676752-2019-08-17T16:13:29Z");
     // console.log("get Ranks");
-    const result = await getLeaderboard(651706);
+    // const result = await getLeaderboard(651706);
     // const result await db.
     // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);
     // const result = await strava.activities.get({ id: 3593303190, include_all_efforts: true });
     // const result = await strava.segments.get({ id: 16616440 });
-    // const result = await cronUpdateSegments();
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
     console.info("----");
@@ -370,4 +282,12 @@ const getFromRow = (row, selArr) => {
   return value;
 };
 
-module.exports = segmentController;
+module.exports = {
+  test,
+  segmentEfforts,
+  initializeUser,
+  updateUserDB,
+  getUser,
+  deleteUser,
+  parsePushNotification,
+};

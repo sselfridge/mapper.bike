@@ -11,7 +11,7 @@ const m = require("moment");
 const oAuthStrava = require("./controllers/oAuthStrava");
 const summaryController = require("./controllers/summaryStrava");
 const segmentController = require("./controllers/segmentsStrava");
-const analyticController = require("./controllers/analyticsController");
+const analyticsController = require("./controllers/analyticsController");
 
 const stravaQ = require("./services/stravaQueue");
 const zip = require("../src/config/zip_lat_lang");
@@ -24,15 +24,20 @@ app.use(cookieParser());
 
 app.use(logReq);
 
+// const awsTest = require("../awsTest");
+
 //   REMINDER: Nodemon doesn't pickup new routes, need to kill and restart everything when changing routes
 
 var cron = require("node-cron");
+
+//services
+const { cronUpdateSegments } = require("./services/effortsServices");
 
 //Every morning at 04:01 am
 cron.schedule("01 04 * * *", () => {
   const time = m().format();
   console.log("Cron Test:", time);
-  segmentController.cronUpdateSegments();
+  cronUpdateSegments();
 });
 
 // Every 15min
@@ -92,7 +97,6 @@ app.get(
   oAuthStrava.loadStravaProfile,
   summaryController.getSummaries,
   (req, res) => {
-    console.log("back here");
     if (res.locals.err) {
       console.log(res.locals.err);
       res.status(523).send("Error with get Activities");
@@ -212,7 +216,7 @@ app.get(
     console.log("finalize Segment Efforts");
     if (res.locals.err) {
       console.log(res.locals.err);
-      res.status(523).send("Error with get segments ");
+      res.status(523).send("Error with get Efforts ");
       return;
     }
     if (res.locals.pending) {
@@ -276,8 +280,11 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
   app.use("/build", express.static(path.join(__dirname, "../build")));
   app.use("/static", express.static(path.join(__dirname, "../build/static")));
   // serve index.html on the route '/'
-  app.get("/", analyticController.getUserData, (req, res) => {
+  app.get("/", analyticsController.logUserData, (req, res) => {
     console.log("Sending out the index");
+    if (fs.existsSync(path.join(__dirname, "../public/maintenance.html"))) {
+      res.sendFile(path.join(__dirname, "../public/maintenance.html"));
+    }
     res.sendFile(path.join(__dirname, "../build/index.html"));
   });
 
