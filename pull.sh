@@ -8,7 +8,7 @@
 # arr+=("pm2 restart ecosystem.config.js")
 # arr+=("git log -1")
 
-cp public/maintenance-page.html public/maintenance.html
+cp public/maintenance-page-min.html public/maintenance.html
 if [ $? != 0 ]
 then
     echo 'Error - exiting script'
