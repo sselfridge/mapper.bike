@@ -21,21 +21,31 @@ async function processQueue() {
 
   await getStravaClient();
   let stravaRatePercent = await stravaRate();
-  //if less than 75% proceed
-  while (stravaRatePercent < 75) {
-    let processed = 0;
+  let pathlessSegments;
+  if (stravaRatePercent < 75) {
     try {
-      processed += await getActivityDetails();
-      processed += await processPathlessSegments();
+      pathlessSegments = await db.getAllPathlessSegments();
     } catch (error) {
-      console.log("Queue Error:", error.message);
+      console.log("DB Segment Error:", error.message);
       console.log(error.errors);
-      break;
     }
-    stravaRatePercent = stravaRate();
-    console.log(`Strava Rate currently at: ${stravaRatePercent}%`);
-    if (processed === 0) break;
-  } //while
+  }
+
+  // while (stravaRatePercent < 75) {
+  let processed = 0;
+  const segmentsToProcess = pathlessSegments.splice(0, 20);
+  try {
+    processed += await getActivityDetails();
+    processed += await processPathlessSegments(segmentsToProcess);
+  } catch (error) {
+    console.log("Queue Error:", error.message);
+    console.log(error.errors);
+    // break;
+  }
+  stravaRatePercent = stravaRate();
+  console.log(`Strava Rate currently at: ${stravaRatePercent}%`);
+  // if (processed === 0) break;
+  // } //while
 
   console.log("Process Done");
 }
@@ -79,7 +89,7 @@ async function parseActivity(activity) {
     console.log(`No poly line on activity ${activity.id} - skipping`);
     return true;
   }
-  const rankedSegments = parseRankedSegments(activity);
+  const rankedSegments = getRankedEfforts(activity);
   try {
     await db.storeSegments(rankedSegments);
   } catch (error) {
@@ -110,8 +120,8 @@ async function getClient(athleteId, memo) {
   return strava;
 }
 
-const parseRankedSegments = (activity) => {
-  const rankedSegments = [];
+const getRankedEfforts = (activity) => {
+  const rankedEfforts = [];
   if (!activity.segment_efforts) {
     console.log("No Segment efforts on Activity");
     return [];
@@ -120,11 +130,11 @@ const parseRankedSegments = (activity) => {
   activity.segment_efforts.forEach((effort) => {
     if (effort.kom_rank <= 10 && effort.kom_rank > 0) {
       // console.log(`Saving Effort:${effort.name} with Rank:${effort.kom_rank}`);
-      rankedSegments.push(effort);
+      rankedEfforts.push(effort);
     }
   });
 
-  return rankedSegments;
+  return rankedEfforts;
 };
 
 function stravaRate() {
@@ -136,10 +146,9 @@ function stravaRate() {
   return percent;
 }
 
-async function processPathlessSegments() {
+async function processPathlessSegments(segments) {
   console.log("processPathlessSegments");
 
-  const segments = await db.popDetails();
   const ids = segments.map((segment) => segment.id);
 
   if (ids.length === 0) return 0;
@@ -152,7 +161,7 @@ async function processPathlessSegments() {
     } else {
       data.updated = m().format();
     }
-    await db.addDetails(data);
+    await db.updateSegment(data);
   }
   return ids.length;
 }

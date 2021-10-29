@@ -1,6 +1,6 @@
 const utils = {
   parseRankedSegments,
-  parseSegmentDetails,
+  getSegmentIds,
 };
 
 function parseRankedSegments(efforts) {
@@ -25,7 +25,7 @@ function parseRankedSegments(efforts) {
 }
 
 //segment details added without a line will be marked and filled in later on
-function parseSegmentDetails(efforts) {
+function getSegmentIds(efforts) {
   return efforts.map((effort) => ({ id: effort.segment.id }));
 }
 
@@ -79,12 +79,14 @@ const segment_Effort = {
 };
 
 function validateEffort(effort) {
-  const { kom_rank, start_date, id } = effort;
-
-  const segmentId = effort.segment.id;
-  const name = effort.segment.name;
-  const athleteId = effort.athlete.id;
-  const activity = effort.activity.id;
+  const {
+    kom_rank,
+    start_date,
+    id,
+    segment: { id: segmentId, name },
+    athlete: { id: athleteId },
+    activity: { id: activityId },
+  } = effort;
 
   const retval =
     true &&
@@ -92,7 +94,7 @@ function validateEffort(effort) {
     !!segmentId &&
     !!name &&
     !!athleteId &&
-    !!activity &&
+    !!activityId &&
     !!start_date &&
     !!id;
 

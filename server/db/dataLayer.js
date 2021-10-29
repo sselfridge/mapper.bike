@@ -1,7 +1,8 @@
-const activities = require("./activities");
-const users = require("./users");
-const efforts = require("./segmentEfforts");
-const details = require("./segmentDetails");
+const Activity = require("./Activity");
+const User = require("./User");
+const Effort = require("./Effort");
+const Segment = require("./Segment");
+
 const utils = require("./utils");
 
 const LIMIT_SIZE = 10;
@@ -17,7 +18,8 @@ const dataLayer = {
   getEffort,
 
   popDetails,
-  addDetails,
+  getAllPathlessSegments,
+  updateSegment,
   batchDeleteAllDetails,
 
   addUser,
@@ -28,41 +30,47 @@ const dataLayer = {
 };
 
 async function addActivity(id, athleteId) {
-  await activities.add(id, athleteId);
+  await Activity.add(id, athleteId);
 }
 
 async function popActivities(limit = LIMIT_SIZE) {
-  return await activities.pop(limit);
+  return await Activity.pop(limit);
 }
 
 async function deleteActivities(ids) {
-  await activities.batchDelete(ids);
+  await Activity.batchDelete(ids);
 }
 
 async function popDetails(Limit = LIMIT_SIZE) {
-  return await details.pop(Limit);
+  return await Segment.pop(Limit);
 }
 
-async function addDetails(data) {
-  await details.update(data);
+async function getAllPathlessSegments() {
+  return await Segment.getAllPathless();
+}
+
+async function updateSegment(data) {
+  await Segment.update(data);
 }
 
 async function getEfforts(athleteId, rank = 10) {
   if (rank === "error") {
-    return await efforts.getErrors(athleteId);
+    return await Effort.getErrors(athleteId);
   } else {
-    return await efforts.getByRank(athleteId, rank);
+    return await Effort.getByRank(athleteId, rank);
   }
 }
 async function getEffort(effortId) {
-  return await efforts.get(effortId);
+  return await Effort.get(effortId);
 }
 
+//NOTE - need to work out how this handles missing segments
+// currently they just show up as undefined in the segmentDetails array
 async function getEffortsWithPath(athleteId, rank = 10) {
   try {
     const results = await getEfforts(athleteId, rank);
 
-    const promArray = results.map((effort) => details.get(effort.segmentId));
+    const promArray = results.map((effort) => Segment.get(effort.segmentId));
     const segmentDetails = await Promise.all(promArray);
 
     //TODO - this expects all the detail fetches to work, if this keeps erroring need to rework it.
@@ -76,7 +84,10 @@ async function getEffortsWithPath(athleteId, rank = 10) {
         results[i].line = detail.line;
         results[i].updated = detail.updated;
       } else {
-        console.error("Error Mapping segment details to effort", detail.id);
+        console.error(
+          "Error Mapping segment details to effort",
+          detail && detail.id
+        );
       }
     });
     return results;
@@ -89,43 +100,43 @@ async function getEffortsWithPath(athleteId, rank = 10) {
 
 async function storeSegments(segments) {
   const rankedSegments = utils.parseRankedSegments(segments);
-  const segmentDetails = utils.parseSegmentDetails(segments);
+  const segmentIds = utils.getSegmentIds(segments);
 
   await Promise.all([
-    efforts.batchAdd(rankedSegments),
-    details.batchAdd(segmentDetails),
+    Effort.batchAdd(rankedSegments),
+    segments.batchAdd(segmentIds),
   ]);
 }
 
 async function addUser(data) {
   console.log("Data: Add User");
   const id = data.id;
-  const userExists = await users.exists(id);
+  const userExists = await User.exists(id);
   console.log("User Exists:", userExists);
   if (userExists) {
     throw new Error("User Already in DB");
   } else {
     console.log("Add user:", data);
-    await users.update(data);
+    await User.update(data);
   }
 }
 
 async function updateUser(data) {
   const id = data.id;
-  const userExists = await users.exists(id);
+  const userExists = await User.exists(id);
   if (!userExists) throw new Error("Update Error: User not in DB");
   else {
-    await users.update(data);
+    await User.update(data);
   }
 }
 
 async function getUser(id) {
-  const user = await users.get(id);
+  const user = await User.get(id);
   return user;
 }
 
 async function getAllUsers() {
-  const allUsers = await users.getAll();
+  const allUsers = await User.getAll();
   return allUsers;
 }
 
@@ -133,21 +144,21 @@ async function deleteUser(athleteId) {
   console.log("Deleting User ID", athleteId);
 
   //delete activities if any in progress
-  const actvitiesQ = await activities.pop(5000);
+  const actvitiesQ = await Activity.pop(5000);
   const actIds = actvitiesQ
     .filter((result) => result.athleteId === athleteId)
     .map((result) => result.id);
   console.log(`Deleting ${actIds.length} activities`);
-  await batchDelete(activities, actIds);
+  await batchDelete(Activity, actIds);
 
   //delete efforts
-  const results = await efforts.get(athleteId, 10);
+  const results = await Effort.get(athleteId, 10);
   console.log(`Got ${results.length} to delete`);
   const ids = results.map((result) => result.id);
 
   console.log(`Deleting ${ids.length} efforts`);
   await batchDeleteEfforts(ids);
-  await users.remove(athleteId);
+  await User.remove(athleteId);
 }
 
 async function batchDeleteEfforts(ids) {
@@ -155,7 +166,7 @@ async function batchDeleteEfforts(ids) {
   while (ids.length > 0) {
     const batch = ids.slice(0, 20);
 
-    promArr.push(efforts.batchDelete(batch));
+    promArr.push(Effort.batchDelete(batch));
 
     ids.splice(0, 20);
   }
@@ -163,11 +174,11 @@ async function batchDeleteEfforts(ids) {
 }
 
 async function batchDeleteAllDetails() {
-  const results = await details.getAll();
+  const results = await Segment.getAll();
   console.log("batchDeleteAllDetails");
   const ids = results.map((result) => result.id);
 
-  await batchDelete(details, ids);
+  await batchDelete(Segment, ids);
 }
 
 async function batchDelete(table, ids) {

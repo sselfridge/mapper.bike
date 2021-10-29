@@ -12,8 +12,6 @@ const {
   addToActivityQueue,
 } = require("../services/effortsServices");
 
-// const awsTest = require("../../awsTest");
-
 async function updateUserDB(req, res, next) {
   console.log("updating user in DB");
   const userData = getUserData(res);
@@ -65,10 +63,17 @@ async function getUser(req, res, next) {
 async function segmentEfforts(req, res, next) {
   const athleteId = res.locals.user.athleteId;
   const rank = parseInt(req.query.rank ? req.query.rank : 1);
-  const efforts = await db.getEffortsWithPath(athleteId, rank);
-  console.log(`Got ${efforts.length} efforts with details`);
-  res.locals.segmentEfforts = efforts;
-  next();
+
+  db.getEffortsWithPath(athleteId, rank)
+    .then((efforts) => {
+      console.log(`Got ${efforts.length} efforts with details`);
+      res.locals.segmentEfforts = efforts;
+      next();
+    })
+    .catch((err) => {
+      res.locals.err = err;
+      next();
+    });
 }
 
 //TODO - update db structure to combine efforts?
@@ -158,7 +163,7 @@ async function deleteUser(req, res, next) {
 
 async function test(req, res, next) {
   console.log("Start Test");
-  // const strava = res.locals.strava;
+  const strava = res.locals.strava;
 
   // const stravaSub = require("strava-v3");
 
@@ -191,11 +196,11 @@ async function test(req, res, next) {
     //     });
     //   return;
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    // const result = await strava.athlete.get({});
-    // const result = await db.deleteUser(10645041);
+    const result = await strava.athlete.get({});
+    // const result = await db.batchDeleteAllDetails();
     // const result = await db.getEffort("19676752-2019-08-17T16:13:29Z");
     // console.log("get Ranks");
-    const result = await getLeaderboard(651706);
+    // const result = await getLeaderboard(651706);
     // const result await db.
     // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
     // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);

@@ -24,6 +24,8 @@ app.use(cookieParser());
 
 app.use(logReq);
 
+// const awsTest = require("../awsTest");
+
 //   REMINDER: Nodemon doesn't pickup new routes, need to kill and restart everything when changing routes
 
 var cron = require("node-cron");
@@ -214,7 +216,7 @@ app.get(
     console.log("finalize Segment Efforts");
     if (res.locals.err) {
       console.log(res.locals.err);
-      res.status(523).send("Error with get segments ");
+      res.status(523).send("Error with get Efforts ");
       return;
     }
     if (res.locals.pending) {
@@ -280,6 +282,9 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
   // serve index.html on the route '/'
   app.get("/", analyticsController.logUserData, (req, res) => {
     console.log("Sending out the index");
+    if (fs.existsSync(path.join(__dirname, "../public/maintenance.html"))) {
+      res.sendFile(path.join(__dirname, "../public/maintenance.html"));
+    }
     res.sendFile(path.join(__dirname, "../build/index.html"));
   });
 
