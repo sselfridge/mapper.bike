@@ -189,7 +189,7 @@ export default function ActivitiesTab(props) {
           />
           <div className={classes.loadingText}>
             <div>Fetching from Strava...</div>
-            <div>Allow ~10-15 seconds for every 200 activities</div>
+            <div></div>
             <div>{`Your search covers ${calcDateDiff(
               afterDate,
               beforeDate
