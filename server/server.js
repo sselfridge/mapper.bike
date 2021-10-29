@@ -289,10 +289,9 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
     res.sendFile(path.join(__dirname, "../build/index.html"));
   });
 
-  // TODO: redo this to bundle image in webpack
   app.get("/img/:image", (req, res) => {
     const imagePath = path.join(__dirname, `../build/img/${req.params.image}`);
-    fs.exists(imagePath, function (exists) {
+    fs.existsSync(imagePath, function (exists) {
       if (exists) {
         res.sendFile(imagePath);
       } else {

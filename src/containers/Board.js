@@ -10,7 +10,6 @@ import decodePolyline from "decode-google-map-polyline";
 
 import { calcBounds } from "../utils";
 // eslint-disable-next-line no-unused-vars
-import demoEfforts from "../constants/DemoEfforts";
 import { effortColors } from "../constants/map";
 import { NULL_USER } from "../api/strava";
 
