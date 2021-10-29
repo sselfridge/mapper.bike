@@ -54,6 +54,35 @@ async function fetchActivitiesRecursively(params, r) {
   return r.activities;
 }
 
+async function fetchActivitiesConcurrently(params, r) {
+  const pages = Array.from({ length: 25 }, (v, i) => i + 1);
+
+  const { after, before } = params;
+  const day = 60 * 60 * 24;
+  const days = Math.floor((before - after) / day);
+
+  console.log("day: ", days);
+
+  // const result = await Promise.all(
+  //   paramsArr.map((params) => r.strava.athlete.listActivities(params))
+  // );
+
+  const result = await r.strava.athlete.listActivities({ ...params, page: 15 });
+  console.log("result: ", result.length);
+
+  // const result = await Promise.all(
+  //   pages.map((page) =>
+  //     r.strava.athlete.listActivities({ ...params, page: page })
+  //   )
+  // );
+
+  result.forEach((out) => console.log(out.length));
+
+  return result.flat(1);
+}
+
+
+
 function mapAndFilterStravaData(stravaData, activityType) {
   console.log(`cleaning up ${stravaData.length} entries`);
   const activities = stravaData

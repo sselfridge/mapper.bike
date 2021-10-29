@@ -95,16 +95,25 @@ async function totalUserActivities(strava, id) {
 
 async function parsePushNotification(req, res, next) {
   console.log("parsePush");
-  const userIds = await getUserIds();
-  const update = req.body;
 
+  const update = req.body;
+  
   const {
     owner_id: athleteId,
     aspect_type: aspectType,
     object_id: activityId,
     subscription_id: subscriptionId,
   } = update;
+  
 
+  if (athleteId === 4973582) {
+    res.locals.err = "Damn Daniele";
+    //this 1 dude is half my sub-updates and he never has any ride info.
+    return next();
+  }
+
+
+  const userIds = await getUserIds();
   //Validate Request
   if (
     !athleteId ||
@@ -116,14 +125,14 @@ async function parsePushNotification(req, res, next) {
     subscriptionId !== config.subscriptionId //weak validation
   ) {
     console.log("push validation failed");
-    next();
-    return;
+   
+    return  next();
   }
 
   console.log("Add to Q:", activityId, athleteId);
   await db.addActivity(activityId, athleteId);
 
-  next();
+ return next();
 }
 
 let lastFetchTime = null;

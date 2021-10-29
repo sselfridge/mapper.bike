@@ -184,6 +184,10 @@ app.post(
     // owner_id: 1075670,
     // subscription_id: 123456,
     // updates: {} }
+    if (res.locals.err) { //no need to bug strava with my problems...
+      res.sendStatus(200);
+      return;
+    }
 
     const SUB_LOG = "logs/subs.txt";
     fs.appendFileSync(SUB_LOG, `${JSON.stringify(req.body)}\n`);
