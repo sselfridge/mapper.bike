@@ -203,7 +203,6 @@ async function test(req, res, next) {
     // const result = await getLeaderboard(651706);
     // const result await db.
     // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
-    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1590896066, 2599372000);
     // const result = await strava.activities.get({ id: 3593303190, include_all_efforts: true });
     // const result = await strava.segments.get({ id: 16616440 });
     // const result = await db.deleteUser(1075670);

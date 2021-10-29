@@ -49,7 +49,7 @@ async function fetchActivitiesRecursively(params, r) {
     await fetchActivitiesRecursively(params, r);
   }
 
-  console.log("End of this Func", page);
+  console.log("End of this Func for page ", page);
   console.log(r.activities.length);
   return r.activities;
 }
@@ -88,6 +88,7 @@ function mapAndFilterStravaData(stravaData, activityType) {
         distance: activity.distance,
         elapsedTime: activity.elapsed_time,
         type: activity.type,
+        athleteId: activity.athlete.id,
         points,
       };
     });

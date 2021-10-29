@@ -5,7 +5,7 @@ const m = require("moment");
 const stravaQ = require("./stravaQueue");
 
 //services
-const { fetchActivitiesFromStrava } = require("./summaryServices");
+const { fetchActivities } = require("./summaryServices");
 
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
@@ -74,20 +74,20 @@ function getUserData(res) {
 
 async function addToActivityQueue(strava, afterDate = 0) {
   try {
-    const result = await fetchActivitiesFromStrava(
+    const result = await fetchActivities(
       strava,
       afterDate,
       2550000000
     );
     //March + April Rides
-    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1585724400, 1588220022);
+    // const result = await summaryStrava.fetchActivities(strava, 1585724400, 1588220022);
     //2020 Rides
-    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1577865600, 1588539708);
+    // const result = await summaryStrava.fetchActivities(strava, 1577865600, 1588539708);
     // 1 result
-    // const result = await summaryStrava.fetchActivitiesFromStrava(strava, 1588057200, 1588220022);
+    // const result = await summaryStrava.fetchActivities(strava, 1588057200, 1588220022);
     result.forEach(async (activity) => {
-      if (!activity.map.summary_polyline) return; //skip activities with no line
-      await db.addActivity(activity.id, activity.athlete.id);
+      if (!activity.line) return; //skip activities with no line
+      await db.addActivity(activity.id, activity.athleteId);
     });
     console.log("Done Adding to DB");
   } catch (error) {

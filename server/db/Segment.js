@@ -13,6 +13,7 @@ module.exports = {
   batchDelete,
 };
 
+
 function update(data) {
   const { id, line, effortCount, athleteCount, distance, elevation, updated } =
     data;
@@ -175,7 +176,7 @@ function getAll() {
 }
 
 function batchDelete(ids) {
-  console.log("Batch detail delete", ids.length);
+  console.log("Batch Segment delete", ids.length);
 
   return new Promise((resolve, reject) => {
     if (ids.length === 0) resolve();

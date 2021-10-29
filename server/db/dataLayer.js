@@ -16,11 +16,12 @@ const dataLayer = {
   getEffortsWithPath,
   storeSegments,
   getEffort,
+  deleteAllEfforts,
 
   popDetails,
   getAllPathlessSegments,
   updateSegment,
-  batchDeleteAllDetails,
+  deleteAllSegments,
 
   addUser,
   updateUser,
@@ -98,13 +99,16 @@ async function getEffortsWithPath(athleteId, rank = 10) {
   }
 }
 
-async function storeSegments(segments) {
-  const rankedSegments = utils.parseRankedSegments(segments);
-  const segmentIds = utils.getSegmentIds(segments);
+async function storeSegments(segmentSummaries) {
+  console.info('segments: ', segmentSummaries);
+  const rankedSegments = utils.parseRankedSegments(segmentSummaries);
+
+  const segments = segmentSummaries.map(segment => ({id: segment.segment.id}))
+
 
   await Promise.all([
     Effort.batchAdd(rankedSegments),
-    segments.batchAdd(segmentIds),
+    Segment.batchAdd(segments),
   ]);
 }
 
@@ -173,12 +177,28 @@ async function batchDeleteEfforts(ids) {
   await Promise.all(promArr);
 }
 
-async function batchDeleteAllDetails() {
+async function deleteAllSegments() {
+  if(process.env.NODE_ENV === 'production') {
+    console.info("Cannot delete all in production mode");
+    return;
+  }
   const results = await Segment.getAll();
-  console.log("batchDeleteAllDetails");
+  console.log("delete All Segments");
   const ids = results.map((result) => result.id);
 
   await batchDelete(Segment, ids);
+}
+async function deleteAllEfforts() {
+  if(process.env.NODE_ENV === 'production') {
+    console.info("Cannot delete all in production mode");
+    return;
+  }
+
+  const results = await Effort.getAll();
+  console.log("Delete All Efforts");
+  const ids = results.map((result) => result.id);
+
+  await batchDelete(Effort, ids);
 }
 
 async function batchDelete(table, ids) {

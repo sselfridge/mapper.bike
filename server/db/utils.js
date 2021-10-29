@@ -1,6 +1,5 @@
 const utils = {
   parseRankedSegments,
-  getSegmentIds,
 };
 
 function parseRankedSegments(efforts) {
@@ -24,10 +23,6 @@ function parseRankedSegments(efforts) {
   return validEfforts;
 }
 
-//segment details added without a line will be marked and filled in later on
-function getSegmentIds(efforts) {
-  return efforts.map((effort) => ({ id: effort.segment.id }));
-}
 
 // eslint-disable-next-line no-unused-vars
 const segment_Effort = {
