@@ -284,6 +284,7 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
     console.log("Sending out the index");
     if (fs.existsSync(path.join(__dirname, "../public/maintenance.html"))) {
       res.sendFile(path.join(__dirname, "../public/maintenance.html"));
+      return;
     }
     res.sendFile(path.join(__dirname, "../build/index.html"));
   });
