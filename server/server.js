@@ -200,7 +200,8 @@ app.post(
     // owner_id: 1075670,
     // subscription_id: 123456,
     // updates: {} }
-    if (res.locals.err) { //no need to bug strava with my problems...
+    if (res.locals.err) {
+      //no need to bug strava with my problems...
       res.sendStatus(200);
       return;
     }
@@ -311,13 +312,11 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
 
   app.get("/img/:image", (req, res) => {
     const imagePath = path.join(__dirname, `../build/img/${req.params.image}`);
-    fs.existsSync(imagePath, function (exists) {
-      if (exists) {
-        res.sendFile(imagePath);
-      } else {
-        res.status(404).send("404");
-      }
-    });
+    if (fs.existsSync(imagePath)) {
+      res.sendFile(imagePath);
+    } else {
+      res.status(404).send("404");
+    }
   });
 }
 
