@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core";
 import HeaderRight from "./HeaderRight";
 
 // eslint-disable-next-line no-unused-vars
-import { apiTest, kickoffQ } from "../../api/strava";
+import { apiTest, apiTestReset, kickoffQ } from "../../api/strava";
 
 const useStyles = makeStyles((theme) => ({
   Header: {
@@ -42,6 +42,7 @@ const Header = (props) => {
     <div>
       <button onClick={kickoffQ}>Start Q</button>{" "}
       <button onClick={apiTest}>TEST</button>
+      <button onClick={apiTestReset}>RESET</button>
     </div>
   );
 

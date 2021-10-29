@@ -11,7 +11,6 @@ const {
   getUserData,
   addToActivityQueue,
 } = require("../services/effortsServices");
-const { locals } = require("../server");
 
 async function updateUserDB(req, res, next) {
   console.log("updating user in DB");
@@ -98,21 +97,19 @@ async function parsePushNotification(req, res, next) {
   console.log("parsePush");
 
   const update = req.body;
-  
+
   const {
     owner_id: athleteId,
     aspect_type: aspectType,
     object_id: activityId,
     subscription_id: subscriptionId,
   } = update;
-  
 
   if (athleteId === 4973582) {
     res.locals.err = "Damn Daniele";
     //this 1 dude is half my sub-updates and he never has any ride info.
     return next();
   }
-
 
   const userIds = await getUserIds();
   //Validate Request
@@ -126,14 +123,14 @@ async function parsePushNotification(req, res, next) {
     subscriptionId !== config.subscriptionId //weak validation
   ) {
     console.log("push validation failed");
-   
-    return  next();
+
+    return next();
   }
 
   console.log("Add to Q:", activityId, athleteId);
   await db.addActivity(activityId, athleteId);
 
- return next();
+  return next();
 }
 
 let lastFetchTime = null;
@@ -237,34 +234,32 @@ async function test(req, res, next) {
 }
 
 async function testReset(req, res, next) {
-  if(process.env.NODE_ENV === 'production'){
-    console.error("Cannot run this in production.  If you really want to, do a special push for it");
-            res.locals.err = "Not allowed on Prod"
-      res.status(403)
-    return next()
+  if (process.env.NODE_ENV === "production") {
+    console.error(
+      "Cannot run this in production.  If you really want to, do a special push for it"
+    );
+    res.locals.err = "Not allowed on Prod";
+    res.status(403);
+    return next();
   }
   console.log("Start Test");
   const strava = res.locals.strava;
   const stravaAPI = require("strava-v3");
 
   let result;
-try {
-  let result = db.deleteAllEfforts()
-  console.log('result: ', result);
-  let result = db.deleteAllSegments();
-  console.log('result: ', result);
-  
-  let result = db.deleteActivities();
-  console.log('result: ', result);
+  try {
+    result = await db.deleteAllEfforts();
+    console.log("result: ", result);
+    result = await db.deleteAllSegments();
+    console.log("result: ", result);
 
-} catch (error) {
-  console.log("Reset error");
-  console.log(err.message);
-  res.locals.err = "AAAAAAAAA";
-}
-
-
-
+    result = await db.deleteAllActivities();
+    console.log("result: ", result);
+  } catch (err) {
+    console.log("Reset error");
+    console.log(err.message);
+    res.locals.err = "AAAAAAAAA";
+  }
 }
 
 async function getLeaderboard(segmentId) {

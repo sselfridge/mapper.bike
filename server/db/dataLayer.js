@@ -11,6 +11,7 @@ const dataLayer = {
   addActivity,
   deleteActivities,
   popActivities,
+  deleteAllActivities,
 
   getEfforts,
   getEffortsWithPath,
@@ -100,11 +101,12 @@ async function getEffortsWithPath(athleteId, rank = 10) {
 }
 
 async function storeSegments(segmentSummaries) {
-  console.info('segments: ', segmentSummaries);
+  console.info("segments: ", segmentSummaries);
   const rankedSegments = utils.parseRankedSegments(segmentSummaries);
 
-  const segments = segmentSummaries.map(segment => ({id: segment.segment.id}))
-
+  const segments = segmentSummaries.map((segment) => ({
+    id: segment.segment.id,
+  }));
 
   await Promise.all([
     Effort.batchAdd(rankedSegments),
@@ -148,12 +150,12 @@ async function deleteUser(athleteId) {
   console.log("Deleting User ID", athleteId);
 
   //delete activities if any in progress
-  const actvitiesQ = await Activity.pop(5000);
-  const actIds = actvitiesQ
+  const activitiesQ = await Activity.getAll();
+  const actIds = activitiesQ
     .filter((result) => result.athleteId === athleteId)
     .map((result) => result.id);
   console.log(`Deleting ${actIds.length} activities`);
-  await batchDelete(Activity, actIds);
+  await deleteItems(Activity, actIds);
 
   //delete efforts
   const results = await Effort.get(athleteId, 10);
@@ -177,31 +179,37 @@ async function batchDeleteEfforts(ids) {
   await Promise.all(promArr);
 }
 
+async function deleteAllActivities() {
+  console.log("Deleting All Activities");
+  await deleteAll("activities");
+}
 async function deleteAllSegments() {
-  if(process.env.NODE_ENV === 'production') {
-    console.info("Cannot delete all in production mode");
-    return;
-  }
-  const results = await Segment.getAll();
-  console.log("delete All Segments");
-  const ids = results.map((result) => result.id);
-
-  await batchDelete(Segment, ids);
+  console.log("Deleting All Segments");
+  await deleteAll("segments");
 }
 async function deleteAllEfforts() {
-  if(process.env.NODE_ENV === 'production') {
+  console.log("Deleting All Efforts");
+  await deleteAll("efforts");
+}
+
+async function deleteAll(tableName) {
+  if (process.env.NODE_ENV === "production") {
     console.info("Cannot delete all in production mode");
     return;
   }
-
-  const results = await Effort.getAll();
-  console.log("Delete All Efforts");
+  const tables = {
+    activities: Activity,
+    segments: Segment,
+    efforts: Effort,
+  };
+  const Table = tables[tableName];
+  const results = await Table.getAll();
   const ids = results.map((result) => result.id);
 
-  await batchDelete(Effort, ids);
+  await deleteItems(Table, ids);
 }
 
-async function batchDelete(table, ids) {
+async function deleteItems(table, ids) {
   while (ids.length > 0) {
     const batch = ids.slice(0, 20);
     await table.batchDelete(batch);

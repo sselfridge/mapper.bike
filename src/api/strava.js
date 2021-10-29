@@ -15,6 +15,21 @@ export const apiTest = () => {
   });
 };
 
+export const apiTestReset = () => {
+  return new Promise((resolve, reject) => {
+    const queryString = `/api/test/reset`;
+    axios
+      .get(queryString)
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(err);
+      });
+  });
+};
+
 export const NULL_USER = {
   avatar: null,
   firstname: null,
