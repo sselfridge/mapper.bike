@@ -1,5 +1,6 @@
 const jwToken = require("jsonwebtoken");
-const m = require("moment");
+// const m = require("moment");
+const dayjs = require("../utils/dayjs");
 const Cryptr = require("cryptr");
 const config = require("../../src/config/keys");
 const cryptr = new Cryptr(config.secretSuperKey);
@@ -73,11 +74,13 @@ const checkRefreshToken = (res) => {
   return new Promise((resolve, reject) => {
     const expiresAt = res.locals.expiresAt;
     console.log(
-      `Token Expires at ${expiresAt.format("hh:mm A")},`,
+      `Token Expires at ${expiresAt.format("hh:mm A")} (${expiresAt
+        .utc()
+        .format("hh:mm")}GMT),`,
       expiresAt.fromNow()
     );
     console.log("Refresh Token:", res.locals.refreshToken);
-    if (m().isBefore(expiresAt)) {
+    if (dayjs().isBefore(expiresAt)) {
       console.log("Token Not Expired");
       return resolve();
     } else {
@@ -100,7 +103,7 @@ const checkRefreshToken = (res) => {
           };
 
           setJWTCookie(res, payload);
-          res.locals.expiresAt = result.expires_at;
+          res.locals.expiresAt = dayjs.unix(result.expires_at);
           res.locals.accessToken = result.access_token;
           res.locals.strava = new stravaAPI.client(result.access_token);
           return resolve();
@@ -139,7 +142,7 @@ const decodeCookie = (res, jwt) => {
         return reject("JWT / Cookie Invalid");
       }
       console.log(`JWT Valid - athleteId: ${payload.athleteId}`);
-      res.locals.expiresAt = m.unix(payload.expiresAt);
+      res.locals.expiresAt = dayjs.unix(payload.expiresAt);
       res.locals.strava = new stravaAPI.client(payload.accessToken);
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;

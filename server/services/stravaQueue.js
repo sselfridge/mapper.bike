@@ -186,10 +186,14 @@ async function getSegmentDetails(id) {
 async function getStravaClient() {
   const refreshToken = config.client_refresh;
   const result = await stravaAPI.oauth.refreshToken(refreshToken);
-  const expires = dayjs.unix(result.expires_at);
+  const expiresAt = dayjs.unix(result.expires_at);
 
-  console.log("App Token Expires at:", expires.format("hh:mm A"));
-  console.log(expires.fromNow());
+  const localTime = expiresAt.format("hh:mm A");
+  const gmtTime = expiresAt.utc().format("hh:mm");
+
+  console.log(`App Token Expires at: ${localTime} (${gmtTime}GMT),`);
+
+  console.log(expiresAt.fromNow());
 
   APP_STRAVA = new stravaAPI.client(result.access_token);
 }

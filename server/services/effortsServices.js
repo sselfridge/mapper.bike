@@ -1,7 +1,7 @@
 const config = require("../../src/config/keys");
 const db = require("../db/dataLayer");
-const m = require("moment");
-
+// const m = require("moment");
+const dayjs = require("../utils/dayjs");
 const stravaQ = require("./stravaQueue");
 
 //services
@@ -15,7 +15,7 @@ stravaAPI.config({
 });
 
 //Won't need this once the push sub is working properly
-async function cronUpdateSegments() {
+async function updateAllUserSinceLast() {
   console.log("---------------------Doing Cron Stuff----------------");
   const users = await db.getAllUsers();
 
@@ -37,7 +37,7 @@ async function updateUserSegments(user) {
     return;
   }
 
-  const update = m(user.lastUpdate);
+  const update = dayjs(user.lastUpdate).utc();
   const unixTime = update.unix();
   const strava = new stravaAPI.client(user.accessToken);
 
@@ -49,10 +49,10 @@ async function updateUserSegments(user) {
     return;
   }
 
-  user.lastUpdate = m().format();
+  user.lastUpdate = dayjs().format();
 
   try {
-    await db.updateUser(user);
+    // await db.updateUser(user);
   } catch (err) {
     console.error("Update user Error");
     console.error(err.message);
@@ -74,11 +74,7 @@ function getUserData(res) {
 
 async function addToActivityQueue(strava, afterDate = 0) {
   try {
-    const result = await fetchActivities(
-      strava,
-      afterDate,
-      2550000000
-    );
+    const result = await fetchActivities(strava, afterDate, 2550000000);
     //March + April Rides
     // const result = await summaryStrava.fetchActivities(strava, 1585724400, 1588220022);
     //2020 Rides
@@ -98,6 +94,6 @@ async function addToActivityQueue(strava, afterDate = 0) {
 
 module.exports = {
   getUserData,
-  cronUpdateSegments,
+  updateAllUserSinceLast,
   addToActivityQueue,
 };
