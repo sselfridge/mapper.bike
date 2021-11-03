@@ -2,23 +2,20 @@ const express = require("express");
 const app = express();
 const path = require("path");
 
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
 
-const m = require("moment");
-
 const oAuthStrava = require("./controllers/oAuthStrava");
 const summaryController = require("./controllers/summaryStrava");
-const segmentController = require("./controllers/segmentsStrava");
+const segmentController = require("./controllers/segmentsController");
 const analyticsController = require("./controllers/analyticsController");
 
 const stravaQ = require("./services/stravaQueue");
 const zip = require("../src/config/zip_lat_lang");
 const config = require("../src/config/keys");
 
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+// app.use(bodyParser.json()); // for parsing application/json
+// app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.use(cookieParser());
 
@@ -26,24 +23,19 @@ app.use(logReq);
 
 // const awsTest = require("../awsTest");
 
-//   REMINDER: Nodemon doesn't pickup new routes, need to kill and restart everything when changing routes
+// REMINDER: Nodemon doesn't pickup new routes, need to kill and restart everything when changing routes
 
 var cron = require("node-cron");
 
-//services
-const { cronUpdateSegments } = require("./services/effortsServices");
-
 //Every morning at 04:01 am
-cron.schedule("01 04 * * *", () => {
-  const time = m().format();
-  console.log("Cron Test:", time);
-  cronUpdateSegments();
-});
+cron.schedule("01 04 * * *", () => {});
 
 // Every 15min
 cron.schedule("*/15 * * * *", () => {
-  console.log("---- 15 min Cron----");
-  stravaQ.processQueue();
+  if (process.env.NODE_ENV === "production") {
+    console.log("---- 15 min Cron----");
+    stravaQ.processQueue();
+  }
 });
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
@@ -120,7 +112,6 @@ app.get(
   oAuthStrava.adminOnly,
   // segmentController.parsePushNotification,
   // segmentController.initializeUser,
-  // segmentController.updateUserDB,
 
   segmentController.test,
   (req, res) => {
@@ -129,7 +120,6 @@ app.get(
       console.log(res.locals.err);
       res.status(500).send("DOH!!");
     } else {
-      // segmentController.cronUpdateSegments();
       console.log("fin");
       res.send("OK");
     }

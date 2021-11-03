@@ -1,5 +1,6 @@
 const db = require("../db/dataLayer");
-const m = require("moment");
+// const m = require("moment");
+const dayjs = require("../utils/dayjs");
 const config = require("../../src/config/keys");
 
 const got = require("got");
@@ -12,26 +13,13 @@ const {
   addToActivityQueue,
 } = require("../services/effortsServices");
 
-async function updateUserDB(req, res, next) {
-  console.log("updating user in DB");
-  const userData = getUserData(res);
-
-  try {
-    await db.updateUser(userData);
-  } catch (err) {
-    res.locals.err = err;
-    return next();
-  }
-  return next();
-}
-
 async function initializeUser(req, res, next) {
   console.log("initialize User");
   try {
     const strava = res.locals.strava;
     const userData = getUserData(res);
-    userData.startDate = m().format();
-    userData.lastUpdate = m().format();
+    userData.startDate = dayjs().utc().format();
+    userData.lastUpdate = dayjs().utc().format();
     await db.addUser(userData);
 
     //kick_off get activities
@@ -137,7 +125,7 @@ let lastFetchTime = null;
 let userList = [];
 
 async function getUserIds() {
-  const now = m();
+  const now = dayjs().utc();
 
   if (!lastFetchTime || now.diff(lastFetchTime, "seconds") > 30) {
     const dbUsers = await db.getAllUsers();
@@ -203,14 +191,19 @@ async function test(req, res, next) {
     //     });
     //   return;
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    const result = await strava.athlete.get({});
+    // const { updateAllUserSinceLast } = require("../services/effortsServices");
+    // updateAllUserSinceLast();
+    // const result = await strava.athlete.get({});
     // const result = await db.batchDeleteAllDetails();
     // const result = await db.getEffort("19676752-2019-08-17T16:13:29Z");
     // console.log("get Ranks");
     // const result = await getLeaderboard(651706);
     // const result await db.
     // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
-    // const result = await strava.activities.get({ id: 3593303190, include_all_efforts: true });
+    const result = await strava.activities.get({
+      id: 6184921496,
+      include_all_efforts: true,
+    });
     // const result = await strava.segments.get({ id: 16616440 });
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
@@ -322,7 +315,6 @@ module.exports = {
   testReset,
   segmentEfforts,
   initializeUser,
-  updateUserDB,
   getUser,
   deleteUser,
   parsePushNotification,

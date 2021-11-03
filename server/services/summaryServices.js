@@ -1,5 +1,6 @@
 const fs = require("fs");
-const m = require("moment");
+// const m = require("moment");
+const dayjs = require("../utils/dayjs");
 
 const decodePolyline = require("decode-google-map-polyline");
 const { makeEpochSecondsTime } = require("./utilityServices");
@@ -24,8 +25,8 @@ async function fetchDemo() {
 }
 
 async function fetchActivitiesFromStrava(strava, after, before) {
-  const afterFriendly = m(after * 1000).format("MMM DD YY");
-  const beforeFriendly = m(before * 1000).format("MMM DD YY");
+  const afterFriendly = dayjs(after * 1000).format("MMM DD YY");
+  const beforeFriendly = dayjs(before * 1000).format("MMM DD YY");
   console.log(
     `Fetching between: '${afterFriendly}' and '${beforeFriendly}' (${after} -- ${before})`
   );

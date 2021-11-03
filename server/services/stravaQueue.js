@@ -1,7 +1,7 @@
 const config = require("../../src/config/keys");
 const db = require("../db/dataLayer");
-const m = require("moment");
-
+// const m = require("moment");
+const dayjs = require("../utils/dayjs");
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
   client_id: config.client_id,
@@ -159,7 +159,7 @@ async function processPathlessSegments(segments) {
       console.log("Error Fetching Data for Segment Id:", id);
       data = { id, line: "error" };
     } else {
-      data.updated = m().format();
+      data.updated = dayjs().utc().format();
     }
     await db.updateSegment(data);
   }
@@ -186,7 +186,7 @@ async function getSegmentDetails(id) {
 async function getStravaClient() {
   const refreshToken = config.client_refresh;
   const result = await stravaAPI.oauth.refreshToken(refreshToken);
-  const expires = m.unix(result.expires_at);
+  const expires = dayjs.unix(result.expires_at);
 
   console.log("App Token Expires at:", expires.format("hh:mm A"));
   console.log(expires.fromNow());
