@@ -29,8 +29,10 @@ export const getDynamicHeight = (setListHeight, loading) => {
     setTimeout(() => {
       const panelHeight = panel.offsetHeight;
       const windowHeight = window.innerHeight;
-      const newHeight = windowHeight - (headerAndTabHeight + panelHeight);
-      const heightWithLoading = loading ? newHeight - loadingSpinnerHeight : newHeight;
+      const newHeight = windowHeight - (headerAndTabHeight + panelHeight + 27);
+      const heightWithLoading = loading
+        ? newHeight - loadingSpinnerHeight
+        : newHeight;
       setListHeight(heightWithLoading);
     }, 250);
   }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -7,9 +7,8 @@ import { getDynamicHeight } from "../../../utils";
 import Row from "./Row";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  List: {
     width: "100%",
-
     maxWidth: sidebarWidth,
     overflowY: "scroll",
     backgroundColor: theme.palette.background.paper,
@@ -22,14 +21,24 @@ const useStyles = makeStyles((theme) => ({
 
 export default function List(props) {
   const classes = useStyles();
-  const { filteredEfforts, loading } = props;
+  const { filteredEfforts, loading, panelExpanded } = props;
 
-  let newHeight = 0;
-  const [listHeight, setListHeight] = useState(newHeight);
-  getDynamicHeight(setListHeight, loading);
+  const [listHeight, setListHeight] = useState(0);
+  const setHeight = useCallback(() => {
+    getDynamicHeight(setListHeight, loading);
+  }, [loading]);
+
+  useEffect(() => {
+    setHeight();
+
+    window.addEventListener("resize", setHeight);
+    return () => {
+      window.removeEventListener("resize", setHeight);
+    };
+  }, [setHeight, panelExpanded]);
 
   return (
-    <div style={{ height: listHeight }} className={classes.root}>
+    <div style={{ height: listHeight }} className={classes.List}>
       {filteredEfforts.map((effort, index) => (
         <Row key={index} index={index} effort={effort} {...props} />
       ))}

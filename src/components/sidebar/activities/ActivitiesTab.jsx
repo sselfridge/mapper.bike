@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useRef, useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import {
@@ -140,8 +140,7 @@ export default function ActivitiesTab(props) {
 
   useEffect(() => {
     fetchActivities();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchActivities]);
 
   if (loading === true) {
     setTimeout(() => {
@@ -157,7 +156,7 @@ export default function ActivitiesTab(props) {
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
-          onClick={() => setPanelExpanded(!panelExpanded)}
+          onClick={() => setPanelExpanded((val) => !val)}
         >
           <div className={classes.panelSummary}>
             <Typography variant="h6">Control Panel</Typography>

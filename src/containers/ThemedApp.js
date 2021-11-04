@@ -1,11 +1,11 @@
 import React from "react";
-import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 
 import { lightBlue, green } from "@material-ui/core/colors/";
 
 import App from "./App";
 
-const theme = createMuiTheme({
+const theme = createTheme({
   overrides: {
     MuiTab: {
       root: {

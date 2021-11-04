@@ -126,20 +126,17 @@ const EffortsTab = (props) => {
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
-          onClick={() => setPanelExpanded(!panelExpanded)}
+          onClick={() => setPanelExpanded((val) => !val)}
         >
           <div className={classes.panelSummary}>
             <Typography variant="h6">Control Panel</Typography>
-            <Typography className={classes.headingInfo}>
-              {loadingEfforts ? (
-                <CircularProgress
-                  size={24}
-                  className={classes.loadingEfforts}
-                />
-              ) : (
-                `${filteredEfforts.length} of ${efforts.length} efforts`
-              )}
-            </Typography>
+            {loadingEfforts ? (
+              <CircularProgress size={24} className={classes.loadingEfforts} />
+            ) : (
+              <Typography className={classes.headingInfo}>
+                {`${filteredEfforts.length} of ${efforts.length} efforts`}
+              </Typography>
+            )}
           </div>
         </AccordionSummary>
         <AccordionDetails classes={{ root: classes.panelDetails }}>

@@ -1,7 +1,7 @@
 export const sidebarWidth = 360;
-export const sideBarHeight = "82.5vh";
+export const sideBarHeight = "calc(100vh - 132px)";
 
-export const headerAndTabHeight = 120;
+export const headerAndTabHeight = 122;
 
 export const loadingSpinnerHeight = 380;
 
