@@ -1,3 +1,5 @@
+//There's probably better way to do this, but this is working for now..
+
 export const sidebarWidth = 360;
 export const sideBarHeight = "calc(100vh - 132px)";
 
