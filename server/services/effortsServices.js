@@ -1,8 +1,9 @@
 const config = require("../../src/config/keys");
-const db = require("../db/dataLayer");
+const db = require("../models/db/dataLayer");
 // const m = require("moment");
 const dayjs = require("../utils/dayjs");
 const stravaQ = require("./stravaQueue");
+const ActivityQueue = require("./classes/ActivityQueue");
 
 //services
 const { fetchActivities } = require("./summaryServices");
@@ -18,41 +19,45 @@ stravaAPI.config({
 async function updateAllUserSinceLast() {
   console.log("---------------------Doing Cron Stuff----------------");
   const users = await db.getAllUsers();
+  console.log("users: ", users);
 
   for (let i = 0; i < users.length; i++) {
     const user = users[i];
-    await updateUserSegments(user);
+    await fetchNewUserActivities(user);
   }
+  console.log("update finish");
 }
 
-async function updateUserSegments(user) {
+async function fetchNewUserActivities(user) {
   try {
     console.info("Checking user refreshToken for user:", user.id);
     const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
-    stravaQ.updateUserRefreshToken(user.id, result.refresh_token);
+    console.log("result: ", result);
+    ActivityQueue.updateUserRefreshToken(user.id, result);
+    //TODO - this logic should be done elsewhere...
     user.accessToken = result.access_token;
+    user.expiresAt = result.expires_at;
   } catch (error) {
     console.error("Error refreshing token");
     console.error(error.message);
     return;
   }
-
-  const update = dayjs(user.lastUpdate).utc();
+  const update = dayjs(user.lastUpdate);
   const unixTime = update.unix();
   const strava = new stravaAPI.client(user.accessToken);
 
   try {
     await addToActivityQueue(strava, unixTime);
   } catch (error) {
-    console.error("Error Adding to activity");
+    console.error("Error Adding to activityQ");
     console.error(error.message);
     return;
   }
 
   user.lastUpdate = dayjs().format();
-
   try {
-    // await db.updateUser(user);
+    await db.updateUser(user);
+    console.log("User updated:", user);
   } catch (err) {
     console.error("Update user Error");
     console.error(err.message);
@@ -81,7 +86,10 @@ async function addToActivityQueue(strava, afterDate = 0) {
     // const result = await summaryStrava.fetchActivities(strava, 1577865600, 1588539708);
     // 1 result
     // const result = await summaryStrava.fetchActivities(strava, 1588057200, 1588220022);
-    result.forEach(async (activity) => {
+
+    //TODO - this runs up against the DB provision limits...throttle this.
+
+    await result.forEach(async (activity) => {
       if (!activity.line) return; //skip activities with no line
       await db.addActivity(activity.id, activity.athleteId);
     });

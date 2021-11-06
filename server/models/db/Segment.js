@@ -1,5 +1,5 @@
 var client = require("./config");
-const keys = require("../../src/config/keys");
+const keys = require("../../../src/config/keys");
 
 const TableName = keys.dbTables["segmentDetails"];
 
@@ -12,7 +12,6 @@ module.exports = {
   getAll,
   batchDelete,
 };
-
 
 function update(data) {
   const { id, line, effortCount, athleteCount, distance, elevation, updated } =
@@ -121,9 +120,15 @@ function getAllPathless() {
     const params = {
       TableName: "segmentDetails-dev",
       ConditionExpression: "attribute_not_exists(line)",
-      Select: "SPECIFIC_ATTRIBUTES",
-      AttributesToGet: ["id"],
-      // ProjectionExpression: "ALL",
+      FilterExpression: "#hasLine = :hasLine",
+      ExpressionAttributeValues: {
+        ":hasLine": "false",
+      },
+      ExpressionAttributeNames: {
+        "#hasLine": "hasLine",
+      },
+      // Select: "SPECIFIC_ATTRIBUTES",
+      // AttributesToGet: ["id"],
     };
 
     client.scan(params, (err, data) => {

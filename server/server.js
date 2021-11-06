@@ -31,12 +31,12 @@ var cron = require("node-cron");
 cron.schedule("01 04 * * *", () => {});
 
 // Every 15min
-cron.schedule("*/15 * * * *", () => {
-  if (process.env.NODE_ENV === "production") {
-    console.log("---- 15 min Cron----");
-    stravaQ.processQueue();
-  }
-});
+// cron.schedule("*/15 * * * *", () => {
+//   if (process.env.NODE_ENV === "production") {
+//     console.log("---- 15 min Cron----");
+//     stravaQ.processQueue();
+//   }
+// });
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   //TODO - rework error handling

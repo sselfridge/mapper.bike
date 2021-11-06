@@ -128,8 +128,7 @@ async function addUser(data) {
 }
 
 async function updateUser(data) {
-  const id = data.id;
-  const userExists = await User.exists(id);
+  const userExists = await User.exists(data.id);
   if (!userExists) throw new Error("Update Error: User not in DB");
   else {
     await User.update(data);

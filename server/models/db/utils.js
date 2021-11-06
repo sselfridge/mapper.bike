@@ -23,6 +23,28 @@ function parseRankedSegments(efforts) {
   return validEfforts;
 }
 
+function validateEffort(effort) {
+  const {
+    kom_rank,
+    start_date,
+    id,
+    segment: { id: segmentId, name },
+    athlete: { id: athleteId },
+    activity: { id: activityId },
+  } = effort;
+
+  const retval =
+    true &&
+    !!kom_rank &&
+    !!segmentId &&
+    !!name &&
+    !!athleteId &&
+    !!activityId &&
+    !!start_date &&
+    !!id;
+
+  return retval;
+}
 
 // eslint-disable-next-line no-unused-vars
 const segment_Effort = {
@@ -72,28 +94,5 @@ const segment_Effort = {
   kom_rank: 1,
   hidden: true,
 };
-
-function validateEffort(effort) {
-  const {
-    kom_rank,
-    start_date,
-    id,
-    segment: { id: segmentId, name },
-    athlete: { id: athleteId },
-    activity: { id: activityId },
-  } = effort;
-
-  const retval =
-    true &&
-    !!kom_rank &&
-    !!segmentId &&
-    !!name &&
-    !!athleteId &&
-    !!activityId &&
-    !!start_date &&
-    !!id;
-
-  return retval;
-}
 
 module.exports = utils;

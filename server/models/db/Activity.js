@@ -1,5 +1,5 @@
 const client = require("./config");
-const keys = require("../../src/config/keys");
+const keys = require("../../../src/config/keys");
 
 const TableName = keys.dbTables["activities"];
 

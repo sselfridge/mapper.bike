@@ -1,4 +1,4 @@
-const db = require("../db/dataLayer");
+const db = require("../models/db/dataLayer");
 // const m = require("moment");
 const dayjs = require("../utils/dayjs");
 const config = require("../../src/config/keys");
@@ -18,8 +18,8 @@ async function initializeUser(req, res, next) {
   try {
     const strava = res.locals.strava;
     const userData = getUserData(res);
-    userData.startDate = dayjs().utc().format();
-    userData.lastUpdate = dayjs().utc().format();
+    userData.startDate = dayjs().format();
+    userData.lastUpdate = dayjs().format();
     await db.addUser(userData);
 
     //kick_off get activities
@@ -125,7 +125,7 @@ let lastFetchTime = null;
 let userList = [];
 
 async function getUserIds() {
-  const now = dayjs().utc();
+  const now = dayjs();
 
   if (!lastFetchTime || now.diff(lastFetchTime, "seconds") > 30) {
     const dbUsers = await db.getAllUsers();
@@ -167,6 +167,18 @@ async function test(req, res, next) {
   //   client_secret: config.client_secret,
   // });
 
+  var stravaAPI = require("strava-v3");
+  stravaAPI.config({
+    // "access_token"  : "Your apps access token (Required for Quickstart)",
+    client_id: config.client_id,
+    client_secret: config.client_secret,
+    redirect_uri: config.redirect_uri,
+  });
+
+  const testStrava = new stravaAPI.client(
+    "e062bcd7de8fd1dd736071dbf45dc7f281b1ec0e"
+  );
+
   try {
     //   stravaSub.pushSubscriptions
     //     .list()
@@ -191,25 +203,26 @@ async function test(req, res, next) {
     //     });
     //   return;
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    // const { updateAllUserSinceLast } = require("../services/effortsServices");
-    // updateAllUserSinceLast();
-    // const result = await strava.athlete.get({});
+    const { updateAllUserSinceLast } = require("../services/effortsServices");
+    const result = await updateAllUserSinceLast();
+    // const result = await testStrava.athlete.listActivities({});
     // const result = await db.batchDeleteAllDetails();
     // const result = await db.getEffort("19676752-2019-08-17T16:13:29Z");
     // console.log("get Ranks");
     // const result = await getLeaderboard(651706);
+    // const result = await getLeaderboard(651706);
     // const result await db.
     // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
-    const result = await strava.activities.get({
-      id: 6184921496,
-      include_all_efforts: true,
-    });
+    // const result = await strava.activities.get({
+    //   id: 6184921496,
+    //   include_all_efforts: true,
+    // });
     // const result = await strava.segments.get({ id: 16616440 });
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
-    console.info("----");
+    console.info("test result ----");
     console.log(result);
-    console.info("----");
+    console.info("---- end test result");
     // result.forEach((effort) => {
     //   console.log(effort.moving_time);
     //   console.log(effort.elapsed_time);

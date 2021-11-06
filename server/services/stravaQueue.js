@@ -1,14 +1,17 @@
 const config = require("../../src/config/keys");
-const db = require("../db/dataLayer");
+const db = require("../models/db/dataLayer");
 // const m = require("moment");
 const dayjs = require("../utils/dayjs");
 var stravaAPI = require("strava-v3");
+const SegmentQueue = require("./classes/SegmentQueue");
+const ActivityQueue = require("./classes/ActivityQueue");
+
 stravaAPI.config({
   client_id: config.client_id,
   client_secret: config.client_secret,
   redirect_uri: config.redirect_uri,
 });
-let APP_STRAVA = null;
+let _APP_STRAVA = null;
 
 const stravaQueue = {
   processQueue,
@@ -21,31 +24,26 @@ async function processQueue() {
 
   await getStravaClient();
   let stravaRatePercent = await stravaRate();
-  let pathlessSegments;
-  if (stravaRatePercent < 75) {
-    try {
-      pathlessSegments = await db.getAllPathlessSegments();
-    } catch (error) {
-      console.log("DB Segment Error:", error.message);
-      console.log(error.errors);
-    }
-  }
 
-  // while (stravaRatePercent < 75) {
-  let processed = 0;
-  const segmentsToProcess = pathlessSegments.splice(0, 20);
-  try {
-    processed += await getActivityDetails();
-    processed += await processPathlessSegments(segmentsToProcess);
-  } catch (error) {
-    console.log("Queue Error:", error.message);
-    console.log(error.errors);
-    // break;
-  }
-  stravaRatePercent = stravaRate();
-  console.log(`Strava Rate currently at: ${stravaRatePercent}%`);
-  // if (processed === 0) break;
-  // } //while
+  const segmentQ = new SegmentQueue();
+  await segmentQ.init();
+
+  const activityQ = await new ActivityQueue().init();
+
+  while (stravaRatePercent < 75) {
+    let processed = 0;
+    try {
+      processed += await activityQ.process();
+      // processed += await segmentQ.process();
+    } catch (error) {
+      console.log("Queue Error:", error.message);
+      console.log(error.errors);
+      break;
+    }
+    stravaRatePercent = stravaRate();
+    console.log(`Strava Rate currently at: ${stravaRatePercent}%`);
+    if (processed === 0) break;
+  } //while
 
   console.log("Process Done");
 }
@@ -146,43 +144,6 @@ function stravaRate() {
   return percent;
 }
 
-async function processPathlessSegments(segments) {
-  console.log("processPathlessSegments");
-
-  const ids = segments.map((segment) => segment.id);
-
-  if (ids.length === 0) return 0;
-
-  for (const id of ids) {
-    let data = await getSegmentDetails(id);
-    if (!data) {
-      console.log("Error Fetching Data for Segment Id:", id);
-      data = { id, line: "error" };
-    } else {
-      data.updated = dayjs().utc().format();
-    }
-    await db.updateSegment(data);
-  }
-  return ids.length;
-}
-
-async function getSegmentDetails(id) {
-  if (APP_STRAVA === null) await getStravaClient();
-  try {
-    const result = await APP_STRAVA.segments.get({ id });
-    return {
-      id: result.id,
-      line: result.map.polyline,
-      effortCount: result.effort_count,
-      athleteCount: result.athlete_count,
-      distance: result.distance,
-      elevation: result.total_elevation_gain,
-    };
-  } catch (error) {
-    console.log(`Error on id:${id}::`, error.message);
-  }
-}
-
 async function getStravaClient() {
   const refreshToken = config.client_refresh;
   const result = await stravaAPI.oauth.refreshToken(refreshToken);
@@ -195,7 +156,7 @@ async function getStravaClient() {
 
   console.log(expiresAt.fromNow());
 
-  APP_STRAVA = new stravaAPI.client(result.access_token);
+  _APP_STRAVA = new stravaAPI.client(result.access_token);
 }
 
 async function deleteAllActivities() {
