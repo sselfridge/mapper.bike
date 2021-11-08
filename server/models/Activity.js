@@ -1,5 +1,7 @@
 const db = require("./db/activity_aws");
 
+const { fetchActivities } = require("../services/summaryServices");
+
 class Activity {
   static add = async (id, athleteId) => {
     await db.add(id, athleteId);
@@ -26,6 +28,22 @@ class Activity {
       await db.batchDelete(batch);
       ids.splice(0, 20);
       console.log("Batch Delete. Remaining:", ids.length);
+    }
+  };
+
+  static addToActivityQueue = async (strava, afterDate = 0) => {
+    try {
+      const result = await fetchActivities(strava, afterDate, 2550000000);
+
+      //TODO - this runs up against the DB provision limits...throttle this.
+
+      await result.forEach(async (activity) => {
+        if (!activity.line) return; //skip activities with no line
+        await db.addActivity(activity.id, activity.athleteId);
+      });
+      console.log("Done Adding to DB");
+    } catch (error) {
+      console.error("Error while Adding to activity table:", error.message);
     }
   };
 }

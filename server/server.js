@@ -8,6 +8,7 @@ const fs = require("fs");
 const oAuthStrava = require("./controllers/oAuthStrava");
 const summaryController = require("./controllers/summaryStrava");
 const segmentController = require("./controllers/segmentsController");
+const userController = require("./controllers/userController");
 const analyticsController = require("./controllers/analyticsController");
 
 const stravaQ = require("./services/stravaQueue");
@@ -206,7 +207,7 @@ app.post(
 app.post(
   "/api/initialize",
   oAuthStrava.loadStravaProfile,
-  segmentController.initializeUser,
+  userController.initializeUser,
   (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
@@ -249,7 +250,7 @@ app.post("/api/logout", oAuthStrava.clearCookie, (req, res) => {
   res.send("Ok");
 });
 
-app.get("/api/users/:id", segmentController.getUser, (req, res) => {
+app.get("/api/users/:id", userController.getUser, (req, res) => {
   if (res.locals.err) {
     res.status(512).send("Error Fetching User");
     return;
@@ -271,7 +272,7 @@ app.get("/api/kickoffQ", (req, res) => {
 app.delete(
   "/api/users/:id",
   oAuthStrava.loadStravaProfile,
-  segmentController.deleteUser,
+  userController.deleteUser,
   (req, res) => {
     if (res.locals.err) {
       res.status(500).send();

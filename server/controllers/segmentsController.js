@@ -1,5 +1,5 @@
 //Models
-const db = require("../models/db/dataLayer");
+// const db = require("../models/db/dataLayer");
 const User = require("../models/User");
 const Effort = require("../models/Effort");
 const Activity = require("../models/Activity");
@@ -11,48 +11,6 @@ const config = require("../../src/config/keys");
 const got = require("got");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
-
-//services
-const {
-  getUserData,
-  addToActivityQueue,
-} = require("../services/effortsServices");
-
-async function initializeUser(req, res, next) {
-  console.log("initialize User");
-  try {
-    const strava = res.locals.strava;
-    const userData = getUserData(res);
-    userData.startDate = dayjs().format();
-    userData.lastUpdate = dayjs().format();
-    userData.expiresAt = dayjs().unix() - 5;
-    await User.add(userData);
-
-    //kick_off get activities
-    addToActivityQueue(strava);
-    const count = await totalUserActivities(strava, res.locals.user.athleteId);
-    res.locals.data = { activityCount: count };
-    return next();
-  } catch (err) {
-    console.log("Initialize Error:");
-    console.log(err);
-    res.locals.err = err;
-    return next();
-  }
-}
-
-async function getUser(req, res, next) {
-  const id = parseInt(req.params.id);
-  try {
-    const user = await User.get(id);
-    res.locals.user = user;
-    next();
-  } catch (error) {
-    res.locals.err = "Error Fetching User";
-    console.error(error);
-    next();
-  }
-}
 
 async function segmentEfforts(req, res, next) {
   const athleteId = res.locals.user.athleteId;
@@ -71,21 +29,15 @@ async function segmentEfforts(req, res, next) {
 }
 
 //TODO - update db structure to combine efforts?
-async function updateEffort(req, res, next) {
-  // params: activityId, segmentId
-  //pull effort from DB
-  //get current ranks
-  //if different
-  /*  update rank
-   */
-  //  update updated
-}
-
-async function totalUserActivities(strava, id) {
-  const result = await strava.athletes.stats({ id });
-  const count = result.all_ride_totals.count + result.all_run_totals.count;
-  return count;
-}
+// async function updateEffort(req, res, next) {
+//   // params: activityId, segmentId
+//   //pull effort from DB
+//   //get current ranks
+//   //if different
+//   /*  update rank
+//    */
+//   //  update updated
+// }
 
 async function parsePushNotification(req, res, next) {
   console.log("parsePush");
@@ -142,29 +94,9 @@ async function getUserIds() {
   return userList;
 }
 
-async function deleteUser(req, res, next) {
-  const id = parseInt(req.params.id);
-
-  if (res.locals.err) {
-    return next();
-  }
-
-  try {
-    if (res.locals.user.athleteId === id) {
-      User.delete(id);
-      next();
-    }
-  } catch (error) {
-    console.error("Delete User Error");
-    console.error(error);
-    res.locals.err = "Delete User Error";
-    next();
-  }
-}
-
 async function test(req, res, next) {
   console.log("Start Test");
-  const strava = res.locals.strava;
+  // const strava = res.locals.strava;
 
   // const stravaSub = require("strava-v3");
 
@@ -181,9 +113,9 @@ async function test(req, res, next) {
     redirect_uri: config.redirect_uri,
   });
 
-  const testStrava = new stravaAPI.client(
-    "e062bcd7de8fd1dd736071dbf45dc7f281b1ec0e"
-  );
+  // const testStrava = new stravaAPI.client(
+  //   "e062bcd7de8fd1dd736071dbf45dc7f281b1ec0e"
+  // );
 
   try {
     //   stravaSub.pushSubscriptions
@@ -209,8 +141,8 @@ async function test(req, res, next) {
     //     });
     //   return;
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    const { updateAllUserSinceLast } = require("../services/effortsServices");
-    const result = await updateAllUserSinceLast();
+    // const { updateAllUserSinceLast } = require("../services/effortsServices");
+    // const result = await updateAllUserSinceLast();
     // const result = await testStrava.athlete.listActivities({});
     // const result = await db.batchDeleteAllDetails();
     // const result = await db.getEffort("19676752-2019-08-17T16:13:29Z");
@@ -227,7 +159,7 @@ async function test(req, res, next) {
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
     console.info("test result ----");
-    console.log(result);
+    // console.log(result);
     console.info("---- end test result");
     // result.forEach((effort) => {
     //   console.log(effort.moving_time);
@@ -255,8 +187,6 @@ async function testReset(req, res, next) {
     return next();
   }
   console.log("Start Test");
-  const strava = res.locals.strava;
-  const stravaAPI = require("strava-v3");
 
   let result;
   try {
@@ -333,8 +263,5 @@ module.exports = {
   test,
   testReset,
   segmentEfforts,
-  initializeUser,
-  getUser,
-  deleteUser,
   parsePushNotification,
 };
