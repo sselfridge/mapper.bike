@@ -91,7 +91,7 @@ const checkRefreshToken = (res) => {
         .then(async (result) => {
           //update user refresh token in DB
           const athleteId = res.locals.athleteId;
-          stravaQ.updateUserRefreshToken(athleteId, result.refresh_token);
+          await stravaQ.updateUserRefreshToken(athleteId, result.refresh_token);
           return result;
         })
         .then((result) => {

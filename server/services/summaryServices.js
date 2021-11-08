@@ -15,6 +15,7 @@ async function fetchActivities(strava, after, before, activityType) {
 
   return activities;
 }
+// eslint-disable-next-line require-await
 async function fetchDemo() {
   const demoData = fs.readFileSync(__dirname + `/../../config/demoData.json`);
   let stravaData = JSON.parse(demoData);

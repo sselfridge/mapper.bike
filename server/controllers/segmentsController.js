@@ -12,6 +12,7 @@ const got = require("got");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
+// eslint-disable-next-line require-await
 async function segmentEfforts(req, res, next) {
   const athleteId = res.locals.user.athleteId;
   const rank = parseInt(req.query.rank ? req.query.rank : 1);
@@ -94,6 +95,7 @@ async function getUserIds() {
   return userList;
 }
 
+// eslint-disable-next-line require-await
 async function test(req, res, next) {
   console.log("Start Test");
   // const strava = res.locals.strava;

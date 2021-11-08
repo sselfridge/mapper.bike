@@ -48,6 +48,7 @@ async function getUser(req, res, next) {
   }
 }
 
+// eslint-disable-next-line require-await
 async function deleteUser(req, res, next) {
   const id = parseInt(req.params.id);
 
