@@ -80,6 +80,8 @@ export default function ActivitiesTab(props) {
     currentUser: { athleteId },
   } = props;
 
+  const didMountRef = useRef(null);
+
   const [beforeDate, setBefore] = useState(new Date());
   const [afterDate, setAfter] = useState(calcAfterDate());
   const [panelExpanded, setPanelExpanded] = useState(true);
@@ -139,7 +141,10 @@ export default function ActivitiesTab(props) {
   ]);
 
   useEffect(() => {
-    fetchActivities();
+    if (didMountRef.current === null) {
+      fetchActivities();
+      didMountRef.current = true;
+    }
   }, [fetchActivities]);
 
   if (loading === true) {
