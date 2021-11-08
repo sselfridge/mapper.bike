@@ -1,7 +1,6 @@
 const config = require("../../src/config/keys");
 const db = require("../models/db/dataLayer");
 // const m = require("moment");
-const dayjs = require("../utils/dayjs");
 var stravaAPI = require("strava-v3");
 const SegmentQueue = require("./classes/SegmentQueue");
 const ActivityQueue = require("./classes/ActivityQueue");

@@ -124,7 +124,7 @@ async function test(req, res, next) {
     //     .list()
     //     // .create({
     //     //   callback_url: "http://9d6b-184-187-181-40.ngrok.io/api/gethook",
-    //     //   verify_token: "1243567ui7tkuyjrrg34e5rut65",
+    //     //   verify_token: "",
     //     // })
     //     // .delete({
     //     //   id: 203074,

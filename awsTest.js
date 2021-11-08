@@ -1,5 +1,5 @@
+/* eslint-disable no-unused-vars */
 var AWS = require("aws-sdk");
-const moment = require("./node_modules/moment/moment");
 
 //aws creds stored in ~/.aws/credentials
 var credentials = new AWS.SharedIniFileCredentials({ profile: "dbuser" });
