@@ -1,5 +1,10 @@
+//Models
 const db = require("../models/db/dataLayer");
-// const m = require("moment");
+const User = require("../models/User");
+const Effort = require("../models/Effort");
+const Activity = require("../models/Activity");
+const Segment = require("../models/Segment");
+
 const dayjs = require("../utils/dayjs");
 const config = require("../../src/config/keys");
 
@@ -20,7 +25,8 @@ async function initializeUser(req, res, next) {
     const userData = getUserData(res);
     userData.startDate = dayjs().format();
     userData.lastUpdate = dayjs().format();
-    await db.addUser(userData);
+    userData.expiresAt = dayjs().unix() - 5;
+    await User.add(userData);
 
     //kick_off get activities
     addToActivityQueue(strava);
@@ -38,7 +44,7 @@ async function initializeUser(req, res, next) {
 async function getUser(req, res, next) {
   const id = parseInt(req.params.id);
   try {
-    const user = await db.getUser(id);
+    const user = await User.get(id);
     res.locals.user = user;
     next();
   } catch (error) {
@@ -52,7 +58,7 @@ async function segmentEfforts(req, res, next) {
   const athleteId = res.locals.user.athleteId;
   const rank = parseInt(req.query.rank ? req.query.rank : 1);
 
-  db.getEffortsWithPath(athleteId, rank)
+  Effort.getEffortsWithPath(athleteId, rank)
     .then((efforts) => {
       console.log(`Got ${efforts.length} efforts with details`);
       res.locals.segmentEfforts = efforts;
@@ -116,7 +122,7 @@ async function parsePushNotification(req, res, next) {
   }
 
   console.log("Add to Q:", activityId, athleteId);
-  await db.addActivity(activityId, athleteId);
+  await Activity.add(activityId, athleteId);
 
   return next();
 }
@@ -128,7 +134,7 @@ async function getUserIds() {
   const now = dayjs();
 
   if (!lastFetchTime || now.diff(lastFetchTime, "seconds") > 30) {
-    const dbUsers = await db.getAllUsers();
+    const dbUsers = await User.getAll();
     lastFetchTime = now;
     userList = dbUsers.map((u) => u.id);
   }
@@ -145,7 +151,7 @@ async function deleteUser(req, res, next) {
 
   try {
     if (res.locals.user.athleteId === id) {
-      db.deleteUser(id);
+      User.delete(id);
       next();
     }
   } catch (error) {
@@ -254,12 +260,12 @@ async function testReset(req, res, next) {
 
   let result;
   try {
-    result = await db.deleteAllEfforts();
+    result = await Effort.deleteAll();
     console.log("result: ", result);
-    result = await db.deleteAllSegments();
+    result = await Segment.deleteAll();
     console.log("result: ", result);
 
-    result = await db.deleteAllActivities();
+    result = await Activity.deleteAll();
     console.log("result: ", result);
   } catch (err) {
     console.log("Reset error");
