@@ -1,4 +1,4 @@
-const db = require("./db/Segment");
+const db = require("./db/segment_aws");
 
 class Segment {
   static pop = async (limit) => {

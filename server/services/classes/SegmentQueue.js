@@ -27,6 +27,7 @@ class SegmentQueue {
     this.appStrava = await this.getStravaClient(config.client_refresh);
 
     this.initDone = true;
+    return this;
   }
 
   async getStravaClient(refreshToken) {

@@ -1,4 +1,4 @@
-const db = require("./db/User");
+const db = require("./db/user_aws");
 const Activity = require("./Activity");
 const Effort = require("./Effort");
 

@@ -1,4 +1,4 @@
-const db = require("./db/Activity");
+const db = require("./db/activity_aws");
 
 class Activity {
   static add = async (id, athleteId) => {

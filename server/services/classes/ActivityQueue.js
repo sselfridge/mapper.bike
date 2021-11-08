@@ -23,19 +23,20 @@ class ActivityQueue {
     }
   }
 
+  //   TODO this should be a part of a USER model or something similar
   static async updateUserRefreshToken(athleteId, result) {
     const user = await db.getUser(athleteId);
-    // if (
-    //   user?.refreshToken !== result.refresh_token ||
-    //   user?.accessToken !== result.access_token
-    // ) {
-    user.refreshToken = result.refresh_token;
-    user.accessToken = result.access_token;
-    user.expiresAt = result.expires_at;
-    console.log("user to DB: ", user);
+    if (
+      user?.refreshToken !== result.refresh_token ||
+      user?.accessToken !== result.access_token
+    ) {
+      user.refreshToken = result.refresh_token;
+      user.accessToken = result.access_token;
+      user.expiresAt = result.expires_at;
+      console.log("user to DB: ", user);
 
-    await db.updateUser(user);
-    // }
+      await db.updateUser(user);
+    }
   }
 
   constructor() {
@@ -58,6 +59,7 @@ class ActivityQueue {
    * Process activities in Q
    * @returns {number} Count of processed activities
    */
+  //TODO maybe this should return the strava rate here so it doesn't have to be the strava Queue?
   async process() {
     if (this.initDone === false) {
       throw new Error("Initialize Activity queue before using, run init() ");
@@ -160,15 +162,6 @@ class ActivityQueue {
     console.log(expiresAt.fromNow());
 
     return new stravaAPI.client(result.access_token);
-  }
-
-  stravaRate() {
-    const rateLimits = stravaAPI.rateLimiting;
-    if (rateLimits.shortTermUsage + rateLimits.longTermUsage === 0) return 0;
-    const stravaRate = rateLimits.fractionReached();
-
-    const percent = (stravaRate * 100).toFixed(2);
-    return percent;
   }
 }
 

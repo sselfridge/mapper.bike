@@ -1,4 +1,4 @@
-const db = require("./db/Effort");
+const db = require("./db/effort_aws");
 const Segment = require("./Segment");
 
 class Effort {

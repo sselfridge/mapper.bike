@@ -1,7 +1,7 @@
-const Activity = require("./Activity");
-const User = require("./User");
-const Effort = require("./Effort");
-const Segment = require("./Segment");
+const Activity = require("./activity_aws");
+const User = require("./user_aws");
+const Effort = require("./effort_aws");
+const Segment = require("./segment_aws");
 
 const utils = require("./utils");
 
