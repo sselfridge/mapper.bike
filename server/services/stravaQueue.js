@@ -34,7 +34,7 @@ async function processQueue() {
     let processed = 0;
     try {
       processed += await activityQ.process();
-      // processed += await segmentQ.process();
+      processed += await segmentQ.process();
     } catch (error) {
       console.log("Queue Error:", error.message);
       console.log(error.errors);
