@@ -1,6 +1,18 @@
 const db = require("./db/user_aws");
-const Activity = require("./Activity");
+// const Activity = require("./Activity");
 const Effort = require("./Effort");
+
+const dayjs = require("../utils/dayjs");
+
+const config = require("../../src/config/keys");
+var stravaAPI = require("strava-v3");
+stravaAPI.config({
+  client_id: config.client_id,
+  client_secret: config.client_secret,
+  redirect_uri: config.redirect_uri,
+});
+
+const summaryServices = require("../services/summaryServices");
 
 class User {
   static add = async (data) => {
@@ -37,22 +49,67 @@ class User {
   static remove = async (athleteId) => {
     console.log("Deleting User ID", athleteId);
 
-    //delete activities if any in progress
-    const activitiesQ = await Activity.getAll();
-    const actIds = activitiesQ
-      .filter((result) => result.athleteId === athleteId)
-      .map((result) => result.id);
-    console.log(`Deleting ${actIds.length} activities from queue`);
-    await Activity.delete(actIds);
+    // //delete activities if any in progress
+    // const activitiesQ = await Activity.getAll();
+    // const actIds = activitiesQ
+    //   .filter((result) => result.athleteId === athleteId)
+    //   .map((result) => result.id);
+    // console.log(`Deleting ${actIds.length} activities from queue`);
+    // await Activity.delete(actIds);
 
-    //delete efforts
-    const results = await Effort.get(athleteId, 10);
-    console.log(`Got ${results.length} to delete`);
-    const ids = results.map((result) => result.id);
+    // //delete efforts
+    // const results = await Effort.get(athleteId, 10);
+    // console.log(`Got ${results.length} to delete`);
+    // const ids = results.map((result) => result.id);
 
-    console.log(`Deleting ${ids.length} efforts`);
-    await Effort.delete(ids);
-    await db.remove(athleteId);
+    // console.log(`Deleting ${ids.length} efforts`);
+    // await Effort.delete(ids);
+    // await db.remove(athleteId);
+  };
+
+  static refreshStravaTokens = async (user) => {
+    try {
+      const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
+      const { expires_at, refresh_token, access_token } = result;
+      //TODO validate input
+      user.expiresAt = expires_at;
+      user.refreshToken = refresh_token;
+      user.accessToken = access_token;
+    } catch (error) {
+      console.error("Unable to refresh token for user:", user.id);
+      return null;
+    }
+
+    try {
+      db.update(user);
+      return user;
+    } catch (error) {
+      console.error("Unable to update user in DB");
+      return null;
+    }
+  };
+
+  static makeStravaClient = async (user) => {
+    const { expiresAt } = user;
+    const now = dayjs();
+
+    if (now.isAfter(dayjs.unix(expiresAt))) {
+      user = await this.refreshStravaTokens(user);
+    }
+
+    return new stravaAPI.client(user.accessToken);
+  };
+
+  static fetchActivitiesAfter = async (user, after) => {
+    const strava = await this.makeStravaClient(user);
+
+    const result = await summaryServices.fetchActivities(
+      strava,
+      after,
+      2550000000
+    );
+
+    return result;
   };
 }
 

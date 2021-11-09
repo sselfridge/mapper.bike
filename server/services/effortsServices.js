@@ -5,9 +5,7 @@ const dayjs = require("../utils/dayjs");
 
 //models
 const Activity = require("../models/Activity");
-
-//classes
-const ActivityQueue = require("./classes/ActivityQueue");
+const User = require("../models/User");
 
 //services
 
@@ -21,9 +19,10 @@ stravaAPI.config({
 //Won't need this once the push sub is working properly
 async function updateAllUserSinceLast() {
   console.log("---------------------Doing Cron Stuff----------------");
-  const users = await db.getAllUsers();
+  console.log("User: ", User);
+  console.log("User: ", Object.keys(User));
+  const users = await User.getAll();
   console.log("users: ", users);
-
   for (let i = 0; i < users.length; i++) {
     const user = users[i];
     await fetchNewUserActivities(user);
@@ -32,25 +31,11 @@ async function updateAllUserSinceLast() {
 }
 
 async function fetchNewUserActivities(user) {
-  try {
-    console.info("Checking user refreshToken for user:", user.id);
-    const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
-    console.log("result: ", result);
-    ActivityQueue.updateUserRefreshToken(user.id, result);
-    //TODO - this logic should be done elsewhere...
-    user.accessToken = result.access_token;
-    user.expiresAt = result.expires_at;
-  } catch (error) {
-    console.error("Error refreshing token");
-    console.error(error.message);
-    return;
-  }
   const update = dayjs(user.lastUpdate);
-  const unixTime = update.unix();
-  const strava = new stravaAPI.client(user.accessToken);
+  const after = update.unix();
 
   try {
-    await Activity.addToActivityQueue(strava, unixTime);
+    await Activity.addToActivityQueue(user, after);
   } catch (error) {
     console.error("Error Adding to activityQ");
     console.error(error.message);

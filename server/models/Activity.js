@@ -1,6 +1,6 @@
 const db = require("./db/activity_aws");
 
-const { fetchActivities } = require("../services/summaryServices");
+const User = require("./User");
 
 class Activity {
   static add = async (id, athleteId) => {
@@ -31,20 +31,27 @@ class Activity {
     }
   };
 
-  static addToActivityQueue = async (strava, afterDate = 0) => {
-    try {
-      const result = await fetchActivities(strava, afterDate, 2550000000);
+  static addToActivityQueue = async (user, after = 0) => {
+    console.log("User: ", User);
+    console.log("User: ", Object.keys(User));
 
-      //TODO - this runs up against the DB provision limits...throttle this.
+    // const activities = await User.fetchActivitiesAfter(user, after);
+    const activities = [];
+    //TODO - test if this still hits the DB limit
+    await activities.forEach(async (activity) => {
+      if (!activity.line) return; //skip activities with no line
+      await db.addActivity(activity.id, activity.athleteId);
+      await this.sleep(100);
+    });
+    console.log("Done Adding to DB");
+  };
 
-      await result.forEach(async (activity) => {
-        if (!activity.line) return; //skip activities with no line
-        await db.addActivity(activity.id, activity.athleteId);
-      });
-      console.log("Done Adding to DB");
-    } catch (error) {
-      console.error("Error while Adding to activity table:", error.message);
-    }
+  static sleep = (delay) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, delay);
+    });
   };
 }
 module.exports = Activity;
