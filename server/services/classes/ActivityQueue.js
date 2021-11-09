@@ -1,6 +1,10 @@
 const dayjs = require("../../utils/dayjs");
 
-const db = require("../../models/db/dataLayer");
+//Models
+const Activity = require("../../models/Activity");
+const Effort = require("../../models/Effort");
+const User = require("../../models/User");
+
 const config = require("../../../src/config/keys");
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
@@ -11,21 +15,9 @@ stravaAPI.config({
 
 class ActivityQueue {
   //static functions:
-  static async deleteAllActivities() {
-    let count = 1;
-    let round = 0;
-    while (count > 0) {
-      const activities = await db.popActivities(25);
-      count = activities.length;
-      await db.deleteActivities(activities.map((a) => a.id));
-      round++;
-      console.info("round: ", round);
-    }
-  }
-
   //   TODO this should be a part of a USER model or something similar
   static async updateUserRefreshToken(athleteId, result) {
-    const user = await db.getUser(athleteId);
+    const user = await User.get(athleteId);
     if (
       user?.refreshToken !== result.refresh_token ||
       user?.accessToken !== result.access_token
@@ -35,7 +27,7 @@ class ActivityQueue {
       user.expiresAt = result.expires_at;
       console.log("user to DB: ", user);
 
-      await db.updateUser(user);
+      await User.update(user);
     }
   }
 
@@ -66,7 +58,7 @@ class ActivityQueue {
     }
     const completedActivityIds = [];
 
-    const activities = await db.popActivities(this.batchSize);
+    const activities = await Activity.pop(this.batchSize);
 
     console.log(`Getting full details for ${activities.length} activities`);
     if (activities.length === 0) return 0;
@@ -90,7 +82,7 @@ class ActivityQueue {
       }
     }
     if (completedActivityIds.length > 0)
-      await db.deleteActivities(completedActivityIds);
+      await Activity.delete(completedActivityIds);
 
     return completedActivityIds.length;
   }
@@ -98,7 +90,7 @@ class ActivityQueue {
   async getClient(athleteId) {
     if (this.userStravaCache[athleteId]) return this.userStravaCache[athleteId];
 
-    const user = await db.getUser(athleteId);
+    const user = await User.get(athleteId);
 
     if (!user) throw new Error("User not defined in DB:", athleteId);
 
@@ -107,7 +99,7 @@ class ActivityQueue {
     const refreshResult = await stravaAPI.oauth.refreshToken(user.refreshToken);
     if (refreshResult.access_token !== user.accessToken) {
       user.accessToken = refreshResult.access_token;
-      db.updateUser(user);
+      User.update(user);
     }
 
     const strava = new stravaAPI.client(user.accessToken);
@@ -123,7 +115,7 @@ class ActivityQueue {
     }
     const rankedSegments = this.getRankedEfforts(activity);
     try {
-      await db.storeSegments(rankedSegments);
+      await Effort.storeSegments(rankedSegments);
     } catch (error) {
       console.log("Store Segment Error", error.message);
       return false;

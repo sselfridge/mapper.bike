@@ -1,6 +1,8 @@
 const db = require("./db/effort_aws");
 const Segment = require("./Segment");
 
+const utils = require("./db/utils");
+
 class Effort {
   static getEfforts = async (athleteId, rank = 10) => {
     if (rank === "error") {
@@ -72,7 +74,20 @@ class Effort {
     }
   };
 
-  static storeSegments = async (data) => {};
+  //TODO test this
+  static storeSegments = async (segmentSummaries) => {
+    console.info("segments: ", segmentSummaries);
+    const rankedSegments = utils.parseRankedSegments(segmentSummaries);
+
+    const segments = segmentSummaries.map((segment) => ({
+      id: segment.segment.id,
+    }));
+
+    await Promise.all([
+      db.batchAdd(rankedSegments),
+      Segment.batchAdd(segments),
+    ]);
+  };
 }
 
 module.exports = Effort;

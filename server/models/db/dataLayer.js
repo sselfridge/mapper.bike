@@ -170,9 +170,7 @@ async function batchDeleteEfforts(ids) {
   const promArr = [];
   while (ids.length > 0) {
     const batch = ids.slice(0, 20);
-
     promArr.push(Effort.batchDelete(batch));
-
     ids.splice(0, 20);
   }
   await Promise.all(promArr);

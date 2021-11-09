@@ -101,7 +101,6 @@ const checkRefreshToken = (res) => {
             accessToken: result.access_token,
             athleteId: res.locals.athleteId,
           };
-
           setJWTCookie(res, payload);
           res.locals.expiresAt = dayjs.unix(result.expires_at);
           res.locals.accessToken = result.access_token;

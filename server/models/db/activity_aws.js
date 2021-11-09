@@ -5,10 +5,11 @@ const TableName = keys.dbTables["activities"];
 
 module.exports = {
   add,
+  batchAdd,
   pop,
   getAll,
   batchDelete,
-  countByAthlete: countByAthlete,
+  countByAthlete,
 };
 
 function add(id, athleteId) {
@@ -23,10 +24,39 @@ function add(id, athleteId) {
         console.log("DB Error", err);
         return reject(err);
       }
+
       resolve();
     });
   });
 }
+
+function batchAdd(activities, athleteId) {
+  return new Promise((resolve, reject) => {
+    if (activities.length > 25) return reject("Max of 25 items per batch");
+
+    const params = makeBatchAddParams(activities, athleteId);
+
+    client.batchWrite(params, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log("Batch Add Completed:", activities.length);
+        resolve();
+      }
+    });
+  });
+}
+
+const makeBatchAddParams = (activities, athleteId) => {
+  var params = { RequestItems: {} };
+  params.RequestItems[TableName] = [];
+  activities.forEach((act) => {
+    const newItem = { PutRequest: { Item: { id: act.id, athleteId } } };
+    params.RequestItems[TableName].push(newItem);
+    // params.ReturnConsumedCapacity = "INDEXES";
+  });
+  return params;
+};
 
 //return Limit activities
 function pop(Limit) {
@@ -68,6 +98,7 @@ function getAll() {
 
 function batchDelete(ids) {
   return new Promise((resolve, reject) => {
+    if (ids.length > 25) return reject("Max of 25 items per batch");
     const params = makeBatchDeleteParams(ids);
 
     client.batchWrite(params, (err) => {

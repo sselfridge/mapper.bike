@@ -16,18 +16,16 @@ stravaAPI.config({
   redirect_uri: config.redirect_uri,
 });
 
-//Won't need this once the push sub is working properly
+//replaced by the sub model, but still useful for testing
 async function updateAllUserSinceLast() {
   console.log("---------------------Doing Cron Stuff----------------");
-  console.log("User: ", User);
-  console.log("User: ", Object.keys(User));
   const users = await User.getAll();
-  console.log("users: ", users);
   for (let i = 0; i < users.length; i++) {
     const user = users[i];
     await fetchNewUserActivities(user);
   }
   console.log("update finish");
+  return "updateAllFinished";
 }
 
 async function fetchNewUserActivities(user) {
@@ -36,13 +34,15 @@ async function fetchNewUserActivities(user) {
 
   try {
     const activities = await User.fetchActivitiesAfter(user, after);
-    await Activity.add(activities, user.id);
+    console.log("adding to DB activities: ", activities.length);
+
+    await Activity.batchAdd(activities, user.id);
   } catch (error) {
     console.error("Error Adding to activityQ");
     console.error(error.message);
     return;
   }
-
+  console.log("Finished Adding to DB");
   user.lastUpdate = dayjs().format();
   try {
     await db.updateUser(user);

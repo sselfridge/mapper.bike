@@ -145,6 +145,7 @@ async function test(req, res, next) {
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
     const { updateAllUserSinceLast } = require("../services/effortsServices");
     const result = await updateAllUserSinceLast();
+    console.log("result: ", result);
     // const result = await testStrava.athlete.listActivities({});
     // const result = await db.batchDeleteAllDetails();
     // const result = await db.getEffort("19676752-2019-08-17T16:13:29Z");
@@ -176,7 +177,7 @@ async function test(req, res, next) {
   }
 
   console.log("Test Done");
-  // next();
+  next();
 }
 
 async function testReset(req, res, next) {
