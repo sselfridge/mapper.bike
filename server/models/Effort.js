@@ -27,8 +27,8 @@ class Effort {
     }
   };
 
-  static deleteAllEfforts = async () => {
-    const ids = db.getAll();
+  static deleteAll = async () => {
+    const ids = await db.getAll();
 
     while (ids.length > 0) {
       const batch = ids.slice(0, 20);

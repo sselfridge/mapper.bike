@@ -188,17 +188,19 @@ async function testReset(req, res, next) {
     res.status(403);
     return next();
   }
-  console.log("Start Test");
+  console.log("Reset Test data");
 
   let result;
   try {
     result = await Effort.deleteAll();
     console.log("result: ", result);
-    result = await Segment.deleteAll();
-    console.log("result: ", result);
+    // result = await Segment.deleteAll();
+    // console.log("result: ", result);
 
-    result = await Activity.deleteAll();
-    console.log("result: ", result);
+    // result = await Activity.deleteAll();
+    // console.log("result: ", result);
+
+    console.info("Done Reset");
   } catch (err) {
     console.log("Reset error");
     console.log(err.message);

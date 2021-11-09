@@ -1,6 +1,5 @@
 const db = require("./db/user_aws");
 // const Activity = require("./Activity");
-const Effort = require("./Effort");
 
 const dayjs = require("../utils/dayjs");
 
@@ -44,27 +43,6 @@ class User {
   static getAll = async () => {
     const allUsers = await db.getAll();
     return allUsers;
-  };
-
-  static remove = async (athleteId) => {
-    console.log("Deleting User ID", athleteId);
-
-    // //delete activities if any in progress
-    // const activitiesQ = await Activity.getAll();
-    // const actIds = activitiesQ
-    //   .filter((result) => result.athleteId === athleteId)
-    //   .map((result) => result.id);
-    // console.log(`Deleting ${actIds.length} activities from queue`);
-    // await Activity.delete(actIds);
-
-    // //delete efforts
-    // const results = await Effort.get(athleteId, 10);
-    // console.log(`Got ${results.length} to delete`);
-    // const ids = results.map((result) => result.id);
-
-    // console.log(`Deleting ${ids.length} efforts`);
-    // await Effort.delete(ids);
-    // await db.remove(athleteId);
   };
 
   static refreshStravaTokens = async (user) => {

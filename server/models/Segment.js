@@ -2,19 +2,19 @@ const db = require("./db/segment_aws");
 
 class Segment {
   static pop = async (limit) => {
-    return await Segment.pop(limit);
+    return await db.pop(limit);
   };
 
   static getAllPathless = async () => {
-    return await Segment.getAllPathless();
+    return await db.getAllPathless();
   };
 
   static updateSegment = async (data) => {
-    await Segment.update(data);
+    await db.update(data);
   };
 
-  static deleteAllSegments = async () => {
-    const ids = db.getAll();
+  static deleteAll = async () => {
+    const ids = await db.getAll();
     while (ids.length > 0) {
       const batch = ids.slice(0, 20);
       await db.batchDelete(batch);

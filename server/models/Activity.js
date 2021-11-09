@@ -1,7 +1,5 @@
 const db = require("./db/activity_aws");
 
-const User = require("./User");
-
 class Activity {
   static add = async (id, athleteId) => {
     await db.add(id, athleteId);
@@ -20,8 +18,8 @@ class Activity {
     return await db.pop(limit);
   };
 
-  static deleteAllActivities = async (data) => {
-    const ids = db.getAll();
+  static deleteAll = async (data) => {
+    const ids = await db.getAll();
 
     while (ids.length > 0) {
       const batch = ids.slice(0, 20);
@@ -31,18 +29,17 @@ class Activity {
     }
   };
 
-  static addToActivityQueue = async (user, after = 0) => {
-    console.log("User: ", User);
-    console.log("User: ", Object.keys(User));
-
-    // const activities = await User.fetchActivitiesAfter(user, after);
-    const activities = [];
+  static add = async (activities, athleteId) => {
     //TODO - test if this still hits the DB limit
-    await activities.forEach(async (activity) => {
-      if (!activity.line) return; //skip activities with no line
-      await db.addActivity(activity.id, activity.athleteId);
-      await this.sleep(100);
-    });
+    console.info("Adding activities to DB:", activities.length);
+    console.time("Add Act");
+    for (let i = 0; i < activities.length; i++) {
+      const activity = activities[i];
+      if (!activity.line) continue; //skip activities with no line
+      await db.add(activity.id, athleteId);
+      await this.sleep(50);
+    }
+    console.timeEnd("Add Act");
     console.log("Done Adding to DB");
   };
 

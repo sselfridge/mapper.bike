@@ -7,8 +7,6 @@ const userServices = require("../services/userServices");
 
 const dayjs = require("../utils/dayjs");
 
-const effortServices = require("../services/effortsServices");
-
 async function initializeUser(req, res, next) {
   console.log("initialize User");
   try {
@@ -20,7 +18,9 @@ async function initializeUser(req, res, next) {
     await User.add(userData);
 
     //kick_off get activities
-    Activity.addToActivityQueue(strava);
+    const activities = await User.fetchActivitiesAfter(userData, 0);
+    await Activity.add(activities, userData.id);
+
     const count = await userServices.totalUserActivities(
       strava,
       res.locals.user.athleteId

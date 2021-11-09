@@ -35,7 +35,8 @@ async function fetchNewUserActivities(user) {
   const after = update.unix();
 
   try {
-    await Activity.addToActivityQueue(user, after);
+    const activities = await User.fetchActivitiesAfter(user, after);
+    await Activity.add(activities, user.id);
   } catch (error) {
     console.error("Error Adding to activityQ");
     console.error(error.message);

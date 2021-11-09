@@ -1,7 +1,6 @@
-const userServices = {
-  getUserData,
-  totalUserActivities,
-};
+const Activity = require("../models/Activity");
+const User = require("../models/User");
+const Effort = require("../models/Effort");
 
 function getUserData(res) {
   const user = res.locals.user;
@@ -21,4 +20,29 @@ async function totalUserActivities(strava, id) {
   return count;
 }
 
-module.exports = userServices;
+async function deleteUser(athleteId) {
+  console.log("Deleting User ID", athleteId);
+
+  //delete activities if any in progress
+  const activitiesQ = await Activity.getAll();
+  const actIds = activitiesQ
+    .filter((result) => result.athleteId === athleteId)
+    .map((result) => result.id);
+  console.log(`Deleting ${actIds.length} activities from queue`);
+  await Activity.delete(actIds);
+
+  //delete efforts
+  const results = await Effort.get(athleteId, 10);
+  console.log(`Got ${results.length} to delete`);
+  const ids = results.map((result) => result.id);
+
+  console.log(`Deleting ${ids.length} efforts`);
+  await Effort.delete(ids);
+  await User.remove(athleteId);
+}
+
+module.exports = {
+  getUserData,
+  totalUserActivities,
+  deleteUser,
+};

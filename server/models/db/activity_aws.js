@@ -23,7 +23,6 @@ function add(id, athleteId) {
         console.log("DB Error", err);
         return reject(err);
       }
-      console.log("Activity added to DB");
       resolve();
     });
   });
@@ -88,7 +87,7 @@ const makeBatchDeleteParams = (ids) => {
   var params = { RequestItems: {} };
   params.RequestItems[TableName] = [];
   ids.forEach((id) => {
-    const newItem = { DeleteRequest: { Key: { id } } };
+    const newItem = { DeleteRequest: { Key: id } };
     params.RequestItems[TableName].push(newItem);
   });
   return params;

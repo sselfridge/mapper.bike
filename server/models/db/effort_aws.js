@@ -109,7 +109,6 @@ function getAll() {
 function batchDelete(ids) {
   return new Promise((resolve, reject) => {
     if (ids.length === 0) resolve();
-
     const params = makeBatchDeleteParams(ids);
 
     client.batchWrite(params, (err) => {
@@ -127,7 +126,7 @@ const makeBatchDeleteParams = (ids) => {
   var params = { RequestItems: {} };
   params.RequestItems[TableName] = [];
   ids.forEach((id) => {
-    const newItem = { DeleteRequest: { Key: { id } } };
+    const newItem = { DeleteRequest: { Key: id } };
     params.RequestItems[TableName].push(newItem);
   });
   return params;
