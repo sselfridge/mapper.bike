@@ -194,11 +194,11 @@ async function testReset(req, res, next) {
   try {
     result = await Effort.deleteAll();
     console.log("result: ", result);
-    // result = await Segment.deleteAll();
-    // console.log("result: ", result);
+    result = await Segment.deleteAll();
+    console.log("result: ", result);
 
-    // result = await Activity.deleteAll();
-    // console.log("result: ", result);
+    result = await Activity.deleteAll();
+    console.log("result: ", result);
 
     console.info("Done Reset");
   } catch (err) {

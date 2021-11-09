@@ -192,7 +192,6 @@ function batchDelete(ids) {
       if (err) {
         reject(err);
       } else {
-        console.log("Deleted Success");
         resolve();
       }
     });
