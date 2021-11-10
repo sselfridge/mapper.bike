@@ -2,13 +2,7 @@ const _userDb = require("./db/user_aws");
 
 const dayjs = require("../utils/dayjs");
 
-const config = require("../../src/config/keys");
-var stravaAPI = require("strava-v3");
-stravaAPI.config({
-  client_id: config.client_id,
-  client_secret: config.client_secret,
-  redirect_uri: config.redirect_uri,
-});
+const _stravaAPI = global._stravaAPI;
 
 const summaryServices = require("../services/summaryServices");
 
@@ -76,12 +70,12 @@ class User {
       user = await this.#refreshStravaTokens(user);
     }
 
-    return new stravaAPI.client(user.accessToken);
+    return new _stravaAPI.client(user.accessToken);
   };
 
   static #refreshStravaTokens = async (user) => {
     try {
-      const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
+      const result = await _stravaAPI.oauth.refreshToken(user.refreshToken);
       const { expires_at, refresh_token, access_token } = result;
       //TODO validate input
       user.expiresAt = expires_at;

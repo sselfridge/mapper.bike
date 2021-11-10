@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+global._stravaAPI = require("./utils/stravaClient");
 
 const cookieParser = require("cookie-parser");
 const fs = require("fs");

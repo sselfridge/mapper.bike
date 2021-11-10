@@ -12,6 +12,8 @@ const got = require("got");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
+const _stravaAPI = global._stravaAPI;
+
 // eslint-disable-next-line require-await
 async function segmentEfforts(req, res, next) {
   const athleteId = res.locals.user.athleteId;
@@ -107,15 +109,7 @@ async function test(req, res, next) {
   //   client_secret: config.client_secret,
   // });
 
-  var stravaAPI = require("strava-v3");
-  stravaAPI.config({
-    // "access_token"  : "Your apps access token (Required for Quickstart)",
-    client_id: config.client_id,
-    client_secret: config.client_secret,
-    redirect_uri: config.redirect_uri,
-  });
-
-  // const testStrava = new stravaAPI.client(
+  // const testStrava = new _stravaAPI.client(
   //   "e062bcd7de8fd1dd736071dbf45dc7f281b1ec0e"
   // );
 

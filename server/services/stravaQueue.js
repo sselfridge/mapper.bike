@@ -1,16 +1,9 @@
-const config = require("../../src/config/keys");
-const db = require("../models/db/dataLayer");
-// const m = require("moment");
-var stravaAPI = require("strava-v3");
 const SegmentQueue = require("./classes/SegmentQueue");
 const ActivityQueue = require("./classes/ActivityQueue");
 
 const User = require("../models/User");
-stravaAPI.config({
-  client_id: config.client_id,
-  client_secret: config.client_secret,
-  redirect_uri: config.redirect_uri,
-});
+
+const _stravaAPI = global._stravaAPI;
 
 const stravaQueue = {
   processQueue,
@@ -45,7 +38,7 @@ async function processQueue() {
 }
 
 function stravaRate() {
-  const rateLimits = stravaAPI.rateLimiting;
+  const rateLimits = _stravaAPI.rateLimiting;
   if (rateLimits.shortTermUsage + rateLimits.longTermUsage === 0) return 0;
   const stravaRate = rateLimits.fractionReached();
 
@@ -59,7 +52,7 @@ async function updateUserRefreshToken(athleteId, result) {
     user.expiresAt = result.expires_at;
     user.refreshToken = result.refresh_token;
     user.accessToken = result.access_token;
-    db.updateUser(user);
+    User.update(user);
   }
 }
 

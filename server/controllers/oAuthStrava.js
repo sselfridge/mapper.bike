@@ -7,20 +7,14 @@ const cryptr = new Cryptr(config.secretSuperKey);
 const stravaQ = require("../services/stravaQueue");
 const { logUser } = require("../services/systemServices");
 
-var stravaAPI = require("strava-v3");
-stravaAPI.config({
-  // "access_token"  : "Your apps access token (Required for Quickstart)",
-  client_id: config.client_id,
-  client_secret: config.client_secret,
-  redirect_uri: config.redirect_uri,
-});
+const _stravaAPI = global._stravaAPI;
 
 // EXPORTED Functions
 function setStravaOauth(req, res, next) {
   let code = req.query.code;
   console.log(`Strava Code: ${code}`);
 
-  stravaAPI.oauth
+  _stravaAPI.oauth
     .getToken(code)
     .then((result) => {
       let payload = {
@@ -86,7 +80,7 @@ const checkRefreshToken = (res) => {
     } else {
       console.log("Token Expired");
 
-      stravaAPI.oauth
+      _stravaAPI.oauth
         .refreshToken(res.locals.refreshToken)
         .then(async (result) => {
           //update user refresh token in DB
@@ -105,7 +99,7 @@ const checkRefreshToken = (res) => {
           setJWTCookie(res, payload);
           res.locals.expiresAt = dayjs.unix(result.expires_at);
           res.locals.accessToken = result.access_token;
-          res.locals.strava = new stravaAPI.client(result.access_token);
+          res.locals.strava = new _stravaAPI.client(result.access_token);
           return resolve();
         })
         .catch((err) => {
@@ -143,7 +137,7 @@ const decodeCookie = (res, jwt) => {
       }
       console.log(`JWT Valid - athleteId: ${payload.athleteId}`);
       res.locals.expiresAt = dayjs.unix(payload.expiresAt);
-      res.locals.strava = new stravaAPI.client(payload.accessToken);
+      res.locals.strava = new _stravaAPI.client(payload.accessToken);
       res.locals.accessToken = payload.accessToken;
       res.locals.refreshToken = payload.refreshToken;
       res.locals.athleteId = payload.athleteId;

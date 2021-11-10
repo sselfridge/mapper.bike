@@ -1,20 +1,9 @@
-const config = require("../../src/config/keys");
 const db = require("../models/db/dataLayer");
-// const m = require("moment");
 const dayjs = require("../utils/dayjs");
 
 //models
 const Activity = require("../models/Activity");
 const User = require("../models/User");
-
-//services
-
-var stravaAPI = require("strava-v3");
-stravaAPI.config({
-  client_id: config.client_id,
-  client_secret: config.client_secret,
-  redirect_uri: config.redirect_uri,
-});
 
 //replaced by the sub model, but still useful for testing
 async function updateAllUserSinceLast() {
