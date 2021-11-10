@@ -1,6 +1,9 @@
 const dayjs = require("../../utils/dayjs");
 
 const db = require("../../models/db/dataLayer");
+
+const User = require("../../models/User");
+
 const config = require("../../../src/config/keys");
 var stravaAPI = require("strava-v3");
 stravaAPI.config({
@@ -12,22 +15,6 @@ stravaAPI.config({
 class SegmentQueue {
   constructor() {
     this.pathlessSegments = [];
-    this.initDone = false;
-    this.appStrava = null;
-  }
-
-  async init() {
-    this.pathlessSegments = await db.getAllPathlessSegments();
-
-    console.log(
-      "Init SegmentQueue, total pathless segments:",
-      this.pathlessSegments.length
-    );
-
-    this.appStrava = await this.getStravaClient(config.client_refresh);
-
-    this.initDone = true;
-    return this;
   }
 
   async getStravaClient(refreshToken) {
@@ -53,7 +40,7 @@ class SegmentQueue {
     if (ids.length === 0) return 0;
 
     for (const id of ids) {
-      let data = await this.getSegmentDetails(id);
+      let data = await User.getFullSegment(id);
       if (!data) {
         console.log("Error Fetching Data for Segment Id:", id);
         data = { id, line: "error" };

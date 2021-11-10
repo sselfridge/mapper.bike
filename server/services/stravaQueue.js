@@ -5,6 +5,7 @@ var stravaAPI = require("strava-v3");
 const SegmentQueue = require("./classes/SegmentQueue");
 const ActivityQueue = require("./classes/ActivityQueue");
 
+const User = require("../models/User");
 stravaAPI.config({
   client_id: config.client_id,
   client_secret: config.client_secret,
@@ -21,15 +22,15 @@ async function processQueue() {
 
   let stravaRatePercent = await stravaRate();
 
-  const activityQ = await new ActivityQueue().init();
-  const segmentQ = await new SegmentQueue().init();
+  const activityQ = await new ActivityQueue();
+  const segmentQ = await new SegmentQueue();
 
   while (stravaRatePercent < 75) {
     let processed = 0;
     try {
       processed += await activityQ.process();
-      console.info("processed: ", processed);
-      // processed += await segmentQ.process();
+      // console.info("processed: ", processed);
+      processed += await segmentQ.process();
     } catch (error) {
       console.log("Queue Error:", error.message);
       console.log(error.errors);
@@ -53,11 +54,13 @@ function stravaRate() {
 }
 
 async function updateUserRefreshToken(athleteId, result) {
-  const user = await db.getUser(athleteId);
-  user.expiresAt = result.expires_at;
-  user.refreshToken = result.refresh_token;
-  user.accessToken = result.access_token;
-  db.updateUser(user);
+  const user = await User.get(athleteId);
+  if (user) {
+    user.expiresAt = result.expires_at;
+    user.refreshToken = result.refresh_token;
+    user.accessToken = result.access_token;
+    db.updateUser(user);
+  }
 }
 
 module.exports = stravaQueue;

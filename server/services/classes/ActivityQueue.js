@@ -14,37 +14,9 @@ stravaAPI.config({
 });
 
 class ActivityQueue {
-  //static functions:
-  //   TODO this should be a part of a USER model or something similar
-  static async updateUserRefreshToken(athleteId, result) {
-    const user = await User.get(athleteId);
-    if (
-      user?.refreshToken !== result.refresh_token ||
-      user?.accessToken !== result.access_token
-    ) {
-      user.refreshToken = result.refresh_token;
-      user.accessToken = result.access_token;
-      user.expiresAt = result.expires_at;
-      console.log("user to DB: ", user);
-
-      await User.update(user);
-    }
-  }
-
   constructor() {
-    this.appStrava = null;
-    this.initDone = false;
     this.batchSize = 10;
     this.userStravaCache = {};
-  }
-
-  async init() {
-    console.log("Init ActivityQueue");
-
-    this.appStrava = await this.getStravaClient(config.client_refresh);
-
-    this.initDone = true;
-    return this;
   }
 
   /**
