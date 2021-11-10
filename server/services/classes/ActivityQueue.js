@@ -64,17 +64,11 @@ class ActivityQueue {
     if (activities.length === 0) return 0;
     for (const activity of activities) {
       try {
-        const athleteId = activity.athleteId;
-
-        const strava = await this.getClient(athleteId);
-
-        const fullActivity = await strava.activities.get({
-          id: activity.id,
-          include_all_efforts: true,
-        });
+        const { athleteId, id } = activity;
+        const fullActivity = await User.getFullActivity(athleteId, id);
 
         const result = await this.parseActivity(fullActivity);
-        if (result) completedActivityIds.push({ id: activity.id });
+        if (result) completedActivityIds.push({ id });
       } catch (error) {
         console.log("Activity Detail Fetch Error:", activity.id, error.message);
         // TODO - add error field to activities so they can be skipped later
@@ -88,27 +82,32 @@ class ActivityQueue {
     return completedActivityIds.length;
   }
 
-  async getClient(athleteId) {
-    if (this.userStravaCache[athleteId]) return this.userStravaCache[athleteId];
+  // async getClient(athleteId) {
+  //   if (this.userStravaCache[athleteId]) return this.userStravaCache[athleteId];
 
-    const user = await User.get(athleteId);
+  //   const user = await User.get(athleteId);
 
-    if (!user) throw new Error("User not defined in DB:", athleteId);
+  //   if (!user) throw new Error("User not defined in DB:", athleteId);
 
-    //TODO - Add validation so accessToken matches up with user ID.
-    //got this crossed for nigel in debugging and now I can't access any of his data
-    const refreshResult = await stravaAPI.oauth.refreshToken(user.refreshToken);
-    if (refreshResult.access_token !== user.accessToken) {
-      user.accessToken = refreshResult.access_token;
-      User.update(user);
-    }
+  //   //TODO - Add validation so accessToken matches up with user ID.
+  //   //got this crossed for nigel in debugging and now I can't access any of his data
+  //   const refreshResult = await stravaAPI.oauth.refreshToken(user.refreshToken);
+  //   if (refreshResult.access_token !== user.accessToken) {
+  //     user.accessToken = refreshResult.access_token;
+  //     User.update(user);
+  //   }
 
-    const strava = new stravaAPI.client(user.accessToken);
+  //   const strava = new stravaAPI.client(user.accessToken);
 
-    this.userStravaCache[athleteId] = strava;
-    return strava;
-  }
+  //   this.userStravaCache[athleteId] = strava;
+  //   return strava;
+  // }
 
+  /**
+   * Parse full activity for ranked segments
+   * @param {object} activity
+   * @returns {boolean} false if error occurs
+   */
   async parseActivity(activity) {
     if (!activity.map.summary_polyline) {
       console.log(`No poly line on activity ${activity.id} - skipping`);
@@ -133,7 +132,9 @@ class ActivityQueue {
 
     activity.segment_efforts.forEach((effort) => {
       if (effort.kom_rank <= 10 && effort.kom_rank > 0) {
-        // console.log(`Saving Effort:${effort.name} with Rank:${effort.kom_rank}`);
+        console.log(
+          `Saving Effort:${effort.name} with Rank:${effort.kom_rank}`
+        );
         rankedEfforts.push(effort);
       }
     });

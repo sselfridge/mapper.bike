@@ -5,6 +5,10 @@ class Segment {
     return await db.pop(limit);
   };
 
+  static get = async (id) => {
+    return await db.get(id);
+  };
+
   static getAllPathless = async () => {
     return await db.getAllPathless();
   };
