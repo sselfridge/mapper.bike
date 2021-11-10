@@ -4,13 +4,7 @@ const db = require("../../models/db/dataLayer");
 
 const User = require("../../models/User");
 
-const config = require("../../../src/config/keys");
-var stravaAPI = require("strava-v3");
-stravaAPI.config({
-  client_id: config.client_id,
-  client_secret: config.client_secret,
-  redirect_uri: config.redirect_uri,
-});
+const _stravaAPI = global._stravaAPI;
 
 class SegmentQueue {
   constructor() {
@@ -18,7 +12,7 @@ class SegmentQueue {
   }
 
   async getStravaClient(refreshToken) {
-    const result = await stravaAPI.oauth.refreshToken(refreshToken);
+    const result = await _stravaAPI.oauth.refreshToken(refreshToken);
     const expiresAt = dayjs.unix(result.expires_at);
 
     const localTime = expiresAt.format("hh:mm A");
@@ -27,7 +21,7 @@ class SegmentQueue {
     console.log(`App Token Expires at: ${localTime} (${gmtTime}GMT),`);
     console.log(expiresAt.fromNow());
 
-    return new stravaAPI.client(result.access_token);
+    return new _stravaAPI.client(result.access_token);
   }
 
   async process() {

@@ -6,12 +6,7 @@ const Effort = require("../../models/Effort");
 const User = require("../../models/User");
 
 const config = require("../../../src/config/keys");
-var stravaAPI = require("strava-v3");
-stravaAPI.config({
-  client_id: config.client_id,
-  client_secret: config.client_secret,
-  redirect_uri: config.redirect_uri,
-});
+const _stravaAPI = global._stravaAPI;
 
 class ActivityQueue {
   constructor() {
@@ -63,13 +58,13 @@ class ActivityQueue {
 
   //   //TODO - Add validation so accessToken matches up with user ID.
   //   //got this crossed for nigel in debugging and now I can't access any of his data
-  //   const refreshResult = await stravaAPI.oauth.refreshToken(user.refreshToken);
+  //   const refreshResult = await _stravaAPI.oauth.refreshToken(user.refreshToken);
   //   if (refreshResult.access_token !== user.accessToken) {
   //     user.accessToken = refreshResult.access_token;
   //     User.update(user);
   //   }
 
-  //   const strava = new stravaAPI.client(user.accessToken);
+  //   const strava = new _stravaAPI.client(user.accessToken);
 
   //   this.userStravaCache[athleteId] = strava;
   //   return strava;
@@ -117,7 +112,7 @@ class ActivityQueue {
   //TODO this should probably move to a separate strava base resource
   async getStravaClient() {
     const refreshToken = config.client_refresh;
-    const result = await stravaAPI.oauth.refreshToken(refreshToken);
+    const result = await _stravaAPI.oauth.refreshToken(refreshToken);
     const expiresAt = dayjs.unix(result.expires_at);
 
     const localTime = expiresAt.format("hh:mm A");
@@ -127,7 +122,7 @@ class ActivityQueue {
 
     console.log(expiresAt.fromNow());
 
-    return new stravaAPI.client(result.access_token);
+    return new _stravaAPI.client(result.access_token);
   }
 }
 
