@@ -91,7 +91,8 @@ const checkRefreshToken = (res) => {
         .then(async (result) => {
           //update user refresh token in DB
           const athleteId = res.locals.athleteId;
-          stravaQ.updateUserRefreshToken(athleteId, result.refresh_token);
+          // TODO update whole user here
+          await stravaQ.updateUserRefreshToken(athleteId, result);
           return result;
         })
         .then((result) => {
@@ -101,7 +102,6 @@ const checkRefreshToken = (res) => {
             accessToken: result.access_token,
             athleteId: res.locals.athleteId,
           };
-
           setJWTCookie(res, payload);
           res.locals.expiresAt = dayjs.unix(result.expires_at);
           res.locals.accessToken = result.access_token;

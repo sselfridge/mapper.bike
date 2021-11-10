@@ -1,5 +1,5 @@
 var client = require("./config");
-const keys = require("../../src/config/keys");
+const keys = require("../../../src/config/keys");
 
 const TableName = keys.dbTables["segmentEfforts"];
 
@@ -106,17 +106,19 @@ function getAll() {
   });
 }
 
+/**
+ * Batch Delete of up to 25 items at a time
+ * @param {number[]} ids
+ */
 function batchDelete(ids) {
   return new Promise((resolve, reject) => {
     if (ids.length === 0) resolve();
-
     const params = makeBatchDeleteParams(ids);
 
     client.batchWrite(params, (err) => {
       if (err) {
         reject(err);
       } else {
-        console.log("Deleted Success");
         resolve();
       }
     });

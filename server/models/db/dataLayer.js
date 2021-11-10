@@ -1,7 +1,7 @@
-const Activity = require("./Activity");
-const User = require("./User");
-const Effort = require("./Effort");
-const Segment = require("./Segment");
+const Activity = require("./activity_aws");
+const User = require("./user_aws");
+const Effort = require("./effort_aws");
+const Segment = require("./segment_aws");
 
 const utils = require("./utils");
 
@@ -128,8 +128,7 @@ async function addUser(data) {
 }
 
 async function updateUser(data) {
-  const id = data.id;
-  const userExists = await User.exists(id);
+  const userExists = await User.exists(data.id);
   if (!userExists) throw new Error("Update Error: User not in DB");
   else {
     await User.update(data);
@@ -171,9 +170,7 @@ async function batchDeleteEfforts(ids) {
   const promArr = [];
   while (ids.length > 0) {
     const batch = ids.slice(0, 20);
-
     promArr.push(Effort.batchDelete(batch));
-
     ids.splice(0, 20);
   }
   await Promise.all(promArr);

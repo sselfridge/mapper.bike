@@ -1,5 +1,5 @@
 const client = require("./config");
-const keys = require("../../src/config/keys");
+const keys = require("../../../src/config/keys");
 
 const TableName = keys.dbTables["users"];
 
@@ -8,29 +8,32 @@ const users = {
   get,
   getAll,
   exists,
-  remove,
-  batchDelete
+  // remove,
+  // batchDelete,
 };
 
 function update(data) {
   return new Promise((resolve, reject) => {
-    const { id, accessToken, refreshToken, startDate, lastUpdate } = data;
+    const { id, accessToken, refreshToken, startDate, lastUpdate, expiresAt } =
+      data;
 
     const params = {
       TableName,
       Key: { id },
-      UpdateExpression: "set #a = :a, #r = :r, #sd = :sd, #lu = :lu",
+      UpdateExpression: "set #a = :a, #r = :r, #sd = :sd, #lu = :lu,#ex = :ex",
       ExpressionAttributeNames: {
         "#a": "accessToken",
         "#r": "refreshToken",
         "#sd": "startDate",
         "#lu": "lastUpdate",
+        "#ex": "expiresAt",
       },
       ExpressionAttributeValues: {
         ":a": accessToken,
         ":r": refreshToken,
         ":sd": startDate,
         ":lu": lastUpdate,
+        ":ex": expiresAt,
       },
     };
 
@@ -76,6 +79,7 @@ function getAll() {
         "accessToken",
         "refreshToken",
         "startDate",
+        "expiresAt",
       ],
     };
 
@@ -143,7 +147,7 @@ const makeBatchDeleteParams = (ids) => {
   var params = { RequestItems: {} };
   params.RequestItems[TableName] = [];
   ids.forEach((id) => {
-    const newItem = { DeleteRequest: { Key: { id } } };
+    const newItem = { DeleteRequest: { Key: id } };
     params.RequestItems[TableName].push(newItem);
   });
   return params;

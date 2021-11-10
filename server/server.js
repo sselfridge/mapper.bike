@@ -8,6 +8,7 @@ const fs = require("fs");
 const oAuthStrava = require("./controllers/oAuthStrava");
 const summaryController = require("./controllers/summaryStrava");
 const segmentController = require("./controllers/segmentsController");
+const userController = require("./controllers/userController");
 const analyticsController = require("./controllers/analyticsController");
 
 const stravaQ = require("./services/stravaQueue");
@@ -31,12 +32,12 @@ var cron = require("node-cron");
 cron.schedule("01 04 * * *", () => {});
 
 // Every 15min
-cron.schedule("*/15 * * * *", () => {
-  if (process.env.NODE_ENV === "production") {
-    console.log("---- 15 min Cron----");
-    stravaQ.processQueue();
-  }
-});
+// cron.schedule("*/15 * * * *", () => {
+//   if (process.env.NODE_ENV === "production") {
+//     console.log("---- 15 min Cron----");
+//     stravaQ.processQueue();
+//   }
+// });
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   //TODO - rework error handling
@@ -49,6 +50,10 @@ app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
     //user profile exists send info back
     console.log(`User logged in to strava`);
     res.send(JSON.stringify(res.locals.user));
+    return;
+  }
+  if (res.locals.err) {
+    res.sendStatus(200);
     return;
   }
   //no user logged in
@@ -206,7 +211,7 @@ app.post(
 app.post(
   "/api/initialize",
   oAuthStrava.loadStravaProfile,
-  segmentController.initializeUser,
+  userController.initializeUser,
   (req, res) => {
     if (res.locals.err) {
       console.log(res.locals.err);
@@ -249,7 +254,7 @@ app.post("/api/logout", oAuthStrava.clearCookie, (req, res) => {
   res.send("Ok");
 });
 
-app.get("/api/users/:id", segmentController.getUser, (req, res) => {
+app.get("/api/users/:id", userController.getUser, (req, res) => {
   if (res.locals.err) {
     res.status(512).send("Error Fetching User");
     return;
@@ -271,7 +276,7 @@ app.get("/api/kickoffQ", (req, res) => {
 app.delete(
   "/api/users/:id",
   oAuthStrava.loadStravaProfile,
-  segmentController.deleteUser,
+  userController.deleteUser,
   (req, res) => {
     if (res.locals.err) {
       res.status(500).send();
