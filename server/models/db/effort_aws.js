@@ -106,6 +106,10 @@ function getAll() {
   });
 }
 
+/**
+ * Batch Delete of up to 25 items at a time
+ * @param {number[]} ids
+ */
 function batchDelete(ids) {
   return new Promise((resolve, reject) => {
     if (ids.length === 0) resolve();
@@ -125,7 +129,7 @@ const makeBatchDeleteParams = (ids) => {
   var params = { RequestItems: {} };
   params.RequestItems[TableName] = [];
   ids.forEach((id) => {
-    const newItem = { DeleteRequest: { Key: id } };
+    const newItem = { DeleteRequest: { Key: { id } } };
     params.RequestItems[TableName].push(newItem);
   });
   return params;

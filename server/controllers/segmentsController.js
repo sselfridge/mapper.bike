@@ -207,6 +207,7 @@ async function testReset(req, res, next) {
     console.log(err.message);
     res.locals.err = "AAAAAAAAA";
   }
+  return next();
 }
 
 async function getLeaderboard(segmentId) {
