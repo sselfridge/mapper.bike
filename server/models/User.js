@@ -1,4 +1,4 @@
-const db = require("./db/user_aws");
+const _userDb = require("./db/user_aws");
 
 const dayjs = require("../utils/dayjs");
 
@@ -10,31 +10,31 @@ class User {
   static add = async (data) => {
     console.log("Data: Add User");
     const id = data.id;
-    const userExists = await db.exists(id);
+    const userExists = await _userDb.exists(id);
     console.log("User Exists:", userExists);
     if (userExists) {
       throw new Error("User Already in DB");
     } else {
       console.log("Add user:", data);
-      await db.update(data);
+      await _userDb.update(data);
     }
   };
 
   static update = async (data) => {
-    const userExists = await db.exists(data.id);
+    const userExists = await _userDb.exists(data.id);
     if (!userExists) throw new Error("Update Error: User not in DB");
     else {
-      await db.update(data);
+      await _userDb.update(data);
     }
   };
 
   static get = async (id) => {
-    const user = await db.get(id);
+    const user = await _userDb.get(id);
     return user;
   };
 
   static getAll = async () => {
-    const allUsers = await db.getAll();
+    const allUsers = await _userDb.getAll();
     return allUsers;
   };
 
@@ -87,7 +87,7 @@ class User {
     }
 
     try {
-      db.update(user);
+      _userDb.update(user);
       return user;
     } catch (error) {
       console.error("Unable to update user in DB");

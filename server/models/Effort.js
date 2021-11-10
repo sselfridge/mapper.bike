@@ -1,4 +1,4 @@
-const db = require("./db/effort_aws");
+const _effortDb = require("./db/effort_aws");
 const Segment = require("./Segment");
 
 const utils = require("./db/utils");
@@ -6,9 +6,9 @@ const utils = require("./db/utils");
 class Effort {
   static getEfforts = async (athleteId, rank = 10) => {
     if (rank === "error") {
-      return await db.getErrors(athleteId);
+      return await _effortDb.getErrors(athleteId);
     } else {
-      return await db.getByRank(athleteId, rank);
+      return await _effortDb.getByRank(athleteId, rank);
     }
   };
 
@@ -17,26 +17,26 @@ class Effort {
   };
 
   static batchAdd = async (efforts) => {
-    return await db.batchAdd(efforts);
+    return await _effortDb.batchAdd(efforts);
   };
 
   static delete = async (data) => {
     const ids = data.slice();
     while (ids.length > 0) {
       const batch = ids.slice(0, 20);
-      await db.batchDelete(batch);
+      await _effortDb.batchDelete(batch);
       ids.splice(0, 20);
     }
   };
 
   static deleteAll = async () => {
-    const ids = await db.getAll();
+    const efforts = await _effortDb.getAll();
 
-    while (ids.length > 0) {
-      const batch = ids.slice(0, 20);
-      await db.batchDelete(batch);
-      ids.splice(0, 20);
-      console.log("Batch Delete. Remaining:", ids.length);
+    while (efforts.length > 0) {
+      const batch = efforts.slice(0, 20).map((e) => e.id);
+      await _effortDb.batchDelete(batch);
+      efforts.splice(0, 20);
+      console.log("Batch Delete. Remaining:", efforts.length);
     }
   };
 
@@ -84,7 +84,7 @@ class Effort {
     }));
 
     await Promise.all([
-      db.batchAdd(rankedSegments),
+      _effortDb.batchAdd(rankedSegments),
       Segment.batchAdd(segments),
     ]);
   };

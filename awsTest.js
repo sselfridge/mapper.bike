@@ -6,6 +6,8 @@ var credentials = new AWS.SharedIniFileCredentials({ profile: "dbuser" });
 AWS.config.credentials = credentials;
 AWS.config.update({ region: "us-west-2" });
 
+const dayjs = require("./server/utils/dayjs");
+
 // var db = new AWS.DynamoDB();
 var client = new AWS.DynamoDB.DocumentClient();
 var params;
@@ -385,6 +387,64 @@ var params;
 //     ExpressionAttributeNames: { "#u": "updated", "#m": "men", "#w": "women" },
 //     ExpressionAttributeValues: {
 //       ":u": moment().format(),
+//       ":m": JSON.stringify(men),
+//       ":w": JSON.stringify(women),
+//     },
+//   };
+
+//   client.update(params, (err, data) => {
+//     if (err) {
+//       console.log("get Segment Details Error: ", err);
+//       // reject(err);
+//       fail++;
+//     } else {
+//       success++;
+//       //  console.log("retVal");
+//       //  console.log(data);
+//     }
+//   });
+// };
+
+// const leaderBoards = require("./leaderBoards");
+// console.log("leaderBoards: ", leaderBoards[999].id);
+
+// let i = 999;
+// console.time("go");
+// const interval = setInterval(() => {
+//   const curr = leaderBoards[i];
+//   if (i === 1700 || !curr) {
+//     clearInterval(interval);
+//     console.timeEnd("go");
+//   } else {
+//     if (!curr.error) updateDetail(curr.id, curr.men, curr.women);
+//     if (i % 25 === 0) {
+//       console.log(i);
+//     }
+//   }
+//   i++;
+// }, 100);
+
+// setInterval(() => {
+//   console.log("success: ", success);
+//   console.log("fail: ", fail);
+// }, 500);
+
+let success = 0;
+let fail = 0;
+
+// console.log("success: ", success);
+// console.log("fail: ", fail);
+// const updateDetail = (id, men, women) => {
+//   params = {
+//     Key: { id: 15378458 },
+//     TableName: "segmentDetails-dev",
+//     ConditionExpression: "attribute_exists(id)", //ensure we're only updating existing values, not adding new ones
+
+//     //     ReturnValues: "ALL_OLD",
+//     UpdateExpression: "set #u = :u, #w = :w,#m = :m",
+//     ExpressionAttributeNames: { "#u": "updated", "#m": "men", "#w": "women" },
+//     ExpressionAttributeValues: {
+//       ":u": dayjs().format(),
 //       ":m": JSON.stringify(men),
 //       ":w": JSON.stringify(women),
 //     },

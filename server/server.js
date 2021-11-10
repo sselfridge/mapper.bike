@@ -53,6 +53,10 @@ app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
     res.send(JSON.stringify(res.locals.user));
     return;
   }
+  if (res.locals.err) {
+    res.sendStatus(200);
+    return;
+  }
   //no user logged in
   console.log(`User not logged in to strava`);
   res.status(201).send("User Not logged in");

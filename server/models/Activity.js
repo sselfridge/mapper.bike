@@ -1,8 +1,8 @@
-const db = require("./db/activity_aws");
+const _activityDb = require("./db/activity_aws");
 
 class Activity {
   static add = async (id, athleteId) => {
-    await db.add(id, athleteId);
+    await _activityDb.add(id, athleteId);
   };
 
   /**
@@ -12,27 +12,27 @@ class Activity {
   static delete = async (ids) => {
     while (ids.length > 0) {
       const batch = ids.slice(0, 20);
-      await db.batchDelete(batch);
+      await _activityDb.batchDelete(batch);
       ids.splice(0, 20);
     }
   };
 
   static pop = async (limit) => {
-    return await db.pop(limit);
+    return await _activityDb.pop(limit);
   };
 
   static deleteAll = async () => {
-    const ids = await db.getAll();
+    const ids = await _activityDb.getAll();
     while (ids.length > 0) {
       console.log("Batch Delete. Remaining:", ids.length);
-      const batch = ids.slice(0, 20);
-      await db.batchDelete(batch);
+      const batch = ids.slice(0, 20).map((a) => a.id);
+      await _activityDb.batchDelete(batch);
       ids.splice(0, 20);
     }
   };
 
   /**
-   * Add entries to activity queue
+   * Add entries to activity queue if they have a polyline
    * @param {array} activities
    * @param {number} athleteId
    */
@@ -43,7 +43,7 @@ class Activity {
       const batchSize = 25;
       const batch = activities.slice(0, batchSize).filter((act) => act.line);
 
-      await db.batchAdd(batch, athleteId);
+      await _activityDb.batchAdd(batch, athleteId);
 
       activities.splice(0, batchSize);
     }
