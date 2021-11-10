@@ -74,13 +74,14 @@ class ActivityQueue {
         });
 
         const result = await this.parseActivity(fullActivity);
-        if (result) completedActivityIds.push(activity.id);
+        if (result) completedActivityIds.push({ id: activity.id });
       } catch (error) {
         console.log("Activity Detail Fetch Error:", activity.id, error.message);
         // TODO - add error field to activities so they can be skipped later
         // or maybe just log and delete them?
       }
     }
+    console.info("Completed activities", completedActivityIds);
     if (completedActivityIds.length > 0)
       await Activity.delete(completedActivityIds);
 

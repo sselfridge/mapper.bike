@@ -21,14 +21,15 @@ async function processQueue() {
 
   let stravaRatePercent = await stravaRate();
 
-  const segmentQ = await new SegmentQueue().init();
   const activityQ = await new ActivityQueue().init();
+  const segmentQ = await new SegmentQueue().init();
 
   while (stravaRatePercent < 75) {
     let processed = 0;
     try {
       processed += await activityQ.process();
-      processed += await segmentQ.process();
+      console.info("processed: ", processed);
+      // processed += await segmentQ.process();
     } catch (error) {
       console.log("Queue Error:", error.message);
       console.log(error.errors);
@@ -51,12 +52,12 @@ function stravaRate() {
   return percent;
 }
 
-async function updateUserRefreshToken(athleteId, refreshToken) {
+async function updateUserRefreshToken(athleteId, result) {
   const user = await db.getUser(athleteId);
-  if (user && user.refreshToken !== refreshToken) {
-    user.refreshToken = refreshToken;
-    db.updateUser(user);
-  }
+  user.expiresAt = result.expires_at;
+  user.refreshToken = result.refresh_token;
+  user.accessToken = result.access_token;
+  db.updateUser(user);
 }
 
 module.exports = stravaQueue;
