@@ -1,5 +1,4 @@
 const db = require("./db/user_aws");
-// const Activity = require("./Activity");
 
 const dayjs = require("../utils/dayjs");
 
@@ -45,7 +44,42 @@ class User {
     return allUsers;
   };
 
-  static refreshStravaTokens = async (user) => {
+  static fetchActivitiesAfter = async (user, after) => {
+    const strava = await this.#makeStravaClient(user);
+
+    const result = await summaryServices.fetchActivities(
+      strava,
+      after,
+      2550000000
+    );
+
+    return result;
+  };
+
+  static getFullActivity = async (athleteId, activityId) => {
+    const user = await this.get(athleteId);
+    const strava = await this.#makeStravaClient(user);
+
+    const full = await strava.activities.get({
+      id: activityId,
+      include_all_efforts: true,
+    });
+    console.log("full: ", JSON.stringify(full).length);
+    return full;
+  };
+
+  static #makeStravaClient = async (user) => {
+    const { expiresAt } = user;
+    const now = dayjs();
+
+    if (now.isAfter(dayjs.unix(expiresAt))) {
+      user = await this.#refreshStravaTokens(user);
+    }
+
+    return new stravaAPI.client(user.accessToken);
+  };
+
+  static #refreshStravaTokens = async (user) => {
     try {
       const result = await stravaAPI.oauth.refreshToken(user.refreshToken);
       const { expires_at, refresh_token, access_token } = result;
@@ -65,29 +99,6 @@ class User {
       console.error("Unable to update user in DB");
       return null;
     }
-  };
-
-  static makeStravaClient = async (user) => {
-    const { expiresAt } = user;
-    const now = dayjs();
-
-    if (now.isAfter(dayjs.unix(expiresAt))) {
-      user = await this.refreshStravaTokens(user);
-    }
-
-    return new stravaAPI.client(user.accessToken);
-  };
-
-  static fetchActivitiesAfter = async (user, after) => {
-    const strava = await this.makeStravaClient(user);
-
-    const result = await summaryServices.fetchActivities(
-      strava,
-      after,
-      2550000000
-    );
-
-    return result;
   };
 }
 
