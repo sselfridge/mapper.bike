@@ -1,8 +1,0 @@
-- Consolidate dates
-    - pick new date library?
-- move all strava interaction into strava service
-- Pull out 'add activity' logic from queue
-    -  Want to be able to call directly when push-sub comes in
-    - But preserve the queue process for new users onboarding
-        - Allow new users to paste activities but save parsing for night?
-- Allow non-premium users to view their leaderboard segments
