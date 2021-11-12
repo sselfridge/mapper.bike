@@ -1,5 +1,6 @@
 const utils = {
   parseRankedSegments,
+  generateUpdateQuery,
 };
 
 function parseRankedSegments(efforts) {
@@ -44,6 +45,26 @@ function validateEffort(effort) {
     !!id;
 
   return retval;
+}
+
+const validFields = {
+  user: ["accessToken", "refreshToken", "startDate", "lastUpdate", "expiresAt"],
+};
+
+function generateUpdateQuery(fields, tableName) {
+  let exp = {
+    UpdateExpression: "set",
+    ExpressionAttributeNames: {},
+    ExpressionAttributeValues: {},
+  };
+  Object.entries(fields).forEach(([key, item]) => {
+    if (validFields[tableName].includes(key) === false) return;
+    exp.UpdateExpression += ` #${key} = :${key},`;
+    exp.ExpressionAttributeNames[`#${key}`] = key;
+    exp.ExpressionAttributeValues[`:${key}`] = item;
+  });
+  exp.UpdateExpression = exp.UpdateExpression.slice(0, -1);
+  return exp;
 }
 
 // eslint-disable-next-line no-unused-vars
