@@ -28,6 +28,47 @@ class User {
     }
   };
 
+  static updateTokens = async (data) => {
+    await _userDb.updateTokens(data);
+  };
+
+  static updatePartial = async (data) => {
+    if (!data.id) throw new Error("User must have ID");
+    await _userDb.updatePartial(data);
+  };
+
+  static updateAdd = async (data) => {
+    let user = await User.get(data.id);
+    if (user === undefined) {
+      user = {
+        ...data,
+        startDate: dayjs().format(),
+        lastUpdate: dayjs().format(),
+      };
+    } else {
+      user = {
+        ...data,
+      };
+    }
+    // const user = {
+    //   expiresAt: 1636622298,
+    //   refreshToken: "cd9b1cd5ccb1c0f4a2cdc0c246dbd558eb77a9e1",
+    //   accessToken: "368c478eb38605d2892bcd6407227f84383227d1",
+    //   id: 10645041,
+    // };
+
+    //  const asdf=  {
+    //     expiresAt: 1636607148,
+    //     startDate: '2021-11-07T17:54:34-08:00',
+    //     refreshToken: '86d917edbf4ee0aef45e2a7522679cae3c7603ce',
+    //     id: 1075670,
+    //     lastUpdate: '2021-11-10T07:30:22-08:00',
+    //     accessToken: 'f75d609593d2222dda52c0be13a789b2d1db8515'
+    //   }
+
+    await _userDb.update(user);
+  };
+
   static get = async (id) => {
     const user = await _userDb.get(id);
     return user;

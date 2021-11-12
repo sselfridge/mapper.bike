@@ -1,10 +1,14 @@
 const client = require("./config");
 const keys = require("../../../src/config/keys");
+const _ = require("lodash");
+const utils = require("./utils");
 
 const TableName = keys.dbTables["users"];
 
 const users = {
   update,
+  updateTokens,
+  updatePartial,
   get,
   getAll,
   exists,
@@ -35,6 +39,57 @@ function update(data) {
         ":lu": lastUpdate,
         ":ex": expiresAt,
       },
+    };
+
+    client.update(params, (err, data) => {
+      if (err) {
+        console.log("User Update Error", err);
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+function updateTokens(data) {
+  return new Promise((resolve, reject) => {
+    const { id, accessToken, refreshToken, expiresAt } = data;
+
+    const params = {
+      TableName,
+      Key: { id },
+      UpdateExpression: "set #a = :a, #r = :r,#ex = :ex",
+      ExpressionAttributeNames: {
+        "#a": "accessToken",
+        "#r": "refreshToken",
+        "#ex": "expiresAt",
+      },
+      ExpressionAttributeValues: {
+        ":a": accessToken,
+        ":r": refreshToken,
+        ":ex": expiresAt,
+      },
+    };
+
+    client.update(params, (err, data) => {
+      if (err) {
+        console.log("User Update Error", err);
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+
+function updatePartial(data) {
+  return new Promise((resolve, reject) => {
+    const updateParams = utils.generateUpdateQuery(data, "user");
+
+    const params = {
+      TableName,
+      Key: { id: data.id },
+      ...updateParams,
     };
 
     client.update(params, (err, data) => {

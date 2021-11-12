@@ -4,8 +4,9 @@ const dayjs = require("../utils/dayjs");
 const Cryptr = require("cryptr");
 const config = require("../../src/config/keys");
 const cryptr = new Cryptr(config.secretSuperKey);
-const stravaQ = require("../services/stravaQueue");
 const { logUser } = require("../services/systemServices");
+
+const User = require("../models/User");
 
 const _stravaAPI = global._stravaAPI;
 
@@ -17,13 +18,19 @@ function setStravaOauth(req, res, next) {
   _stravaAPI.oauth
     .getToken(code)
     .then((result) => {
+      const user = {
+        id: result.athlete.id,
+        accessToken: result.access_token,
+        refreshToken: result.refresh_token,
+        expiresAt: result.expires_at,
+      };
+      User.updateTokens(user);
       let payload = {
         expiresAt: result.expires_at,
         refreshToken: result.refresh_token,
         accessToken: result.access_token,
         athleteId: result.athlete.id,
       };
-
       setJWTCookie(res, payload);
       next();
     })
@@ -67,12 +74,11 @@ function loadStravaProfile(req, res, next) {
 const checkRefreshToken = (res) => {
   return new Promise((resolve, reject) => {
     const expiresAt = res.locals.expiresAt;
-    console.log(
-      `Token Expires at ${expiresAt.format("hh:mm A")} (${expiresAt
-        .utc()
-        .format("hh:mm")}GMT),`,
-      expiresAt.fromNow()
-    );
+    let logMsg = `Token Expires at ${expiresAt.format("hh:mm A")} `;
+    logMsg += `(${expiresAt.utc().format("hh:mm")}GMT)`;
+    logMsg += ` ${expiresAt.fromNow()}`;
+
+    console.info(logMsg);
     console.log("Refresh Token:", res.locals.refreshToken);
     if (dayjs().isBefore(expiresAt)) {
       console.log("Token Not Expired");
@@ -82,11 +88,17 @@ const checkRefreshToken = (res) => {
 
       _stravaAPI.oauth
         .refreshToken(res.locals.refreshToken)
-        .then(async (result) => {
+        .then((result) => {
           //update user refresh token in DB
           const athleteId = res.locals.athleteId;
-          // TODO update whole user here
-          await stravaQ.updateUserRefreshToken(athleteId, result);
+          const user = {
+            id: athleteId,
+            accessToken: result.access_token,
+            refreshToken: result.refresh_token,
+            expiresAt: result.expires_at,
+          };
+          //update db tokens, no need to wait
+          User.updateTokens(user);
           return result;
         })
         .then((result) => {
