@@ -12,6 +12,7 @@ const _stravaAPI = global._stravaAPI;
 
 // EXPORTED Functions
 function setStravaOauth(req, res, next) {
+  //TODO sanitize code
   let code = req.query.code;
   console.log(`Strava Code: ${code}`);
 
@@ -27,7 +28,7 @@ function setStravaOauth(req, res, next) {
       User.updateTokens(user);
       let payload = {
         expiresAt: result.expires_at,
-        refreshToken: result.refresh_token,
+        // refreshToken: result.refresh_token,
         accessToken: result.access_token,
         athleteId: result.athlete.id,
       };
@@ -46,7 +47,7 @@ function loadStravaProfile(req, res, next) {
   const jwt = decryptJwt(req.cookies.mapperjwt);
 
   decodeCookie(res, jwt)
-    .then(checkRefreshToken)
+    .then(checkToken)
     .then(() => res.locals.strava.athlete.get({}))
     .then((result) => {
       res.locals.user = {
@@ -71,23 +72,25 @@ function loadStravaProfile(req, res, next) {
 }
 
 //check if the access token is expired, if so request a new one
-const checkRefreshToken = (res) => {
-  return new Promise((resolve, reject) => {
+const checkToken = (res) => {
+  return new Promise(async (resolve, reject) => {
     const expiresAt = res.locals.expiresAt;
     let logMsg = `Token Expires at ${expiresAt.format("hh:mm A")} `;
     logMsg += `(${expiresAt.utc().format("hh:mm")}GMT)`;
     logMsg += ` ${expiresAt.fromNow()}`;
 
     console.info(logMsg);
-    console.log("Refresh Token:", res.locals.refreshToken);
     if (dayjs().isBefore(expiresAt)) {
       console.log("Token Not Expired");
       return resolve();
     } else {
       console.log("Token Expired");
 
+      const id = res.locals.athleteId;
+      const user = await User.get(id);
+
       _stravaAPI.oauth
-        .refreshToken(res.locals.refreshToken)
+        .refreshToken(user.refreshToken)
         .then((result) => {
           //update user refresh token in DB
           const athleteId = res.locals.athleteId;
@@ -97,14 +100,13 @@ const checkRefreshToken = (res) => {
             refreshToken: result.refresh_token,
             expiresAt: result.expires_at,
           };
-          //update db tokens, no need to wait
           User.updateTokens(user);
           return result;
         })
         .then((result) => {
           let payload = {
             expiresAt: result.expires_at,
-            refreshToken: result.refresh_token,
+            // refreshToken: result.refresh_token,
             accessToken: result.access_token,
             athleteId: res.locals.athleteId,
           };
@@ -148,10 +150,11 @@ const decodeCookie = (res, jwt) => {
         return reject("JWT / Cookie Invalid");
       }
       console.log(`JWT Valid - athleteId: ${payload.athleteId}`);
+      console.info("payload: ", payload);
       res.locals.expiresAt = dayjs.unix(payload.expiresAt);
       res.locals.strava = new _stravaAPI.client(payload.accessToken);
       res.locals.accessToken = payload.accessToken;
-      res.locals.refreshToken = payload.refreshToken;
+      // res.locals.refreshToken = payload.refreshToken;
       res.locals.athleteId = payload.athleteId;
       console.log("Access Token: ", res.locals.accessToken);
       return resolve(res);
