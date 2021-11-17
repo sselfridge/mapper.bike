@@ -1,5 +1,4 @@
 const fs = require("fs");
-// const m = require("moment");
 const dayjs = require("../utils/dayjs");
 
 const decodePolyline = require("decode-google-map-polyline");
@@ -26,16 +25,27 @@ async function fetchDemo() {
 }
 
 async function fetchActivitiesFromStrava(strava, after, before) {
-  const afterFriendly = dayjs(after * 1000).format("MMM DD YY");
-  const beforeFriendly = dayjs(before * 1000).format("MMM DD YY");
+  const afterDate = dayjs.unix(after);
+  const beforeDate = dayjs.unix(before);
+
+  const afterFriendlyUnix = afterDate.format("MMM DD YY");
+  const beforeFriendlyUnix = beforeDate.format("MMM DD YY");
   console.log(
-    `Fetching between: '${afterFriendly}' and '${beforeFriendly}' (${after} -- ${before})`
+    `Fetching between: '${afterFriendlyUnix}' and '${beforeFriendlyUnix}' (${after} -- ${before})`
   );
 
-  const params = { after, before, page: 1, per_page: 200 };
+  //Strava's date range is a bit off, so adding a full day of padding then filtering the results
+
+  const params = { after, before: before + 86400, page: 1, per_page: 200 };
   const r = { strava, activities: [] };
   const activities = await fetchConcurrently(params, r);
-  return activities;
+
+  const filteredActivities = activities.filter((act) => {
+    const startDate = dayjs(act.start_date);
+    return startDate.isBefore(beforeDate) && startDate.isAfter(afterDate);
+  });
+
+  return filteredActivities || activities;
 }
 
 //Not longer need to go deeper
@@ -72,6 +82,8 @@ async function fetchConcurrently(params, r) {
       r.strava.athlete.listActivities({ ...params, page: i + 1 })
     )
   );
+
+  if (results.length === 0) return [];
 
   //Make sure we didn't miss anything
   const lastResult = results[results.length - 1];
