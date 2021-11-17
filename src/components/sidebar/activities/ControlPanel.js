@@ -82,14 +82,14 @@ const ControlPanel = (props) => {
           <DatePicker
             className={classes.datePicker}
             onChange={onAfterChange}
-            value={afterDate}
+            value={new Date(afterDate * 1000)}
             calendarIcon={null}
             calendarClassName={classes.calendarStyle}
           />
           <DatePicker
             className={classes.datePicker}
             onChange={onBeforeChange}
-            value={beforeDate}
+            value={new Date(beforeDate * 1000)}
             calendarIcon={null}
             calendarClassName={classes.calendarStyle}
           />
@@ -152,10 +152,10 @@ ControlPanel.propTypes = {
   setActivityType: PropTypes.func.isRequired,
   setMapCenter: PropTypes.func.isRequired,
   onAfterChange: PropTypes.func.isRequired,
-  afterDate: PropTypes.instanceOf(Date),
+  afterDate: PropTypes.number.isRequired,
   onBeforeChange: PropTypes.func.isRequired,
   snackBar: PropTypes.func.isRequired,
-  beforeDate: PropTypes.instanceOf(Date),
+  beforeDate: PropTypes.number.isRequired,
 };
 
 export default ControlPanel;
