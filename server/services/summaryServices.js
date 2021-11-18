@@ -48,26 +48,6 @@ async function fetchActivitiesFromStrava(strava, after, before) {
   return filteredActivities || activities;
 }
 
-//Not longer need to go deeper
-// async function fetchActivitiesRecursively(params, r) {
-//   const page = params.page;
-//   console.log(`Recursive Call:${params.page}`);
-//   const resultActivities = await r.strava.athlete.listActivities(params);
-//   console.log(`Adding ${resultActivities.length} new activities`);
-//   r.activities = r.activities.concat(resultActivities);
-//   if (resultActivities.length < 200) {
-//     console.log("Recursive Call End", page);
-//   } else {
-//     console.log("We have go to deeper", page);
-//     params.page++;
-//     await fetchActivitiesRecursively(params, r);
-//   }
-
-//   console.log("End of this Func for page ", page);
-//   console.log(r.activities.length);
-//   return r.activities;
-// }
-
 async function fetchConcurrently(params, r) {
   const { after, before } = params;
   const day = 60 * 60 * 24;

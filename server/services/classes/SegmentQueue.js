@@ -5,24 +5,9 @@ const db = require("../../models/db/dataLayer");
 const User = require("../../models/User");
 const Segment = require("../../models/Segment");
 
-const _stravaAPI = global._stravaAPI;
-
 class SegmentQueue {
   constructor() {
     this.pathlessSegments = [];
-  }
-
-  async getStravaClient(refreshToken) {
-    const result = await _stravaAPI.oauth.refreshToken(refreshToken);
-    const expiresAt = dayjs.unix(result.expires_at);
-
-    const localTime = expiresAt.format("hh:mm A");
-    const gmtTime = expiresAt.utc().format("hh:mm");
-
-    console.log(`App Token Expires at: ${localTime} (${gmtTime}GMT),`);
-    console.log(expiresAt.fromNow());
-
-    return new _stravaAPI.client(result.access_token);
   }
 
   async process() {
@@ -31,10 +16,12 @@ class SegmentQueue {
     const segments = this.pathlessSegments.splice(0, 20);
 
     console.log("processPathlessSegments");
+    if (segments.length === 0) {
+      console.log("No pathless segments");
+      return 0;
+    }
 
     const ids = segments.map((segment) => segment.id);
-
-    if (ids.length === 0) return 0;
 
     for (const id of ids) {
       let data = await this.getSegmentDetails(id);
@@ -44,7 +31,6 @@ class SegmentQueue {
       } else {
         data.updated = dayjs().format();
       }
-      console.info("Data Obtained:");
       await Segment.update(data);
     }
     return ids.length;
