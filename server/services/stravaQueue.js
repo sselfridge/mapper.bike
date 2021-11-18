@@ -16,8 +16,8 @@ async function processQueue() {
   let stravaRatePercent = await stravaRate();
   console.log("stravaRatePercent: ", stravaRatePercent);
 
-  const activityQ = await new ActivityQueue();
-  const segmentQ = await new SegmentQueue();
+  const activityQ = new ActivityQueue();
+  const segmentQ = new SegmentQueue();
 
   while (stravaRatePercent < 75) {
     let processed = 0;
@@ -32,7 +32,6 @@ async function processQueue() {
     stravaRatePercent = await stravaRate();
     console.log(`Strava Rate currently at: ${stravaRatePercent}%`);
     if (processed === 0) break;
-    break; //TODO remove debugg loop break
   } //while
 
   console.log("Process Done");

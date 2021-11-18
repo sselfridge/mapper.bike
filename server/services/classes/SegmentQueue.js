@@ -37,7 +37,7 @@ class SegmentQueue {
     if (ids.length === 0) return 0;
 
     for (const id of ids) {
-      let data = await User.getFullSegment(id);
+      let data = await this.getSegmentDetails(id);
       if (!data) {
         console.log("Error Fetching Data for Segment Id:", id);
         data = { id, line: "error" };
@@ -46,14 +46,13 @@ class SegmentQueue {
       }
       console.info("Data Obtained:");
       await Segment.update(data);
-      break;
     }
     return ids.length;
   }
 
   async getSegmentDetails(id) {
     try {
-      const result = await this.appStrava.segments.get({ id });
+      const result = await User.getFullSegment(id);
       return {
         id: result.id,
         line: result.map.polyline,

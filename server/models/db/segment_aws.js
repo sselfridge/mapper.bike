@@ -16,7 +16,6 @@ module.exports = {
 function update(data) {
   const { id, line, effortCount, athleteCount, distance, elevation, updated } =
     data;
-  console.info("line: ", line);
   return new Promise((resolve, reject) => {
     const params = {
       TableName,
