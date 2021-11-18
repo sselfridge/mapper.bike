@@ -43,8 +43,9 @@ class ActivityQueue {
       }
     }
     console.info("Completed activities", completedActivityIds);
-    if (completedActivityIds.length > 0)
+    if (completedActivityIds.length > 0) {
       await Activity.delete(completedActivityIds);
+    }
 
     return completedActivityIds.length;
   }

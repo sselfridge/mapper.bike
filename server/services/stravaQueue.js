@@ -14,6 +14,7 @@ async function processQueue() {
   console.log("Process Queue");
 
   let stravaRatePercent = await stravaRate();
+  console.log("stravaRatePercent: ", stravaRatePercent);
 
   const activityQ = await new ActivityQueue();
   const segmentQ = await new SegmentQueue();
@@ -22,11 +23,10 @@ async function processQueue() {
     let processed = 0;
     try {
       processed += await activityQ.process();
-      // console.info("processed: ", processed);
       processed += await segmentQ.process();
     } catch (error) {
       console.log("Queue Error:", error.message);
-      console.log(error.errors);
+      console.log(error);
       break;
     }
     stravaRatePercent = await stravaRate();

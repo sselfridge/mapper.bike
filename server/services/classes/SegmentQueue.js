@@ -25,6 +25,8 @@ class SegmentQueue {
   }
 
   async process() {
+    this.pathlessSegments = await db.getAllPathlessSegments();
+
     const segments = this.pathlessSegments.splice(0, 20);
 
     console.log("processPathlessSegments");
