@@ -16,6 +16,7 @@ module.exports = {
 function update(data) {
   const { id, line, effortCount, athleteCount, distance, elevation, updated } =
     data;
+  console.info("line: ", line);
   return new Promise((resolve, reject) => {
     const params = {
       TableName,
@@ -34,6 +35,19 @@ function update(data) {
         params.ExpressionAttributeValues = {
           ":p": line,
           ":h": "error",
+        };
+      } else if (line === "reset") {
+        console.info("Attemtping to reset values");
+
+        params.UpdateExpression = "SET #h = :h REMOVE #p";
+        params.ExpressionAttributeNames = {
+          "#p": "line",
+          "#h": "hasLine",
+        };
+
+        params.ExpressionAttributeValues = {
+          // ":p": null,
+          ":h": "false",
         };
       } else {
         params.UpdateExpression =

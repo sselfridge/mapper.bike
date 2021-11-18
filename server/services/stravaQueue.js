@@ -32,6 +32,7 @@ async function processQueue() {
     stravaRatePercent = await stravaRate();
     console.log(`Strava Rate currently at: ${stravaRatePercent}%`);
     if (processed === 0) break;
+    break; //TODO remove debugg loop break
   } //while
 
   console.log("Process Done");

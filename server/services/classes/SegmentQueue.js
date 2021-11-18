@@ -3,6 +3,7 @@ const dayjs = require("../../utils/dayjs");
 const db = require("../../models/db/dataLayer");
 
 const User = require("../../models/User");
+const Segment = require("../../models/Segment");
 
 const _stravaAPI = global._stravaAPI;
 
@@ -43,7 +44,9 @@ class SegmentQueue {
       } else {
         data.updated = dayjs().format();
       }
-      await db.updateSegment(data);
+      console.info("Data Obtained:");
+      await Segment.update(data);
+      break;
     }
     return ids.length;
   }

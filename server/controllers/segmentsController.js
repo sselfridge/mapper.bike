@@ -137,8 +137,8 @@ async function test(req, res, next) {
     //     });
     //   return;
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    const { updateAllUserSinceLast } = require("../services/effortsServices");
-    const result = await updateAllUserSinceLast();
+    // const { updateAllUserSinceLast } = require("../services/effortsServices");
+    // const result = await updateAllUserSinceLast();
     // const user = {
     //   id: 12345,
     //   expiresAt: "this time",
@@ -161,9 +161,20 @@ async function test(req, res, next) {
     // const result = await strava.segments.get({ id: 16616440 });
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
+    const result = await Segment.pop(10, "error");
+    console.info("result: ", result);
+
+    for (let i = 0; i < result.length; i++) {
+      const s = result[i];
+      s.line = "reset";
+      s.hasLine = "false";
+      await Segment.update(s);
+    }
+
     console.info("test result ----");
     console.log(result);
     console.info("---- end test result");
+
     // result.forEach((effort) => {
     //   console.log(effort.moving_time);
     //   console.log(effort.elapsed_time);
