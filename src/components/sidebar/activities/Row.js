@@ -37,8 +37,6 @@ function Row(props) {
   noKeyOverLap(classes, { ab: 1234 });
   const distance = (activity.distance / 1609).toFixed(2);
   const date = moment.unix(activity.date);
-  console.log("activity.date: ", activity.date);
-  console.log("date: ", date);
 
   const totalHours = activity.elapsedTime / 3600;
   const hours = Math.floor(totalHours);
