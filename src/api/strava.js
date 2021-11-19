@@ -110,11 +110,6 @@ export function getDemoData() {
   });
 }
 
-function dateToEpoch(date) {
-  const number = Math.floor(date.getTime() / 1000);
-  return number;
-}
-
 export function getEfforts(rank = 10) {
   return new Promise((resolve, reject) => {
     console.log("Getting Efforts");
