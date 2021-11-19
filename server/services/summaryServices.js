@@ -46,8 +46,7 @@ async function fetchActivitiesFromStrava(strava, after, before) {
   });
 
   return filteredActivities;
-
-
+}
 
 async function fetchConcurrently(params, r) {
   const { after, before } = params;
