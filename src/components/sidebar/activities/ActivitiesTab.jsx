@@ -9,13 +9,13 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import ReactLoading from "react-loading";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { getActivities } from "../../../api/strava";
 import List from "./List";
 import { sideBarHeight } from "../../../constants/sidebar";
 
 import ControlPanel from "./ControlPanel";
+import LoadingSpinner from "../../shared/LoadingSpinner";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -47,22 +47,6 @@ const calcAfterDate = () => {
   return afterDate;
 };
 
-const calcDateDiff = (after, before) => {
-  if (before === null) before = new Date();
-  const diff = before - after;
-  const days = Math.floor(diff / 86400000);
-  return days > 2000 ? "2000+" : days;
-};
-
-const secFromTimer = (timer) => {
-  const diff = dayjs() - timer;
-  return Math.floor(diff / 1000);
-};
-
-const showDots = (loadingDots) => {
-  return ".".repeat(loadingDots);
-};
-
 export default function ActivitiesTab(props) {
   const classes = useStyles();
 
@@ -85,8 +69,6 @@ export default function ActivitiesTab(props) {
   const [beforeDate, setBefore] = useState(dayjs().unix());
   const [afterDate, setAfter] = useState(calcAfterDate());
   const [panelExpanded, setPanelExpanded] = useState(true);
-  const [loadingTimer, setLoadingTimer] = useState(dayjs());
-  const [loadingDots, setLoadingDots] = useState(3);
   const [activityType, setActivityType] = useState({
     Ride: true,
     VirtualRide: false,
@@ -130,7 +112,6 @@ export default function ActivitiesTab(props) {
   };
 
   const fetchActivities = useCallback(() => {
-    setLoadingTimer(dayjs());
     setLoading(true);
 
     //dont' fetch if using demo user
@@ -165,13 +146,6 @@ export default function ActivitiesTab(props) {
     }
   }, [fetchActivities]);
 
-  if (loading === true) {
-    setTimeout(() => {
-      const dots = (loadingDots + 1) % 4;
-      setLoadingDots(dots);
-    }, 1000);
-  }
-
   return (
     <div className={classes.root}>
       <Accordion id="controlPanel" expanded={panelExpanded}>
@@ -201,26 +175,11 @@ export default function ActivitiesTab(props) {
           />
         </AccordionDetails>
       </Accordion>
-      {loading && (
-        <div>
-          <ReactLoading
-            type="spinningBubbles"
-            color="#FC4C02"
-            width="100%"
-            height={"300px"}
-          />
-          <div className={classes.loadingText}>
-            <div>Fetching from Strava...</div>
-            <div></div>
-            <div>{`Your search covers ${calcDateDiff(
-              afterDate,
-              beforeDate
-            )} days`}</div>
-            <div>{`${secFromTimer(loadingTimer)} secs elapsed`}</div>
-            <div>{`${showDots(loadingDots)}`}</div>
-          </div>
-        </div>
-      )}
+      <LoadingSpinner
+        loading={loading}
+        afterDate={afterDate}
+        beforeDate={beforeDate}
+      />
       {!activities[0] && !loading && (
         <div className={classes.fillerText}>
           {"Click 'GET RIDES' to populate map"}
