@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import moment from "moment";
-
+import dayjs from "../../../utils/dayjs";
 import MapIcon from "@material-ui/icons/Map";
 
 import {
@@ -41,7 +40,7 @@ function Row(props) {
     root: classes.itemNumber,
   };
 
-  const date = moment(effort.date);
+  const date = dayjs(effort.date);
 
   // eslint-disable-next-line no-unused-vars
   const elevation = (effort.elevation * 3.3).toFixed(0);

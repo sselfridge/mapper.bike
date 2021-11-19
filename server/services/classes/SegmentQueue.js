@@ -3,52 +3,42 @@ const dayjs = require("../../utils/dayjs");
 const db = require("../../models/db/dataLayer");
 
 const User = require("../../models/User");
-
-const _stravaAPI = global._stravaAPI;
+const Segment = require("../../models/Segment");
 
 class SegmentQueue {
   constructor() {
     this.pathlessSegments = [];
   }
 
-  async getStravaClient(refreshToken) {
-    const result = await _stravaAPI.oauth.refreshToken(refreshToken);
-    const expiresAt = dayjs.unix(result.expires_at);
-
-    const localTime = expiresAt.format("hh:mm A");
-    const gmtTime = expiresAt.utc().format("hh:mm");
-
-    console.log(`App Token Expires at: ${localTime} (${gmtTime}GMT),`);
-    console.log(expiresAt.fromNow());
-
-    return new _stravaAPI.client(result.access_token);
-  }
-
   async process() {
+    this.pathlessSegments = await db.getAllPathlessSegments();
+
     const segments = this.pathlessSegments.splice(0, 20);
 
     console.log("processPathlessSegments");
+    if (segments.length === 0) {
+      console.log("No pathless segments");
+      return 0;
+    }
 
     const ids = segments.map((segment) => segment.id);
 
-    if (ids.length === 0) return 0;
-
     for (const id of ids) {
-      let data = await User.getFullSegment(id);
+      let data = await this.getSegmentDetails(id);
       if (!data) {
         console.log("Error Fetching Data for Segment Id:", id);
         data = { id, line: "error" };
       } else {
         data.updated = dayjs().format();
       }
-      await db.updateSegment(data);
+      await Segment.update(data);
     }
     return ids.length;
   }
 
   async getSegmentDetails(id) {
     try {
-      const result = await this.appStrava.segments.get({ id });
+      const result = await User.getFullSegment(id);
       return {
         id: result.id,
         line: result.map.polyline,

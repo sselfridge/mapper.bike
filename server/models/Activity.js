@@ -12,7 +12,8 @@ class Activity {
   static delete = async (ids) => {
     while (ids.length > 0) {
       const batch = ids.slice(0, 20);
-      await _activityDb.batchDelete(batch);
+      const idsOnly = batch.map((a) => a.id);
+      await _activityDb.batchDelete(idsOnly);
       ids.splice(0, 20);
     }
   };

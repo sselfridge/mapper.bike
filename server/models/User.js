@@ -137,14 +137,14 @@ class User {
   };
 
   static getFullSegment = async (id) => {
+    //get main app strava refresh info
     const appUser = await this.get(1);
-    console.log("appUser: ", appUser);
+
     const appStrava = await this.#makeStravaClient(appUser);
-    console.log("appStrava: ", appStrava);
 
     const segment = await appStrava.segments.get({ id });
 
-    console.log("segment: ", segment);
+    return segment;
   };
 }
 

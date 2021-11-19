@@ -1,6 +1,7 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
+import dayjs from "../../../utils/dayjs";
+
 import {
   Accordion,
   AccordionSummary,
@@ -41,9 +42,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const calcAfterDate = () => {
-  const now = new Date();
-  const afterDate = new Date();
-  afterDate.setMonth(now.getMonth() - 2);
+  const now = dayjs();
+  const afterDate = now.subtract(2, "months").unix();
   return afterDate;
 };
 
@@ -55,7 +55,7 @@ const calcDateDiff = (after, before) => {
 };
 
 const secFromTimer = (timer) => {
-  const diff = moment() - timer;
+  const diff = dayjs() - timer;
   return Math.floor(diff / 1000);
 };
 
@@ -82,10 +82,10 @@ export default function ActivitiesTab(props) {
 
   const didMountRef = useRef(null);
 
-  const [beforeDate, setBefore] = useState(new Date());
+  const [beforeDate, setBefore] = useState(dayjs().unix());
   const [afterDate, setAfter] = useState(calcAfterDate());
   const [panelExpanded, setPanelExpanded] = useState(true);
-  const [loadingTimer, setLoadingTimer] = useState(moment());
+  const [loadingTimer, setLoadingTimer] = useState(dayjs());
   const [loadingDots, setLoadingDots] = useState(3);
   const [activityType, setActivityType] = useState({
     Ride: true,
@@ -94,25 +94,43 @@ export default function ActivitiesTab(props) {
     Other: false,
   });
 
+  /**
+   * @param {Date} newDate - can be null or synthetic event
+   */
   const onAfterChange = (newDate) => {
-    setAfter(newDate);
-    const after = moment(newDate);
-    const before = moment(beforeDate);
+    if (newDate?.type) return; //user typing date, do nothing
+
+    const defaultAfter = "1969-12-31T16:00:01-08:00";
+
+    if (newDate === null && dayjs.unix(afterDate).format() === defaultAfter) {
+      newDate = dayjs.unix(calcAfterDate()).format();
+    }
+
+    const after = dayjs(newDate || defaultAfter);
+    const before = dayjs.unix(beforeDate);
+
+    setAfter(after.unix());
     if (after.isAfter(before)) {
-      setBefore(newDate);
+      setBefore(after.unix());
     }
   };
+  /**
+   * @param {Date} newDate - can be null or synthetic event
+   */
   const onBeforeChange = (newDate) => {
-    setBefore(newDate);
-    const after = moment(afterDate);
-    const before = moment(newDate);
+    if (newDate?.type) return; //user typing date, do nothing
+
+    const after = dayjs.unix(afterDate);
+    const before = dayjs(newDate || dayjs().format());
+    setBefore(before.unix());
+
     if (before.isBefore(after)) {
-      setAfter(newDate);
+      setAfter(before.unix());
     }
   };
 
   const fetchActivities = useCallback(() => {
-    setLoadingTimer(moment());
+    setLoadingTimer(dayjs());
     setLoading(true);
 
     //dont' fetch if using demo user

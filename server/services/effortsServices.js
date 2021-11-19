@@ -11,6 +11,7 @@ async function updateAllUserSinceLast() {
   const users = await User.getAll();
   for (let i = 0; i < users.length; i++) {
     const user = users[i];
+    // if (user.id === 1075670)
     await fetchNewUserActivities(user);
   }
   console.log("update finish");
@@ -22,6 +23,7 @@ async function fetchNewUserActivities(user) {
   const after = update.unix();
 
   try {
+    console.log("after: ", after);
     const activities = await User.fetchActivitiesAfter(user, after);
     console.log("adding to DB activities: ", activities.length);
 

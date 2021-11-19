@@ -1,5 +1,4 @@
 const jwToken = require("jsonwebtoken");
-// const m = require("moment");
 const dayjs = require("../utils/dayjs");
 const Cryptr = require("cryptr");
 const config = require("../../src/config/keys");

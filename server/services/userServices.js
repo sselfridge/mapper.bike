@@ -15,7 +15,7 @@ function getUserData(res) {
 }
 
 async function totalUserActivities(strava, id) {
-  const result = await strava.athletes.stats({ id });
+  const result = await strava.athletes.stats({ id }); //TODO use global strava client
   const count = result.all_ride_totals.count + result.all_run_totals.count;
   return count;
 }

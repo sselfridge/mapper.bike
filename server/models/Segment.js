@@ -1,8 +1,8 @@
 const _segmentDb = require("./db/segment_aws");
 
 class Segment {
-  static pop = async (limit) => {
-    return await _segmentDb.pop(limit);
+  static pop = async (limit, value) => {
+    return await _segmentDb.pop(limit, value);
   };
 
   static get = async (id) => {
@@ -13,7 +13,7 @@ class Segment {
     return await _segmentDb.getAllPathless();
   };
 
-  static updateSegment = async (data) => {
+  static update = async (data) => {
     await _segmentDb.update(data);
   };
 
