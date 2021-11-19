@@ -45,8 +45,9 @@ async function fetchActivitiesFromStrava(strava, after, before) {
     return startDate.isBefore(beforeDate) && startDate.isAfter(afterDate);
   });
 
-  return filteredActivities || activities;
-}
+  return filteredActivities;
+
+
 
 async function fetchConcurrently(params, r) {
   const { after, before } = params;
