@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import moment from "moment";
+import dayjs from "../../../utils/dayjs";
 
 import { noKeyOverLap } from "../../../utils";
 
@@ -36,7 +36,7 @@ function Row(props) {
 
   noKeyOverLap(classes, { ab: 1234 });
   const distance = (activity.distance / 1609).toFixed(2);
-  const date = moment.unix(activity.date);
+  const date = dayjs.unix(activity.date);
 
   const totalHours = activity.elapsedTime / 3600;
   const hours = Math.floor(totalHours);

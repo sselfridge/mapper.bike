@@ -35,6 +35,19 @@ function update(data) {
           ":p": line,
           ":h": "error",
         };
+      } else if (line === "reset") {
+        console.info("Attemtping to reset values");
+
+        params.UpdateExpression = "SET #h = :h REMOVE #p";
+        params.ExpressionAttributeNames = {
+          "#p": "line",
+          "#h": "hasLine",
+        };
+
+        params.ExpressionAttributeValues = {
+          // ":p": null,
+          ":h": "false",
+        };
       } else {
         params.UpdateExpression =
           "set #p = :p, #h = :h, #ec = :ec, #ac = :ac, #d = :d, #e = :e, #u = :u";
