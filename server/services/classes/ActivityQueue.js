@@ -18,6 +18,7 @@ class ActivityQueue {
       throw new Error("Initialize Activity queue before using, run init() ");
     }
     const completedActivityIds = [];
+    const errorActivityIds = [];
 
     const activities = await Activity.pop(this.batchSize);
 
@@ -32,11 +33,15 @@ class ActivityQueue {
         if (result) completedActivityIds.push({ id });
       } catch (error) {
         console.log("Activity Detail Fetch Error:", activity.id, error.message);
-        // TODO - add error field to activities so they can be skipped later
-        // or maybe just log and delete them?
+        errorActivityIds.push({ id: activity.id });
       }
     }
-    console.info("Completed activities", completedActivityIds);
+    console.log("Completed activities", completedActivityIds);
+    if (errorActivityIds.length > 0) {
+      console.log("Error activities:", errorActivityIds);
+      completedActivityIds.concat(errorActivityIds);
+    }
+
     if (completedActivityIds.length > 0) {
       await Activity.delete(completedActivityIds);
     }

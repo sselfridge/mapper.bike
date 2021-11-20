@@ -81,7 +81,7 @@ const checkToken = (res) => {
     logMsg += `(${expiresAt.utc().format("hh:mm")}GMT)`;
     logMsg += ` ${expiresAt.fromNow()}`;
 
-    console.info(logMsg);
+    console.log(logMsg);
     if (dayjs().isBefore(expiresAt)) {
       console.log("Token Not Expired");
       return resolve();
@@ -152,7 +152,6 @@ const decodeCookie = (res, jwt) => {
         return reject("JWT / Cookie Invalid");
       }
       console.log(`JWT Valid - athleteId: ${payload.athleteId}`);
-      console.info("payload: ", payload);
       res.locals.expiresAt = dayjs.unix(payload.expiresAt);
       res.locals.strava = new _stravaAPI.client(payload.accessToken);
       res.locals.accessToken = payload.accessToken;
