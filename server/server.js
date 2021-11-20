@@ -116,9 +116,6 @@ app.get(
   "/api/test",
   oAuthStrava.loadStravaProfile,
   oAuthStrava.adminOnly,
-  // segmentController.parsePushNotification,
-  // segmentController.initializeUser,
-
   segmentController.test,
   (req, res) => {
     if (res.locals.err) {

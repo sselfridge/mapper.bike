@@ -36,7 +36,7 @@ function update(data) {
           ":h": "error",
         };
       } else if (line === "reset") {
-        console.info("Attemtping to reset values");
+        console.log("Attempting to reset values");
 
         params.UpdateExpression = "SET #h = :h REMOVE #p";
         params.ExpressionAttributeNames = {

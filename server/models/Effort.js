@@ -76,7 +76,6 @@ class Effort {
 
   //TODO test this
   static storeSegments = async (segmentSummaries) => {
-    console.info("segments: ", segmentSummaries);
     const rankedSegments = utils.parseRankedSegments(segmentSummaries);
 
     const segments = segmentSummaries.map((segment) => ({

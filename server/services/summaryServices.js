@@ -50,9 +50,8 @@ async function fetchActivitiesFromStrava(strava, after, before) {
 
 async function fetchConcurrently(params, r) {
   const { after, before } = params;
-  const day = 60 * 60 * 24;
-  const days = Math.floor(((before - after) / day) * 0.75);
-  const pageCount = Math.ceil(days / 200);
+
+  const pageCount = estimatePageCount(after, before);
 
   //create array of pages. pageCount:3 => [1,2,3]
   const pagesArr = Array.from({ length: pageCount }, (v, i) => i + 1);
@@ -125,6 +124,14 @@ function mapAndFilterStravaData(stravaData, activityType) {
 
   return activities;
 }
+
+const estimatePageCount = (after, before) => {
+  const day = 60 * 60 * 24;
+  const days = Math.floor(((before - after) / day) * 0.75);
+  const pageCount = Math.min(15, Math.ceil(days / 200));
+  // 15 pages covers 3000 activities
+  return pageCount;
+};
 
 module.exports = {
   fetchActivities,

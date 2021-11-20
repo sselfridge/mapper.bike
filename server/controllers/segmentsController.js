@@ -12,7 +12,7 @@ const got = require("got");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
-const _stravaAPI = global._stravaAPI;
+const stravaQ = require("../services/stravaQueue");
 
 // eslint-disable-next-line require-await
 async function segmentEfforts(req, res, next) {
@@ -43,16 +43,15 @@ async function segmentEfforts(req, res, next) {
 // }
 
 async function parsePushNotification(req, res, next) {
-  console.log("parsePush");
-
-  const update = req.body;
+  console.log("parsePushNotification");
 
   const {
     owner_id: athleteId,
     aspect_type: aspectType,
     object_id: activityId,
+    // eslint-disable-next-line no-unused-vars
     subscription_id: subscriptionId,
-  } = update;
+  } = req.body;
 
   if (athleteId === 4973582) {
     res.locals.err = "Damn Daniele";
@@ -60,24 +59,27 @@ async function parsePushNotification(req, res, next) {
     return next();
   }
 
-  const userIds = await getUserIds();
+  const userIds = await getKOMUsers();
   //Validate Request
   if (
     !athleteId ||
     !aspectType ||
-    !subscriptionId ||
+    // !subscriptionId ||
     !activityId ||
-    !userIds.includes(update.owner_id) || //user sign up for KOM mapper
-    aspectType !== "create" || //grab initial creation
-    subscriptionId !== config.subscriptionId //weak validation
+    !userIds.includes(athleteId) || //user sign up for KOM mapper
+    aspectType !== "create" //|| //grab initial creation
+    // subscriptionId !== config.subscriptionId //weak validation
   ) {
-    console.log("push validation failed");
-
+    console.log("No need to parse sub further, validation failed.");
     return next();
   }
 
   console.log("Add to Q:", activityId, athleteId);
   await Activity.add(activityId, athleteId);
+
+  //TODO see about adding rate limiting here if triggering this too much causes issues
+  // but I don't see that happening for a while...
+  stravaQ.processQueue();
 
   return next();
 }
@@ -85,13 +87,13 @@ async function parsePushNotification(req, res, next) {
 let lastFetchTime = null;
 let userList = [];
 
-async function getUserIds() {
+async function getKOMUsers() {
   const now = dayjs();
 
   if (!lastFetchTime || now.diff(lastFetchTime, "seconds") > 30) {
     const dbUsers = await User.getAll();
     lastFetchTime = now;
-    userList = dbUsers.map((u) => u.id);
+    userList = dbUsers.filter((u) => u.startDate).map((u) => u.id);
   }
 
   return userList;
@@ -161,15 +163,18 @@ async function test(req, res, next) {
     // const result = await strava.segments.get({ id: 16616440 });
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
-    const result = await Segment.pop(10, "error");
-    console.info("result: ", result);
+    // const result = await Segment.pop(10, "error");
 
-    for (let i = 0; i < result.length; i++) {
-      const s = result[i];
-      s.line = "reset";
-      s.hasLine = "false";
-      await Segment.update(s);
-    }
+    // for (let i = 0; i < result.length; i++) {
+    //   const s = result[i];
+    //   s.line = "reset";
+    //   s.hasLine = "false";
+    //   await Segment.update(s);
+    // }
+
+    const result = await parsePushNotification({}, { locals: {} }, () => {
+      console.info("NEXT CALLED");
+    });
 
     console.info("test result ----");
     console.log(result);
