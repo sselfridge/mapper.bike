@@ -101,7 +101,6 @@ async function getEffortsWithPath(athleteId, rank = 10) {
 }
 
 async function storeSegments(segmentSummaries) {
-  console.info("segments: ", segmentSummaries);
   const rankedSegments = utils.parseRankedSegments(segmentSummaries);
 
   const segments = segmentSummaries.map((segment) => ({
@@ -191,7 +190,7 @@ async function deleteAllEfforts() {
 
 async function deleteAll(tableName) {
   if (process.env.NODE_ENV === "production") {
-    console.info("Cannot delete all in production mode");
+    console.log("Cannot delete all in production mode");
     return;
   }
   const tables = {

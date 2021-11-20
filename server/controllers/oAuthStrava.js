@@ -49,22 +49,9 @@ function loadStravaProfile(req, res, next) {
   const jwt = decryptJwt(req.cookies.mapperjwt);
 
   decodeCookie(res, jwt)
+    .then(getStravaUserProfile)
     .then(checkToken)
-    .then(() => res.locals.strava.athlete.get({}))
-    .then((result) => {
-      res.locals.user = {
-        avatar: result.profile,
-        firstname: result.firstname,
-        lastname: result.lastname,
-        athleteId: result.id,
-        premium: result.premium,
-        city: result.city,
-        state: result.state,
-      };
-
-      logUser(result.firstname, result.lastname, result.id);
-      next();
-    })
+    .then(next)
     .catch((err) => {
       console.log("Error while loading Strava Profile\n", err);
       res.locals.err = "Error Loading Strava Profile";
@@ -76,13 +63,13 @@ function loadStravaProfile(req, res, next) {
 //check if the access token is expired, if so request a new one
 const checkToken = (res) => {
   return new Promise(async (resolve, reject) => {
-    const expiresAt = res.locals.expiresAt;
-    let logMsg = `Token Expires at ${expiresAt.format("hh:mm A")} `;
-    logMsg += `(${expiresAt.utc().format("hh:mm")}GMT)`;
-    logMsg += ` ${expiresAt.fromNow()}`;
+    const expiresAtObj = res.locals.expiresAtObj;
+    let logMsg = `Token Expires at ${expiresAtObj.format("hh:mm A")} `;
+    logMsg += `(${expiresAtObj.utc().format("hh:mm")}GMT)`;
+    logMsg += ` ${expiresAtObj.fromNow()}`;
 
     console.log(logMsg);
-    if (dayjs().isBefore(expiresAt)) {
+    if (dayjs().isBefore(expiresAtObj)) {
       console.log("Token Not Expired");
       return resolve();
     } else {
@@ -108,12 +95,12 @@ const checkToken = (res) => {
         .then((result) => {
           let payload = {
             expiresAt: result.expires_at,
-            // refreshToken: result.refresh_token,
             accessToken: result.access_token,
             athleteId: res.locals.athleteId,
+            user: JSON.stringify(res.locals.user),
           };
           setJWTCookie(res, payload);
-          res.locals.expiresAt = dayjs.unix(result.expires_at);
+          res.locals.expiresAtObj = dayjs.unix(result.expires_at);
           res.locals.accessToken = result.access_token;
           res.locals.strava = new _stravaAPI.client(result.access_token);
           return resolve();
@@ -137,6 +124,23 @@ function decryptJwt(jwt) {
   return hubCookie;
 }
 
+/**
+ * Payload schema
+ * @param {number} expiresAt 
+ * @param {string} accessToken 
+ * @param {number} athleteId 
+ * @param {string} user stringified JSON Obj that matches res.locals.user
+  res.locals.user : {
+      avatar: result.profile,
+      firstname: result.firstname,
+      lastname: result.lastname,
+      athleteId: result.id,
+      premium: result.premium,
+      city: result.city,
+      state: result.state,
+    };
+*/
+
 function setJWTCookie(res, payload) {
   console.log("Set JWT", payload);
   const jwt = jwToken.sign(payload, config.secretSuperKey);
@@ -152,16 +156,48 @@ const decodeCookie = (res, jwt) => {
         return reject("JWT / Cookie Invalid");
       }
       console.log(`JWT Valid - athleteId: ${payload.athleteId}`);
-      res.locals.expiresAt = dayjs.unix(payload.expiresAt);
+      res.locals.expiresAtObj = dayjs.unix(payload.expiresAt);
       res.locals.strava = new _stravaAPI.client(payload.accessToken);
       res.locals.accessToken = payload.accessToken;
       // res.locals.refreshToken = payload.refreshToken;
       res.locals.athleteId = payload.athleteId;
+      res.locals.user = payload.user ? JSON.parse(payload.user) : undefined;
       console.log("Access Token: ", res.locals.accessToken);
       return resolve(res);
     });
   });
 };
+
+async function getStravaUserProfile(res) {
+  const user = res.locals.user;
+  if (user?.avatar) {
+    console.log("Res has user data already, do nothing");
+  } else {
+    const strava = res.locals.strava;
+    console.log("Fetch strava profile");
+    const result = await strava.athlete.get({});
+    const newUser = {
+      avatar: result.profile,
+      firstname: result.firstname,
+      lastname: result.lastname,
+      athleteId: result.id,
+      premium: result.premium,
+      city: result.city,
+      state: result.state,
+    };
+    res.locals.user = newUser;
+
+    const payload = {
+      expiresAt: res.locals.expiresAtObj.unix(),
+      accessToken: res.locals.accessToken,
+      athleteId: res.locals.athleteId,
+      user: JSON.stringify(newUser),
+    };
+    setJWTCookie(res, payload);
+  }
+  logUser(res.locals.user);
+  return res;
+}
 
 function clearCookie(req, res, next) {
   console.log("clear cookie: mapperjwt");

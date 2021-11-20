@@ -2,8 +2,10 @@ const fs = require("fs");
 
 const USER_LOG_FILE = "logs/users.txt";
 
-function logUser(firstname, lastname, id) {
-  let str = firstname + " " + lastname + " " + id;
+function logUser(user) {
+  const { firstname, lastname, athleteId } = user;
+
+  let str = firstname + " " + lastname + " " + athleteId;
   if (str.length > 30) {
     str = str.substring(0, 30);
   } else {
