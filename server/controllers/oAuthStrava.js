@@ -69,6 +69,7 @@ const checkToken = (res) => {
     logMsg += ` ${expiresAtObj.fromNow()}`;
 
     console.log(logMsg);
+
     if (dayjs().isBefore(expiresAtObj)) {
       console.log("Token Not Expired");
       return resolve();
@@ -89,6 +90,7 @@ const checkToken = (res) => {
             refreshToken: result.refresh_token,
             expiresAt: result.expires_at,
           };
+          console.log("Refresh Token:", athleteId, result.refresh_token);
           User.updateTokens(user);
           return result;
         })
