@@ -11,8 +11,12 @@ const _stravaAPI = global._stravaAPI;
 
 // EXPORTED Functions
 function setStravaOauth(req, res, next) {
-  //TODO sanitize code
-  let code = req.query.code;
+  const code = req.query.code;
+
+  if (!code.match(/^[0-9a-f]+$/)) {
+    res.locals.err = "invalid code";
+    return next();
+  }
   console.log(`Strava Code: ${code}`);
 
   _stravaAPI.oauth
@@ -27,7 +31,6 @@ function setStravaOauth(req, res, next) {
       User.updateTokens(user);
       let payload = {
         expiresAt: result.expires_at,
-        // refreshToken: result.refresh_token,
         accessToken: result.access_token,
         athleteId: result.athlete.id,
       };
