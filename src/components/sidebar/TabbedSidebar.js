@@ -59,6 +59,8 @@ export default function TabbedSidebar(props) {
   const [activeTab, setActiveTab] = useState(0);
   const [userAgreed, setUserAgreed] = useState(false);
 
+  const [renderKomTab, setRenderKomTab] = useState(0);
+
   const [userInitialized, setUserInitialized] = useState(false);
 
   const premium = currentUser.premium;
@@ -114,6 +116,7 @@ export default function TabbedSidebar(props) {
                 alt="Strava Premium"
               />
             }
+            onClick={() => setRenderKomTab((r) => r + 1)}
             {...a11yProps(1)}
           />
         </Tabs>
@@ -125,7 +128,7 @@ export default function TabbedSidebar(props) {
         {!premium ? (
           <PremiumOnly />
         ) : userInitialized ? (
-          <EffortsTab {...props} />
+          <EffortsTab {...props} renderKomTab={renderKomTab} />
         ) : (
           <UserAgreement
             userAgreed={userAgreed}

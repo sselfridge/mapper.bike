@@ -53,6 +53,7 @@ const EffortsTab = (props) => {
     setMapCenter,
     handleRemoveLine,
     centerMapOnActivity,
+    renderKomTab,
   } = props;
 
   const [panelExpanded, setPanelExpanded] = useState(true);
@@ -140,10 +141,8 @@ const EffortsTab = (props) => {
   }, [ranks, efforts, sortBy, sortDir, setFilteredEfforts, sortEfforts]);
 
   useEffect(() => {
-    if (efforts.length === 0) {
-      fetchEfforts();
-    }
-  }, [efforts.length, fetchEfforts]);
+    fetchEfforts();
+  }, [fetchEfforts, renderKomTab]);
 
   return (
     <div className={classes.root}>
