@@ -4,6 +4,8 @@ const Segment = require("./Segment");
 const utils = require("./db/utils");
 const User = require("./User");
 
+const { appendLeaderboard } = require("../../src/utils/helperFunctions");
+
 class Effort {
   static getEfforts = async (athleteId, rank = 10) => {
     if (rank === "error") {
@@ -63,7 +65,7 @@ class Effort {
           efforts[i].updated = detail.updated;
 
           if (detail.leaderboard) {
-            efforts[i].currentRank = this.appendLeaderboard(
+            efforts[i].currentRank = appendLeaderboard(
               efforts[i].activityId,
               detail.leaderboard
             );
@@ -80,15 +82,15 @@ class Effort {
     }
   };
 
-  static appendLeaderboard = (activityId, leaderboard) => {
-    const current = leaderboard.find((e) => e.activityId === `${activityId}`);
+  // static appendLeaderboard = (activityId, leaderboard) => {
+  //   const current = leaderboard.find((e) => e.activityId === `${activityId}`);
 
-    if (current) {
-      return parseInt(current.place, 10);
-    } else {
-      return "--";
-    }
-  };
+  //   if (current) {
+  //     return parseInt(current.place, 10);
+  //   } else {
+  //     return "--";
+  //   }
+  // };
 
   //TODO test this
   static storeSegments = async (segmentSummaries) => {

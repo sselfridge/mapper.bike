@@ -10,11 +10,15 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
+import dayjs from "../../../utils/dayjs";
+
 import ControlPanel from "./ControlPanel";
 import List from "./List";
 import { getEfforts, refreshLeaderboard } from "../../../api/strava";
 import { sideBarHeight } from "../../../constants/sidebar";
 import { useCallback } from "react";
+
+const { appendLeaderboard } = require("../../../utils/helperFunctions");
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -73,8 +77,24 @@ const EffortsTab = (props) => {
 
   const updateLeaderBoard = async (effort) => {
     console.info("effort: ", effort);
-    const leaderBoard = await refreshLeaderboard(effort);
-    console.info("leaderBoard: ", leaderBoard);
+    const leaderboard = await refreshLeaderboard(effort);
+
+    const { segmentId, activityId } = effort;
+
+    const updated = dayjs().format();
+
+    setFilteredEfforts((oldEfforts) => {
+      const efforts = oldEfforts.slice();
+
+      efforts.forEach((e) => {
+        if (e.segmentId === segmentId) {
+          const currentRank = appendLeaderboard(activityId, leaderboard);
+          e.currentRank = currentRank;
+          e.updated = updated;
+        }
+      });
+      return efforts;
+    });
   };
 
   const sortEfforts = useCallback(
