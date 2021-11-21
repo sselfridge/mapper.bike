@@ -139,8 +139,8 @@ async function test(req, res, next) {
     //     });
     //   return;
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    // const { updateAllUserSinceLast } = require("../services/effortsServices");
-    // const result = await updateAllUserSinceLast();
+    const { updateAllUserSinceLast } = require("../services/effortsServices");
+    const result = await updateAllUserSinceLast();
     // const user = {
     //   id: 12345,
     //   expiresAt: "this time",
@@ -172,9 +172,9 @@ async function test(req, res, next) {
     //   await Segment.update(s);
     // }
 
-    const result = await parsePushNotification({}, { locals: {} }, () => {
-      console.info("NEXT CALLED");
-    });
+    // const result = await parsePushNotification({}, { locals: {} }, () => {
+    //   console.info("NEXT CALLED");
+    // });
 
     console.info("test result ----");
     console.log(result);

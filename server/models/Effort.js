@@ -83,7 +83,7 @@ class Effort {
     }));
 
     await Promise.all([
-      _effortDb.batchAdd(rankedSegments),
+      this.batchAdd(rankedSegments),
       Segment.batchAdd(segments),
     ]);
   };

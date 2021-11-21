@@ -10,12 +10,13 @@ function parseRankedSegments(efforts) {
       console.log("Invalid effort data for:", effort);
       return;
     }
+
     const validEffort = {
       id: effort.id,
       name: effort.segment.name,
       segmentId: effort.segment.id,
       athleteId: effort.athlete.id,
-      activity: effort.activity.id,
+      activityId: effort.activity.id,
       date: effort.start_date,
       rank: effort.kom_rank,
     };

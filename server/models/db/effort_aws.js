@@ -12,8 +12,9 @@ module.exports = {
   getAll,
 };
 
-function add(segment) {
-  const { segmentId, athleteId, name, rank, date } = segment;
+function add(segmentEffort) {
+  console.info("segmentEffort: ", segmentEffort);
+  const { segmentId, athleteId, name, rank, date, activityId } = segmentEffort;
   // console.log("DB: Adding effort on segment:", name);
   return new Promise((resolve, reject) => {
     var params = {
@@ -25,12 +26,13 @@ function add(segment) {
         name,
         rank,
         date,
+        activityId,
       },
     };
 
     client.put(params, (err, data) => {
       if (err) {
-        console.log(`DB Error on segment:${segmentId}`, err);
+        console.log(`DB Error on Effort:${segmentId}-${date}`, err);
         return reject(err);
       }
       resolve(data);
@@ -39,7 +41,7 @@ function add(segment) {
 }
 
 async function batchAdd(efforts) {
-  const promiseArr = efforts.map((segment) => add(segment));
+  const promiseArr = efforts.map((effort) => add(effort));
   await Promise.all(promiseArr);
 }
 
@@ -78,7 +80,7 @@ function get(id) {
 
     client.get(params, (err, data) => {
       if (err) {
-        console.log("get Segment Details Error", err);
+        console.log("get Effort Details Error", err);
         reject(err);
       } else {
         resolve(data.Item);
