@@ -126,6 +126,22 @@ export function getEfforts(rank = 10) {
   });
 }
 
+export function refreshLeaderboard(effort) {
+  return new Promise((resolve, reject) => {
+    const segmentId = effort.segmentId;
+    const queryString = `/api/refreshLeaderboard?segmentId=${segmentId}`;
+    axios
+      .get(queryString)
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(err);
+      });
+  });
+}
+
 export function getUser(id) {
   return new Promise((resolve, reject) => {
     console.log("Getting User:", id);

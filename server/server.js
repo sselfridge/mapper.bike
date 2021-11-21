@@ -243,6 +243,20 @@ app.get(
   }
 );
 
+app.get(
+  "/api/refreshLeaderboard",
+  oAuthStrava.loadStravaProfile,
+  segmentController.getLeaderboard,
+  (req, res) => {
+    if (res.locals.err) {
+      res.status(523).send("Error with refresh leaderboard ");
+      return;
+    }
+
+    res.send(res.locals.data);
+  }
+);
+
 app.get("/api/getDemoData", summaryController.getDemoData, (req, res) => {
   console.log(`Sending Back ${res.locals.activities.length} activities`);
   res.send(JSON.stringify(res.locals.activities));

@@ -14,8 +14,16 @@ module.exports = {
 };
 
 function update(data) {
-  const { id, line, effortCount, athleteCount, distance, elevation, updated } =
-    data;
+  const {
+    id,
+    line,
+    effortCount,
+    athleteCount,
+    distance,
+    elevation,
+    updated,
+    leaderboard = null,
+  } = data;
   return new Promise((resolve, reject) => {
     const params = {
       TableName,
@@ -50,7 +58,7 @@ function update(data) {
         };
       } else {
         params.UpdateExpression =
-          "set #p = :p, #h = :h, #ec = :ec, #ac = :ac, #d = :d, #e = :e, #u = :u";
+          "set #p = :p, #h = :h, #ec = :ec, #ac = :ac, #d = :d, #e = :e, #u = :u, #lb = :lb";
         params.ExpressionAttributeNames = {
           "#p": "line",
           "#h": "hasLine",
@@ -59,6 +67,7 @@ function update(data) {
           "#d": "distance",
           "#e": "elevation",
           "#u": "updated",
+          "#lb": "leaderboard",
         };
         params.ExpressionAttributeValues = {
           ":p": line,
@@ -68,6 +77,7 @@ function update(data) {
           ":d": distance,
           ":e": elevation,
           ":u": updated,
+          ":lb": leaderboard,
         };
       }
     } else {

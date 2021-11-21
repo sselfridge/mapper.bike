@@ -16,10 +16,9 @@ const stravaQ = require("../services/stravaQueue");
 
 // eslint-disable-next-line require-await
 async function segmentEfforts(req, res, next) {
-  const athleteId = res.locals.user.athleteId;
   const rank = parseInt(req.query.rank ? req.query.rank : 1);
 
-  Effort.getEffortsWithPath(athleteId, rank)
+  Effort.getEffortsWithPath(res.locals.user, rank)
     .then((efforts) => {
       console.log(`Got ${efforts.length} efforts with details`);
       res.locals.segmentEfforts = efforts;
@@ -226,11 +225,19 @@ async function testReset(req, res, next) {
   return next();
 }
 
-async function getLeaderboard(segmentId) {
+async function getLeaderboard(req, res, next) {
+  if (res.locals.err) {
+    next();
+  }
+
+  const segmentId = parseInt(req.query.segmentId, 10);
+  console.info("segmentId: ", segmentId);
+
   const response = await got(`https://www.strava.com/segments/${segmentId}`);
 
   if (response.statusCode !== 200) {
-    throw new Error("HTML req error - found code:", response.statusCode);
+    res.locals.err = `"HTML req error - found code:, ${response.statusCode}`;
+    throw new Error();
   }
 
   const dom = new JSDOM(response.body);
@@ -257,11 +264,18 @@ async function getLeaderboard(segmentId) {
         rowObj.row = i + 1;
       }
     }
-    rowObj.segmentId = rowObj.link.replace(/\D/g, "");
+    rowObj.activityId = rowObj.link.replace(/\D/g, "");
     ranks.push(rowObj);
   }
 
-  return ranks;
+  res.locals.data = ranks;
+
+  const segment = await Segment.get(segmentId);
+  segment.leaderboard = ranks;
+  segment.updated = dayjs().format();
+  await Segment.update(segment);
+
+  next();
 }
 
 const ROW_MAP = {
@@ -285,5 +299,6 @@ module.exports = {
   test,
   testReset,
   segmentEfforts,
+  getLeaderboard,
   parsePushNotification,
 };

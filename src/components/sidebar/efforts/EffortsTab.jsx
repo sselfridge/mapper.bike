@@ -12,7 +12,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import ControlPanel from "./ControlPanel";
 import List from "./List";
-import { getEfforts } from "../../../api/strava";
+import { getEfforts, refreshLeaderboard } from "../../../api/strava";
 import { sideBarHeight } from "../../../constants/sidebar";
 import { useCallback } from "react";
 
@@ -70,6 +70,12 @@ const EffortsTab = (props) => {
         setLoadingEfforts(false);
       });
   }, [setEfforts]);
+
+  const updateLeaderBoard = async (effort) => {
+    console.info("effort: ", effort);
+    const leaderBoard = await refreshLeaderboard(effort);
+    console.info("leaderBoard: ", leaderBoard);
+  };
 
   const sortEfforts = useCallback(
     (efforts) => {
@@ -161,6 +167,7 @@ const EffortsTab = (props) => {
         setMapCenter={setMapCenter}
         handleRemoveLine={handleRemoveLine}
         centerMapOnActivity={centerMapOnActivity}
+        updateLeaderBoard={updateLeaderBoard}
       />
     </div>
   );

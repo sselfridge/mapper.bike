@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 import dayjs from "../../../utils/dayjs";
 import MapIcon from "@material-ui/icons/Map";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 import {
   makeStyles,
@@ -35,6 +36,7 @@ function Row(props) {
     handleSelected,
     handleRemoveLine,
     centerMapOnActivity,
+    updateLeaderBoard,
   } = props;
   const avatarStyles = {
     root: classes.itemNumber,
@@ -46,7 +48,9 @@ function Row(props) {
   const elevation = (effort.elevation * 3.3).toFixed(0);
   const distance = (effort.distance / 1609).toFixed(2);
 
-  const rank = `#${effort.rank}`;
+  const currentRank = effort.currentRank;
+  const lastUpdate = effort.updated || dayjs().format();
+  const rank = effort.rank;
   const distanceMi = `${distance}mi`;
   const athleteCount = `~${effort.athleteCount}`;
   const effortCount = `~${effort.effortCount} efforts`;
@@ -77,7 +81,12 @@ function Row(props) {
           primary={effort.name}
           secondary={
             <span className={classes.secondaryText}>
-              <span>{rank}</span>
+              {currentRank && (
+                <Tooltip title={lastUpdate}>
+                  <span>#{currentRank}</span>
+                </Tooltip>
+              )}
+              <span>#{rank}</span>
               <span>{distanceMi}</span>
 
               <span>{effortCount}</span>
@@ -101,6 +110,16 @@ function Row(props) {
                     alt="View on Strava"
                   />
                 </a>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Update Leaderboard" placement={"top"}>
+              <IconButton
+                aria-label="zoomToRide"
+                onClick={() => {
+                  updateLeaderBoard(effort);
+                }}
+              >
+                <RefreshIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Zoom to Ride" placement={"top"}>
