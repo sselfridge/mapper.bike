@@ -18,6 +18,7 @@ const config = require("../src/config/keys");
 
 // app.use(bodyParser.json()); // for parsing application/json
 // app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.json({ extended: false }));
 
 app.use(cookieParser());
 
