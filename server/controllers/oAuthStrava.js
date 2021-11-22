@@ -64,7 +64,9 @@ function loadStravaProfile(req, res, next) {
 const checkToken = (res) => {
   return new Promise(async (resolve, reject) => {
     const expiresAtObj = res.locals.expiresAtObj;
-    let logMsg = `Token Expires at ${expiresAtObj.format("hh:mm A")} `;
+    let logMsg = `Token Expires at ${expiresAtObj
+      .tz("America/Los_Angeles")
+      .format("hh:mm A")} `;
     logMsg += `(${expiresAtObj.utc().format("hh:mm")}GMT)`;
     logMsg += ` ${expiresAtObj.fromNow()}`;
 
@@ -154,7 +156,8 @@ const decodeCookie = (res, jwt) => {
   return new Promise((resolve, reject) => {
     jwToken.verify(jwt, config.secretSuperKey, (err, payload) => {
       if (err) {
-        console.log(err);
+        console.info(err.message);
+        console.error(err);
         return reject("JWT / Cookie Invalid");
       }
       console.log(`JWT Valid - athleteId: ${payload.athleteId}`);

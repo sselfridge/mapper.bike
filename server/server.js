@@ -183,6 +183,13 @@ app.get("/api/getHook", (req, res) => {
 });
 */
 
+app.post("/api/testPost", (req, res) => {
+  const out = req.body;
+  console.info("out: ", out);
+
+  res.send(out);
+});
+
 app.post(
   "/api/getHook",
   segmentController.parsePushNotification,
