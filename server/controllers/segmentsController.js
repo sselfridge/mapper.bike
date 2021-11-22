@@ -231,7 +231,6 @@ async function getLeaderboard(req, res, next) {
   }
 
   const segmentId = parseInt(req.query.segmentId, 10);
-  console.info("segmentId: ", segmentId);
 
   const response = await got(`https://www.strava.com/segments/${segmentId}`);
 

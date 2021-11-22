@@ -11,7 +11,8 @@ async function updateAllUserSinceLast() {
   const users = await User.getAll();
   for (let i = 0; i < users.length; i++) {
     const user = users[i];
-    if (user.id === 1075670) await fetchNewUserActivities(user);
+    // if (user.id === 1075670)
+    await fetchNewUserActivities(user);
   }
   console.log("update finish");
   return "updateAllFinished";
