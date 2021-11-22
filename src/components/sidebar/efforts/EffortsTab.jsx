@@ -77,7 +77,6 @@ const EffortsTab = (props) => {
   }, [setEfforts]);
 
   const updateLeaderBoard = async (effort) => {
-    console.info("effort: ", effort);
     const leaderboard = await refreshLeaderboard(effort);
 
     const { segmentId, activityId } = effort;

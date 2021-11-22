@@ -13,7 +13,6 @@ module.exports = {
 };
 
 function add(segmentEffort) {
-  console.info("segmentEffort: ", segmentEffort);
   const { segmentId, athleteId, name, rank, date, activityId } = segmentEffort;
   // console.log("DB: Adding effort on segment:", name);
   return new Promise((resolve, reject) => {
