@@ -66,7 +66,7 @@ const checkToken = (res) => {
     const expiresAtObj = res.locals.expiresAtObj;
     let logMsg = `Token Expires at ${expiresAtObj
       .tz("America/Los_Angeles")
-      .format("hh:mm A")} `;
+      .format("hh:mm A")} PST`;
     logMsg += `(${expiresAtObj.utc().format("hh:mm")}GMT)`;
     logMsg += ` ${expiresAtObj.fromNow()}`;
 
