@@ -10,11 +10,15 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
+import dayjs from "../../../utils/dayjs";
+
 import ControlPanel from "./ControlPanel";
 import List from "./List";
-import { getEfforts } from "../../../api/strava";
+import { getEfforts, refreshLeaderboard } from "../../../api/strava";
 import { sideBarHeight } from "../../../constants/sidebar";
 import { useCallback } from "react";
+
+const { appendLeaderboard } = require("../../../utils/helperFunctions");
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -49,6 +53,7 @@ const EffortsTab = (props) => {
     setMapCenter,
     handleRemoveLine,
     centerMapOnActivity,
+    renderKomTab,
   } = props;
 
   const [panelExpanded, setPanelExpanded] = useState(true);
@@ -70,6 +75,28 @@ const EffortsTab = (props) => {
         setLoadingEfforts(false);
       });
   }, [setEfforts]);
+
+  const updateLeaderBoard = async (effort) => {
+    console.info("effort: ", effort);
+    const leaderboard = await refreshLeaderboard(effort);
+
+    const { segmentId, activityId } = effort;
+
+    const updated = dayjs().format();
+
+    setFilteredEfforts((oldEfforts) => {
+      const efforts = oldEfforts.slice();
+
+      efforts.forEach((e) => {
+        if (e.segmentId === segmentId) {
+          const currentRank = appendLeaderboard(activityId, leaderboard);
+          e.currentRank = currentRank;
+          e.updated = updated;
+        }
+      });
+      return efforts;
+    });
+  };
 
   const sortEfforts = useCallback(
     (efforts) => {
@@ -114,10 +141,8 @@ const EffortsTab = (props) => {
   }, [ranks, efforts, sortBy, sortDir, setFilteredEfforts, sortEfforts]);
 
   useEffect(() => {
-    if (efforts.length === 0) {
-      fetchEfforts();
-    }
-  }, [efforts.length, fetchEfforts]);
+    fetchEfforts();
+  }, [fetchEfforts, renderKomTab]);
 
   return (
     <div className={classes.root}>
@@ -161,6 +186,7 @@ const EffortsTab = (props) => {
         setMapCenter={setMapCenter}
         handleRemoveLine={handleRemoveLine}
         centerMapOnActivity={centerMapOnActivity}
+        updateLeaderBoard={updateLeaderBoard}
       />
     </div>
   );

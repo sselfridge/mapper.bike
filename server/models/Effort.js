@@ -2,6 +2,9 @@ const _effortDb = require("./db/effort_aws");
 const Segment = require("./Segment");
 
 const utils = require("./db/utils");
+const User = require("./User");
+
+const { appendLeaderboard } = require("../../src/utils/helperFunctions");
 
 class Effort {
   static getEfforts = async (athleteId, rank = 10) => {
@@ -42,37 +45,52 @@ class Effort {
 
   //Effort + Segment combo logic
 
-  static getEffortsWithPath = async (athleteId, rank = 10) => {
+  static getEffortsWithPath = async (user, rank = 10) => {
     try {
-      const results = await this.getEfforts(athleteId, rank);
+      const { athleteId } = user;
+      const efforts = await this.getEfforts(athleteId, rank);
 
-      const promArray = results.map((effort) => Segment.get(effort.segmentId));
+      const promArray = efforts.map((effort) => Segment.get(effort.segmentId));
       const segmentDetails = await Promise.all(promArray);
 
       //TODO - this expects all the detail fetches to work, if this keeps erroring need to rework it.
 
       segmentDetails.forEach((detail, i) => {
-        if (detail && results[i].segmentId === detail.id) {
-          results[i].athleteCount = detail.athleteCount;
-          results[i].distance = detail.distance;
-          results[i].effortCount = detail.effortCount;
-          results[i].elevation = detail.elevation;
-          results[i].line = detail.line;
-          results[i].updated = detail.updated;
+        if (detail && efforts[i].segmentId === detail.id) {
+          efforts[i].athleteCount = detail.athleteCount;
+          efforts[i].distance = detail.distance;
+          efforts[i].effortCount = detail.effortCount;
+          efforts[i].elevation = detail.elevation;
+          efforts[i].line = detail.line;
+          efforts[i].updated = detail.updated;
+
+          if (detail.leaderboard) {
+            efforts[i].currentRank = appendLeaderboard(
+              efforts[i].activityId,
+              detail.leaderboard
+            );
+          }
         } else {
-          console.error(
-            "Error Mapping segment details to effort",
-            detail && detail.id
-          );
+          console.error("Error Mapping segment details to effort", detail?.id);
         }
       });
-      return results;
+      return efforts;
     } catch (error) {
       console.log("Error:", error.message);
       console.log(error);
       return [];
     }
   };
+
+  // static appendLeaderboard = (activityId, leaderboard) => {
+  //   const current = leaderboard.find((e) => e.activityId === `${activityId}`);
+
+  //   if (current) {
+  //     return parseInt(current.place, 10);
+  //   } else {
+  //     return "--";
+  //   }
+  // };
 
   //TODO test this
   static storeSegments = async (segmentSummaries) => {
@@ -83,10 +101,12 @@ class Effort {
     }));
 
     await Promise.all([
-      _effortDb.batchAdd(rankedSegments),
+      this.batchAdd(rankedSegments),
       Segment.batchAdd(segments),
     ]);
   };
+
+  static appendLeaderboardToEffort = (effort, segment) => {};
 }
 
 module.exports = Effort;

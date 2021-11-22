@@ -27,6 +27,7 @@ class ActivityQueue {
     for (const activity of activities) {
       try {
         const { athleteId, id } = activity;
+        //TODO batch fetch
         const fullActivity = await User.getFullActivity(athleteId, id);
 
         const result = await this.parseActivity(fullActivity);
