@@ -43,8 +43,7 @@ async function segmentEfforts(req, res, next) {
 
 async function parsePushNotification(req, res, next) {
   console.log("parsePushNotification");
-  console.info("req.url: ", req.url);
-  console.info("req.body: ", req.body);
+
 
   const {
     owner_id: athleteId,
