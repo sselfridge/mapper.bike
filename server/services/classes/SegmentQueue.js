@@ -12,15 +12,10 @@ class SegmentQueue {
 
   async process() {
     this.pathlessSegments = await Segment.getAllPathless();
-
+    const total = this.pathlessSegments.length;
     const segments = this.pathlessSegments.splice(0, 20);
 
-    console.log(
-      "processPathlessSegments:",
-      segments.length,
-      " of ",
-      this.pathlessSegments.length
-    );
+    console.log("processPathlessSegments:", segments.length, " of ", total);
     if (segments.length === 0) {
       console.log("No pathless segments");
       return 0;
