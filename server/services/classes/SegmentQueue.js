@@ -11,7 +11,7 @@ class SegmentQueue {
   }
 
   async process() {
-    this.pathlessSegments = await db.getAllPathlessSegments();
+    this.pathlessSegments = await Segment.getAllPathless();
 
     const segments = this.pathlessSegments.splice(0, 20);
 
@@ -33,6 +33,8 @@ class SegmentQueue {
         data.updated = dayjs().format();
       }
       await Segment.update(data);
+      console.info("Segment updated:", id);
+      console.info("data: ", data);
     }
     return ids.length;
   }

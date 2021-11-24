@@ -148,6 +148,7 @@ class User {
 
     const segment = await appStrava.segments.get({ id });
 
+    console.info("segment: ", id, JSON.stringify(segment).length);
     return segment;
   };
 }
