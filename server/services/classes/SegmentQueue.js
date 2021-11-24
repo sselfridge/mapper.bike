@@ -15,8 +15,12 @@ class SegmentQueue {
 
     const segments = this.pathlessSegments.splice(0, 20);
 
-    console.log("processPathlessSegments");
-    console.info("Pathless segment length:", segments.length);
+    console.log(
+      "processPathlessSegments:",
+      segments.length,
+      " of ",
+      this.pathlessSegments.length
+    );
     if (segments.length === 0) {
       console.log("No pathless segments");
       return 0;
@@ -34,7 +38,6 @@ class SegmentQueue {
       }
       await Segment.update(data);
       console.info("Segment updated:", id);
-      console.info("data: ", data);
     }
     return ids.length;
   }

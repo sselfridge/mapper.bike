@@ -141,7 +141,7 @@ function pop(Limit, value = "false") {
 function getAllPathless() {
   return new Promise((resolve, reject) => {
     const params = {
-      TableName: "segmentDetails-dev",
+      TableName,
       ConditionExpression: "attribute_not_exists(line)",
       FilterExpression: "#hasLine = :hasLine",
       ExpressionAttributeValues: {
