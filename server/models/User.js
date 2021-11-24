@@ -93,6 +93,9 @@ class User {
 
   static getFullActivity = async (athleteId, activityId) => {
     const user = await this.get(athleteId);
+
+    if (!user) throw new Error("No user found for athleteId", athleteId);
+
     const strava = await this.#makeStravaClient(user);
 
     const full = await strava.activities.get({
@@ -139,6 +142,7 @@ class User {
   static getFullSegment = async (id) => {
     //get main app strava refresh info
     const appUser = await this.get(1);
+    console.info("appUser: ", appUser);
 
     const appStrava = await this.#makeStravaClient(appUser);
 

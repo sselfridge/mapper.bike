@@ -16,6 +16,7 @@ class SegmentQueue {
     const segments = this.pathlessSegments.splice(0, 20);
 
     console.log("processPathlessSegments");
+    console.info("Pathless segment length:", segments.length);
     if (segments.length === 0) {
       console.log("No pathless segments");
       return 0;
@@ -37,6 +38,7 @@ class SegmentQueue {
   }
 
   async getSegmentDetails(id) {
+    console.info("Get segment details for:", id);
     try {
       const result = await User.getFullSegment(id);
       return {
