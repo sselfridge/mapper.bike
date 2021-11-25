@@ -102,7 +102,6 @@ class User {
       id: activityId,
       include_all_efforts: true,
     });
-    console.log("full: ", JSON.stringify(full).length);
     return full;
   };
 

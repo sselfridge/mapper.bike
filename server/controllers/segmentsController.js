@@ -44,7 +44,6 @@ async function segmentEfforts(req, res, next) {
 async function parsePushNotification(req, res, next) {
   console.log("parsePushNotification");
 
-
   const {
     owner_id: athleteId,
     aspect_type: aspectType,
@@ -75,11 +74,11 @@ async function parsePushNotification(req, res, next) {
   }
 
   console.log("Add to Q:", activityId, athleteId);
-  await Activity.add(activityId, athleteId);
 
-  //TODO see about adding rate limiting here if triggering this too much causes issues
-  // but I don't see that happening for a while...
-  stravaQ.processQueue();
+  setTimeout(async () => {
+    await Activity.add(activityId, athleteId);
+    stravaQ.processQueue();
+  }, 300000); //wait 5 min to let segment ranks calculate
 
   return next();
 }
