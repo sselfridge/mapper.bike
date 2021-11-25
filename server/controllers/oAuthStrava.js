@@ -156,7 +156,7 @@ const decodeCookie = (res, jwt) => {
   return new Promise((resolve, reject) => {
     jwToken.verify(jwt, config.secretSuperKey, (err, payload) => {
       if (err) {
-        console.info(err.message);
+        console.log(err.message);
         console.error(err);
         return reject("JWT / Cookie Invalid");
       }

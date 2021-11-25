@@ -32,13 +32,13 @@ class SegmentQueue {
         data.updated = dayjs().format();
       }
       await Segment.update(data);
-      console.info("Segment updated:", id);
+      console.log("Segment updated:", id);
     }
     return ids.length;
   }
 
   async getSegmentDetails(id) {
-    console.info("Get segment details for:", id);
+    console.log("Get segment details for:", id);
     try {
       const result = await User.getFullSegment(id);
       return {

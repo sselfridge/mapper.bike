@@ -185,7 +185,7 @@ app.get("/api/getHook", (req, res) => {
 
 app.post("/api/testPost", (req, res) => {
   const out = req.body;
-  console.info("out: ", out);
+  console.log("out: ", out);
 
   res.send(out);
 });

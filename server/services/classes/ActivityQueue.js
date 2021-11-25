@@ -17,26 +17,27 @@ class ActivityQueue {
     if (this.initDone === false) {
       throw new Error("Initialize Activity queue before using, run init() ");
     }
-    const completedActivityIds = [];
-    const errorActivityIds = [];
 
     const activities = await Activity.pop(this.batchSize);
 
     console.log(`Getting full details for ${activities.length} activities`);
     if (activities.length === 0) return 0;
-    for (const activity of activities) {
-      try {
-        const { athleteId, id } = activity;
-        //TODO batch fetch
-        const fullActivity = await User.getFullActivity(athleteId, id);
 
-        const result = await this.parseActivity(fullActivity);
-        if (result) completedActivityIds.push({ id });
-      } catch (error) {
-        console.log("Activity Detail Fetch Error:", activity.id, error.message);
-        errorActivityIds.push({ id: activity.id });
+    const results = await Promise.allSettled(
+      activities.map((a) => this.handleFetchActivity(a))
+    );
+
+    const completedActivityIds = [];
+    const errorActivityIds = [];
+
+    results.forEach((r, i) => {
+      if (r.status === "fulfilled") {
+        completedActivityIds.push({ id: activities[i].id });
+      } else {
+        errorActivityIds.push({ id: activities[i].id });
       }
-    }
+    });
+
     console.log("Completed activities", completedActivityIds);
     if (errorActivityIds.length > 0) {
       console.log("Error activities:", errorActivityIds);
@@ -50,6 +51,13 @@ class ActivityQueue {
     return completedActivityIds.length;
   }
 
+  async handleFetchActivity(activity) {
+    const { athleteId, id } = activity;
+    const fullActivity = await User.getFullActivity(athleteId, id);
+
+    await this.parseActivity(fullActivity);
+  }
+
   /**
    * Parse full activity for ranked segments
    * @param {object} activity
@@ -58,16 +66,10 @@ class ActivityQueue {
   async parseActivity(activity) {
     if (!activity.map.summary_polyline) {
       console.log(`No poly line on activity ${activity.id} - skipping`);
-      return true;
+      return;
     }
     const rankedSegments = this.getRankedEfforts(activity);
-    try {
-      await Effort.storeSegments(rankedSegments);
-    } catch (error) {
-      console.log("Store Segment Error", error.message);
-      return false;
-    }
-    return true;
+    await Effort.storeSegments(rankedSegments);
   }
 
   getRankedEfforts(activity) {

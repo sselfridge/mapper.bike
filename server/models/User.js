@@ -146,7 +146,7 @@ class User {
 
     const segment = await appStrava.segments.get({ id });
 
-    console.info(
+    console.log(
       "segment (id, char size): ",
       id,
       JSON.stringify(segment).length
