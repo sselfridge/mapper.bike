@@ -71,7 +71,11 @@ class Effort {
             );
           }
         } else {
-          console.error("Error Mapping segment details to effort", detail?.id);
+          console.error(
+            "Error Mapping segment details to effort",
+            detail?.id,
+            efforts[i]?.segmentId
+          );
         }
       });
       return efforts;
