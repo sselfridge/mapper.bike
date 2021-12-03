@@ -55,18 +55,22 @@ class Effort {
 
       //TODO - this expects all the detail fetches to work, if this keeps erroring need to rework it.
 
-      segmentDetails.forEach((detail, i) => {
-        if (detail && efforts[i].segmentId === detail.id) {
-          efforts[i].athleteCount = detail.athleteCount;
-          efforts[i].distance = detail.distance;
-          efforts[i].effortCount = detail.effortCount;
-          efforts[i].elevation = detail.elevation;
-          efforts[i].line = detail.line;
-          efforts[i].updated = detail.updated;
+      segmentDetails.forEach((detail) => {
+        const effort = efforts.find(
+          (e) => e.segmentId && e.segmentId === detail?.id
+        );
+
+        if (detail && effort.segmentId === detail.id) {
+          effort.athleteCount = detail.athleteCount;
+          effort.distance = detail.distance;
+          effort.effortCount = detail.effortCount;
+          effort.elevation = detail.elevation;
+          effort.line = detail.line;
+          effort.updated = detail.updated;
 
           if (detail.leaderboard) {
-            efforts[i].currentRank = appendLeaderboard(
-              efforts[i].activityId,
+            effort.currentRank = appendLeaderboard(
+              effort.activityId,
               detail.leaderboard
             );
           }
@@ -74,7 +78,7 @@ class Effort {
           console.error(
             "Error Mapping segment details to effort",
             detail?.id,
-            efforts[i]?.segmentId
+            effort?.segmentId
           );
         }
       });
