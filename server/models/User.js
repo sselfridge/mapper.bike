@@ -110,7 +110,7 @@ class User {
     const now = dayjs();
 
     if (now.isAfter(dayjs.unix(expiresAt))) {
-      console.info("Token expired - refresh");
+      console.log("Token expired - refresh");
       user = await this.#refreshStravaTokens(user);
     }
 
@@ -121,7 +121,7 @@ class User {
     try {
       const result = await _stravaAPI.oauth.refreshToken(user.refreshToken);
       const { expires_at, refresh_token, access_token } = result;
-      console.info("Token Refreshed: ", result);
+      console.log("Token Refreshed: ", result);
       //TODO validate input
       user.expiresAt = expires_at;
       user.refreshToken = refresh_token;

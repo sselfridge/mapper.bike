@@ -75,8 +75,6 @@ async function getEffortsWithPath(athleteId, rank = 10) {
     const promArray = results.map((effort) => Segment.get(effort.segmentId));
     const segmentDetails = await Promise.all(promArray);
 
-    //TODO - this expects all the detail fetches to work, if this keeps erroring need to rework it.
-
     segmentDetails.forEach((detail, i) => {
       if (detail && results[i].segmentId === detail.id) {
         results[i].athleteCount = detail.athleteCount;
