@@ -1,12 +1,11 @@
 //Models
-// const db = require("../models/db/dataLayer");
 const User = require("../models/User");
 const Effort = require("../models/Effort");
 const Activity = require("../models/Activity");
 const Segment = require("../models/Segment");
 
 const dayjs = require("../utils/dayjs");
-const config = require("../../src/config/keys");
+// const config = require("../../src/config/keys");
 
 const got = require("got");
 const jsdom = require("jsdom");
@@ -101,7 +100,7 @@ async function getKOMUsers() {
 // eslint-disable-next-line require-await
 async function test(req, res, next) {
   console.log("Start Test");
-  // const strava = res.locals.strava;
+  const strava = res.locals.strava;
 
   // const stravaSub = require("strava-v3");
 
@@ -138,8 +137,8 @@ async function test(req, res, next) {
     //     });
     //   return;
     // const result = await strava.segments.listLeaderboard({ id: 8058447 });
-    const { updateAllUserSinceLast } = require("../services/effortsServices");
-    const result = await updateAllUserSinceLast();
+    // const { updateAllUserSinceLast } = require("../services/effortsServices");
+    // const result = await updateAllUserSinceLast();
     // const user = {
     //   id: 12345,
     //   expiresAt: "this time",
@@ -155,10 +154,10 @@ async function test(req, res, next) {
     // const result = await getLeaderboard(651706);
     // const result await db.
     // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
-    // const result = await strava.activities.get({
-    //   id: 6184921496,
-    //   include_all_efforts: true,
-    // });
+    const result = await strava.activities.get({
+      id: 447304788,
+      include_all_efforts: true,
+    });
     // const result = await strava.segments.get({ id: 16616440 });
     // const result = await db.deleteUser(1075670);
     // const result = await strava.activities.get({ id: 3462588758 });
@@ -176,7 +175,8 @@ async function test(req, res, next) {
     // });
 
     console.info("test result ----");
-    console.log(result);
+    // console.log(result);
+    console.log(result.segment_efforts);
     console.info("---- end test result");
 
     // result.forEach((effort) => {
@@ -231,6 +231,12 @@ async function getLeaderboard(req, res, next) {
   }
 
   const segmentId = parseInt(req.query.segmentId, 10);
+
+  if (!segmentId)
+    throw new Error(
+      "No segmentId specified. Expected number, received:",
+      segmentId
+    );
 
   const response = await got(`https://www.strava.com/segments/${segmentId}`);
 

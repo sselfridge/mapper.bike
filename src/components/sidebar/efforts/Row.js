@@ -18,6 +18,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 import { useRowStyles } from "../shared/styles";
 import { mergeStyles } from "../../../utils";
+import Leaderboard from "./Leaderboard";
 
 // eslint-disable-next-line no-unused-vars
 const localStyles = makeStyles((theme) => ({
@@ -30,7 +31,7 @@ function Row(props) {
   const classes = mergeStyles(useRowStyles(), localStyles());
 
   let {
-    effort,
+    effort: segEffort,
     index,
     selectedAct,
     handleSelected,
@@ -42,26 +43,28 @@ function Row(props) {
     root: classes.itemNumber,
   };
 
-  const date = dayjs(effort.date);
+  const date = dayjs(segEffort.date);
 
   // eslint-disable-next-line no-unused-vars
-  const elevation = (effort.elevation * 3.3).toFixed(0);
-  const distance = (effort.distance / 1609).toFixed(2);
+  const elevation = (segEffort.elevation * 3.3).toFixed(0);
+  const distance = (segEffort.distance / 1609).toFixed(2);
 
-  const currentRank = effort.currentRank;
-  const lastUpdate = effort.updated || dayjs().format();
-  const rank = effort.rank;
   const distanceMi = `${distance}mi`;
-  const athleteCount = `~${effort.athleteCount}`;
-  const effortCount = `~${effort.effortCount} efforts`;
+  const athleteCount = `~${segEffort.athleteCount}`;
+  const effortCount = `~${segEffort.effortCount} efforts`;
   const effortDate = `${date.format("MMM DD 'YY")}`;
-  const stravaLink = `http://www.strava.com/segments/${effort.segmentId}`;
+  const stravaLink = `http://www.strava.com/segments/${segEffort.id}`;
 
-  const isSelected = selectedAct.id === effort.id;
+  const currentRank =
+    segEffort.currentRanks && Math.min(segEffort.currentRanks);
+  const lastUpdate = segEffort.updated || dayjs().format();
+  const topRank = Math.min(...segEffort.efforts.map((e) => e.rank));
+
+  const isSelected = selectedAct.id === segEffort.id;
 
   return (
     <div
-      id={`row${effort.id}`}
+      id={`row${segEffort.id}`}
       className={clsx({
         [classes.listItem]: true,
         [classes.selectedStyle]: isSelected,
@@ -70,15 +73,15 @@ function Row(props) {
       <ListItem
         key={index}
         onClick={() => {
-          if (!isSelected) handleSelected(effort, "row");
+          if (!isSelected) handleSelected(segEffort, "row");
         }}
-        onDoubleClick={() => centerMapOnActivity(effort)}
+        onDoubleClick={() => centerMapOnActivity(segEffort)}
       >
         <ListItemAvatar classes={avatarStyles}>
           <div>{index + 1}</div>
         </ListItemAvatar>
         <ListItemText
-          primary={effort.name}
+          primary={segEffort.name}
           secondary={
             <span className={classes.secondaryText}>
               {currentRank && (
@@ -86,7 +89,7 @@ function Row(props) {
                   <span>#{currentRank}</span>
                 </Tooltip>
               )}
-              <span>#{rank}</span>
+              <span>#{topRank}</span>
               <span>{distanceMi}</span>
 
               <span>{effortCount}</span>
@@ -100,6 +103,12 @@ function Row(props) {
           <p
             className={classes.detailText}
           >{`${effortCount} by ${athleteCount} riders`}</p>
+          <section>
+            {segEffort.efforts &&
+              segEffort.efforts.map(
+                (e) => `${e.date} - ${e.rank} - ${e.activityId}`
+              )}
+          </section>
           <div className={classes.actions}>
             <Tooltip title="View on Strava" placement={"top"}>
               <IconButton>
@@ -116,7 +125,7 @@ function Row(props) {
               <IconButton
                 aria-label="zoomToRide"
                 onClick={() => {
-                  updateLeaderBoard(effort);
+                  updateLeaderBoard(segEffort);
                 }}
               >
                 <RefreshIcon />
@@ -126,7 +135,7 @@ function Row(props) {
               <IconButton
                 aria-label="zoomToRide"
                 onClick={() => {
-                  centerMapOnActivity(effort);
+                  centerMapOnActivity(segEffort);
                 }}
               >
                 <MapIcon />
@@ -143,6 +152,9 @@ function Row(props) {
               </IconButton>
             </Tooltip>
           </div>
+          {segEffort.leaderboard && (
+            <Leaderboard leaderboard={segEffort.leaderboard} />
+          )}
         </div>
       )}
     </div>

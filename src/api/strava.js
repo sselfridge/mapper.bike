@@ -126,9 +126,9 @@ export function getEfforts(rank = 10) {
   });
 }
 
-export function refreshLeaderboard(effort) {
+export function refreshLeaderboard(segEffort) {
   return new Promise((resolve, reject) => {
-    const segmentId = effort.segmentId;
+    const segmentId = segEffort.id;
     const queryString = `/api/refreshLeaderboard?segmentId=${segmentId}`;
     axios
       .get(queryString)

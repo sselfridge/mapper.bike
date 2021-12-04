@@ -76,10 +76,10 @@ const EffortsTab = (props) => {
       });
   }, [setEfforts]);
 
-  const updateLeaderBoard = async (effort) => {
-    const leaderboard = await refreshLeaderboard(effort);
+  const updateLeaderBoard = async (segEffort) => {
+    const leaderboard = await refreshLeaderboard(segEffort);
 
-    const { segmentId, activityId } = effort;
+    const { segmentId, activityId } = segEffort;
 
     const updated = dayjs().format();
 
@@ -126,12 +126,11 @@ const EffortsTab = (props) => {
 
   useEffect(() => {
     //Filter By Rank
-    const newFiltered = efforts.filter((effort) => {
-      const rank = effort.rank;
+    const newFiltered = efforts.filter((segEffort) => {
+      if (!segEffort.line || segEffort.line === "error") return false;
+      const effortRanks = segEffort.efforts.map((e) => e.rank);
 
-      return (
-        ranks.indexOf(rank) !== -1 && effort.line && effort.line !== "error"
-      );
+      return ranks.some((r) => effortRanks.includes(r));
     });
 
     const sorted = sortEfforts(newFiltered);

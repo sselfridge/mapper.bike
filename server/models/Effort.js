@@ -2,7 +2,6 @@ const _effortDb = require("./db/effort_aws");
 const Segment = require("./Segment");
 
 const utils = require("./db/utils");
-const User = require("./User");
 
 const { appendLeaderboard } = require("../../src/utils/helperFunctions");
 
@@ -50,39 +49,32 @@ class Effort {
       const { athleteId } = user;
       const efforts = await this.getEfforts(athleteId, rank);
 
-      const promArray = efforts.map((effort) => Segment.get(effort.segmentId));
+      const segmentIds = new Set();
+      efforts.forEach((e) => segmentIds.add(e.segmentId));
+
+      const promArray = Array.from(segmentIds).map((id) => Segment.get(id));
       const segmentDetails = await Promise.all(promArray);
 
-      //TODO - this expects all the detail fetches to work, if this keeps erroring need to rework it.
-
-      segmentDetails.forEach((detail) => {
-        const effort = efforts.find(
-          (e) => e.segmentId && e.segmentId === detail?.id
+      const segEfforts = segmentDetails.map((segment) => {
+        const segEffort = { ...segment };
+        const localEfforts = efforts.filter(
+          (e) => e.segmentId === segEffort.id
         );
 
-        if (detail && effort.segmentId === detail.id) {
-          effort.athleteCount = detail.athleteCount;
-          effort.distance = detail.distance;
-          effort.effortCount = detail.effortCount;
-          effort.elevation = detail.elevation;
-          effort.line = detail.line;
-          effort.updated = detail.updated;
+        segEffort.name = localEfforts[0].name;
+        segEffort.athleteId = localEfforts[0].athleteId;
+        segEffort.efforts = localEfforts;
 
-          if (detail.leaderboard) {
-            effort.currentRank = appendLeaderboard(
-              effort.activityId,
-              detail.leaderboard
-            );
-          }
-        } else {
-          console.error(
-            "Error Mapping segment details to effort",
-            detail?.id,
-            effort?.segmentId
+        if (segEffort.leaderboard) {
+          segEffort.currentRanks = segEffort.efforts.map((e) =>
+            appendLeaderboard(e.activityId, segEffort.leaderboard)
           );
         }
+
+        return segEffort;
       });
-      return efforts;
+
+      return segEfforts;
     } catch (error) {
       console.log("Error:", error.message);
       console.log(error);
@@ -100,7 +92,6 @@ class Effort {
   //   }
   // };
 
-  //TODO test this
   static storeSegments = async (segmentSummaries) => {
     const rankedSegments = utils.parseRankedSegments(segmentSummaries);
 

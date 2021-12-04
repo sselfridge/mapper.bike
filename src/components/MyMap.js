@@ -33,8 +33,9 @@ const MyMap = (props) => {
   mapLines.forEach((mapLine) => {
     if (!mapLine.line) return;
 
-    const rank = mapLine.rank;
-    let color = rank !== undefined ? rankColors[mapLine.rank - 1] : lineColor;
+    const ranks = mapLine?.efforts?.map((e) => e.rank);
+    const topRank = Math.max(ranks);
+    let color = ranks !== undefined ? rankColors[topRank - 1] : lineColor;
     color = mapLine.selected ? selectedColor : color;
 
     const newLine = (
