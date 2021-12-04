@@ -1,4 +1,3 @@
-const db = require("../models/db/dataLayer");
 const dayjs = require("../utils/dayjs");
 
 //models
@@ -20,7 +19,7 @@ async function updateAllUserSinceLast() {
 }
 
 async function fetchNewUserActivities(user) {
-  console.info("fetch new activites for user: ", user);
+  console.log("fetch new activities for user: ", user);
   const update = dayjs(user.lastUpdate);
   const after = update.unix();
 
@@ -37,7 +36,7 @@ async function fetchNewUserActivities(user) {
   console.log("Finished Adding to DB");
   user.lastUpdate = dayjs().format();
   try {
-    await db.updateUser(user);
+    await User.update(user);
     console.log("User updated:", user);
   } catch (err) {
     console.error("Update user Error");

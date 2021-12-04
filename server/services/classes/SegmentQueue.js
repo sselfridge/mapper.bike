@@ -1,7 +1,5 @@
 const dayjs = require("../../utils/dayjs");
 
-const db = require("../../models/db/dataLayer");
-
 const User = require("../../models/User");
 const Segment = require("../../models/Segment");
 
