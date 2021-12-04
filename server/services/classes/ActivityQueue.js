@@ -80,7 +80,11 @@ class ActivityQueue {
     }
 
     activity.segment_efforts.forEach((effort) => {
-      if (effort.kom_rank <= 10 && effort.kom_rank > 0) {
+      if (
+        effort.kom_rank <= 10 &&
+        effort.kom_rank > 0 &&
+        effort.private !== true
+      ) {
         console.log(
           `Saving Effort:${effort.name} with Rank:${effort.kom_rank}`
         );
