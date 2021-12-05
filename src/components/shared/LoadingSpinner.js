@@ -26,34 +26,31 @@ const secFromTimer = (timer) => {
   return Math.floor(diff / 1000);
 };
 
-const showDots = (loadingDots) => {
-  return ".".repeat(loadingDots);
-};
-
 const LoadingSpinner = (props) => {
   const classes = useStyles();
   const { loading, afterDate, beforeDate } = props;
 
-  const [loadingTimer, setLoadingTimer] = useState(dayjs());
-  const [loadingDots, setLoadingDots] = useState(3);
+  const [seconds, setSeconds] = useState(0);
   const timeoutRef = useRef(null);
 
   useEffect(() => {
     if (loading && timeoutRef.current === null) {
-      setLoadingTimer(dayjs());
-      timeoutRef.current = setTimeout(() => {
-        const dots = (loadingDots + 1) % 4;
-        setLoadingDots(dots);
+      const timeZero = dayjs();
+
+      timeoutRef.current = setInterval(() => {
+        const newSeconds = secFromTimer(timeZero);
+        setSeconds(newSeconds);
       }, 1000);
     }
 
     return () => {
       if (!loading) {
-        clearTimeout(timeoutRef.current);
+        clearInterval(timeoutRef.current);
         timeoutRef.current = null;
+        setSeconds(0);
       }
     };
-  }, [loading, loadingDots]);
+  }, [loading, setSeconds]);
 
   if (!loading) return null;
 
@@ -72,8 +69,7 @@ const LoadingSpinner = (props) => {
           afterDate,
           beforeDate
         )} days`}</div>
-        <div>{`${secFromTimer(loadingTimer)} secs elapsed`}</div>
-        <div>{`${showDots(loadingDots)}`}</div>
+        <div>{`${seconds} secs elapsed`}</div>
       </div>
     </div>
   );
