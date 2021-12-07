@@ -13,10 +13,10 @@ import {
   Tooltip,
 } from "@material-ui/core/";
 
-import DeleteIcon from "@material-ui/icons/Delete";
 import MapIcon from "@material-ui/icons/Map";
 
 import { useRowStyles } from "../shared/styles";
+import ConfirmDelete from "../../shared/ConfirmDelete";
 
 function Row(props) {
   const classes = useRowStyles();
@@ -101,7 +101,7 @@ function Row(props) {
               <MapIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Remove from map" placement={"top"}>
+          {/* <Tooltip title="Remove from map" placement={"top"}>
             <IconButton
               aria-label="delete"
               onClick={() => {
@@ -110,7 +110,10 @@ function Row(props) {
             >
               <DeleteIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
+          <ConfirmDelete
+            onDelete={() => handleRemoveLine(activity.id, "activity")}
+          />
         </div>
       )}
     </div>
