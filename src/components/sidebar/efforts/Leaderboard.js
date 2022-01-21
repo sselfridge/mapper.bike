@@ -46,7 +46,7 @@ function Leaderboard(props) {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  View
+                  {row.time}
                 </a>
               </TableCell>
             </TableRow>
@@ -58,7 +58,7 @@ function Leaderboard(props) {
 }
 
 Leaderboard.propTypes = {
-  leaderboard: PropTypes.object.isRequired,
+  leaderboard: PropTypes.array.isRequired,
 };
 
 export default Leaderboard;
