@@ -61,8 +61,10 @@ class Effort {
           (e) => e.segmentId === segEffort.id
         );
 
+        //TODO - transition from 1 effort to combined effort
         segEffort.name = localEfforts[0].name;
         segEffort.athleteId = localEfforts[0].athleteId;
+        segEffort.activityId = localEfforts[0].activityId;
         segEffort.efforts = localEfforts;
 
         if (segEffort.leaderboard) {

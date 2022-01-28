@@ -123,7 +123,7 @@ function Row(props) {
             </Tooltip>
             <Tooltip title="Update Leaderboard" placement={"top"}>
               <IconButton
-                aria-label="zoomToRide"
+                aria-label="updateLeaderboard"
                 onClick={() => {
                   updateLeaderBoard(segEffort);
                 }}
