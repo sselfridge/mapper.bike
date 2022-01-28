@@ -286,7 +286,7 @@ async function getLeaderboard(req, res, next) {
 const ROW_MAP = {
   place: ["td:nth-child(1)"],
   name: ["td:nth-child(2)"],
-  time: ["td > a"],
+  time: ["td > a", "textContent"],
   link: ["td > a", "href"],
 };
 
