@@ -9,6 +9,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { cloneDeep as _cloneDeep } from "lodash";
 
 import dayjs from "../../../utils/dayjs";
 
@@ -18,7 +19,9 @@ import { getEfforts, refreshLeaderboard } from "../../../api/strava";
 import { sideBarHeight } from "../../../constants/sidebar";
 import { useCallback } from "react";
 
-const { appendLeaderboard } = require("../../../utils/helperFunctions");
+const {
+  getActivityRankInLeaderboard,
+} = require("../../../utils/helperFunctions");
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -79,18 +82,20 @@ const EffortsTab = (props) => {
   const updateLeaderBoard = async (segEffort) => {
     const leaderboard = await refreshLeaderboard(segEffort);
 
-    const { segmentId, activityId } = segEffort;
+    const { id } = segEffort; //getSegmentId
 
     const updated = dayjs().format();
 
     setFilteredEfforts((oldEfforts) => {
-      const efforts = oldEfforts.slice();
+      const efforts = _cloneDeep(oldEfforts);
 
       efforts.forEach((e) => {
-        if (e.segmentId === segmentId) {
-          const currentRank = appendLeaderboard(activityId, leaderboard);
-          e.currentRank = currentRank;
+        if (e.id === id) {
+          e.leaderboard = leaderboard;
           e.updated = updated;
+          e.currentRanks = e.efforts.map((effort) =>
+            getActivityRankInLeaderboard(effort.activityId, leaderboard)
+          );
         }
       });
       return efforts;

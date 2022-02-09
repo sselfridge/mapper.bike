@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import dayjs from "../../../utils/dayjs";
 import MapIcon from "@material-ui/icons/Map";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import LeaderboardIcon from "@material-ui/icons/FormatListNumbered";
 
 import {
   makeStyles,
@@ -25,6 +26,10 @@ const localStyles = makeStyles((theme) => ({
   detailText: {
     textAlign: "center",
   },
+  myEffortsTable: {
+    textAlign: "right",
+    width: "80%",
+  },
 }));
 
 function Row(props) {
@@ -43,6 +48,8 @@ function Row(props) {
     root: classes.itemNumber,
   };
 
+  const [showLeaderBoard, setShowLeaderBoard] = useState(false);
+
   const date = dayjs(segEffort.date);
 
   // eslint-disable-next-line no-unused-vars
@@ -51,12 +58,16 @@ function Row(props) {
 
   const distanceMi = `${distance}mi`;
   const athleteCount = `~${segEffort.athleteCount}`;
-  const effortCount = `~${segEffort.effortCount} efforts`;
+  const effortCount = `~${segEffort.effortCount} attempts`;
   const effortDate = `${date.format("MMM DD 'YY")}`;
   const stravaLink = `http://www.strava.com/segments/${segEffort.id}`;
 
-  const currentRank =
-    segEffort.currentRanks && Math.min(segEffort.currentRanks);
+  let currentRank =
+    segEffort.currentRanks &&
+    Math.min(segEffort.currentRanks.filter((a) => typeof a === "number"));
+
+  currentRank = currentRank === 0 ? "--" : currentRank;
+
   const lastUpdate = segEffort.updated || dayjs().format();
   const topRank = Math.min(...segEffort.efforts.map((e) => e.rank));
 
@@ -103,12 +114,31 @@ function Row(props) {
           <p
             className={classes.detailText}
           >{`${effortCount} by ${athleteCount} riders`}</p>
-          <section>
+          <table className={classes.myEffortsTable}>
+            <tr>
+              <td>My Efforts</td>
+              <td>Date</td>
+              <td>Rank</td>
+            </tr>
+
             {segEffort.efforts &&
-              segEffort.efforts.map(
-                (e) => `${e.date} - ${e.rank} - ${e.activityId}`
-              )}
-          </section>
+              segEffort.efforts.map((e) => {
+                const effortDate = dayjs(e.date).format("MM/DD/YY");
+                return (
+                  <tr>
+                    <td />
+                    <td>
+                      <a
+                        href={`https://www.strava.com/activities/${e.activityId}`}
+                      >
+                        {effortDate}
+                      </a>
+                    </td>
+                    <td>{e.rank}</td>
+                  </tr>
+                );
+              })}
+          </table>
           <div className={classes.actions}>
             <Tooltip title="View on Strava" placement={"top"}>
               <IconButton>
@@ -126,6 +156,7 @@ function Row(props) {
                 aria-label="updateLeaderboard"
                 onClick={() => {
                   updateLeaderBoard(segEffort);
+                  setShowLeaderBoard(true);
                 }}
               >
                 <RefreshIcon />
@@ -151,8 +182,18 @@ function Row(props) {
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
+            {segEffort.leaderboard && (
+              <Tooltip title="View leaderboard" placement={"top"}>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => setShowLeaderBoard((v) => !v)}
+                >
+                  <LeaderboardIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </div>
-          {segEffort.leaderboard && (
+          {segEffort.leaderboard && showLeaderBoard && (
             <Leaderboard leaderboard={segEffort.leaderboard} />
           )}
         </div>

@@ -155,7 +155,7 @@ async function test(req, res, next) {
     // const result await db.
     // const result = await strava.segments.listEfforts({ id: 30179277, per_page: 200 });
     const result = await strava.activities.get({
-      id: 447304788,
+      id: 1171421962,
       include_all_efforts: true,
     });
     // const result = await strava.segments.get({ id: 16616440 });
@@ -176,7 +176,11 @@ async function test(req, res, next) {
 
     console.info("test result ----");
     // console.log(result);
-    console.log(result.segment_efforts);
+    result.segment_efforts.forEach((segment) => {
+      if (segment.name.toLowerCase().includes("sprint")) {
+        console.info(segment);
+      }
+    });
     console.info("---- end test result");
 
     // result.forEach((effort) => {

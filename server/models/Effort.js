@@ -3,7 +3,9 @@ const Segment = require("./Segment");
 
 const utils = require("./db/utils");
 
-const { appendLeaderboard } = require("../../src/utils/helperFunctions");
+const {
+  getActivityRankInLeaderboard,
+} = require("../../src/utils/helperFunctions");
 
 class Effort {
   static getEfforts = async (athleteId, rank = 10) => {
@@ -64,18 +66,15 @@ class Effort {
         //TODO - transition from 1 effort to combined effort
         segEffort.name = localEfforts[0].name;
         segEffort.athleteId = localEfforts[0].athleteId;
-        segEffort.activityId = localEfforts[0].activityId;
         segEffort.efforts = localEfforts;
 
         if (segEffort.leaderboard) {
           segEffort.currentRanks = segEffort.efforts.map((e) =>
-            appendLeaderboard(e.activityId, segEffort.leaderboard)
+            getActivityRankInLeaderboard(e.activityId, segEffort.leaderboard)
           );
         }
-
         return segEffort;
       });
-
       return segEfforts;
     } catch (error) {
       console.log("Error:", error.message);
@@ -84,7 +83,7 @@ class Effort {
     }
   };
 
-  // static appendLeaderboard = (activityId, leaderboard) => {
+  // static getActivityRankInLeaderboard = (activityId, leaderboard) => {
   //   const current = leaderboard.find((e) => e.activityId === `${activityId}`);
 
   //   if (current) {
@@ -107,7 +106,7 @@ class Effort {
     ]);
   };
 
-  static appendLeaderboardToEffort = (effort, segment) => {};
+  static getActivityRankInLeaderboardToEffort = (effort, segment) => {};
 }
 
 module.exports = Effort;
