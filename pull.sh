@@ -3,7 +3,7 @@
 
 # create command array
 # arr=( "git pull")
-# arr+=("npm install")
+# arr+=("npm install --legacy-peer-deps")
 # arr+=("REACT_APP_GIT_HASH=$(git rev-parse --short HEAD) npm run build")
 # arr+=("pm2 restart ecosystem.config.js")
 # arr+=("git log -1")
