@@ -36,7 +36,7 @@ function Row(props) {
   const classes = mergeStyles(useRowStyles(), localStyles());
 
   let {
-    effort: segEffort,
+    segEffort,
     index,
     selectedAct,
     handleSelected,
@@ -50,7 +50,7 @@ function Row(props) {
 
   const [showLeaderBoard, setShowLeaderBoard] = useState(false);
 
-  const date = dayjs(segEffort.date);
+  const date = segEffort.date && dayjs(segEffort.date);
 
   // eslint-disable-next-line no-unused-vars
   const elevation = (segEffort.elevation * 3.3).toFixed(0);
@@ -115,29 +115,32 @@ function Row(props) {
             className={classes.detailText}
           >{`${effortCount} by ${athleteCount} riders`}</p>
           <table className={classes.myEffortsTable}>
-            <tr>
-              <td>My Efforts</td>
-              <td>Date</td>
-              <td>Rank</td>
-            </tr>
-
-            {segEffort.efforts &&
-              segEffort.efforts.map((e) => {
-                const effortDate = dayjs(e.date).format("MM/DD/YY");
-                return (
-                  <tr>
-                    <td />
-                    <td>
-                      <a
-                        href={`https://www.strava.com/activities/${e.activityId}`}
-                      >
-                        {effortDate}
-                      </a>
-                    </td>
-                    <td>{e.rank}</td>
-                  </tr>
-                );
-              })}
+            <thead>
+              <tr>
+                <td>Ranked Efforts</td>
+                <td>Date</td>
+                <td>Rank</td>
+              </tr>
+            </thead>
+            <tbody>
+              {segEffort.efforts &&
+                segEffort.efforts.map((e, i) => {
+                  const effortDate = dayjs(e.date).format("MM/DD/YY");
+                  return (
+                    <tr key={i}>
+                      <td />
+                      <td>
+                        <a
+                          href={`https://www.strava.com/activities/${e.activityId}`}
+                        >
+                          {effortDate}
+                        </a>
+                      </td>
+                      <td>{e.rank}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
           </table>
           <div className={classes.actions}>
             <Tooltip title="View on Strava" placement={"top"}>
@@ -204,9 +207,9 @@ function Row(props) {
 
 Row.propTypes = {
   index: PropTypes.number.isRequired,
-  effort: PropTypes.object.isRequired,
+  segEffort: PropTypes.object.isRequired,
   selectedAct: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
   }),
   handleSelected: PropTypes.func.isRequired,
   handleRemoveLine: PropTypes.func.isRequired,

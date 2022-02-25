@@ -39,8 +39,8 @@ export default function List(props) {
 
   return (
     <div style={{ height: listHeight }} className={classes.List}>
-      {filteredEfforts.map((effort, index) => (
-        <Row key={index} index={index} effort={effort} {...props} />
+      {filteredEfforts.map((segEffort, index) => (
+        <Row key={index} index={index} segEffort={segEffort} {...props} />
       ))}
       <div className={classes.rowSpacer} />
     </div>

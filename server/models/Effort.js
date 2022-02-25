@@ -59,9 +59,15 @@ class Effort {
 
       const segEfforts = segmentDetails.map((segment) => {
         const segEffort = { ...segment };
-        const localEfforts = efforts.filter(
-          (e) => e.segmentId === segEffort.id
-        );
+        const localEfforts = efforts
+          .filter((e) => e.segmentId === segEffort.id)
+          .sort((a, b) => a.rank - b.rank);
+
+        //TODO - transition from 1 effort to combined effort
+        segEffort.name = localEfforts[0].name;
+        segEffort.athleteId = localEfforts[0].athleteId;
+        segEffort.date = localEfforts[0].date;
+        segEffort.efforts = localEfforts;
 
         //TODO - transition from 1 effort to combined effort
         segEffort.name = localEfforts[0].name;
@@ -82,16 +88,6 @@ class Effort {
       return [];
     }
   };
-
-  // static getActivityRankInLeaderboard = (activityId, leaderboard) => {
-  //   const current = leaderboard.find((e) => e.activityId === `${activityId}`);
-
-  //   if (current) {
-  //     return parseInt(current.place, 10);
-  //   } else {
-  //     return "--";
-  //   }
-  // };
 
   static storeSegments = async (segmentSummaries) => {
     const rankedSegments = utils.parseRankedSegments(segmentSummaries);
