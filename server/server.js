@@ -307,21 +307,20 @@ app.delete(
   }
 );
 
-app.get("/api/sbmt/submission", (req, res) => {
-  const { sender, segment } = req.query;
-
-  const outObj = {};
-  const allowed = /[^A-Z0-9:?&/=.@]/gi;
-  if (sender && typeof sender === "string") {
-    const cleanSender = sender.replace(allowed, "");
-    outObj.sender = cleanSender;
-  }
-  if (segment && typeof segment === "string") {
-    const cleanSegment = segment.replace(allowed, "");
-    outObj.segment = cleanSegment;
+app.get("/api/sbmt/submission/:password/", (req, res) => {
+  console.info(" req.query : ", req.params);
+  const { password } = req.params;
+  if (password !== "asdfASDF") {
+    res.sendStatus(403);
   }
 
-  fs.appendFileSync("logs/sbmt.txt", `${JSON.stringify(outObj)}\n`);
+  const allowed = /[^A-Z0-9:?&/=.@ \n]/gi;
+
+  if (req.query.segment && typeof req.query.segment === "string") {
+    const value = req.query.segment;
+    const clean = value.replace(allowed, "");
+    fs.appendFileSync("logs/sbmt.txt", `${JSON.stringify(clean)},\n`);
+  }
 
   res.send();
 });
