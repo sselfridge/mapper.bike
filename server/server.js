@@ -307,6 +307,25 @@ app.delete(
   }
 );
 
+app.get("/api/sbmt/submission", (req, res) => {
+  const { sender, segment } = req.query;
+
+  const outObj = {};
+  const allowed = /[^A-Z0-9:?&/=.@]/gi;
+  if (sender && typeof sender === "string") {
+    const cleanSender = sender.replace(allowed, "");
+    outObj.sender = cleanSender;
+  }
+  if (segment && typeof segment === "string") {
+    const cleanSegment = segment.replace(allowed, "");
+    outObj.segment = cleanSegment;
+  }
+
+  fs.appendFileSync("logs/sbmt.txt", `${JSON.stringify(outObj)}\n`);
+
+  res.send();
+});
+
 // statically serve everything in the build folder on the route '/build'
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
   console.log(
