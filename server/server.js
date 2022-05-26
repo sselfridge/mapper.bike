@@ -310,7 +310,7 @@ app.delete(
 app.get("/api/sbmt/submission/:password/", (req, res) => {
   console.info(" req.query : ", req.params);
   const { password } = req.params;
-  if (password !== "asdfASDF") {
+  if (password !== config.sbmtPassword) {
     res.sendStatus(403);
   }
 
