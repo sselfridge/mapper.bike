@@ -18,6 +18,7 @@
     "decode-google-map-polyline": "^1.0.1",
     "express": "^4.17.2",
     "google-maps-react": "github:sselfridge/google-maps-react",
+    "got": "^12.1.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "node-cron": "^3.0.0",
