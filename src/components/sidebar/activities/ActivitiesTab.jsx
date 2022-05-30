@@ -182,7 +182,7 @@ export default function ActivitiesTab(props) {
       />
       {!activities[0] && !loading && (
         <div className={classes.fillerText}>
-          {"Click 'GET RIDES' to populate map"}
+          {"No activities found, change search parameters and try again"}
         </div>
       )}
       <List
