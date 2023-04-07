@@ -6,6 +6,8 @@ global._stravaAPI = require("./utils/stravaClient");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
 
+const axios = require("axios");
+
 const oAuthStrava = require("./controllers/oAuthStrava");
 const summaryController = require("./controllers/summaryStrava");
 const segmentController = require("./controllers/segmentsController");
@@ -149,7 +151,7 @@ app.get(
 /*
 
 end points for setting up strava push notifications
-
+*/
 app.get("/api/testHook", (req, res) => {
   console.log("  client_id: config.client_id,: ", config.client_id);
   console.log(" config.client_secret,: ", config.client_secret);
@@ -175,6 +177,7 @@ app.get("/api/testHook", (req, res) => {
   // res.status(200);
 });
 
+/*
 app.get("/api/getHook", (req, res) => {
   const challenge = req.query["hub.challenge"];
   console.log("req  ", challenge);
@@ -353,6 +356,14 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
     }
   });
 }
+
+app.use(function (req, res, next) {
+  if (!req.secure && process.env.NODE_ENV === "production") {
+    console.info("Redirect to https");
+    return res.redirect(["https://", req.get("Host"), req.url].join(""));
+  }
+  next();
+});
 
 app.use("*", (req, res) => {
   console.log("ERROR Catch All -- Req Url:", req.url);
