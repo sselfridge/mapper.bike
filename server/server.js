@@ -35,6 +35,18 @@ var cron = require("node-cron");
 //Every morning at 04:01 am
 cron.schedule("01 04 * * *", () => {});
 
+app.use(function (req, res, next) {
+  if (!req.secure && process.env.NODE_ENV === "production") {
+    console.info("Redirect to https");
+    console.info(
+      "redirect to ",
+      ["https://", req.get("Host"), req.url].join("")
+    );
+    return res.redirect(["https://", req.get("Host"), req.url].join(""));
+  }
+  next();
+});
+
 // Every 15min
 // cron.schedule("*/15 * * * *", () => {
 //   if (process.env.NODE_ENV === "production") {
@@ -356,18 +368,6 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
     }
   });
 }
-
-app.use(function (req, res, next) {
-  if (!req.secure && process.env.NODE_ENV === "production") {
-    console.info("Redirect to https");
-    console.info(
-      "redirect to ",
-      ["https://", req.get("Host"), req.url].join("")
-    );
-    return res.redirect(["https://", req.get("Host"), req.url].join(""));
-  }
-  next();
-});
 
 app.use("*", (req, res) => {
   console.log("ERROR Catch All -- Req Url:", req.url);
