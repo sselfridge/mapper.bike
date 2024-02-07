@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     float: "right",
     marginRight: theme.spacing(3),
   },
+  poweredBy: {
+    width: "40%",
+  },
 }));
 
 function TabPanel(props) {
@@ -107,7 +110,13 @@ export default function TabbedSidebar(props) {
           aria-label="simple tabs example"
         >
           <Tab label="Activities" {...a11yProps(0)} />
-          <Tab
+          <img
+            className={classes.poweredBy}
+            src="img/pwrdByStrava.svg"
+            // onClick={() => toggleActivityType("Ride")}
+            alt="Powered by Strava"
+          />
+          {/* <Tab
             label="KOM Mapper "
             icon={
               <img
@@ -118,7 +127,7 @@ export default function TabbedSidebar(props) {
             }
             onClick={() => setRenderKomTab((r) => r + 1)}
             {...a11yProps(1)}
-          />
+          /> */}
         </Tabs>
       </AppBar>
       <TabPanel value={activeTab} index={0}>
