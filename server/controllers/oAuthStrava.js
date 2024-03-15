@@ -149,7 +149,7 @@ function setJWTCookie(res, payload) {
   console.log("Set JWT", payload);
   const jwt = jwToken.sign(payload, config.secretSuperKey);
   const encrypted = cryptr.encrypt(jwt);
-  res.cookie("mapperjwt", encrypted, { httpOnly: true });
+  res.cookie("mapperjwt", encrypted, { httpOnly: true, maxAge: 98765432100 });
 }
 
 const decodeCookie = (res, jwt) => {
