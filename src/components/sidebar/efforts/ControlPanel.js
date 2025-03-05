@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import makeStyles from "@mui/styles/makeStyles";
-import { Switch, Select, FormControl, MenuItem, Tooltip } from "@mui/material";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import CenterFocusWeakOutlinedIcon from "@mui/icons-material/CenterFocusWeakOutlined";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import AllInclusiveOutlinedIcon from "@mui/icons-material/AllInclusiveOutlined";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  Switch,
+  Select,
+  FormControl,
+  MenuItem,
+  Tooltip,
+} from "@material-ui/core";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import CenterFocusWeakOutlinedIcon from "@material-ui/icons/CenterFocusWeakOutlined";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import AllInclusiveOutlinedIcon from "@material-ui/icons/AllInclusiveOutlined";
 
 import InputLabel from "../../styledMui/InputLabel";
 import CenterMapModal from "../shared/CenterMapModal";

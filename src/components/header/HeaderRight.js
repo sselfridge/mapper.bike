@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import makeStyles from '@mui/styles/makeStyles';
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import { makeStyles } from "@material-ui/core";
+import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
 import { deleteUser } from "../../api/strava";
 
 import MenuModal from "./MenuModal";

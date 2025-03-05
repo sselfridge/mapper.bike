@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from "@material-ui/core";
 
-import Typography from "@mui/material/Typography";
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Typography from "@material-ui/core/Typography";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({

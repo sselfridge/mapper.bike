@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import makeStyles from "@mui/styles/makeStyles";
+import { makeStyles } from "@material-ui/core/styles";
 import DatePicker from "react-date-picker";
 import _ from "lodash";
-import { Switch, Button } from "@mui/material";
-import CenterFocusWeakOutlinedIcon from "@mui/icons-material/CenterFocusWeakOutlined";
+import { Switch, Button } from "@material-ui/core";
+import CenterFocusWeakOutlinedIcon from "@material-ui/icons/CenterFocusWeakOutlined";
 
 import InputLabel from "../../styledMui/InputLabel";
 import CenterMapModal from "../shared/CenterMapModal";

@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { Button, TextField, Modal } from "@mui/material";
-
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles, Button, TextField, Modal } from "@material-ui/core";
 
 import { centerOnLocation } from "../../../api/google";
 

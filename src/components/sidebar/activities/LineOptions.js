@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { ClickAwayListener } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles, ClickAwayListener } from "@material-ui/core";
 import { TwitterPicker } from "react-color";
 import { lineColors } from "../../../constants/map";
 import InputLabel from "../../styledMui/InputLabel";

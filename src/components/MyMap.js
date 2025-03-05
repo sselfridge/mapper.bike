@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { GoogleApiWrapper, Map, Polyline } from "google-maps-react";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from "@material-ui/core";
 import decodePolyline from "decode-google-map-polyline";
 
 import { sidebarWidth } from "../constants/sidebar";

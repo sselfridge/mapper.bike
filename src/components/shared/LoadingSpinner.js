@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import dayjs from "../../utils/dayjs";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from "@material-ui/core";
 
 import ReactLoading from "react-loading";
 

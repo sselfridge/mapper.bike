@@ -11,10 +11,10 @@ import {
   ListItemAvatar,
   IconButton,
   Tooltip,
-} from "@mui/material/";
+} from "@material-ui/core/";
 
-import DeleteIcon from "@mui/icons-material/Delete";
-import MapIcon from "@mui/icons-material/Map";
+import DeleteIcon from "@material-ui/icons/Delete";
+import MapIcon from "@material-ui/icons/Map";
 
 import { useRowStyles } from "../shared/styles";
 
@@ -81,7 +81,7 @@ function Row(props) {
       {isSelected && (
         <div className={classes.actions}>
           <Tooltip title="View on Strava" placement={"top"}>
-            <IconButton size="large">
+            <IconButton>
               <a href={stravaLink} rel="noopener noreferrer" target="_blank">
                 <img
                   className={classes.stravaIcon}
@@ -97,7 +97,7 @@ function Row(props) {
               onClick={() => {
                 centerMapOnActivity(activity);
               }}
-              size="large">
+            >
               <MapIcon />
             </IconButton>
           </Tooltip>
@@ -107,7 +107,7 @@ function Row(props) {
               onClick={() => {
                 handleRemoveLine(activity.id, "activity");
               }}
-              size="large">
+            >
               <DeleteIcon />
             </IconButton>
           </Tooltip>

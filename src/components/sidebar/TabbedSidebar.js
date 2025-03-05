@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
-import { Box, AppBar, Tabs, Tab } from "@mui/material";
-
-import makeStyles from "@mui/styles/makeStyles";
+import { makeStyles, Box, AppBar, Tabs, Tab } from "@material-ui/core";
 
 import ActivitiesTab from "./activities/ActivitiesTab.jsx";
 import EffortsTab from "./efforts/EffortsTab.jsx";
@@ -17,14 +15,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   premiumIcon: {
-    height: 24,
-    width: 24,
-    marginRight: 24,
+    height: theme.spacing(3),
+    width: theme.spacing(3),
+    float: "right",
+    marginRight: theme.spacing(3),
   },
-  premiumTab: {
-    display: "flex",
-    flexDirection: "row-reverse",
-    justifyContent: "space-between",
+  poweredBy: {
+    width: "40%",
   },
 }));
 
@@ -111,11 +108,15 @@ export default function TabbedSidebar(props) {
           value={activeTab}
           onChange={handleChange}
           aria-label="simple tabs example"
-          textColor="black"
-          indicatorColor="secondary"
         >
           <Tab label="Activities" {...a11yProps(0)} />
-          <Tab
+          <img
+            className={classes.poweredBy}
+            src="img/pwrdByStrava.svg"
+            // onClick={() => toggleActivityType("Ride")}
+            alt="Powered by Strava"
+          />
+          {/* <Tab
             label="KOM Mapper "
             icon={
               <img
@@ -124,10 +125,9 @@ export default function TabbedSidebar(props) {
                 alt="Strava Premium"
               />
             }
-            className={classes.premiumTab}
             onClick={() => setRenderKomTab((r) => r + 1)}
             {...a11yProps(1)}
-          />
+          /> */}
         </Tabs>
       </AppBar>
       <TabPanel value={activeTab} index={0}>

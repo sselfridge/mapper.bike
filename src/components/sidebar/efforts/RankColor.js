@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import Typography from "@mui/material/Typography";
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Typography from "@material-ui/core/Typography";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 
-import { ClickAwayListener } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles, ClickAwayListener } from "@material-ui/core";
 import { TwitterPicker } from "react-color";
 
 import { effortColors } from "../../../constants/map";

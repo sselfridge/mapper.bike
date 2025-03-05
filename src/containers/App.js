@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/header/Header";
 import Board from "./Board";
 import SnackBar from "../components/SnackBar";
-import { Paper } from "@mui/material";
-
-import makeStyles from '@mui/styles/makeStyles';
+import { Paper, makeStyles } from "@material-ui/core";
 
 import { NULL_USER, getCurrentUser, logout } from "../api/strava";
 

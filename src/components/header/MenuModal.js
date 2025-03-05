@@ -1,9 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Button, Checkbox, Tooltip, Modal } from "@mui/material";
-
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  makeStyles,
+  Button,
+  Checkbox,
+  Tooltip,
+  Modal,
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   modalPaper: {
