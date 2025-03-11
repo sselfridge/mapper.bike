@@ -19,7 +19,7 @@
     "express": "^4.17.2",
     "google-maps-react": "github:sselfridge/google-maps-react",
     "got": "^9.6.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "node-cron": "^3.0.0",
     "react": "^17.0.2",
