@@ -50,7 +50,7 @@ function loadStravaProfile(req, res, next) {
 
   decodeCookie(res, jwt)
     .then(getStravaUserProfile)
-    .then(checkToken)
+    .then(checkTokenNoDB)
     .then(next)
     .catch((err) => {
       console.log("Error while loading Strava Profile\n", err);
@@ -118,6 +118,62 @@ const checkToken = (res) => {
   });
 };
 
+const checkTokenNoDB = (res) => {
+  return new Promise(async (resolve, reject) => {
+    const expiresAtObj = res.locals.expiresAtObj;
+    let logMsg = `Token Expires at ${expiresAtObj
+      .tz("America/Los_Angeles")
+      .format("hh:mm A")} PST`;
+    logMsg += `(${expiresAtObj.utc().format("hh:mm")}GMT)`;
+    logMsg += ` ${expiresAtObj.fromNow()}`;
+
+    console.log(logMsg);
+
+    if (dayjs().isBefore(expiresAtObj)) {
+      console.log("Token Not Expired");
+      return resolve();
+    } else {
+      console.log("Token Expired");
+
+      const id = res.locals.athleteId;
+
+      _stravaAPI.oauth
+        .refreshToken(res.locals.refreshToken)
+        .then((result) => {
+          //update user refresh token in DB
+          const athleteId = res.locals.athleteId;
+          const user = {
+            id: athleteId,
+            accessToken: result.access_token,
+            refreshToken: result.refresh_token,
+            expiresAt: result.expires_at,
+          };
+          console.log("Refresh Token:", athleteId, result.refresh_token);
+          User.updateTokens(user);
+          return result;
+        })
+        .then((result) => {
+          let payload = {
+            expiresAt: result.expires_at,
+            accessToken: result.access_token,
+            athleteId: res.locals.athleteId,
+            user: JSON.stringify(res.locals.user),
+          };
+          setJWTCookie(res, payload);
+          res.locals.expiresAtObj = dayjs.unix(result.expires_at);
+          res.locals.accessToken = result.access_token;
+          res.locals.strava = new _stravaAPI.client(result.access_token);
+          return resolve();
+        })
+        .catch((err) => {
+          console.log("Error During Token Refresh");
+          console.log(err);
+          reject("Error During Token Refresh");
+        });
+    }
+  });
+};
+
 function decryptJwt(jwt) {
   let hubCookie;
   try {
@@ -149,7 +205,10 @@ function setJWTCookie(res, payload) {
   console.log("Set JWT", payload);
   const jwt = jwToken.sign(payload, config.secretSuperKey);
   const encrypted = cryptr.encrypt(jwt);
-  res.cookie("mapperjwt", encrypted, { httpOnly: true, maxAge: 98765432100 });
+  res.cookie("mapperjwt", encrypted, {
+    httpOnly: true,
+    maxAge: 30 * 1000,
+  });
 }
 
 const decodeCookie = (res, jwt) => {
