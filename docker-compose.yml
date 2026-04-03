@@ -1,0 +1,19 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        REACT_APP_MAPS_API: ${REACT_APP_MAPS_API}
+        REACT_APP_STRAVA_CLIENT_ID: ${REACT_APP_STRAVA_CLIENT_ID}
+        REACT_APP_STRAVA_CLIENT_ASDF_ID: "fROMcOMPOSE"
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: production
+      REACT_APP_STRAVA_CLIENT_ID: ${REACT_APP_STRAVA_CLIENT_ID}
+      STRAVA_CLIENT_SECRET: ${STRAVA_CLIENT_SECRET}
+      STRAVA_CLIENT_REFRESH: ${STRAVA_CLIENT_REFRESH}
+      STRAVA_CALLBACK_URI: ${STRAVA_CALLBACK_URI:-http://localhost:8080/api/strava/callback}
+      STRAVA_REDIRECT_URL: ${STRAVA_REDIRECT_URL:-http://localhost:8080}
+      SECRET_SUPER_KEY: ${SECRET_SUPER_KEY}
+      REACT_APP_MAPS_API: ${REACT_APP_MAPS_API}

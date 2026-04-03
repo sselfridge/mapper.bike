@@ -45,9 +45,11 @@ const DefaultSidebar = (props) => {
       });
   }
 
+  const clientId = process.env.REACT_APP_STRAVA_CLIENT_ID;
+
   let connectToStravaLink = "";
   connectToStravaLink += `https://www.strava.com/oauth/authorize`;
-  connectToStravaLink += `?client_id=${config.client_id}`;
+  connectToStravaLink += `?client_id=${clientId}`;
   connectToStravaLink += `&redirect_uri=${config.callback_uri}/api/strava/callback`;
   connectToStravaLink += `&response_type=code`;
   connectToStravaLink += `&approval_prompt=auto`;

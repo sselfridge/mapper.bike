@@ -1,0 +1,12 @@
+.env
+node_modules
+build
+.git
+.gitignore
+npm-debug.log*
+*.md
+privkey.pem
+fullchain.pem
+awsTest.js
+ecosystem.config.js
+certRenew.sh

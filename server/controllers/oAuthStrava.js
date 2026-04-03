@@ -5,8 +5,6 @@ const config = require("../../src/config/keys");
 const cryptr = new Cryptr(config.secretSuperKey);
 const { logUser } = require("../services/systemServices");
 
-const User = require("../models/User");
-
 const _stravaAPI = global._stravaAPI;
 
 // EXPORTED Functions
@@ -22,16 +20,10 @@ function setStravaOauth(req, res, next) {
   _stravaAPI.oauth
     .getToken(code)
     .then((result) => {
-      const user = {
-        id: result.athlete.id,
+      const payload = {
+        expiresAt: result.expires_at,
         accessToken: result.access_token,
         refreshToken: result.refresh_token,
-        expiresAt: result.expires_at,
-      };
-      User.updateTokens(user);
-      let payload = {
-        expiresAt: result.expires_at,
-        accessToken: result.access_token,
         athleteId: result.athlete.id,
       };
       setJWTCookie(res, payload);
@@ -55,14 +47,13 @@ function loadStravaProfile(req, res, next) {
     .catch((err) => {
       console.log("Error while loading Strava Profile\n", err);
       res.locals.err = "Error Loading Strava Profile";
-      // clearCookie(req, res, next);
       next();
     });
 }
 
 //check if the access token is expired, if so request a new one
 const checkToken = (res) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const expiresAtObj = res.locals.expiresAtObj;
     let logMsg = `Token Expires at ${expiresAtObj
       .tz("America/Los_Angeles")
@@ -78,34 +69,20 @@ const checkToken = (res) => {
     } else {
       console.log("Token Expired");
 
-      const id = res.locals.athleteId;
-      const user = await User.get(id);
-
       _stravaAPI.oauth
-        .refreshToken(user.refreshToken)
+        .refreshToken(res.locals.refreshToken)
         .then((result) => {
-          //update user refresh token in DB
-          const athleteId = res.locals.athleteId;
-          const user = {
-            id: athleteId,
+          const payload = {
+            expiresAt: result.expires_at,
             accessToken: result.access_token,
             refreshToken: result.refresh_token,
-            expiresAt: result.expires_at,
-          };
-          console.log("Refresh Token:", athleteId, result.refresh_token);
-          User.updateTokens(user);
-          return result;
-        })
-        .then((result) => {
-          let payload = {
-            expiresAt: result.expires_at,
-            accessToken: result.access_token,
             athleteId: res.locals.athleteId,
             user: JSON.stringify(res.locals.user),
           };
           setJWTCookie(res, payload);
           res.locals.expiresAtObj = dayjs.unix(result.expires_at);
           res.locals.accessToken = result.access_token;
+          res.locals.refreshToken = result.refresh_token;
           res.locals.strava = new _stravaAPI.client(result.access_token);
           return resolve();
         })
@@ -130,9 +107,10 @@ function decryptJwt(jwt) {
 
 /**
  * Payload schema
- * @param {number} expiresAt 
- * @param {string} accessToken 
- * @param {number} athleteId 
+ * @param {number} expiresAt
+ * @param {string} accessToken
+ * @param {string} refreshToken
+ * @param {number} athleteId
  * @param {string} user stringified JSON Obj that matches res.locals.user
   res.locals.user : {
       avatar: result.profile,
@@ -164,7 +142,7 @@ const decodeCookie = (res, jwt) => {
       res.locals.expiresAtObj = dayjs.unix(payload.expiresAt);
       res.locals.strava = new _stravaAPI.client(payload.accessToken);
       res.locals.accessToken = payload.accessToken;
-      // res.locals.refreshToken = payload.refreshToken;
+      res.locals.refreshToken = payload.refreshToken;
       res.locals.athleteId = payload.athleteId;
       res.locals.user = payload.user ? JSON.parse(payload.user) : undefined;
       console.log("Access Token: ", res.locals.accessToken);
@@ -195,6 +173,7 @@ async function getStravaUserProfile(res) {
     const payload = {
       expiresAt: res.locals.expiresAtObj.unix(),
       accessToken: res.locals.accessToken,
+      refreshToken: res.locals.refreshToken,
       athleteId: res.locals.athleteId,
       user: JSON.stringify(newUser),
     };
@@ -211,7 +190,6 @@ function clearCookie(req, res, next) {
 }
 
 function adminOnly(req, res, next) {
-  // keep those not me from hitting admin functions
   const userAthleteId =
     res.locals && res.locals.user && res.locals.user.athleteId;
 
