@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/header/Header";
 import Board from "./Board";
+import Moving from "./Moving";
 import SnackBar from "../components/SnackBar";
 import { Paper, makeStyles } from "@material-ui/core";
 
@@ -51,6 +52,7 @@ const NewApp = () => {
   return (
     <Paper className={classes.AppRoot}>
       <Header currentUser={currentUser} stravaLogout={stravaLogout} />
+      <Moving />
       <Board
         currentUser={currentUser}
         snackBar={snackBar}
