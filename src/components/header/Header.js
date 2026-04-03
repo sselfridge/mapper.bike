@@ -33,24 +33,24 @@ const useStyles = makeStyles((theme) => ({
 const version = process.env.REACT_APP_GIT_HASH;
 
 const Header = (props) => {
-  const { currentUser } = props;
+  // const { currentUser } = props;
   const classes = useStyles();
 
-  const isMe = currentUser.athleteId === 1075670;
+  // const isMe = currentUser.athleteId === 1075670;
 
-  const kickoff = (
-    <div>
-      <button onClick={kickoffQ}>Start Q</button>{" "}
-      <button onClick={apiTest}>TEST</button>
-      <button onClick={apiTestReset}>RESET</button>
-    </div>
-  );
+  // const kickoff = (
+  //   <div>
+  //     <button onClick={kickoffQ}>Start Q</button>{" "}
+  //     <button onClick={apiTest}>TEST</button>
+  //     <button onClick={apiTestReset}>RESET</button>
+  //   </div>
+  // );
 
   return (
     <div className={classes.Header}>
-      {isMe && kickoff}
+      {/* {isMe && kickoff} */}
       <div className={classes.title}>
-        Mapper.Bike{" "}
+        MapperBike.com
         <span className={classes.betaText}>beta {`v-${version}`}</span>
       </div>
       <div className={classes.headerRight}>

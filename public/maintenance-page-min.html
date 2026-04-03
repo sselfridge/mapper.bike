@@ -1,1 +1,68 @@
-<html> <head> <style>body{background: #03a9f4; font-family: Arial, Helvetica, sans-serif; display: flex; flex-direction: column; align-items: center;}#spacer{border: 5px solid #fc4c02; width: 5px; transition-property: width; transition-duration: 1.5s;}.bigSpacer{width: 500px !important;}</style> </head> <body> <h1>Mapper.bike</h1> <hr id="spacer"/> <h5 id="loading">Don't Panic</h5> <h3>I'm updating a few things, be right back</h3> </body> <script>let count=0; setInterval(()=>{const spacer=document.getElementById("spacer"); spacer.classList.toggle("bigSpacer"); console.info(spacer.classList);}, 1000); /*Thanks https://gist.github.com/meain/6440b706a97d2dd71574769517e7ed32 */ const loadings=[ "Don't panic...", "Reticulating splines...", "Generating witty dialog...", "Swapping time and space...", "Spinning violently around the y-axis...", "Tokenizing real life...", "Don't worry - a few bits tried to escape, but we caught them", "We have the 1's but we've lost all the 0's....halp", "Server is running on potato power", "The last time I tried this the monkey didn't survive. Let's hope it works better this time.", "Adjusting flux capacitor...", "There is no spoon. Because we are not done loading it", "git happens", "Pretty okay at GIT", "Kindly hold on as we convert this bug to a feature...", "Waiting for parts to be in stock....", "I think there's a headwind on the internet...", "is HTTP more aero than HTTPS?", "Our premium plan is faster", "Not made while on the trainer",]; setRandomLoading(); setInterval(setRandomLoading, 2000); function setRandomLoading(){const loadingElm=document.getElementById("loading"); loadingElm.innerText=loadings[Math.floor(Math.random() * loadings.length)]; count++; if (count > 6) location.reload();}</script></html>
+<html>
+  <head>
+    <style>
+      body {
+        background: #03a9f4;
+        font-family: Arial, Helvetica, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #spacer {
+        border: 5px solid #fc4c02;
+        width: 5px;
+        transition-property: width;
+        transition-duration: 1.5s;
+      }
+      .bigSpacer {
+        width: 500px !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>MapperBike.com</h1>
+    <hr id="spacer" />
+    <h5 id="loading">Don't Panic</h5>
+    <h3>I'm updating a few things, be right back</h3>
+  </body>
+  <script>
+    let count = 0;
+    setInterval(() => {
+      const spacer = document.getElementById("spacer");
+      spacer.classList.toggle("bigSpacer");
+      console.info(spacer.classList);
+    }, 1000);
+    /*Thanks https://gist.github.com/meain/6440b706a97d2dd71574769517e7ed32 */ const loadings =
+      [
+        "Don't panic...",
+        "Reticulating splines...",
+        "Generating witty dialog...",
+        "Swapping time and space...",
+        "Spinning violently around the y-axis...",
+        "Tokenizing real life...",
+        "Don't worry - a few bits tried to escape, but we caught them",
+        "We have the 1's but we've lost all the 0's....halp",
+        "Server is running on potato power",
+        "The last time I tried this the monkey didn't survive. Let's hope it works better this time.",
+        "Adjusting flux capacitor...",
+        "There is no spoon. Because we are not done loading it",
+        "git happens",
+        "Pretty okay at GIT",
+        "Kindly hold on as we convert this bug to a feature...",
+        "Waiting for parts to be in stock....",
+        "I think there's a headwind on the internet...",
+        "is HTTP more aero than HTTPS?",
+        "Our premium plan is faster",
+        "Not made while on the trainer",
+      ];
+    setRandomLoading();
+    setInterval(setRandomLoading, 2000);
+    function setRandomLoading() {
+      const loadingElm = document.getElementById("loading");
+      loadingElm.innerText =
+        loadings[Math.floor(Math.random() * loadings.length)];
+      count++;
+      if (count > 6) location.reload();
+    }
+  </script>
+</html>
