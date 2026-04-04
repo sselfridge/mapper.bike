@@ -92,6 +92,14 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
     res.sendFile(path.join(__dirname, "../build/index.html"));
   });
 
+  app.get("/sitemap.xml", (req, res) => {
+    res.sendFile(path.join(__dirname, "../public/sitemap.xml"));
+  });
+
+  app.get("/robots.txt", (req, res) => {
+    res.sendFile(path.join(__dirname, "../public/robots.txt"));
+  });
+
   app.get("/img/:image", (req, res) => {
     const imagePath = path.join(__dirname, `../build/img/${req.params.image}`);
     if (fs.existsSync(imagePath)) {

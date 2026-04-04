@@ -16,7 +16,7 @@ function logUser(user) {
   });
   str += date + "-PST \n";
   fs.appendFileSync(USER_LOG_FILE, str);
-  console.log("User: ", str);
+  console.log("username ", str);
 }
 
 module.exports = { logUser };
