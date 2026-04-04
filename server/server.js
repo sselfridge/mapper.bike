@@ -16,7 +16,7 @@ app.use(express.json({ extended: false }));
 app.use(cookieParser());
 app.use(logReq);
 app.use((req, res, next) => {
-  if (req.hostname === "mapper.bike") {
+  if (req.hostname.includes("mapper.bike")) {
     return res.redirect(301, `https://www.mapperbike.com${req.originalUrl}`);
   }
   next();
