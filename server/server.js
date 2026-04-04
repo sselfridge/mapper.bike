@@ -15,7 +15,12 @@ const config = require("../src/config/keys");
 app.use(express.json({ extended: false }));
 app.use(cookieParser());
 app.use(logReq);
-
+app.use((req, res, next) => {
+  if (req.hostname === "mapper.bike") {
+    return res.redirect(301, `https://www.mapperbike.com${req.originalUrl}`);
+  }
+  next();
+});
 
 app.get("/api/getStravaUser", oAuthStrava.loadStravaProfile, (req, res) => {
   if (res.locals.user) {
@@ -53,7 +58,7 @@ app.get(
     }
     console.log(`Sending Back ${res.locals.activities.length} activities`);
     res.send(JSON.stringify(res.locals.activities));
-  }
+  },
 );
 
 app.get("/api/demoData", (req, res) => {
@@ -74,7 +79,7 @@ app.post("/api/logout", oAuthStrava.clearCookie, (req, res) => {
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
   console.log(
     `Server in Production/Test mode!`,
-    path.join(__dirname, "../build")
+    path.join(__dirname, "../build"),
   );
   app.use("/build", express.static(path.join(__dirname, "../build")));
   app.use("/static", express.static(path.join(__dirname, "../build/static")));
