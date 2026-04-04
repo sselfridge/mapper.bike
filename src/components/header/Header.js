@@ -51,7 +51,7 @@ const Header = (props) => {
       {/* {isMe && kickoff} */}
       <div className={classes.title}>
         MapperBike.com
-        <span className={classes.betaText}>beta {`v-${version}`}</span>
+        {/* <span className={classes.betaText}>beta {`v-${version}`}</span> */}
       </div>
       <div className={classes.headerRight}>
         <HeaderRight {...props} />
