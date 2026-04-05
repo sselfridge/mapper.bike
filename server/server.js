@@ -92,11 +92,15 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
     res.sendFile(path.join(__dirname, "../build/index.html"));
   });
 
-  app.get("/sitemap.xml", (req, res) => {
+  app.get("/sitemap.xml", (_req, res) => {
     res.sendFile(path.join(__dirname, "../public/sitemap.xml"));
   });
 
-  app.get("/robots.txt", (req, res) => {
+  app.get("/BingSiteAuth.xml", (_req, res) => {
+    res.sendFile(path.join(__dirname, "../public/BingSiteAuth.xml"));
+  });
+
+  app.get("/robots.txt", (_req, res) => {
     res.sendFile(path.join(__dirname, "../public/robots.txt"));
   });
 
